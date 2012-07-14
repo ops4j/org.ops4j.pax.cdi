@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
-            <artifactId>pax-cdi</artifactId>
+            <artifactId>pax-cdi-extender</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
