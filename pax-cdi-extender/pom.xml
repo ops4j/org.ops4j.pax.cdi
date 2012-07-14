@@ -1,0 +1,99 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>cdi</artifactId>
+        <groupId>org.ops4j.pax</groupId>
+        <version>0.1.0-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+    <groupId>org.ops4j.pax.cdi</groupId>
+    <artifactId>pax-cdi-extender</artifactId>
+    <packaging>bundle</packaging>
+
+    <name>OPS4J Pax CDI Portable Extension for OSGi</name>
+
+    <properties>
+        <bundle.symbolicName>org.ops4j.pax.cdi.extender</bundle.symbolicName>
+        <bundle.namespace>org.ops4j.pax.cdi.extender</bundle.namespace>
+    </properties>
+    <dependencies>
+
+        <dependency>
+            <groupId>org.ops4j.pax.cdi</groupId>
+            <artifactId>pax-cdi-spi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.cdi</groupId>
+            <artifactId>pax-cdi-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.swissbox</groupId>
+            <artifactId>pax-swissbox-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.swissbox</groupId>
+            <artifactId>pax-swissbox-extender</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.swissbox</groupId>
+            <artifactId>pax-swissbox-framework</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.swissbox</groupId>
+            <artifactId>pax-swissbox-tracker</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.openwebbeans</groupId>
+            <artifactId>openwebbeans-spi</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.openwebbeans</groupId>
+            <artifactId>openwebbeans-impl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-finder</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jcdi_1.0_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-atinject_1.0_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>org.ops4j.pax.cdi</Bundle-SymbolicName>
+                        <Bundle-Activator>org.ops4j.pax.cdi.impl.Activator</Bundle-Activator>
+                        <Import-Package>org.ops4j.pax.cdi.api, javassist.util.proxy, *</Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

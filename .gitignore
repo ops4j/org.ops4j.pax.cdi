@@ -6,4 +6,3 @@ bin
 test-output
 *.log
 *~
-pax-cdi-extender
