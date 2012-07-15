@@ -260,10 +260,16 @@
                 </plugin>
 
                 <plugin>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <configuration>
+                       <useAgent>true</useAgent>
+                    </configuration>
+                </plugin>
+
+                <plugin>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.3.2</version>
                     <configuration>
-                        <arguments>-Dgpg.passphrase=${passphrase}</arguments>
                         <preparationGoals>clean verify javadoc:jar</preparationGoals>
                         <pushChanges>false</pushChanges>
                         <releaseProfiles>sonatype-oss-release</releaseProfiles>
