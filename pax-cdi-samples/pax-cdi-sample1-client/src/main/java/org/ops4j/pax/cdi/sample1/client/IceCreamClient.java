@@ -21,18 +21,16 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
 
-@Singleton
 @OsgiServiceProvider
 public class IceCreamClient {
 
     @Inject
-    @OsgiService(timeout = 2000, dynamic = true)
+    @OsgiService(timeout = 2000, dynamic = true, filter="(flavour=chocolate)")
     private IceCreamService iceCreamService;
 
     public List<String> getFlavours() {

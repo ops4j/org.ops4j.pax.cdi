@@ -19,8 +19,14 @@ package org.ops4j.pax.cdi.sample1;
 
 import javax.enterprise.inject.Default;
 
+import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.Properties;
+import org.ops4j.pax.cdi.api.Property;
+
 @Vanilla
 @Default
+@OsgiServiceProvider(classes = { VanillaService.class, IceCreamService.class })
+@Properties(@Property(name = "flavour", value = "vanilla"))
 public class VanillaService implements IceCreamService {
 
     public String getFlavour() {

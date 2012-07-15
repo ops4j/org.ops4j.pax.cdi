@@ -19,6 +19,7 @@ package org.ops4j.pax.cdi.test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.TestConfiguration.regressionDefaults;
@@ -35,7 +36,9 @@ import org.apache.webbeans.context.WebBeansContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample1.Chocolate;
+import org.ops4j.pax.cdi.sample1.ChocolateService;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
+import org.ops4j.pax.cdi.sample1.VanillaService;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
@@ -43,6 +46,8 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
@@ -53,6 +58,9 @@ public class SingleBundleTest {
 
     @Inject
     private CdiContainer container;
+    
+    @Inject
+    private BundleContext bc;
 
     @Configuration
     public Option[] config() {
@@ -112,11 +120,22 @@ public class SingleBundleTest {
 
         Event<Object> event = container.getEvent();
         assertThat(event, is(notNullValue()));
-
     }
 
     @Test
     public void checkBeanManager() {
         assertNotNull(container.getBeanManager());
+    }
+    
+    @Test
+    public void vanillaIsRegisteredByClassAndInterface() throws InvalidSyntaxException {
+        assertThat(bc.getServiceReference(VanillaService.class), is(notNullValue()));
+        assertThat(bc.getServiceReferences(IceCreamService.class, "(flavour=vanilla)").isEmpty(), is(false));
+    }
+
+    @Test
+    public void chocolateIsRegisteredByInterfaceOnly() throws InvalidSyntaxException {
+        assertThat(bc.getServiceReference(ChocolateService.class), is(nullValue()));
+        assertThat(bc.getServiceReferences(IceCreamService.class, "(flavour=chocolate)").isEmpty(), is(false));
     }
 }

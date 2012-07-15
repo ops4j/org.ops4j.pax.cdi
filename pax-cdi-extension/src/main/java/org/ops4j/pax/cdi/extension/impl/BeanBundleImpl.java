@@ -17,15 +17,25 @@
  */
 package org.ops4j.pax.cdi.extension.impl;
 
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
 import org.ops4j.pax.cdi.api.BeanBundle;
 import org.ops4j.pax.cdi.api.ContainerInitialized;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.Properties;
+import org.ops4j.pax.cdi.api.Property;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +61,9 @@ public class BeanBundleImpl implements BeanBundle {
     @Any
     @OsgiServiceProvider
     private Instance<Object> services;
+    
+    @Inject
+    private BeanManager beanManager;
 
     private BundleContext bundleContext;
 
@@ -62,16 +75,63 @@ public class BeanBundleImpl implements BeanBundle {
      */
     public void onInitialized(@Observes ContainerInitialized event) {
         for (Object service : services) {
-            Class<?> klass = service.getClass();
-            int numSignatures = klass.getInterfaces().length + 1;
-            String[] signatures = new String[numSignatures];
-            signatures[0] = klass.getName();
-            for (int i = 1; i < numSignatures; i++) {
-                signatures[i] = klass.getInterfaces()[i - 1].getName();
-            }
-            log.debug("publishing service {}", signatures[0]);
-            bundleContext.registerService(signatures, service, null);
+            registerService(service);
         }
+    }
+
+    private void registerService(Object service) {
+        Class<?> klass = service.getClass();
+        AnnotatedType<?> annotatedType = beanManager.createAnnotatedType(klass);
+        OsgiServiceProvider provider = annotatedType.getAnnotation(OsgiServiceProvider.class);
+        
+        String[] typeNames;        
+        if (provider.classes().length == 0) {
+            typeNames = getTypeNamesForTypeClosure(service, klass, annotatedType);
+        }
+        else {
+            typeNames = getTypeNamesForClasses(provider.classes());
+        }
+        
+        Dictionary<String, Object> props = createProperties(klass, service);
+        log.debug("publishing service {}, props = {}", typeNames[0], props);
+        bundleContext.registerService(typeNames, service, props);        
+    }
+
+    private String[] getTypeNamesForTypeClosure(Object service, Class<?> klass,
+        AnnotatedType<?> annotatedType) {
+        Set<Type> closure = annotatedType.getTypeClosure();
+        String[] typeNames = new String[closure.size()];
+        int i = 0;
+        for (Type type : closure) {
+            Class<?> c = (Class<?>) type;
+            if (c.isInterface()) {
+                typeNames[i++] = c.getName();
+            }
+        }
+        if (i == 0) {
+            typeNames[i++] = klass.getName();
+        }
+        return Arrays.copyOf(typeNames, i);
+    }
+
+    private String[] getTypeNamesForClasses(Class<?>[] classes) {
+        String[] typeNames = new String[classes.length];
+        for (int i = 0; i < classes.length; i++) {
+            typeNames[i] = classes[i].getName();
+        }
+        return typeNames;
+    }
+
+    private Dictionary<String, Object> createProperties(Class<?> klass, Object service) {
+        Properties props = klass.getAnnotation(Properties.class);
+        if (props == null) {
+            return null;
+        }
+        Hashtable<String, Object> dict = new Hashtable<String, Object>();
+        for (Property property : props.value()) {
+            dict.put(property.name(), property.value());
+        }
+        return dict;
     }
 
     @Override

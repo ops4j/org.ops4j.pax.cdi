@@ -67,16 +67,12 @@ public class TestConfiguration {
                 START_LEVEL_SYSTEM_BUNDLES),
             url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.core.link").startLevel(
                 START_LEVEL_SYSTEM_BUNDLES),
-            url("mvn:org.ops4j.pax.swissbox/pax-swissbox-extender/1.5.1").startLevel(
+            url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.extender.link").startLevel(
                 START_LEVEL_SYSTEM_BUNDLES),
-            // url( "link:classpath:META-INF/links/org.ops4j.pax.swissbox.extender.link"
-            // ).startLevel( START_LEVEL_SYSTEM_BUNDLES ),
             url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.lifecycle.link").startLevel(
                 START_LEVEL_SYSTEM_BUNDLES),
-            url("mvn:org.ops4j.pax.swissbox/pax-swissbox-framework/1.5.1").startLevel(
+            url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.framework.link").startLevel(
                 START_LEVEL_SYSTEM_BUNDLES),
-            // url( "link:classpath:META-INF/links/org.ops4j.pax.swissbox.framework.link"
-            // ).startLevel( START_LEVEL_SYSTEM_BUNDLES ),
             url("link:classpath:META-INF/links/org.apache.geronimo.specs.atinject.link")
                 .startLevel(START_LEVEL_SYSTEM_BUNDLES),
 

@@ -18,9 +18,12 @@
 package org.ops4j.pax.cdi.sample1;
 
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.Properties;
+import org.ops4j.pax.cdi.api.Property;
 
 @Chocolate
 @OsgiServiceProvider
+@Properties(@Property(name = "flavour", value = "chocolate"))
 public class ChocolateService implements IceCreamService {
 
     public String getFlavour() {

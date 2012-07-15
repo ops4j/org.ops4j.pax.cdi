@@ -39,9 +39,9 @@ import static java.lang.annotation.ElementType.TYPE;
  * when the {@link ContainerInitialized} event has been observed.
  * <p>
  * The {@link #classes()} attribute denotes the classes or interfaces under which this service is
- * registered.
+ * registered, defaulting to the interfaces the service class is assignable to, or to the service
+ * class itself, if it is not assignable to any interface.
  * <p>
- * TODO other service properties
  * 
  * @author Harald Wellmann
  * 
@@ -55,12 +55,11 @@ public @interface OsgiServiceProvider {
     /**
      * The list of classes or interfaces under which the service is registered. The class annotated
      * by this qualifier must be assignable to each class in this list.
-     * 
+     * <p>
+     * If this list is empty, the service will be registered for each interface it is assignable
+     * to, or for the service class itself, if the service is not assignable to any interface.
      * @return
      */
     @Nonbinding
     Class<?>[] classes() default {};
-
-    @Nonbinding
-    int rank() default 0;
 }
