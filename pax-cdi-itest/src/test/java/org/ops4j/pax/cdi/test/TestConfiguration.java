@@ -22,11 +22,9 @@ import static org.ops4j.pax.exam.CoreOptions.bootDelegationPackage;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.cleanCaches;
 import static org.ops4j.pax.exam.CoreOptions.composite;
-import static org.ops4j.pax.exam.CoreOptions.frameworkProperty;
 import static org.ops4j.pax.exam.CoreOptions.frameworkStartLevel;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.systemPackages;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
 import static org.ops4j.pax.exam.CoreOptions.url;
@@ -88,10 +86,12 @@ public class TestConfiguration {
             // This way, both the driver and the container use the same configuration
             systemProperty("logback.configurationFile").value(
                 "file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.xml"),
-            systemProperty("osgi.console").value("6666"), systemProperty("eclipse.consoleLog")
-                .value("true"), systemTimeout(10000000),
-            frameworkProperty("osgi.compatibility.bootdelegation").value("false"),
-            systemPackages("org.ops4j.pax.cdi.api"), junitBundles());
+            
+            // systemProperty("osgi.console").value("6666"), 
+            
+            systemProperty("eclipse.consoleLog").value("true"), 
+            systemTimeout(30000),
+            junitBundles());
     }
 
     public static Option workspaceBundle(String pathFromRoot) {

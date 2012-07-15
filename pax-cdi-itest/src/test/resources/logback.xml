@@ -34,12 +34,12 @@
     </encoder>
   </appender>
   
-  <root level="INFO">
+  <root level="WARN">
     <appender-ref ref="STDOUT"/>
     <appender-ref ref="TEST_LOG"/>
   </root>
-  <logger name="org.ops4j.pax.exam" level="INFO"/> 
-  <logger name="org.ops4j.pax.cdi" level="DEBUG"/> 
-  <logger name="org.apache.webbeans" level="TRACE"/> 
+  <logger name="org.ops4j.pax.exam" level="WARN"/> 
+  <logger name="org.ops4j.pax.cdi" level="WARN"/> 
+  <logger name="org.apache.webbeans" level="WARN"/> 
   
 </configuration>
