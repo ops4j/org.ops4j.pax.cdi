@@ -261,8 +261,10 @@
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
                     <configuration>
-                        <arguments>-DpushChanges=false</arguments>
+                        <arguments>-DoverrideParentPom</arguments>
                         <preparationGoals>clean verify javadoc:jar</preparationGoals>
+                        <pushChanges>false</pushChanges>
+                        <releaseProfiles>sonatype-oss-release</releaseProfiles>
                         <tagNameFormat>@{project.artifactId}-@{project.version}</tagNameFormat>
                         <useReleaseProfile>true</useReleaseProfile>
                     </configuration>
