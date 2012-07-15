@@ -3,7 +3,7 @@
     <parent>
         <artifactId>pax-cdi-samples</artifactId>
         <groupId>org.ops4j.pax.cdi</groupId>
-        <version>0.1.1-SNAPSHOT</version>
+        <version>0.1.0</version>
         <relativePath>..</relativePath>
     </parent>
 
