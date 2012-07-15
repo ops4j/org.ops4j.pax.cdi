@@ -30,7 +30,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.apache.webbeans.context.WebBeansContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample1.client.IceCreamClient;
@@ -65,28 +64,26 @@ public class ProducerAndClientTest {
             workspaceBundle("pax-cdi-spi"),
             workspaceBundle("pax-cdi-openwebbeans"),
 
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker", "1.5.1"),
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-impl", "1.1.4"),
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-spi", "1.1.4"),
-            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.javassist",
-                "3.12.1.GA_3"),
-            mavenBundle("org.apache.geronimo.bundles", "scannotation", "1.0.2_1"),
-            mavenBundle("org.apache.xbean", "xbean-finder", "3.7"),
-            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm",
-                "3.3.1_1"), //
-            mavenBundle("org.slf4j", "jul-to-slf4j", "1.6.4"),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec", "1.0"),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec", "1.1.1"),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-validation_1.0_spec", "1.1"),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-jcdi_1.0_spec", "1.0"),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec", "1.0"),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec", "1.0"));
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker").versionAsInProject(),
+            mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
+            mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
+            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.javassist").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.bundles", "scannotation").versionAsInProject(),
+            mavenBundle("org.apache.xbean", "xbean-finder").versionAsInProject(),
+            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm").versionAsInProject(), //
+            mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-validation_1.0_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-jcdi_1.0_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject());
 
     }
 
     @Test
     public void checkContainers() throws InterruptedException {
-        assertThat(containerFactory.getProviderName(), is(WebBeansContext.class.getName()));
+        assertThat(containerFactory.getProviderName(), is("org.apache.webbeans.context.WebBeansContext"));
         assertThat(containerFactory.getContainers().size(), is(2));
         List<String> beanBundles = new ArrayList<String>();
         for (CdiContainer container : containerFactory.getContainers()) {
