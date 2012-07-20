@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.ops4j.pax</groupId>
     <artifactId>cdi</artifactId>
@@ -20,6 +21,7 @@
         <pax.swissbox.version>1.5.1</pax.swissbox.version>
         <pax.url.version>1.4.0</pax.url.version>
         <slf4j.version>1.6.4</slf4j.version>
+        <weld.version>1.2.0-SNAPSHOT</weld.version>
         <pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
     </properties>
 
@@ -27,8 +29,8 @@
         <connection>scm:git:git@github.com:ops4j/org.ops4j.pax.cdi.git</connection>
         <developerConnection>scm:git:git@github.com:ops4j/org.ops4j.pax.cdi.git</developerConnection>
         <url>git@github.com:ops4j/org.ops4j.pax.cdi.git</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <modules>
         <module>pax-cdi-extender</module>
@@ -41,6 +43,16 @@
         <module>pax-cdi-extension</module>
         <module>pax-cdi-api</module>
     </modules>
+
+    <profiles>
+        <profile>
+            <id>weld</id>
+            <modules>
+                <module>pax-cdi-weld</module>
+                <module>pax-cdi-itest-weld</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <dependencyManagement>
         <dependencies>

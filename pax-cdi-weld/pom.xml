@@ -1,66 +1,71 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>cdi</artifactId>
         <groupId>org.ops4j.pax</groupId>
+        <artifactId>cdi</artifactId>
         <version>0.2.0-SNAPSHOT</version>
-        <relativePath>..</relativePath>
     </parent>
+
     <groupId>org.ops4j.pax.cdi</groupId>
-    <artifactId>pax-cdi-extender</artifactId>
+    <artifactId>pax-cdi-weld</artifactId>
     <packaging>bundle</packaging>
-
-    <name>OPS4J Pax CDI Portable Extension for OSGi</name>
-
+  
+    <name>OPS4j Pax CDI Weld Adapter</name>
+  
     <properties>
-        <bundle.symbolicName>org.ops4j.pax.cdi.extender</bundle.symbolicName>
-        <bundle.namespace>org.ops4j.pax.cdi.extender</bundle.namespace>
+        <bundle.symbolicName>org.ops4j.pax.cdi.weld</bundle.symbolicName>
+        <bundle.namespace>org.ops4j.pax.cdi.weld</bundle.namespace>
     </properties>
-    <dependencies>
 
+    <dependencies>
         <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
             <artifactId>pax-cdi-spi</artifactId>
             <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi</groupId>
-            <artifactId>pax-cdi-api</artifactId>
-            <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.ops4j.pax.swissbox</groupId>
             <artifactId>pax-swissbox-core</artifactId>
         </dependency>
-        
+
         <dependency>
-            <groupId>org.ops4j.pax.swissbox</groupId>
-            <artifactId>pax-swissbox-extender</artifactId>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core</artifactId>
+            <version>${weld.version}</version>
+            <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
-            <groupId>org.ops4j.pax.swissbox</groupId>
-            <artifactId>pax-swissbox-framework</artifactId>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-osgi-bundle</artifactId>
+            <version>${weld.version}</version>
         </dependency>
-        
+
         <dependency>
-            <groupId>org.ops4j.pax.swissbox</groupId>
-            <artifactId>pax-swissbox-tracker</artifactId>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-api</artifactId>
+            <version>${weld.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
         </dependency>
-        
+
+        <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-finder</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jcdi_1.0_spec</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-atinject_1.0_spec</artifactId>
@@ -68,7 +73,6 @@
         </dependency>
 
     </dependencies>
-    
     <build>
         <plugins>
             <plugin>
@@ -77,12 +81,11 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
-                        <Bundle-Activator>org.ops4j.pax.cdi.impl.Activator</Bundle-Activator>
-                        <Import-Package>org.ops4j.pax.cdi.api,  *</Import-Package>
+                        <Bundle-Activator>${bundle.namespace}.impl.Activator</Bundle-Activator>
+                        <Import-Package>org.jboss.weld.bootstrap, *</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
 </project>

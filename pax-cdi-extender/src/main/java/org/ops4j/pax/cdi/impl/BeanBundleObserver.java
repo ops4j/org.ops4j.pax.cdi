@@ -73,7 +73,6 @@ public class BeanBundleObserver implements BundleObserver<URL> {
         log.info("discovered bean bundle {}_{}", bundle.getSymbolicName(), bundle.getVersion());
 
         final CdiContainer container = containerFactory.createContainer(bundle);
-        container.start();
 
         /*
          * Start the CDI container under a suitable thread context class loader so that the CDI
@@ -82,6 +81,7 @@ public class BeanBundleObserver implements BundleObserver<URL> {
          * TODO Move this to CdiContainer implementation?
          */
         try {
+            container.start();
             doWithClassLoader(container.getContextClassLoader(),
                 new Callable<ServiceRegistration<CdiContainer>>() {
 
@@ -107,6 +107,7 @@ public class BeanBundleObserver implements BundleObserver<URL> {
                 });
         }
         catch (Exception exc) {
+            log.error("", exc);
             throw new Ops4jException(exc);
         }
     }
