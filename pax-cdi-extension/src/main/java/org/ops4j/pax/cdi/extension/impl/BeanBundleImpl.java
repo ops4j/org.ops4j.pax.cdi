@@ -37,6 +37,7 @@ import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.Properties;
 import org.ops4j.pax.cdi.api.Property;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +67,8 @@ public class BeanBundleImpl implements BeanBundle {
     private BeanManager beanManager;
 
     private BundleContext bundleContext;
-
+    
+    
     /**
      * Observes ContainerInitialized event and registers all OSGi service beans published by this
      * bundle.
@@ -94,7 +96,7 @@ public class BeanBundleImpl implements BeanBundle {
         
         Dictionary<String, Object> props = createProperties(klass, service);
         log.debug("publishing service {}, props = {}", typeNames[0], props);
-        bundleContext.registerService(typeNames, service, props);        
+        getBundleContext(klass).registerService(typeNames, service, props);        
     }
 
     private String[] getTypeNamesForTypeClosure(Object service, Class<?> klass,
@@ -137,6 +139,19 @@ public class BeanBundleImpl implements BeanBundle {
     @Override
     public BundleContext getBundleContext() {
         return bundleContext;
+    }
+    
+    private BundleContext getBundleContext(Class<?> klass) {
+        BundleContext bc;
+        try {
+            BundleReference bundleRef = BundleReference.class.cast(klass.getClassLoader());
+            bc = bundleRef.getBundle().getBundleContext();
+            return bc;
+        }
+        catch (ClassCastException exc) {
+            log.error("class " + klass.getName() + " is not loaded from an OSGi bundle");
+            throw exc;
+        }
     }
 
     @Override

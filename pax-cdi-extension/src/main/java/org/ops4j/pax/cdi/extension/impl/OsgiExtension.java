@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.cdi.extension.impl;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
@@ -80,6 +82,7 @@ public class OsgiExtension implements Extension {
         for (InjectionPoint ip : event.getInjectionTarget().getInjectionPoints()) {
             processInjectionPoint(ip);
         }
+        event.setInjectionTarget(new OsgiInjectionTarget<T>(event.getInjectionTarget()));
     }
 
     private void processInjectionPoint(InjectionPoint ip) {
@@ -112,12 +115,17 @@ public class OsgiExtension implements Extension {
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event) {
         log.debug("afterBeanDiscovery");
         for (Type type : typeToIpMap.keySet()) {
-            if (!(type instanceof Class)) {
+            if (isInstance(type)) {
+                // handled by OsgiInjectionTarget
+            }
+            else if (type instanceof Class) {
+                addBean(event, type, typeToIpMap.get(type));
+            }
+            else {
                 String msg = "Instance<T> injection points not yet supported";
                 event.addDefinitionError(new UnsupportedOperationException(msg));
-                return;
+                continue;
             }
-            addBean(event, type, typeToIpMap.get(type));
         }
     }
 
@@ -128,14 +136,27 @@ public class OsgiExtension implements Extension {
             OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
             if (!registeredBeans.contains(qualifier)) {
                 log.debug("adding an OSGi service bean {} for {}", type, ip);
-                if (!qualifier.dynamic() && !InjectionPointOsgiUtils.isServiceAvailable(ip)) {
+
+                if (qualifier.dynamic() || InjectionPointOsgiUtils.isServiceAvailable(ip)) {
+                    event.addBean(new OsgiServiceBean(ip));
+                    registeredBeans.add(qualifier);
+                }
+                else {
                     String msg = "no matching service reference for injection point " + ip;
                     event.addDefinitionError(new ServiceException(msg,
                         ServiceException.UNREGISTERED));
+                    continue;
                 }
-                event.addBean(new OsgiServiceBean(ip));
-                registeredBeans.add(qualifier);
             }
         }
+    }
+
+    private boolean isInstance(Type type) {
+        if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            Class<?> rawType = (Class<?>) parameterizedType.getRawType();
+            return Instance.class.isAssignableFrom(rawType);
+        }
+        return false;
     }
 }

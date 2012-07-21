@@ -17,9 +17,10 @@
  */
 package org.ops4j.pax.cdi.sample1.client;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.ops4j.pax.cdi.api.OsgiService;
@@ -33,7 +34,20 @@ public class IceCreamClient {
     @OsgiService(timeout = 2000, dynamic = true, filter="(flavour=chocolate)")
     private IceCreamService iceCreamService;
 
-    public List<String> getFlavours() {
-        return Collections.singletonList(iceCreamService.getFlavour());
+    @Inject
+    @OsgiService(timeout = 2000, dynamic = true)
+    private Instance<IceCreamService> iceCreamServices;
+    
+
+    public String getFlavour() {
+        return iceCreamService.getFlavour();
+    }
+
+    public List<String> getAllFlavours() {
+        List<String> flavours = new ArrayList<String>();
+        for (IceCreamService service : iceCreamServices) {
+            flavours.add(service.getFlavour());
+        }
+        return flavours;
     }
 }

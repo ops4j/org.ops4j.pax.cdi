@@ -94,7 +94,12 @@ public class WeldProducerAndClientTest {
 
     @Test
     public void checkBeanBundleClient() throws InterruptedException {
-        assertThat(client.getFlavours().size(), is(1));
-        assertThat(client.getFlavours().get(0), is("Chocolate"));
+        assertThat(client.getFlavour(), is("Chocolate"));
+    }
+
+    @Test
+    public void checkMultipleInstances() throws InterruptedException {
+        assertThat(client.getAllFlavours().size(), is(2));
+        assertThat(client.getAllFlavours(), hasItems("Vanilla", "Chocolate"));
     }
 }

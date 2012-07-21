@@ -32,6 +32,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.inject.Singleton;
@@ -189,7 +190,10 @@ public class OpenWebBeansCdiContainer implements CdiContainer {
 
     @Override
     public void start() {
-        createWebBeansContext(extendedBundle);
+        WebBeansContext context = createWebBeansContext(extendedBundle);
+        for (Bean<?> bean : context.getBeanManagerImpl().getBeans()) {
+            logger.debug("  {}", bean);
+        }
     }
 
     @Override

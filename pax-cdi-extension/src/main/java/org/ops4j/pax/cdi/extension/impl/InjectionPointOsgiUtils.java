@@ -57,7 +57,10 @@ public class InjectionPointOsgiUtils {
     }
 
     public static BundleContext getBundleContext(InjectionPoint ip) {
-        Class<?> klass = ip.getMember().getDeclaringClass();
+        return getBundleContext(ip.getMember().getDeclaringClass());
+    }
+
+    public static BundleContext getBundleContext(Class<?> klass) {
         BundleContext bc = null;
         try {
             BundleReference bundleRef = BundleReference.class.cast(klass.getClassLoader());

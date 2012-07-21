@@ -18,6 +18,7 @@
 package org.ops4j.pax.cdi.extension.impl;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
@@ -33,7 +34,7 @@ import org.ops4j.pax.cdi.api.OsgiService;
 import org.osgi.framework.ServiceException;
 
 /**
- * Represents an OSGi service bean. Instances of a bean a proxied to an OSGi services. The services
+ * Represents an OSGi service bean. Instances of a bean are proxied to an OSGi services. The services
  * is looked up per method invocation (dynamic = true) or once on bean instantiation (dynamic =
  * false)
  * 
@@ -71,6 +72,10 @@ public class OsgiServiceBean<T> implements Bean<T> {
     @SuppressWarnings("unchecked")
     @Override
     public Class<T> getBeanClass() {
+        if (type instanceof ParameterizedType) {
+            ParameterizedType ptype = (ParameterizedType) type;
+            return (Class<T>) ptype.getRawType();
+        }
         return (Class<T>) type;
     }
 
@@ -117,5 +122,17 @@ public class OsgiServiceBean<T> implements Bean<T> {
     @Override
     public boolean isNullable() {
         return true;
+    }
+    
+    protected Type getType() {
+        return type;
+    }
+    
+    protected OsgiService getQualifier() {
+        return qualifier;
+    }
+    
+    protected InjectionPoint getInjectionPoint() {
+        return ip;
     }
 }

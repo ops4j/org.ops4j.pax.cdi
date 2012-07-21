@@ -40,6 +40,7 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.ops4j.pax.exam.util.Filter;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
@@ -49,6 +50,7 @@ public class ProducerAndClientTest {
     private CdiContainerFactory containerFactory;
 
     @Inject
+    @Filter(timeout = 10000000)
     private IceCreamClient client;
 
     @Configuration
@@ -96,7 +98,12 @@ public class ProducerAndClientTest {
 
     @Test
     public void checkBeanBundleClient() throws InterruptedException {
-        assertThat(client.getFlavours().size(), is(1));
-        assertThat(client.getFlavours().get(0), is("Chocolate"));
+        assertThat(client.getFlavour(), is("Chocolate"));
+    }
+
+    @Test
+    public void checkMultipleInstances() throws InterruptedException {
+        assertThat(client.getAllFlavours().size(), is(2));
+        assertThat(client.getAllFlavours(), hasItems("Vanilla", "Chocolate"));
     }
 }
