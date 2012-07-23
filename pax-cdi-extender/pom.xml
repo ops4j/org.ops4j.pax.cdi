@@ -10,7 +10,7 @@
     <artifactId>pax-cdi-extender</artifactId>
     <packaging>bundle</packaging>
 
-    <name>OPS4J Pax CDI Portable Extension for OSGi</name>
+    <name>OPS4J Pax CDI Extender for Bean Bundles</name>
 
     <properties>
         <bundle.symbolicName>org.ops4j.pax.cdi.extender</bundle.symbolicName>
