@@ -40,11 +40,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Observes CDI extension bundles, i.e. all bundles representing a CDI portable extension as
  * indicated by a {@code META-INF/services/javax.enterprise.inject.spi.Extension} resource.
- * <p>
- * These bundles must be started before this extender bundle to have any effect. Use start levels to
- * ensure this, if needed.
- * <p>
- * TODO Handle bundle dynamics more flexibly.
  * 
  * @author Harald Wellmann
  * 
