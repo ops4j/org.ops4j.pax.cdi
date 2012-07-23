@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.impl;
+package org.ops4j.pax.cdi.extender.impl;
 
 import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoader;
 
@@ -81,7 +81,7 @@ public class CdiExtender {
         this.bc = bc;
         this.extensionObserver = extensionObserver;
         executor = Executors.newSingleThreadScheduledExecutor();
-        executor.schedule(createContainersTask, 2, TimeUnit.SECONDS);
+        afterQuietPeriod = executor.schedule(createContainersTask, 2, TimeUnit.SECONDS);
     }
     
     public void createCdiContainers() {
