@@ -15,6 +15,8 @@
     <modules>
         <module>pax-cdi-sample1</module>
         <module>pax-cdi-sample1-client</module>
+        <module>pax-cdi-sample1-web</module>
+        <module>pax-cdi-jetty-weld-war</module>
     </modules>
     
 </project>

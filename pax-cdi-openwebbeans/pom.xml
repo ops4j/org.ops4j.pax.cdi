@@ -36,6 +36,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.openwebbeans</groupId>
+            <artifactId>openwebbeans-web</artifactId>
+            <version>${openwebbeans.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-finder</artifactId>
         </dependency>
