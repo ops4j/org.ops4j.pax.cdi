@@ -26,6 +26,7 @@ import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +47,9 @@ public class ServletTest {
 
     @Inject
     private IceCreamClient iceCreamClient;
+    
+    @Inject
+    private ServletContext servletContext;
 
     @Configuration
     public Option[] config() {
@@ -113,7 +117,6 @@ public class ServletTest {
 
     @Test
     public void checkContainers() throws InterruptedException {
-        Thread.sleep(1000000);
         assertThat(containerFactory.getContainers().size(), is(3));
     }
 
