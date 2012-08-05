@@ -19,22 +19,18 @@ package org.ops4j.pax.cdi.test.weld;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.ops4j.pax.cdi.test.weld.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.weld.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.MavenUtils.asInProject;
-
-import java.util.ArrayList;
-import java.util.List;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample1.client.IceCreamClient;
-import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
@@ -51,6 +47,9 @@ public class ServletTest {
 
     @Inject
     private IceCreamClient iceCreamClient;
+    
+    @Inject
+    private ServletContext servletContext;
 
     @Configuration
     public Option[] config() {
@@ -81,20 +80,21 @@ public class ServletTest {
 
             // Pax Web
 
+            systemProperty("org.osgi.service.http.port").value("8181"),
             mavenBundle("org.ops4j.pax.web", "pax-web-spi")
-                .version("2.0.3-SNAPSHOT"),
+                .version("2.1.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-api")
-                .version("2.0.3-SNAPSHOT"),
+                .version("2.1.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-extender-war")
-                .version("2.0.3-SNAPSHOT"),
+                .version("2.1.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard")
-                .version("2.0.3-SNAPSHOT"),
+                .version("2.1.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-jetty")
-                .version("2.0.3-SNAPSHOT"),
+                .version("2.1.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-runtime")
-                .version("2.0.3-SNAPSHOT"),
+                .version("2.1.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-jsp")
-                .version("2.0.3-SNAPSHOT"),
+                .version("2.1.0-SNAPSHOT"),
             mavenBundle("org.eclipse.jdt.core.compiler", "ecj")
                 .version("3.5.1"),
             mavenBundle("org.eclipse.jetty", "jetty-util")
@@ -122,7 +122,7 @@ public class ServletTest {
 
     @Test
     public void checkContainers() throws InterruptedException {
-        assertThat(containerFactory.getContainers().size(), is(2));
+        assertThat(containerFactory.getContainers().size(), is(3));
     }
 
 }
