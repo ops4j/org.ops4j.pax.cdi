@@ -1,10 +1,11 @@
 package org.ops4j.pax.cdi.web.impl;
 
 import org.ops4j.pax.cdi.spi.CdiContainer;
-import org.ops4j.pax.web.service.WebContainerCustomizer;
+import org.ops4j.pax.swissbox.tracker.ReplaceableService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
@@ -13,6 +14,7 @@ public class Activator implements BundleActivator {
     private BundleContext bc;
     private ServiceTracker<CdiContainer, CdiContainer> cdiContainerTracker;
     private CdiWebAppDependencyManager dependencyManager;
+    private ReplaceableService<HttpService> httpService;
 
     @Override
     public void start(BundleContext context) throws Exception {
@@ -23,11 +25,14 @@ public class Activator implements BundleActivator {
         cdiContainerTracker.open();
 
         dependencyManager = new CdiWebAppDependencyManager(bc);
-        bc.registerService(WebContainerCustomizer.class, dependencyManager, null);
+        
+        httpService = new ReplaceableService<HttpService>(bc, HttpService.class, dependencyManager );
+        httpService.start();
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
+        httpService.stop();
         cdiContainerTracker.close();
     }
 

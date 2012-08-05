@@ -5,12 +5,9 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import javax.servlet.ServletContainerInitializer;
-
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.swissbox.tracker.ReplaceableServiceListener;
 import org.ops4j.pax.web.service.WebAppDependencyHolder;
-import org.ops4j.pax.web.service.WebContainerCustomizer;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -19,8 +16,7 @@ import org.osgi.service.http.HttpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CdiWebAppDependencyManager implements ReplaceableServiceListener<HttpService>,
-    WebContainerCustomizer {
+public class CdiWebAppDependencyManager implements ReplaceableServiceListener<HttpService> {
 
     private static Logger logger = LoggerFactory.getLogger(CdiWebAppDependencyManager.class);
     
@@ -57,7 +53,7 @@ public class CdiWebAppDependencyManager implements ReplaceableServiceListener<Ht
             ServiceRegistration<WebAppDependencyHolder> registration = bundleContext
                 .registerService(WebAppDependencyHolder.class, dependencyHolder, props);
             registrations.put(bundleId, registration);
-            logger.info("registered WebAppDependencyHolder for bundle [{}]", bundleId);
+            logger.info("registered WebAppDependencyHolder for bundle [{}]", cdiContainer.getBundle());
         }
     }
 
@@ -98,17 +94,5 @@ public class CdiWebAppDependencyManager implements ReplaceableServiceListener<Ht
         long bundleId = webApp.getBundle().getBundleId();
         unregister(bundleId);
         webApps.remove(bundleId);
-    }
-
-    @Override
-    public ServletContainerInitializer getServletContainerInitializer(Bundle webBundle) {
-        ServiceRegistration<WebAppDependencyHolder> registration = registrations.get(webBundle
-            .getBundleId());
-        if (registration == null) {
-            return null;
-        }
-        ServiceReference<WebAppDependencyHolder> reference = registration.getReference();
-        WebAppDependencyHolder dependencyHolder = bundleContext.getService(reference);
-        return dependencyHolder.getServletContainerInitializer();
     }
 }

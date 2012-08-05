@@ -22,10 +22,7 @@ public class CdiServletContainerInitializer implements ServletContainerInitializ
 
     @Override
     public void onStartup(Set<Class<?>> classes, ServletContext ctx) throws ServletException {
-        // logger.info("customizing ServletContext for {}",
-        // cdiContainer.getBundle().getSymbolicName());
-        logger.info("customizing ServletContext");
-
+        logger.info("customizing ServletContext for {}", cdiContainer.getBundle());
     }
 
 }
