@@ -17,11 +17,11 @@
  */
 package org.ops4j.pax.cdi.extender.impl;
 
-import java.net.URL;
 import java.util.List;
 
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
+import org.ops4j.pax.swissbox.extender.ManifestEntry;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * @author Harald Wellmann
  * 
  */
-public class BeanBundleObserver implements BundleObserver<URL> {
+public class BeanBundleObserver implements BundleObserver<ManifestEntry> {
 
     private static Logger log = LoggerFactory.getLogger(BeanBundleObserver.class);
 
@@ -55,13 +55,13 @@ public class BeanBundleObserver implements BundleObserver<URL> {
      *            {@code beans.xml} resources in this bundle.
      */
     @Override
-    public void addingEntries(final Bundle bundle, List<URL> entries) {
+    public void addingEntries(final Bundle bundle, List<ManifestEntry> entries) {
         log.info("discovered bean bundle {}_{}", bundle.getSymbolicName(), bundle.getVersion());
         extender.createContainer(bundle);
     }
 
     @Override
-    public void removingEntries(Bundle bundle, List<URL> entries) {
+    public void removingEntries(Bundle bundle, List<ManifestEntry> entries) {
         log.info("stopping CDI container of bean bundle {}_{}", bundle.getSymbolicName(),
             bundle.getVersion());
         extender.destroyContainer(bundle);

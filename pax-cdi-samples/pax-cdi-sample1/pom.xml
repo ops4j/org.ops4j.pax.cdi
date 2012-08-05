@@ -46,6 +46,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>org.ops4j.pax.cdi.sample1</Bundle-SymbolicName>
+                        <Pax-ManagedBeans>META-INF/beans.xml</Pax-ManagedBeans>
                     </instructions>
                 </configuration>
             </plugin>

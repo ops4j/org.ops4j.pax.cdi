@@ -113,7 +113,8 @@ public class ServletTest {
 
     @Test
     public void checkContainers() throws InterruptedException {
-        assertThat(containerFactory.getContainers().size(), is(2));
+        Thread.sleep(1000000);
+        assertThat(containerFactory.getContainers().size(), is(3));
     }
 
 }

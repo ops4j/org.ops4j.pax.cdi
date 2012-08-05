@@ -19,8 +19,12 @@ package org.ops4j.pax.cdi.extender.impl;
 
 import java.net.URL;
 
+import org.ops4j.pax.cdi.api.Constants;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
+import org.ops4j.pax.swissbox.extender.BundleManifestScanner;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
+import org.ops4j.pax.swissbox.extender.ManifestEntry;
+import org.ops4j.pax.swissbox.extender.RegexKeyManifestFilter;
 import org.ops4j.pax.swissbox.extender.SynchronousBundleWatcher;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -48,7 +52,7 @@ public class Activator implements BundleActivator {
     private static Logger log = LoggerFactory.getLogger(Activator.class);
 
     /** Bundle watcher for bean bundles. */
-    private SynchronousBundleWatcher<URL> beanBundleWatcher;
+    private SynchronousBundleWatcher<ManifestEntry> beanBundleWatcher;
 
     /** Bundle watcher for CDI extension bundles. */
     private SynchronousBundleWatcher<URL> extensionWatcher;
@@ -71,8 +75,11 @@ public class Activator implements BundleActivator {
         beanBundleObserver = new BeanBundleObserver(cdiExtender);
         extensionWatcher = new SynchronousBundleWatcher<URL>(bc, extensionScanner, extensionObserver);
 
-        BundleURLScanner beanBundleScanner = new BundleURLScanner("META-INF", "beans.xml", false);
-        beanBundleWatcher = new SynchronousBundleWatcher<URL>(bc, beanBundleScanner, beanBundleObserver);
+        RegexKeyManifestFilter filter = new RegexKeyManifestFilter(Constants.MANAGED_BEANS_KEY);
+        BundleManifestScanner beanBundleScanner = new BundleManifestScanner(filter);
+        
+        //BundleURLScanner beanBundleScanner = new BundleURLScanner("META-INF", "beans.xml", false);
+        beanBundleWatcher = new SynchronousBundleWatcher<ManifestEntry>(bc, beanBundleScanner, beanBundleObserver);
 
         extensionWatcher.start();
         beanBundleWatcher.start();
