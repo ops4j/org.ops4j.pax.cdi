@@ -9,6 +9,9 @@
     <groupId>org.ops4j.pax.cdi.samples</groupId>
     <artifactId>pax-cdi-jetty-weld-war</artifactId>
     <packaging>war</packaging>
+    
+    <name>OPS4J Pax CDI WAR Sample for non-OSGi Jetty</name>
+    
     <dependencies>
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
