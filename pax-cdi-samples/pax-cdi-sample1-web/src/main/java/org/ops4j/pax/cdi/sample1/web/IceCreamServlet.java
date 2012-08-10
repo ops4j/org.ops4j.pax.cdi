@@ -2,6 +2,7 @@ package org.ops4j.pax.cdi.sample1.web;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,6 +15,8 @@ public class IceCreamServlet extends HttpServlet {
     
     private static final long serialVersionUID = 1L;
 
+    @Inject
+    private MessageService messageService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -24,6 +27,6 @@ public class IceCreamServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
         IOException {
-        resp.getOutputStream().println("Hello Pax Web!");
+        resp.getOutputStream().println(messageService.getMessage());
     }
 }
