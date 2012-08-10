@@ -86,4 +86,11 @@ public interface CdiContainer {
      * @return context class loader associated to this container
      */
     ClassLoader getContextClassLoader();
+    
+    /**
+     * Return an implementation object wrapped by this container.
+     * @param wrappedClass
+     * @return
+     */
+    <T> T unwrap(Class<T> wrappedClass);
 }

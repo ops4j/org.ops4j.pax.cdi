@@ -234,4 +234,15 @@ public class WeldCdiContainer implements CdiContainer {
     public ClassLoader getContextClassLoader() {
         return contextClassLoader;
     }
+
+	@Override
+	public <T> T unwrap(Class<T> wrappedClass) {
+		if (wrappedClass.isAssignableFrom(WeldBootstrap.class)) {
+			return wrappedClass.cast(bootstrap);
+		}
+		if (wrappedClass.isAssignableFrom(BeanManagerImpl.class)) {
+			return wrappedClass.cast(manager);
+		}
+		return null;
+	}
 }
