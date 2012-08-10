@@ -4,6 +4,7 @@ import java.util.Set;
 
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 
 import org.ops4j.pax.cdi.spi.CdiContainer;
@@ -16,13 +17,18 @@ public class CdiServletContainerInitializer implements ServletContainerInitializ
 
     private CdiContainer cdiContainer;
 
-    public CdiServletContainerInitializer(CdiContainer cdiContainer) {
+	private ServletContextListener servletContextListener;
+
+    public CdiServletContainerInitializer(CdiContainer cdiContainer, ServletContextListener servletContextListener) {
         this.cdiContainer = cdiContainer;
+        this.servletContextListener = servletContextListener;
     }
 
     @Override
     public void onStartup(Set<Class<?>> classes, ServletContext ctx) throws ServletException {
-        logger.info("customizing ServletContext for {}", cdiContainer.getBundle());
+        logger.info("storing CdiContainer in ServletContext for [{}]", cdiContainer.getBundle());
+        ctx.setAttribute("org.ops4j.pax.cdi.container", cdiContainer);
+        ctx.addListener(servletContextListener);
     }
 
 }

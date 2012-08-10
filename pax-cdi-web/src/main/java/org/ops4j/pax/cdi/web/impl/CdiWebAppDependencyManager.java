@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import javax.servlet.ServletContextListener;
+
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.swissbox.tracker.ReplaceableServiceListener;
 import org.ops4j.pax.web.service.WebAppDependencyHolder;
@@ -26,9 +28,11 @@ public class CdiWebAppDependencyManager implements ReplaceableServiceListener<Ht
 		new HashMap<Long, ServiceRegistration<WebAppDependencyHolder>>();
 	private Map<Long, CdiContainer> webApps = new HashMap<Long, CdiContainer>();
 	private HttpService httpService;
+	private ServletContextListener servletContextListener;
 
-	public CdiWebAppDependencyManager(BundleContext bundleContext) {
+	public CdiWebAppDependencyManager(BundleContext bundleContext, ServletContextListener listener) {
 		this.bundleContext = bundleContext;
+		this.servletContextListener = listener;
 	}
 
 	@Override
@@ -47,7 +51,7 @@ public class CdiWebAppDependencyManager implements ReplaceableServiceListener<Ht
 
 			HttpService webAppHttpService = getProxiedHttpService(bundleId);
 			CdiServletContainerInitializer initializer = new CdiServletContainerInitializer(
-				cdiContainer);
+				cdiContainer, servletContextListener);
 			WebAppDependencyHolder dependencyHolder = new CdiWebAppDependencyHolder(
 				webAppHttpService, initializer);
 			Dictionary<String, String> props = new Hashtable<String, String>();
