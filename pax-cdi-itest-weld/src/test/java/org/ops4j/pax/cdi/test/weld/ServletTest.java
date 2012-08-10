@@ -58,13 +58,17 @@ public class ServletTest {
 
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1"),
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1-client"),
+            
+            // doesn't work for WABs
             //workspaceBundle("pax-cdi-samples/pax-cdi-sample1-web"),
             mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", "0.2.0-SNAPSHOT"),
+            
             workspaceBundle("pax-cdi-extender"),
             workspaceBundle("pax-cdi-extension"),
             workspaceBundle("pax-cdi-api"),
             workspaceBundle("pax-cdi-spi"),
             workspaceBundle("pax-cdi-web"),
+            workspaceBundle("pax-cdi-web-weld"),
             workspaceBundle("pax-cdi-weld"),
 
             mavenBundle("org.slf4j", "slf4j-ext", "1.6.4"),
@@ -73,7 +77,10 @@ public class ServletTest {
             mavenBundle("org.apache.xbean", "xbean-finder").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec")
                 .versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
+            
+            // also in pax-web-jsp:    
+            // mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
+            
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm")
                 .versionAsInProject(), //
             mavenBundle("org.jboss.weld", "weld-osgi-bundle", "1.2.0-SNAPSHOT"),

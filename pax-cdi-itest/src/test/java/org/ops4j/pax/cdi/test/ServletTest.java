@@ -58,7 +58,10 @@ public class ServletTest {
 
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1"),
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1-client"),
+            
+            // doesn't work for WABs
             // workspaceBundle("pax-cdi-samples/pax-cdi-sample1-web"),
+            
             mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", "0.2.0-SNAPSHOT"),
             workspaceBundle("pax-cdi-extender"),
             workspaceBundle("pax-cdi-extension"),
