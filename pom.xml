@@ -16,7 +16,7 @@
 
     <properties>
         <logback.version>1.0.0</logback.version>
-        <openwebbeans.version>1.1.5-SNAPSHOT</openwebbeans.version>
+        <openwebbeans.version>1.1.5</openwebbeans.version>
         <pax.exam.version>3.0.0.M3</pax.exam.version>
         <pax.swissbox.version>1.5.1</pax.swissbox.version>
         <pax.url.version>1.4.0</pax.url.version>
@@ -42,7 +42,6 @@
         <module>pax-cdi-itest</module>
         <module>pax-cdi-extension</module>
         <module>pax-cdi-api</module>
-        <module>pax-cdi-web</module>
     </modules>
 
     <profiles>
@@ -52,6 +51,31 @@
                 <module>pax-cdi-weld</module>
                 <module>pax-cdi-itest-weld</module>
             </modules>
+        </profile>
+        <profile>
+            <id>web</id>
+            <modules>
+                <module>pax-cdi-web</module>
+                <module>pax-cdi-web-weld</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>owb-staging</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>apache_nexus_staging</id>
+                    <url>https://repository.apache.org/content/repositories/orgapacheopenwebbeans-126/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
         </profile>
     </profiles>
 
