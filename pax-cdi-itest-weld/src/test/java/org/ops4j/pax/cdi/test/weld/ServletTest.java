@@ -98,19 +98,19 @@ public class ServletTest {
 
             systemProperty("org.osgi.service.http.port").value("8181"),
             mavenBundle("org.ops4j.pax.web", "pax-web-spi")
-                .version("2.1.0-SNAPSHOT"),
+                .version("3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-api")
-                .version("2.1.0-SNAPSHOT"),
+                .version("3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-extender-war")
-                .version("2.1.0-SNAPSHOT"),
+                .version("3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard")
-                .version("2.1.0-SNAPSHOT"),
+                .version("3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-jetty")
-                .version("2.1.0-SNAPSHOT"),
+                .version("3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-runtime")
-                .version("2.1.0-SNAPSHOT"),
+                .version("3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-jsp")
-                .version("2.1.0-SNAPSHOT"),
+                .version("3.0.0-SNAPSHOT"),
             mavenBundle("org.eclipse.jdt.core.compiler", "ecj")
                 .version("3.5.1"),
             mavenBundle("org.eclipse.jetty", "jetty-util")
