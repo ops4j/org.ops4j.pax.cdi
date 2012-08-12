@@ -38,6 +38,9 @@ import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class ServletTest {
@@ -69,6 +72,7 @@ public class ServletTest {
             workspaceBundle("pax-cdi-spi"),
             workspaceBundle("pax-cdi-web"),
             workspaceBundle("pax-cdi-openwebbeans"),
+            workspaceBundle("pax-cdi-web-openwebbeans"),
 
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
@@ -112,6 +116,8 @@ public class ServletTest {
             mavenBundle("org.eclipse.jetty", "jetty-xml").version("8.1.4.v20120524"),
             mavenBundle("org.eclipse.jetty", "jetty-servlet").version("8.1.4.v20120524"),
             mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec").version("1.0"),
+            mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
+            mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
             mavenBundle("org.osgi", "org.osgi.compendium", "4.3.0")
 
         );
@@ -121,6 +127,9 @@ public class ServletTest {
     @Test
     public void checkContainers() throws InterruptedException {
         assertThat(containerFactory.getContainers().size(), is(3));
+        Client client = Client.create();
+        WebResource resource = client.resource("http://localhost:8181/ice/flavours");
+        assertThat(resource.get(String.class), is("Message from managed bean\r\n"));
     }
 
 }

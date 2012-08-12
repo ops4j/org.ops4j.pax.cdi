@@ -58,6 +58,7 @@
             <modules>
                 <module>pax-cdi-web</module>
                 <module>pax-cdi-web-weld</module>
+                <module>pax-cdi-web-openwebbeans</module>
             </modules>
         </profile>
         <profile>
@@ -248,6 +249,12 @@
             <dependency>
                 <groupId>org.apache.openwebbeans</groupId>
                 <artifactId>openwebbeans-impl</artifactId>
+                <version>${openwebbeans.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.openwebbeans</groupId>
+                <artifactId>openwebbeans-web</artifactId>
                 <version>${openwebbeans.version}</version>
             </dependency>
 
