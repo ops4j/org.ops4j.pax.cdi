@@ -18,6 +18,7 @@
 package org.ops4j.pax.cdi.test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
@@ -125,11 +126,33 @@ public class ServletTest {
     }
 
     @Test
-    public void checkContainers() throws InterruptedException {
+    public void checkContainers() {
         assertThat(containerFactory.getContainers().size(), is(3));
+    }
+
+    @Test
+    public void servletInjection() {
         Client client = Client.create();
-        WebResource resource = client.resource("http://localhost:8181/ice/flavours");
+        WebResource resource = client.resource("http://localhost:8181/sample1/message");
         assertThat(resource.get(String.class), is("Message from managed bean\r\n"));
+    }
+
+    @Test
+    public void servletInjectionWithRequestScope() {
+        Client client = Client.create();
+        WebResource resource = client.resource("http://localhost:8181/sample1/random");
+        String id1 = resource.get(String.class);
+        String id2 = resource.get(String.class);
+        assertThat(id1, not(id2));
+    }
+
+    @Test
+    public void servletInjectionWithApplicationScope() {
+        Client client = Client.create();
+        WebResource resource = client.resource("http://localhost:8181/sample1/applId");
+        String id1 = resource.get(String.class);
+        String id2 = resource.get(String.class);
+        assertThat(id1, is(id2));
     }
 
 }

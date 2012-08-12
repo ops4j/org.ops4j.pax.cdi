@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = "/flavours")
-public class IceCreamServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/message")
+public class MessageServlet extends HttpServlet {
     
     private static final long serialVersionUID = 1L;
 
@@ -25,8 +25,10 @@ public class IceCreamServlet extends HttpServlet {
 
     
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,    
         IOException {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        System.out.println(cl);
         resp.getOutputStream().println(messageService.getMessage());
     }
 }

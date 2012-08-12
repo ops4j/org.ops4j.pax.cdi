@@ -45,7 +45,6 @@ import org.apache.xbean.osgi.bundle.util.BundleClassLoader;
 import org.apache.xbean.osgi.bundle.util.DelegatingBundle;
 import org.ops4j.lang.Ops4jException;
 import org.ops4j.pax.cdi.spi.CdiContainer;
-import org.ops4j.pax.swissbox.lifecycle.Lifecycle;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +89,7 @@ public class OpenWebBeansCdiContainer implements CdiContainer {
      */
     private InstanceManager instanceManager;
 
-	private WebBeansContext context;
+    private WebBeansContext context;
 
     /**
      * Construct a CDI container for the given extended bundle.
@@ -232,16 +231,16 @@ public class OpenWebBeansCdiContainer implements CdiContainer {
     public ClassLoader getContextClassLoader() {
         return contextClassLoader;
     }
-    
-	@Override
-	public <T> T unwrap(Class<T> wrappedClass) {
-		if (wrappedClass.isAssignableFrom(WebBeansContext.class)) {
-			return wrappedClass.cast(context);
-		}
-		if (wrappedClass.isAssignableFrom(Lifecycle.class)) {
-			return wrappedClass.cast(lifecycle);
-		}
-		return null;
-	}
-    
+
+    @Override
+    public <T> T unwrap(Class<T> wrappedClass) {
+        if (wrappedClass.isAssignableFrom(WebBeansContext.class)) {
+            return wrappedClass.cast(context);
+        }
+        if (wrappedClass.isAssignableFrom(ContainerLifecycle.class)) {
+            return wrappedClass.cast(lifecycle);
+        }
+        return null;
+    }
+
 }

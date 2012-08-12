@@ -15,6 +15,11 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jcdi_1.0_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-atinject_1.0_spec</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -36,7 +41,7 @@
                         <_wab>src/main/webapp/</_wab>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
-                        <Web-ContextPath>ice</Web-ContextPath>
+                        <Web-ContextPath>sample1</Web-ContextPath>
                         <Pax-ManagedBeans>WEB-INF/beans.xml</Pax-ManagedBeans>
                     </instructions>
                 </configuration>
