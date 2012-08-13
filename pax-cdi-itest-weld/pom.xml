@@ -182,6 +182,14 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.13</version>
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
 
     <build>
@@ -269,22 +277,9 @@
 
                 <dependency>
                     <groupId>org.ops4j.pax.web</groupId>
-                    <artifactId>pax-web-jetty</artifactId>
-                    <version>${pax.web.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.ops4j.pax.web</groupId>
                     <artifactId>pax-web-runtime</artifactId>
                     <version>${pax.web.version}</version>
                     <scope>provided</scope>
-                </dependency>
-                
-                <dependency>
-                    <groupId>com.sun.jersey</groupId>
-                    <artifactId>jersey-client</artifactId>
-                    <version>1.13</version>
                 </dependency>
 
             </dependencies>
