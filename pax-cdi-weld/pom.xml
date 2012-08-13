@@ -11,7 +11,7 @@
     <artifactId>pax-cdi-weld</artifactId>
     <packaging>bundle</packaging>
   
-    <name>OPS4j Pax CDI Weld Adapter</name>
+    <name>OPS4J Pax CDI Weld Adapter</name>
   
     <properties>
         <bundle.symbolicName>org.ops4j.pax.cdi.weld</bundle.symbolicName>
