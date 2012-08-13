@@ -223,7 +223,7 @@
 
     <profiles>
         <profile>
-            <id>weld</id>
+            <id>web</id>
             <dependencies>
                 
                 <!-- for debugging -->
