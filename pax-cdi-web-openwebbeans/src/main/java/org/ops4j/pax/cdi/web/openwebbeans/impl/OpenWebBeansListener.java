@@ -17,7 +17,10 @@
  */
 package org.ops4j.pax.cdi.web.openwebbeans.impl;
 
+import javassist.util.proxy.ProxyFactory;
+
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -31,6 +34,8 @@ import org.apache.webbeans.component.InjectionPointBean;
 import org.apache.webbeans.config.WebBeansContext;
 import org.apache.webbeans.el.ELContextStore;
 import org.apache.webbeans.spi.ContainerLifecycle;
+import org.apache.webbeans.util.OpenWebBeansClassLoaderProvider;
+import org.apache.webbeans.util.WebBeansUtil;
 import org.apache.webbeans.web.context.WebContextsService;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.Injector;
@@ -58,6 +63,8 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
         Injector injector = new Injector(manager);
         context.setAttribute(JettyDecorator.INJECTOR_KEY, injector);
         JettyDecorator.register(context);
+        
+        WebBeansUtil.initProxyFactoryClassLoaderProvider();
     }
 
     @Override
@@ -67,15 +74,15 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
     }
 
     @Override
-    public void sessionCreated(HttpSessionEvent se) {
+    public void sessionCreated(HttpSessionEvent event) {
         log.info("session created");
-        // TODO
+        lifecycle.getContextService().startContext(SessionScoped.class, event);
     }
 
     @Override
-    public void sessionDestroyed(HttpSessionEvent se) {
+    public void sessionDestroyed(HttpSessionEvent event) {
         log.info("session destroyed");
-        // TODO
+        lifecycle.getContextService().endContext(SessionScoped.class, event);
     }
 
     @Override
@@ -108,8 +115,10 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
     public void requestInitialized(ServletRequestEvent event) {
         log.info("request initialized");
 
-        contextClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(cdiContainer.getContextClassLoader());
+        // don't use TCCL for Javassist proxies
+        WebBeansUtil.initProxyFactoryClassLoaderProvider();
+        ((OpenWebBeansClassLoaderProvider)ProxyFactory.classLoaderProvider).reset();
+        
         lifecycle.getContextService().startContext(RequestScoped.class, event);
     }
 }
