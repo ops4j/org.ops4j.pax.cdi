@@ -91,7 +91,7 @@ public class TestConfiguration {
             systemProperty("osgi.console").value("6666"), 
             
             systemProperty("eclipse.consoleLog").value("true"), 
-            systemTimeout(3000000),
+            systemTimeout(2000000),
             junitBundles());
     }
 
