@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>cdi</artifactId>
@@ -141,6 +142,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-apache-client</artifactId>
+            <version>1.13</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-atinject_1.0_spec</artifactId>
             <scope>provided</scope>
@@ -212,9 +219,6 @@
                     <systemPropertyVariables>
                         <java.util.logging.config.file>src/test/resources/logging.properties</java.util.logging.config.file>
                     </systemPropertyVariables>
-                    <excludes>
-                        <exclude>**/ServletTest.java</exclude>
-                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
@@ -224,7 +228,21 @@
         <profile>
             <id>web</id>
             <dependencies>
-                
+
+                <dependency>
+                    <groupId>org.ops4j.pax.cdi</groupId>
+                    <artifactId>pax-cdi-web</artifactId>
+                    <version>${project.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.ops4j.pax.cdi</groupId>
+                    <artifactId>pax-cdi-web-openwebbeans</artifactId>
+                    <version>${project.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+
                 <!-- for debugging -->
                 <dependency>
                     <groupId>org.ops4j.pax.web</groupId>

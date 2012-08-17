@@ -15,11 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.sample1;
+package org.ops4j.pax.cdi.sample1.impl;
 
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.Properties;
 import org.ops4j.pax.cdi.api.Property;
+import org.ops4j.pax.cdi.sample1.Chocolate;
+import org.ops4j.pax.cdi.sample1.IceCreamService;
 
 @Chocolate
 @OsgiServiceProvider

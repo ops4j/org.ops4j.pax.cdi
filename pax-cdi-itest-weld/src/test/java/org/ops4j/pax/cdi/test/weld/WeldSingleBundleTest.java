@@ -35,9 +35,8 @@ import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample1.Chocolate;
-import org.ops4j.pax.cdi.sample1.ChocolateService;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
-import org.ops4j.pax.cdi.sample1.VanillaService;
+import org.ops4j.pax.cdi.sample1.impl.ChocolateService;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
@@ -130,13 +129,13 @@ public class WeldSingleBundleTest {
     
     @Test
     public void vanillaIsRegisteredByClassAndInterface() throws InvalidSyntaxException {
-        assertThat(bc.getServiceReference(VanillaService.class), is(notNullValue()));
+        assertThat(bc.getServiceReference("org.ops4j.pax.cdi.sample1.impl.VanillaService"), is(notNullValue()));
         assertThat(bc.getServiceReferences(IceCreamService.class, "(flavour=vanilla)").isEmpty(), is(false));
     }
 
     @Test
     public void chocolateIsRegisteredByInterfaceOnly() throws InvalidSyntaxException {
-        assertThat(bc.getServiceReference(ChocolateService.class), is(nullValue()));
+        assertThat(bc.getServiceReference("org.ops4j.pax.cdi.sample1.impl.ChocolateService"), is(nullValue()));
         assertThat(bc.getServiceReferences(IceCreamService.class, "(flavour=chocolate)").isEmpty(), is(false));
     }
     

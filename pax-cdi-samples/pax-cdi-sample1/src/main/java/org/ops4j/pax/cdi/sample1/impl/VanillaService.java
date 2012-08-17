@@ -15,19 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.sample1;
+package org.ops4j.pax.cdi.sample1.impl;
 
 import javax.enterprise.inject.Default;
 
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.Properties;
 import org.ops4j.pax.cdi.api.Property;
+import org.ops4j.pax.cdi.sample1.IceCreamService;
+import org.ops4j.pax.cdi.sample1.Vanilla;
 
 @Vanilla
 @Default
 @OsgiServiceProvider(classes = { VanillaService.class, IceCreamService.class })
 @Properties(@Property(name = "flavour", value = "vanilla"))
-public class VanillaService implements IceCreamService {
+class VanillaService implements IceCreamService {
 
     public String getFlavour() {
         return "Vanilla";

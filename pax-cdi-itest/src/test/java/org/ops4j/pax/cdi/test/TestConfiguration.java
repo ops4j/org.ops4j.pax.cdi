@@ -30,6 +30,7 @@ import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
 import static org.ops4j.pax.exam.CoreOptions.url;
 
 import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.options.UrlProvisionOption;
 import org.ops4j.pax.exam.util.PathUtils;
 
 /**
@@ -65,9 +66,8 @@ public class TestConfiguration {
                 START_LEVEL_SYSTEM_BUNDLES),
             url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.core.link").startLevel(
                 START_LEVEL_SYSTEM_BUNDLES),
-//            url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.extender.link").startLevel(
-//                START_LEVEL_SYSTEM_BUNDLES),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-extender", "1.5.1").startLevel(START_LEVEL_SYSTEM_BUNDLES),    
+            url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.extender.link").startLevel(
+                START_LEVEL_SYSTEM_BUNDLES),
             url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.lifecycle.link").startLevel(
                 START_LEVEL_SYSTEM_BUNDLES),
             url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.framework.link").startLevel(
@@ -95,7 +95,7 @@ public class TestConfiguration {
             junitBundles());
     }
 
-    public static Option workspaceBundle(String pathFromRoot) {
+    public static UrlProvisionOption workspaceBundle(String pathFromRoot) {
         String url = String.format("reference:file:%s/../%s/target/classes",
             PathUtils.getBaseDir(), pathFromRoot);
         return bundle(url);

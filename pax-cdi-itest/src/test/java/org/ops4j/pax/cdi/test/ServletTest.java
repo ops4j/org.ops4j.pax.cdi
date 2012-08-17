@@ -29,6 +29,7 @@ import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample1.client.IceCreamClient;
@@ -38,13 +39,20 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.osgi.framework.BundleContext;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.client.apache.ApacheHttpClient;
+import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
+import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class ServletTest {
+	
+	@Inject
+	private BundleContext bc;
 
     @Inject
     private CdiContainerFactory containerFactory;
@@ -66,19 +74,19 @@ public class ServletTest {
             // doesn't work for WABs
             // workspaceBundle("pax-cdi-samples/pax-cdi-sample1-web"),
             
-            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", "0.2.0-SNAPSHOT"),
+            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", "0.3.0-SNAPSHOT"),
             workspaceBundle("pax-cdi-extender"),
             workspaceBundle("pax-cdi-extension"),
             workspaceBundle("pax-cdi-api"),
             workspaceBundle("pax-cdi-spi"),
             workspaceBundle("pax-cdi-web"),
-            workspaceBundle("pax-cdi-openwebbeans"),
+            workspaceBundle("pax-cdi-openwebbeans").startLevel(2),
             workspaceBundle("pax-cdi-web-openwebbeans"),
 
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-web").version("1.1.5-SNAPSHOT"),
+            mavenBundle("org.apache.openwebbeans", "openwebbeans-web").version("1.1.5"),
 
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.javassist")
                 .versionAsInProject(),
@@ -102,7 +110,7 @@ public class ServletTest {
             systemProperty("org.osgi.service.http.port").value("8181"),
             mavenBundle("org.ops4j.pax.web", "pax-web-spi").version("3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-api").version("3.0.0-SNAPSHOT"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version("3.0.0-SNAPSHOT"),
+            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version("3.0.0-SNAPSHOT").startLevel(10),
             mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard").version("3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-jetty").version("3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-runtime").version("3.0.0-SNAPSHOT"),
@@ -119,6 +127,10 @@ public class ServletTest {
             mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec").version("1.0"),
             mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
             mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
+            mavenBundle("com.sun.jersey.contribs", "jersey-apache-client").version("1.13"),
+            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.commons-httpclient", "3.1_7"),
+            mavenBundle("commons-codec", "commons-codec", "1.6"),
+            mavenBundle("org.slf4j", "jcl-over-slf4j", "1.6.0"),
             mavenBundle("org.osgi", "org.osgi.compendium", "4.3.0")
 
         );
@@ -155,4 +167,18 @@ public class ServletTest {
         assertThat(id1, is(id2));
     }
 
+    @Test  @Ignore
+    public void servletInjectionWithSessionScope() throws InterruptedException {
+        DefaultApacheHttpClientConfig config = new DefaultApacheHttpClientConfig();
+        config.getProperties().put(ApacheHttpClientConfig.PROPERTY_HANDLE_COOKIES, true);
+        Client client = ApacheHttpClient.create(config);
+        WebResource resource = client.resource("http://localhost:8181/sample1/session");
+        String text = resource.get(String.class);
+        assertThat(text, is("It worked!\n"));
+        
+        resource = client.resource("http://localhost:8181/sample1/timestamp");
+        String timestamp1 = resource.get(String.class);
+        String timestamp2 = resource.get(String.class);
+        assertThat(timestamp1, is(timestamp2));
+    }    
 }
