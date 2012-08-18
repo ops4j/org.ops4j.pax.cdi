@@ -38,7 +38,6 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import javax.inject.Singleton;
 
 import org.apache.webbeans.config.WebBeansContext;
-import org.apache.webbeans.context.ContextFactory;
 import org.apache.webbeans.spi.ContainerLifecycle;
 import org.apache.webbeans.spi.ContextsService;
 import org.apache.xbean.osgi.bundle.util.BundleClassLoader;
@@ -157,13 +156,12 @@ public class OpenWebBeansCdiContainer implements CdiContainer {
      * @param webBeansContext
      */
     private void startContexts(WebBeansContext webBeansContext) {
-        ContextFactory contextFactory = webBeansContext.getContextFactory();
-
-        contextFactory.initSingletonContext(null);
-        contextFactory.initApplicationContext(null);
-        contextFactory.initSessionContext(null);
-        contextFactory.initConversationContext(null);
-        contextFactory.initRequestContext(null);
+        ContextsService contextService = lifecycle.getContextService();
+        contextService.startContext(RequestScoped.class, null);
+        contextService.startContext(ConversationScoped.class, null);
+        contextService.startContext(SessionScoped.class, null);
+        contextService.startContext(ApplicationScoped.class, null);
+        contextService.startContext(Singleton.class, null);
     }
 
     /**
