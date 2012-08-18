@@ -108,7 +108,7 @@ public class OpenWebBeansCdiContainer implements CdiContainer {
         this.extensionBundles = extensionBundles;
     }
 
-    /**
+	/**
      * Creates and starts a WebBeansContext for the given bundle using an appropriate class loader
      * as TCCL.
      * 
@@ -185,7 +185,7 @@ public class OpenWebBeansCdiContainer implements CdiContainer {
     public void stop() {
         logger.debug("OpenWebBeans CDI container is shutting down for bundle {}", extendedBundle);
         stopContexts();
-        lifecycle.stopApplication(null);
+        lifecycle.stopApplication(contextClassLoader);
     }
 
     @Override

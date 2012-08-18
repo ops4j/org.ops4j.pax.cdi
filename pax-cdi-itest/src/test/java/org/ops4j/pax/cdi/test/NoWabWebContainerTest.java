@@ -18,55 +18,50 @@
 package org.ops4j.pax.cdi.test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.ops4j.pax.cdi.test.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
-import javax.servlet.ServletContext;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.ops4j.pax.cdi.sample1.client.IceCreamClient;
+import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.osgi.framework.BundleContext;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.client.apache.ApacheHttpClient;
-import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
-import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
+import org.ops4j.pax.exam.util.Filter;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class ServletTest {
-	
-	@Inject
-	private BundleContext bc;
+public class NoWabWebContainerTest {
 
     @Inject
     private CdiContainerFactory containerFactory;
 
     @Inject
-    private ServletContext servletContext;
+    @Filter
+    private IceCreamClient client;
 
     @Configuration
     public Option[] config() {
         return options(
-            regressionDefaults(),
-
-            // doesn't work for WABs
-            // workspaceBundle("pax-cdi-samples/pax-cdi-sample1-web"),
+        	regressionDefaults(),
+        	
+            workspaceBundle("pax-cdi-samples/pax-cdi-sample1"),
+            workspaceBundle("pax-cdi-samples/pax-cdi-sample1-client"),
             
-            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", "0.3.0-SNAPSHOT"),
             workspaceBundle("pax-cdi-extender"),
             workspaceBundle("pax-cdi-extension"),
             workspaceBundle("pax-cdi-api"),
@@ -102,7 +97,7 @@ public class ServletTest {
             systemProperty("org.osgi.service.http.port").value("8181"),
             mavenBundle("org.ops4j.pax.web", "pax-web-spi").version("3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-api").version("3.0.0-SNAPSHOT"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version("3.0.0-SNAPSHOT").startLevel(10),
+            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version("3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard").version("3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-jetty").version("3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-runtime").version("3.0.0-SNAPSHOT"),
@@ -124,62 +119,30 @@ public class ServletTest {
             mavenBundle("commons-codec", "commons-codec", "1.6"),
             mavenBundle("org.slf4j", "jcl-over-slf4j", "1.6.0"),
             mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.4.0")
-        );
-
+            );
     }
 
     @Test
-    public void checkContainers() {
-        assertThat(containerFactory.getContainers().size(), is(1));
+    public void checkContainers() throws InterruptedException {
+        assertThat(containerFactory.getProviderName(), is("org.apache.webbeans.context.WebBeansContext"));
+        assertThat(containerFactory.getContainers().size(), is(2));
+        List<String> beanBundles = new ArrayList<String>();
+        for (CdiContainer container : containerFactory.getContainers()) {
+            beanBundles.add(container.getBundle().getSymbolicName());
+        }
+        assertThat(beanBundles,
+            hasItems("org.ops4j.pax.cdi.sample1", "org.ops4j.pax.cdi.sample1.client"));
+        assertThat(beanBundles.size(), is(2));
     }
 
     @Test
-    public void servletInjection() {
-        Client client = Client.create();
-        WebResource resource = client.resource("http://localhost:8181/sample1/message");
-        assertThat(resource.get(String.class), is("Message from managed bean\r\n"));
+    public void checkBeanBundleClient() throws InterruptedException {
+        assertThat(client.getFlavour(), is("Chocolate"));
     }
 
     @Test
-    public void servletInjectionWithRequestScope() {
-        Client client = Client.create();
-        WebResource resource = client.resource("http://localhost:8181/sample1/random");
-        String id1 = resource.get(String.class);
-        String id2 = resource.get(String.class);
-        assertThat(id1, not(id2));
+    public void checkMultipleInstances() throws InterruptedException {
+        assertThat(client.getAllFlavours().size(), is(2));
+        assertThat(client.getAllFlavours(), hasItems("Vanilla", "Chocolate"));
     }
-
-    @Test
-    public void servletInjectionWithApplicationScope() {
-        Client client = Client.create();
-        WebResource resource = client.resource("http://localhost:8181/sample1/applId");
-        String id1 = resource.get(String.class);
-        String id2 = resource.get(String.class);
-        assertThat(id1, is(id2));
-    }
-
-    @Test
-    public void servletInjectionWithSessionScope() throws InterruptedException {
-        DefaultApacheHttpClientConfig config = new DefaultApacheHttpClientConfig();
-        config.getProperties().put(ApacheHttpClientConfig.PROPERTY_HANDLE_COOKIES, true);
-        Client client = ApacheHttpClient.create(config);
-        WebResource resource = client.resource("http://localhost:8181/sample1/session");
-        String text = resource.get(String.class);
-        assertThat(text, is("It worked!\n"));
-
-        resource = client.resource("http://localhost:8181/sample1/timestamp");
-        String timestamp1 = resource.get(String.class);
-        
-        Client client2 = ApacheHttpClient.create(config);
-        WebResource resource2 = client2.resource("http://localhost:8181/sample1/timestamp");
-        String timestamp3 = resource2.get(String.class);
-        assertThat(timestamp3, is(not(timestamp1)));
-
-        String timestamp2 = resource.get(String.class);
-        assertThat(timestamp1, is(timestamp2));
-
-        String timestamp4 = resource2.get(String.class);
-        assertThat(timestamp4, is(timestamp3));
-    
-    }    
 }

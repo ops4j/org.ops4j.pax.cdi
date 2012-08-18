@@ -47,14 +47,12 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
     private static Logger log = LoggerFactory.getLogger(OpenWebBeansListener.class);
     private ContainerLifecycle lifecycle;
     private WebBeansContext webBeansContext;
-    private ClassLoader contextClassLoader;
     private CdiContainer cdiContainer;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext context = sce.getServletContext();
-        cdiContainer = (CdiContainer) context
-            .getAttribute("org.ops4j.pax.cdi.container");
+        cdiContainer = (CdiContainer) context.getAttribute("org.ops4j.pax.cdi.container");
 
         webBeansContext = cdiContainer.unwrap(WebBeansContext.class);
         lifecycle = cdiContainer.unwrap(ContainerLifecycle.class);
@@ -65,6 +63,8 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
         JettyDecorator.register(context);
         
         WebBeansUtil.initProxyFactoryClassLoaderProvider();
+
+        context.setAttribute(BeanManager.class.getName(), manager);
     }
 
     @Override
@@ -75,19 +75,19 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
 
     @Override
     public void sessionCreated(HttpSessionEvent event) {
-        log.info("session created");
-        lifecycle.getContextService().startContext(SessionScoped.class, event);
+        log.debug("session created");
+        lifecycle.getContextService().startContext(SessionScoped.class, event.getSession());
     }
 
     @Override
     public void sessionDestroyed(HttpSessionEvent event) {
-        log.info("session destroyed");
-        lifecycle.getContextService().endContext(SessionScoped.class, event);
+        log.debug("session destroyed");
+        lifecycle.getContextService().endContext(SessionScoped.class, event.getSession());
     }
 
     @Override
     public void requestDestroyed(ServletRequestEvent event) {
-        log.info("request destroyed");
+        log.debug("request destroyed");
         ELContextStore elStore = ELContextStore.getInstance(false);
         if (elStore != null)
         {
@@ -97,13 +97,8 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
         lifecycle.getContextService().endContext(RequestScoped.class, event);
 
         cleanupRequestThreadLocals();
-        Thread.currentThread().setContextClassLoader(contextClassLoader);
     }
     
-    /**
-     * Ensures that all ThreadLocals, which could have been set in this
-     * requests Thread, are removed in order to prevent memory leaks.
-     */
     private void cleanupRequestThreadLocals()
     {
         InjectionPointBean.removeThreadLocal();
@@ -113,7 +108,7 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
 
     @Override
     public void requestInitialized(ServletRequestEvent event) {
-        log.info("request initialized");
+        log.debug("request initialized");
 
         // don't use TCCL for Javassist proxies
         WebBeansUtil.initProxyFactoryClassLoaderProvider();

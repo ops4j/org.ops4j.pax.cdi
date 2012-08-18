@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.cdi.web.openwebbeans.impl;
 
+import org.apache.webbeans.config.WebBeansFinder;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -26,6 +27,7 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
+    	WebBeansFinder.setSingletonService(new BundleSingletonService());
         adapter = new OpenWebBeansWebAdapter(context);
         adapter.start();
     }

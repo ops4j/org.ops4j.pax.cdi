@@ -46,147 +46,161 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CdiExtender {
-    
-    private static Logger log = LoggerFactory.getLogger(CdiExtender.class);
 
-    /** Context of this bundle. */
-    private BundleContext bc;
+	private static Logger log = LoggerFactory.getLogger(CdiExtender.class);
 
-    private CdiContainerFactory containerFactory;
-    private CdiExtensionObserver extensionObserver;
-    private ScheduledExecutorService executor;
-    private ScheduledFuture<Void> afterQuietPeriod;  
+	/** Context of this bundle. */
+	private BundleContext bc;
 
-    private Callable<Void> createContainersTask = new Callable<Void>() {
+	private CdiContainerFactory containerFactory;
+	private CdiExtensionObserver extensionObserver;
+	private ScheduledExecutorService executor;
+	private ScheduledFuture<Void> afterQuietPeriod;
 
-        @Override
-        public Void call() throws Exception {
-            createCdiContainers();
-            return null;
-        }        
-    };
-    
-    
-    private Map<Long, Bundle> toBeCreated = new LinkedHashMap<Long, Bundle>();
-    private Map<Long, Bundle> toBeDestroyed = new LinkedHashMap<Long, Bundle>();
-    
-    private State state = State.QUIET_PERIOD;
-    
-    enum State {
-        QUIET_PERIOD,
-        OPERATIONAL
-    }
+	private Callable<Void> createContainersTask = new Callable<Void>() {
 
-    public CdiExtender(BundleContext bc, CdiExtensionObserver extensionObserver) {
-        this.bc = bc;
-        this.extensionObserver = extensionObserver;
-        executor = Executors.newSingleThreadScheduledExecutor();
-        afterQuietPeriod = executor.schedule(createContainersTask, 2, TimeUnit.SECONDS);
-    }
-    
-    public void createCdiContainers() {
-        containerFactory = ServiceLookup.getService(bc, CdiContainerFactory.class);
-        containerFactory.setExtensionBundles(extensionObserver.getExtensionBundles());
-        List<Bundle> bundles = new ArrayList<Bundle>(toBeCreated.values());
-        for (Bundle beanBundle : bundles) {
-            createCdiContainer(beanBundle);
-        }
-        
-        synchronized (state) {
-            for (Bundle beanBundle : bundles) {
-                toBeCreated.remove(beanBundle.getBundleId());
-            }
-            state = State.OPERATIONAL;
-        }
-    }
-    
-    private void createCdiContainer(final Bundle bundle) {
-        final CdiContainer container = containerFactory.createContainer(bundle);
+		@Override
+		public Void call() throws Exception {
+			try {
+				createCdiContainers();
+				return null;
+			}
+			catch (Throwable t) {
+				log.error("exception in Executor", t);
+				throw new Ops4jException(t);
+			}
+		}
+	};
 
-        /*
-         * Start the CDI container under a suitable thread context class loader so that the CDI
-         * implementation will be able to load classes from all required bundles.
-         * 
-         * TODO Move this to CdiContainer implementation?
-         */
-        try {
-            container.start();
-            doWithClassLoader(container.getContextClassLoader(),
-                new Callable<ServiceRegistration<CdiContainer>>() {
+	private Map<Long, Bundle> toBeCreated = new LinkedHashMap<Long, Bundle>();
+	private Map<Long, Bundle> toBeDestroyed = new LinkedHashMap<Long, Bundle>();
 
-                    @Override
-                    public ServiceRegistration<CdiContainer> call() throws Exception {
-                        // set bundle context on BeanBundle CDI bean
-                        BeanBundle cdiBundle = container.getInstance().select(BeanBundle.class)
-                            .get();
-                        BundleContext bc = bundle.getBundleContext();
-                        cdiBundle.setBundleContext(bc);
+	private State state = State.QUIET_PERIOD;
 
-                        // fire ContainerInitialized event
-                        BeanManager beanManager = container.getBeanManager();
-                        beanManager.fireEvent(new ContainerInitialized());
+	enum State {
+		QUIET_PERIOD, OPERATIONAL
+	}
 
-                        // register CdiContainer service
-                        Dictionary<String, Object> props = new Hashtable<String, Object>();
-                        props.put("bundleId", bundle.getBundleId());
-                        props.put("symbolicName", bundle.getSymbolicName());
+	public CdiExtender(BundleContext bc, CdiExtensionObserver extensionObserver) {
+		this.bc = bc;
+		this.extensionObserver = extensionObserver;
+		executor = Executors.newSingleThreadScheduledExecutor();
+		afterQuietPeriod = executor.schedule(createContainersTask, 2, TimeUnit.SECONDS);
+	}
 
-                        return bc.registerService(CdiContainer.class, container, props);
-                    }
-                });
-        }
-        catch (Exception exc) {
-            log.error("", exc);
-            throw new Ops4jException(exc);
-        }
-    }
+	public void createCdiContainers() {
+		containerFactory = ServiceLookup.getService(bc, CdiContainerFactory.class);
+		containerFactory.setExtensionBundles(extensionObserver.getExtensionBundles());
+		List<Bundle> bundles = new ArrayList<Bundle>(toBeCreated.values());
+		for (Bundle beanBundle : bundles) {
+			createCdiContainer(beanBundle);
+		}
 
-    private void destroyCdiContainer(final Bundle bundle) {
-        CdiContainer container = containerFactory.getContainer(bundle);
-        container.stop();
-        containerFactory.removeContainer(bundle);
-        toBeDestroyed.remove(bundle.getBundleId());
-        // TODO remove CdiContainer service registration
-    }    
-    
-    public synchronized void createContainer(final Bundle bundle) {
-        toBeCreated.put(bundle.getBundleId(), bundle);
-        if (state == State.QUIET_PERIOD) {
-            afterQuietPeriod.cancel(false);
-            afterQuietPeriod = executor.schedule(createContainersTask, 2, TimeUnit.SECONDS);
-        }
-        else {
-            executor.submit(new Callable<Long>() {
+		synchronized (state) {
+			for (Bundle beanBundle : bundles) {
+				toBeCreated.remove(beanBundle.getBundleId());
+			}
+			state = State.OPERATIONAL;
+		}
+	}
 
-                @Override
-                public Long call() throws Exception {
-                    createCdiContainer(bundle);
-                    return bundle.getBundleId();
-                }
-                
-            });
-        }        
-    }
-    
-    public synchronized void destroyContainer(final Bundle bundle) {
-        toBeCreated.remove(bundle.getBundleId());
-        toBeDestroyed.put(bundle.getBundleId(), bundle);
-        if (state == State.OPERATIONAL) {
-            executor.submit(new Callable<Long>() {
+	private void createCdiContainer(final Bundle bundle) {
+		final CdiContainer container = containerFactory.createContainer(bundle);
 
-                @Override
-                public Long call() throws Exception {
-                    destroyCdiContainer(bundle);
-                    return bundle.getBundleId();
-                }
-                
-            });
-        }        
-        
-    }
-    
-    public void stop() {
-        executor.shutdownNow();
-    }
-    
+		/*
+		 * Start the CDI container under a suitable thread context class loader so that the CDI
+		 * implementation will be able to load classes from all required bundles.
+		 * 
+		 * TODO Move this to CdiContainer implementation?
+		 */
+		try {
+			container.start();
+			doWithClassLoader(container.getContextClassLoader(),
+				new Callable<ServiceRegistration<CdiContainer>>() {
+
+					@Override
+					public ServiceRegistration<CdiContainer> call() throws Exception {
+						// set bundle context on BeanBundle CDI bean
+						BeanBundle cdiBundle = container.getInstance().select(BeanBundle.class)
+							.get();
+						BundleContext bc = bundle.getBundleContext();
+						cdiBundle.setBundleContext(bc);
+
+						// fire ContainerInitialized event
+						BeanManager beanManager = container.getBeanManager();
+						beanManager.fireEvent(new ContainerInitialized());
+
+						// register CdiContainer service
+						Dictionary<String, Object> props = new Hashtable<String, Object>();
+						props.put("bundleId", bundle.getBundleId());
+						props.put("symbolicName", bundle.getSymbolicName());
+
+						return bc.registerService(CdiContainer.class, container, props);
+					}
+				});
+		}
+		catch (Exception exc) {
+			log.error("", exc);
+			throw new Ops4jException(exc);
+		}
+	}
+
+	private void destroyCdiContainer(final Bundle bundle) {
+		CdiContainer container = containerFactory.getContainer(bundle);
+		container.stop();
+		containerFactory.removeContainer(bundle);
+		toBeDestroyed.remove(bundle.getBundleId());
+		// TODO remove CdiContainer service registration
+	}
+
+	public synchronized void createContainer(final Bundle bundle) {
+		toBeCreated.put(bundle.getBundleId(), bundle);
+		if (state == State.QUIET_PERIOD) {
+			// TODO make period configurable
+			afterQuietPeriod.cancel(false);
+			afterQuietPeriod = executor.schedule(createContainersTask, 2, TimeUnit.SECONDS);
+		}
+		else {
+			executor.submit(new Callable<Long>() {
+
+				@Override
+				public Long call() throws Exception {
+					try {
+						createCdiContainer(bundle);
+						return bundle.getBundleId();
+					}
+					catch (Throwable t) {
+						log.error("exception in Executor", t);
+						throw new Ops4jException(t);
+					}
+				}
+
+			});
+		}
+	}
+
+	public synchronized void destroyContainer(final Bundle bundle) {
+		toBeCreated.remove(bundle.getBundleId());
+		toBeDestroyed.put(bundle.getBundleId(), bundle);
+		if (state == State.OPERATIONAL) {
+			executor.submit(new Callable<Long>() {
+
+				@Override
+				public Long call() throws Exception {
+					try {
+						destroyCdiContainer(bundle);
+						return bundle.getBundleId();
+					}
+					catch (Throwable t) {
+						log.error("exception in Executor", t);
+						throw new Ops4jException(t);
+					}
+				}
+			});
+		}
+	}
+
+	public void stop() {
+		executor.shutdownNow();
+	}
 }
