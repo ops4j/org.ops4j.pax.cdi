@@ -50,11 +50,9 @@ public class ProxyFactory {
         InvocationHandler handler = os.dynamic() ? new DynamicInvocationHandler(ip)
             : new StaticInvocationHandler(ip);
 
-        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-
+        ClassLoader classLoader = ip.getMember().getDeclaringClass().getClassLoader();
         @SuppressWarnings("unchecked")
-        T instance = (T) Proxy.newProxyInstance(contextClassLoader, new Class[] { klass }, handler);
+        T instance = (T) Proxy.newProxyInstance(classLoader, new Class[] { klass }, handler);
         return instance;
     }
-
 }
