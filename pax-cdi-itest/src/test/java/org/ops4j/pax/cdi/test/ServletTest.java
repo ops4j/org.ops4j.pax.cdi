@@ -37,6 +37,7 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.ops4j.pax.exam.util.Filter;
 import org.osgi.framework.BundleContext;
 
 import com.sun.jersey.api.client.Client;
@@ -48,14 +49,14 @@ import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class ServletTest {
-	
-	@Inject
-	private BundleContext bc;
 
-    @Inject
+    @Inject @Filter (timeout = 20000000)
+    private BundleContext bc;
+
+    @Inject @Filter (timeout = 20000000)
     private CdiContainerFactory containerFactory;
 
-    @Inject
+    @Inject @Filter (timeout = 20000000)
     private ServletContext servletContext;
 
     @Configuration
@@ -65,7 +66,7 @@ public class ServletTest {
 
             // doesn't work for WABs
             // workspaceBundle("pax-cdi-samples/pax-cdi-sample1-web"),
-            
+
             mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", "0.3.0-SNAPSHOT"),
             workspaceBundle("pax-cdi-extender"),
             workspaceBundle("pax-cdi-extension"),
@@ -83,7 +84,7 @@ public class ServletTest {
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.javassist")
                 .versionAsInProject(),
             mavenBundle("org.apache.geronimo.bundles", "scannotation").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-finder").versionAsInProject(),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm")
                 .versionAsInProject(), //
             mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),
@@ -102,8 +103,10 @@ public class ServletTest {
             systemProperty("org.osgi.service.http.port").value("8181"),
             mavenBundle("org.ops4j.pax.web", "pax-web-spi").version("3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-api").version("3.0.0-SNAPSHOT"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version("3.0.0-SNAPSHOT").startLevel(10),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard").version("3.0.0-SNAPSHOT"),
+            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version("3.0.0-SNAPSHOT")
+                .startLevel(10),
+            mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard").version(
+                "3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-jetty").version("3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-runtime").version("3.0.0-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.web", "pax-web-jsp").version("3.0.0-SNAPSHOT"),
@@ -120,11 +123,11 @@ public class ServletTest {
             mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
             mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
             mavenBundle("com.sun.jersey.contribs", "jersey-apache-client").version("1.13"),
-            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.commons-httpclient", "3.1_7"),
+            mavenBundle("org.apache.servicemix.bundles",
+                "org.apache.servicemix.bundles.commons-httpclient", "3.1_7"),
             mavenBundle("commons-codec", "commons-codec", "1.6"),
             mavenBundle("org.slf4j", "jcl-over-slf4j", "1.6.0"),
-            mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.4.0")
-        );
+            mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.4.0"));
 
     }
 
@@ -169,7 +172,7 @@ public class ServletTest {
 
         resource = client.resource("http://localhost:8181/sample1/timestamp");
         String timestamp1 = resource.get(String.class);
-        
+
         Client client2 = ApacheHttpClient.create(config);
         WebResource resource2 = client2.resource("http://localhost:8181/sample1/timestamp");
         String timestamp3 = resource2.get(String.class);
@@ -180,6 +183,6 @@ public class ServletTest {
 
         String timestamp4 = resource2.get(String.class);
         assertThat(timestamp4, is(timestamp3));
-    
-    }    
+
+    }
 }

@@ -36,7 +36,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample1.Chocolate;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
-import org.ops4j.pax.cdi.sample1.impl.ChocolateService;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
@@ -74,20 +73,13 @@ public class WeldSingleBundleTest {
 
             mavenBundle("org.slf4j", "slf4j-ext", "1.6.4"),
             mavenBundle("ch.qos.cal10n", "cal10n-api", "0.7.4"),
-            //mavenBundle("com.googlecode.guava-osgi", "guava-osgi", "11.0.1"),
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-finder").versionAsInProject(),
-            //mavenBundle("org.apache.geronimo.specs", "geronimo-jcdi_1.0_spec").versionAsInProject(),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm").versionAsInProject(), //
-//            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.javassist").versionAsInProject(),
             mavenBundle("org.jboss.weld", "weld-osgi-bundle", "1.2.0-SNAPSHOT").startLevel(3)
 
-            //wrappedBundle(mavenBundle("org.jboss.weld.se", "weld-se-core", "1.1.8.Final")).instructions("Fragment-Host=org.jboss.weld.osgi-bundle").noStart(),
-//            wrappedBundle(mavenBundle("org.jboss.weld", "weld-core", "1.1.8.Final")).bundleVersion("1.1.8").instructions("Export-Package=*;version=1.1.8", "Import-Package=org.jboss.weld.context;resolution:=mandatory,javax.*;resolution:=optional,*"),
-//            wrappedBundle(mavenBundle("org.jboss.weld", "weld-spi", "1.1.Final")).bundleVersion("1.1.8").instructions("Export-Package=*;version=1.1.8"),
-//            wrappedBundle(mavenBundle("org.jboss.weld", "weld-api", "1.1.Final")).bundleVersion("1.1.8").instructions("Export-Package=*;version=1.1.8")
         );
     }
 

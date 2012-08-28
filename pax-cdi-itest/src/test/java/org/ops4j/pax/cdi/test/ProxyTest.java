@@ -66,7 +66,7 @@ public class ProxyTest {
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.javassist")
                 .versionAsInProject(),
             mavenBundle("org.apache.geronimo.bundles", "scannotation").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-finder").versionAsInProject(),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm")
                 .versionAsInProject(), //
             mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),

@@ -18,9 +18,7 @@
 package org.ops4j.pax.cdi.weld.impl.bda;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.inject.spi.Extension;
 
@@ -32,6 +30,7 @@ import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.serialization.spi.ProxyServices;
+import org.ops4j.pax.cdi.spi.scan.BeanScanner;
 import org.ops4j.pax.cdi.weld.impl.OsgiProxyService;
 import org.osgi.framework.Bundle;
 
@@ -52,16 +51,12 @@ public class BundleDeployment implements Deployment {
     }
 
     private void createBeanDeploymentArchive(Bundle bundle, Bootstrap bootstrap) {
-        BundleMetaDataScannerService scanner = new BundleMetaDataScannerService(bundle);
+        BeanScanner scanner = new BeanScanner(bundle);
         scanner.scan();
         beanDeploymentArchive = new BundleBeanDeploymentArchive("pax-cdi-bda"
             + bundle.getBundleId());
-        beanDeploymentArchive.setBeansXml(bootstrap.parse(scanner.getBeanXmls()));
-        Set<String> classes = new HashSet<String>();
-        for (Class<?> klass : scanner.getBeanClasses()) {
-            classes.add(klass.getName());
-        }
-        beanDeploymentArchive.setBeanClasses(classes);
+        beanDeploymentArchive.setBeansXml(bootstrap.parse(scanner.getBeanDescriptors()));
+        beanDeploymentArchive.setBeanClasses(scanner.getBeanClasses());
         ResourceLoader loader = new BundleResourceLoader(bundle);
         beanDeploymentArchive.getServices().add(ResourceLoader.class, loader);
     }

@@ -68,7 +68,7 @@ public class WeldProducerAndClientTest {
             mavenBundle("ch.qos.cal10n", "cal10n-api", "0.7.4"),
             //mavenBundle("com.googlecode.guava-osgi", "guava-osgi", "11.0.1"),
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-finder").versionAsInProject(),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
             //mavenBundle("org.apache.geronimo.specs", "geronimo-jcdi_1.0_spec").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),

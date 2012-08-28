@@ -69,8 +69,8 @@ public class WeldCdiContainer implements CdiContainer {
     private Collection<Bundle> extensionBundles;
 
     /**
-     * A composite class loader used as thread context class loader for OpenWebBeans. This class
-     * loader delegates to the bundle class loaders of our own bundle, the extended bundle and all
+     * A composite class loader used as thread context class loader for Weld. This class loader
+     * delegates to the bundle class loaders of our own bundle, the extended bundle and all
      * extension bundles.
      */
     private BundleClassLoader contextClassLoader;
@@ -188,7 +188,8 @@ public class WeldCdiContainer implements CdiContainer {
                         bootstrap.shutdown();
                     }
                     catch (Throwable t) {
-                        logger.error(extendedBundle.getSymbolicName() + ": error on CDI container shutdown", t);
+                        logger.error(extendedBundle.getSymbolicName()
+                            + ": error on CDI container shutdown", t);
                     }
                     started = false;
                 }
@@ -235,14 +236,14 @@ public class WeldCdiContainer implements CdiContainer {
         return contextClassLoader;
     }
 
-	@Override
-	public <T> T unwrap(Class<T> wrappedClass) {
-		if (wrappedClass.isAssignableFrom(WeldBootstrap.class)) {
-			return wrappedClass.cast(bootstrap);
-		}
-		if (wrappedClass.isAssignableFrom(BeanManagerImpl.class)) {
-			return wrappedClass.cast(manager);
-		}
-		return null;
-	}
+    @Override
+    public <T> T unwrap(Class<T> wrappedClass) {
+        if (wrappedClass.isAssignableFrom(WeldBootstrap.class)) {
+            return wrappedClass.cast(bootstrap);
+        }
+        if (wrappedClass.isAssignableFrom(BeanManagerImpl.class)) {
+            return wrappedClass.cast(manager);
+        }
+        return null;
+    }
 }

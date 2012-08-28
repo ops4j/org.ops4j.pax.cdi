@@ -217,8 +217,8 @@
 
             <dependency>
                 <groupId>org.apache.xbean</groupId>
-                <artifactId>xbean-finder</artifactId>
-                <version>3.7</version>
+                <artifactId>xbean-bundleutils</artifactId>
+                <version>3.11.1</version>
             </dependency>
 
             <dependency>
@@ -281,6 +281,7 @@
                 <plugin>
                     <groupId>org.apache.servicemix.tooling</groupId>
                     <artifactId>depends-maven-plugin</artifactId>
+                    <version>1.2</version>
                 </plugin>
 
             </plugins>

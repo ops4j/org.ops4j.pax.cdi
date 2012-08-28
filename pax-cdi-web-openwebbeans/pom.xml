@@ -23,20 +23,17 @@
             <groupId>org.ops4j.pax.cdi</groupId>
             <artifactId>pax-cdi-openwebbeans</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
             <artifactId>pax-cdi-web</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
         
         <dependency>
             <groupId>org.apache.openwebbeans</groupId>
             <artifactId>openwebbeans-web</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

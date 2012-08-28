@@ -57,7 +57,7 @@
 
         <dependency>
             <groupId>org.apache.xbean</groupId>
-            <artifactId>xbean-finder</artifactId>
+            <artifactId>xbean-bundleutils</artifactId>
         </dependency>
 
         <dependency>
