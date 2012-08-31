@@ -49,13 +49,13 @@
             <scope>provided</scope>
         </dependency>
 
-<!--         <dependency>
+        <dependency>
             <groupId>org.ops4j.pax.cdi.samples</groupId>
             <artifactId>pax-cdi-sample2-service</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
- -->
+
         <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
             <artifactId>pax-cdi-extension</artifactId>
