@@ -19,6 +19,7 @@ package org.ops4j.pax.cdi.openwebbeans.impl;
 
 import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoader;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -108,7 +109,7 @@ public class OpenWebBeansCdiContainer implements CdiContainer {
         this.extensionBundles = extensionBundles;
     }
 
-	/**
+    /**
      * Creates and starts a WebBeansContext for the given bundle using an appropriate class loader
      * as TCCL.
      * 
@@ -241,4 +242,16 @@ public class OpenWebBeansCdiContainer implements CdiContainer {
         return null;
     }
 
+    @Override
+    public void startContext(Class<? extends Annotation> scope) {
+        ContextsService contextsService = context.getService(ContextsService.class);
+        contextsService.startContext(scope, null);
+
+    }
+
+    @Override
+    public void stopContext(Class<? extends Annotation> scope) {
+        ContextsService contextsService = context.getService(ContextsService.class);
+        contextsService.endContext(scope, null);
+    }
 }
