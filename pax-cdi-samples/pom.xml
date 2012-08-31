@@ -16,6 +16,7 @@
         <module>pax-cdi-sample1</module>
         <module>pax-cdi-sample1-client</module>
         <module>pax-cdi-sample1-web</module>
+        <module>pax-cdi-sample2-service</module>
     </modules>
 
     <profiles>
