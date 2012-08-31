@@ -19,6 +19,7 @@ package org.ops4j.pax.cdi.weld.impl;
 
 import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoader;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -245,5 +246,15 @@ public class WeldCdiContainer implements CdiContainer {
             return wrappedClass.cast(manager);
         }
         return null;
+    }
+    
+    @Override
+    public void startContext(Class<? extends Annotation> scope) {
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+    
+    @Override
+    public void stopContext(Class<? extends Annotation> scope) {
+        throw new UnsupportedOperationException("not yet implemented");
     }
 }

@@ -17,6 +17,8 @@
  */
 package org.ops4j.pax.cdi.spi;
 
+import java.lang.annotation.Annotation;
+
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
@@ -93,4 +95,16 @@ public interface CdiContainer {
      * @return
      */
     <T> T unwrap(Class<T> wrappedClass);
+    
+    /**
+     * Starts a context for the given scope.
+     * @param scope CDI scope annotation
+     */
+    void startContext(Class<? extends Annotation> scope);
+    
+    /**
+     * Stops the current context for the given scope.
+     * @param scope CDI scope annotation
+     */
+    void stopContext(Class<? extends Annotation> scope);
 }
