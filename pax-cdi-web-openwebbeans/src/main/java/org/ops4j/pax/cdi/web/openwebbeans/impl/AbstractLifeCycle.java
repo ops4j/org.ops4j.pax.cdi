@@ -168,9 +168,6 @@ public abstract class AbstractLifeCycle implements ContainerLifecycle
 
             injectionResolver.clearCaches();
             
-            //Delete proxies
-            webBeansContext.getJavassistProxyFactory().clear();
-            
             //Delete AnnotateTypeCache
             webBeansContext.getAnnotatedElementFactory().clear();
             
