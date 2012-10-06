@@ -22,8 +22,8 @@
     </scm>
 
     <modules>
-        <module>pax-cdi-parent</module>
         <module>pax-cdi-checkstyle-rules</module>
+        <module>pax-cdi-parent</module>
         
         <module>pax-cdi-extender</module>
         <module>pax-cdi-spi</module>
