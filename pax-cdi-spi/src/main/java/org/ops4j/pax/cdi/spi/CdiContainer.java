@@ -42,13 +42,20 @@ public interface CdiContainer {
 
     /**
      * Starts the CDI container for the current bundle.
+     * @param environment implementation dependent environment for the container, maybe null.
      */
-    void start();
+    void start(Object environment);
 
     /**
      * Stops the CDI container for the current bundle.
      */
     void stop();
+    
+    /**
+     * Returns the type of this container.
+     * @return
+     */
+    CdiContainerType getContainerType();
 
     /**
      * Gets the bundle hosting this CDI container.

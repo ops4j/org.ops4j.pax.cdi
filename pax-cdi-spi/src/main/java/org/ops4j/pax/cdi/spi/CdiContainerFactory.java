@@ -44,9 +44,10 @@ public interface CdiContainerFactory {
      * 
      * @param bundle
      *            a bundle to be extended with a CDI container
+     * @param containerType 
      * @return
      */
-    CdiContainer createContainer(Bundle bundle);
+    CdiContainer createContainer(Bundle bundle, CdiContainerType containerType);
 
     /**
      * Sets the collection of CDI extension bundles to be loaded when building the CDI container for
@@ -84,10 +85,14 @@ public interface CdiContainerFactory {
     void removeContainer(Bundle bundle);
 
     /**
-     * Returns a name identifying the CDI provider. This should by a CDI container implementation
+     * Returns a name identifying the CDI provider. This should be a CDI container implementation
      * class name.
      * 
      * @return CDI provider name
      */
     String getProviderName();
+    
+    void addListener(CdiContainerListener listener);
+    
+    void removeListener(CdiContainerListener listener);
 }

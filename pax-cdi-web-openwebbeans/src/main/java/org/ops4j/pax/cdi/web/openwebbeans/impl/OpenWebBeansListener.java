@@ -49,6 +49,7 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext context = sce.getServletContext();
         cdiContainer = (CdiContainer) context.getAttribute("org.ops4j.pax.cdi.container");
+        cdiContainer.start(context);
 
         webBeansContext = cdiContainer.unwrap(WebBeansContext.class);
         lifecycle = cdiContainer.unwrap(ContainerLifecycle.class);
@@ -92,7 +93,9 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
 
         cleanupRequestThreadLocals();
     }
-    
+	// TODO Auto-generated method stub
+	
+
     private void cleanupRequestThreadLocals()
     {
         InjectionPointBean.removeThreadLocal();

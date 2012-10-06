@@ -27,10 +27,10 @@ import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
 import javax.inject.Inject;
-import javax.servlet.ServletContext;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
@@ -57,7 +57,7 @@ public class ServletTest {
     private CdiContainerFactory containerFactory;
 
     @Inject @Filter (timeout = 20000000)
-    private ServletContext servletContext;
+    private CdiContainer container;
 
     @Configuration
     public Option[] config() {
@@ -79,7 +79,7 @@ public class ServletTest {
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-web").version("1.1.5"),
+            mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
 
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.javassist")
                 .versionAsInProject(),

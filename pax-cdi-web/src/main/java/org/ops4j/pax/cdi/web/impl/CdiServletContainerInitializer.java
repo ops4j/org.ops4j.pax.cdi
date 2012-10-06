@@ -28,15 +28,25 @@ import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A {@link ServletContainerInitializer} which stores the CDI container in the servlet context
+ * and registers a CDI provider dependent {@link ServletContextListener}.
+ * <p>
+ * This listener is responsible for starting the CDI container.
+ * 
+ * @author Harald Wellmann
+ *
+ */
 public class CdiServletContainerInitializer implements ServletContainerInitializer {
 
     private static Logger logger = LoggerFactory.getLogger(CdiServletContainerInitializer.class);
 
     private CdiContainer cdiContainer;
 
-	private ServletContextListener servletContextListener;
+    private ServletContextListener servletContextListener;
 
-    public CdiServletContainerInitializer(CdiContainer cdiContainer, ServletContextListener servletContextListener) {
+    public CdiServletContainerInitializer(CdiContainer cdiContainer,
+        ServletContextListener servletContextListener) {
         this.cdiContainer = cdiContainer;
         this.servletContextListener = servletContextListener;
     }
@@ -47,5 +57,4 @@ public class CdiServletContainerInitializer implements ServletContainerInitializ
         ctx.setAttribute("org.ops4j.pax.cdi.container", cdiContainer);
         ctx.addListener(servletContextListener);
     }
-
 }

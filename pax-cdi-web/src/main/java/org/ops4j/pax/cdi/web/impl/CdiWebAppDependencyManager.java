@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.servlet.ServletContextListener;
 
 import org.ops4j.pax.cdi.spi.CdiContainer;
+import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.ops4j.pax.swissbox.tracker.ReplaceableServiceListener;
 import org.ops4j.pax.web.service.WebAppDependencyHolder;
 import org.ops4j.pax.web.service.WebContainerConstants;
@@ -36,7 +37,16 @@ import org.osgi.service.http.HttpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CdiWebAppDependencyManager implements ReplaceableServiceListener<HttpService> {
+/**
+ * Keeps track of runtime dependencies of web bean bundles and registers a
+ * {@link WebAppDependencyHolder} for each web bean bundle as soon as all dependencies are
+ * available.
+ * 
+ * @author Harald Wellmann
+ * 
+ */
+public class CdiWebAppDependencyManager implements ReplaceableServiceListener<HttpService>,
+    CdiContainerListener {
 
     private static Logger logger = LoggerFactory.getLogger(CdiWebAppDependencyManager.class);
 
@@ -112,21 +122,23 @@ public class CdiWebAppDependencyManager implements ReplaceableServiceListener<Ht
         }
     }
 
-    public synchronized void addCdiContainer(CdiContainer webApp) {
-        Bundle bundle = webApp.getBundle();
-        if (isWebBundle(bundle)) {
-            long bundleId = bundle.getBundleId();
-            webApps.put(bundleId, webApp);
-            register(bundleId, webApp);
-        }
-    }
-
     private boolean isWebBundle(Bundle bundle) {
         return bundle.getHeaders().get(WebContainerConstants.CONTEXT_PATH_KEY) != null;
     }
 
-    public synchronized void removeCdiContainer(CdiContainer webApp) {
-        long bundleId = webApp.getBundle().getBundleId();
+    @Override
+    public synchronized void postCreate(CdiContainer container) {
+        Bundle bundle = container.getBundle();
+        if (isWebBundle(bundle)) {
+            long bundleId = bundle.getBundleId();
+            webApps.put(bundleId, container);
+            register(bundleId, container);
+        }
+    }
+
+    @Override
+    public synchronized void preDestroy(CdiContainer container) {
+        long bundleId = container.getBundle().getBundleId();
         if (webApps.containsKey(bundleId)) {
             unregister(bundleId);
             webApps.remove(bundleId);

@@ -50,7 +50,7 @@ public class WeldServletContextListener extends ForwardingServletListener {
         ServletContext context = sce.getServletContext();
         CdiContainer cdiContainer = (CdiContainer) context
             .getAttribute("org.ops4j.pax.cdi.container");
-
+        cdiContainer.start(context);
         WeldManager manager = cdiContainer.unwrap(WeldManager.class);
 
         Injector injector = new Injector(manager);

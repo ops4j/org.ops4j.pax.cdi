@@ -19,22 +19,29 @@ package org.ops4j.pax.cdi.web;
 
 import javax.servlet.ServletContextListener;
 
-import org.ops4j.pax.cdi.spi.CdiContainer;
+import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.cdi.web.impl.CdiWebAppDependencyManager;
 import org.ops4j.pax.swissbox.lifecycle.AbstractLifecycle;
 import org.ops4j.pax.swissbox.tracker.ReplaceableService;
+import org.ops4j.pax.swissbox.tracker.ReplaceableServiceListener;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
-import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
-public abstract class AbstractWebAdapter extends AbstractLifecycle {
+/**
+ * Abstract base class for Pax CDI web adapters. For each CDI provider with web support, a derived
+ * class needs to implement {@link #getServletContextListener()} and call {@link #start()} or
+ * {@link #stop()} when the provider dependent adapter bundle is started or stopped.
+ * 
+ * @author Harald Wellmann
+ * 
+ */
+public abstract class AbstractWebAdapter extends AbstractLifecycle implements
+    ReplaceableServiceListener<CdiContainerFactory> {
 
     protected BundleContext bundleContext;
-    private ServiceTracker<CdiContainer, CdiContainer> cdiContainerTracker;
     private CdiWebAppDependencyManager dependencyManager;
     private ReplaceableService<HttpService> httpService;
+    private ReplaceableService<CdiContainerFactory> cdiContainerFactory;
 
     protected AbstractWebAdapter(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
@@ -42,9 +49,6 @@ public abstract class AbstractWebAdapter extends AbstractLifecycle {
 
     @Override
     protected void onStart() {
-        cdiContainerTracker = new ServiceTracker<CdiContainer, CdiContainer>(bundleContext,
-            CdiContainer.class, new CdiContainerListener());
-        cdiContainerTracker.open();
 
         dependencyManager = new CdiWebAppDependencyManager(bundleContext,
             getServletContextListener());
@@ -52,6 +56,21 @@ public abstract class AbstractWebAdapter extends AbstractLifecycle {
         httpService = new ReplaceableService<HttpService>(bundleContext, HttpService.class,
             dependencyManager);
         httpService.start();
+
+        cdiContainerFactory = new ReplaceableService<CdiContainerFactory>(bundleContext,
+            CdiContainerFactory.class, this);
+        cdiContainerFactory.start();
+    }
+
+    @Override
+    public synchronized void serviceChanged(CdiContainerFactory oldService,
+        CdiContainerFactory newService) {
+        if (oldService != null) {
+            oldService.removeListener(dependencyManager);
+        }
+        if (newService != null) {
+            newService.addListener(dependencyManager);
+        }
     }
 
     protected abstract ServletContextListener getServletContextListener();
@@ -59,29 +78,6 @@ public abstract class AbstractWebAdapter extends AbstractLifecycle {
     @Override
     protected void onStop() {
         httpService.stop();
-        cdiContainerTracker.close();
-    }
-
-    private class CdiContainerListener implements
-        ServiceTrackerCustomizer<CdiContainer, CdiContainer> {
-
-        @Override
-        public CdiContainer addingService(ServiceReference<CdiContainer> reference) {
-            CdiContainer cdiContainer = bundleContext.getService(reference);
-            dependencyManager.addCdiContainer(cdiContainer);
-            return cdiContainer;
-        }
-
-        @Override
-        public void modifiedService(ServiceReference<CdiContainer> reference, CdiContainer service) {
-            dependencyManager.removeCdiContainer(service);
-            CdiContainer cdiContainer = bundleContext.getService(reference);
-            dependencyManager.addCdiContainer(cdiContainer);
-        }
-
-        @Override
-        public void removedService(ServiceReference<CdiContainer> reference, CdiContainer service) {
-            dependencyManager.removeCdiContainer(service);
-        }
+        cdiContainerFactory.stop();
     }
 }

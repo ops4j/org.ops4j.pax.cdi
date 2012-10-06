@@ -39,7 +39,9 @@ import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.ops4j.lang.Ops4jException;
+import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
+import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.ops4j.pax.cdi.weld.impl.bda.BundleDeployment;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleReference;
@@ -53,7 +55,7 @@ import org.slf4j.LoggerFactory;
  * @author Harald Wellmann
  * 
  */
-public class WeldCdiContainer implements CdiContainer {
+public class WeldCdiContainer extends AbstractCdiContainer {
 
     private Logger logger = LoggerFactory.getLogger(WeldCdiContainer.class);
 
@@ -99,8 +101,9 @@ public class WeldCdiContainer implements CdiContainer {
      * @param extensionBundles
      *            CDI extension bundles to be loaded by OpenWebBeans
      */
-    public WeldCdiContainer(Bundle ownBundle, Bundle extendedBundle,
+    public WeldCdiContainer(CdiContainerType containerType, Bundle ownBundle, Bundle extendedBundle,
         Collection<Bundle> extensionBundles) {
+    	super(containerType, ownBundle);
         logger.debug("creating Weld CDI container for bundle {}", extendedBundle);
         this.ownBundle = ownBundle;
         this.extendedBundle = extendedBundle;
@@ -199,8 +202,9 @@ public class WeldCdiContainer implements CdiContainer {
     }
 
     @Override
-    public void start() {
+    public void start(Object environment) {
         createWeldContainer(extendedBundle);
+        finishStartup();
     }
 
     @Override

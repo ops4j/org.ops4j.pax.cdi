@@ -22,6 +22,18 @@ import javax.servlet.ServletContainerInitializer;
 import org.ops4j.pax.web.service.WebAppDependencyHolder;
 import org.osgi.service.http.HttpService;
 
+/**
+ * Holds the runtime dependencies of a web bean bundle. For each web bean bundle, an instance
+ * of this class is registered an an OSGi service with property {@code bundle.id} set to the
+ * bundle ID of the web bean bundle.
+ * <p>
+ * The service is unregistered as soon as one of the dependencies becomes unavailable.
+ * <p>
+ * The collaboration of Pax CDI and Pax Web in the startup phase of a web bean bundle is
+ * synchronized by means of this service.
+ * 
+ * @author Harald Wellmann
+ */
 public class CdiWebAppDependencyHolder implements WebAppDependencyHolder {
 
     private HttpService httpService;

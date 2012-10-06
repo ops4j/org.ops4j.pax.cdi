@@ -17,13 +17,17 @@
  */
 package org.ops4j.pax.cdi.weld.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
+import org.ops4j.pax.cdi.spi.CdiContainerListener;
+import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.osgi.framework.Bundle;
 
 /**
@@ -37,6 +41,7 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
     private Bundle ownBundle;
     private Map<Long, CdiContainer> containers = new HashMap<Long, CdiContainer>();
     private Collection<Bundle> extensionBundles;
+    private List<CdiContainerListener> listeners = new ArrayList<CdiContainerListener>();
 
     public WeldCdiContainerFactory(Bundle ownBundle) {
         this.ownBundle = ownBundle;
@@ -48,10 +53,13 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
     }
 
     @Override
-    public CdiContainer createContainer(Bundle bundle) {
-        WeldCdiContainer container = new WeldCdiContainer(ownBundle, bundle,
+    public CdiContainer createContainer(Bundle bundle, CdiContainerType containerType) {
+        WeldCdiContainer container = new WeldCdiContainer(containerType, ownBundle, bundle,
             extensionBundles);
         containers.put(bundle.getBundleId(), container);
+        for (CdiContainerListener listener : listeners) {
+        	listener.postCreate(container);
+        }      
         return container;
     }
 
@@ -67,11 +75,25 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
 
     @Override
     public void removeContainer(Bundle bundle) {
-        containers.remove(bundle.getBundleId());
+        CdiContainer container = containers.remove(bundle.getBundleId());
+        for (CdiContainerListener listener : listeners) {
+        	listener.preDestroy(container);
+        }      
     }
 
     @Override
     public void setExtensionBundles(Collection<Bundle> extensionBundles) {
         this.extensionBundles = extensionBundles;
     }
+
+	@Override
+	public void addListener(CdiContainerListener listener) {
+		listeners.add(listener);
+	}
+
+	@Override
+	public void removeListener(CdiContainerListener listener) {
+		listeners.remove(listener);
+	}
+
 }
