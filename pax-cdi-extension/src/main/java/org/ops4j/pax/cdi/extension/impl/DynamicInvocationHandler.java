@@ -39,6 +39,7 @@ public class DynamicInvocationHandler implements InvocationHandler {
     }
 
     @Override
+    // CHECKSTYLE:SKIP
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Object service = InjectionPointOsgiUtils.lookupService(ip);
         return method.invoke(service, args);

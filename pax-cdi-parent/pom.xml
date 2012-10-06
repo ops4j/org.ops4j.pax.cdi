@@ -263,7 +263,7 @@
                             <id>verify-style</id>
                             <phase>verify</phase>
                             <goals>
-                                <goal>checkstyle</goal>
+                                <goal>check</goal>
                             </goals>
                         </execution>
                     </executions>
@@ -278,10 +278,6 @@
                         </dependency>
                     </dependencies>
                 </plugin>
-
-
-
-
             </plugins>
         </pluginManagement>
     </build>

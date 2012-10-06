@@ -128,6 +128,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
                         initialize();
                         return null;
                     }
+                    // CHECKSTYLE:SKIP
                     catch (Throwable exc) {
                         logger.error("", exc);
                         throw new Ops4jException(exc);
@@ -135,6 +136,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
                 }
             });
         }
+        // CHECKSTYLE:SKIP
         catch (Exception exc) {
             logger.error("", exc);
             throw new Ops4jException(exc);
@@ -191,6 +193,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
                     try {
                         bootstrap.shutdown();
                     }
+                    // CHECKSTYLE:SKIP
                     catch (Throwable t) {
                         logger.error(extendedBundle.getSymbolicName()
                             + ": error on CDI container shutdown", t);

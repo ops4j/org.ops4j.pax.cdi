@@ -34,6 +34,11 @@
   <!-- allow usage of CHECKSTYLE:OFF and CHECKSTYLE:ON -->
   <module name="SuppressionCommentFilter" />
 
+  <module name="SuppressWithNearbyCommentFilter">
+    <property name="commentFormat" value="CHECKSTYLE:SKIP"/>
+    <property name="checkFormat" value=".*"/>
+    <property name="influenceFormat" value="1"/>
+  </module>
 
   <module name="TreeWalker">
 

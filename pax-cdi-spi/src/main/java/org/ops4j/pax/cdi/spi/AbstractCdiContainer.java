@@ -79,6 +79,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
                     }
                 });
         }
+        // CHECKSTYLE:SKIP
         catch (Exception exc) {
             log.error("", exc);
             throw new Ops4jException(exc);

@@ -134,6 +134,7 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
                 }
             });
         }
+        // CHECKSTYLE:SKIP
         catch (Exception exc) {
             throw new Ops4jException(exc);
         }

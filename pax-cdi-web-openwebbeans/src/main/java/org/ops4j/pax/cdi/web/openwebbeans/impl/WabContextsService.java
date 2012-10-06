@@ -709,6 +709,7 @@ public class WabContextsService extends AbstractContextsService {
                         logger.log(Level.FINE, "Lazy SESSION context initialization SUCCESS");
                     }
                 }
+                // CHECKSTYLE:SKIP
                 catch (Exception e) {
                     logger.log(Level.SEVERE,
                         WebBeansLoggerFacade.constructMessage(OWBLogConst.ERROR_0013, e));

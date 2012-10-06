@@ -58,6 +58,7 @@ public class CdiExtender {
                 createCdiContainers();
                 return null;
             }
+            // CHECKSTYLE:SKIP
             catch (Throwable t) {
                 log.error("exception in Executor", t);
                 throw new Ops4jException(t);
@@ -138,6 +139,7 @@ public class CdiExtender {
                         createCdiContainer(bundle);
                         return bundle.getBundleId();
                     }
+                    // CHECKSTYLE:SKIP
                     catch (Throwable t) {
                         log.error("exception in Executor", t);
                         throw new Ops4jException(t);
@@ -160,6 +162,7 @@ public class CdiExtender {
                         destroyCdiContainer(bundle);
                         return bundle.getBundleId();
                     }
+                    // CHECKSTYLE:SKIP
                     catch (Throwable t) {
                         log.error("exception in Executor", t);
                         throw new Ops4jException(t);

@@ -47,6 +47,7 @@ public class StaticInvocationHandler implements InvocationHandler {
     }
 
     @Override
+    // CHECKSTYLE:SKIP
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (serviceRef != null) {
             Object service = bundleContext.getService(serviceRef);

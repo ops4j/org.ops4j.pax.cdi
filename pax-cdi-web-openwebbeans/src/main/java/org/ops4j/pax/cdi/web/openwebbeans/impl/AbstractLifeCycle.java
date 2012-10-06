@@ -176,6 +176,7 @@ public abstract class AbstractLifeCycle implements ContainerLifecycle {
             WebBeansFinder.clearInstances(endObject /* WebBeansUtil.getCurrentClassLoader() */);
 
         }
+        // CHECKSTYLE:SKIP
         catch (Exception e) {
             if (logger.isLoggable(Level.SEVERE)) {
                 logger.log(Level.SEVERE, OWBLogConst.ERROR_0021, e);
