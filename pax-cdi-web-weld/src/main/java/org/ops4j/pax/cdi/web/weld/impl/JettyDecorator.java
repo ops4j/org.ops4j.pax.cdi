@@ -54,8 +54,9 @@ public class JettyDecorator implements ServletContextHandler.Decorator {
         if (injector == null) {
             injector = (Injector) servletContext.getAttribute(INJECTOR_KEY);
 
-            if (injector == null)
+            if (injector == null) {
                 throw new IllegalArgumentException("no injector found in servlet context attributes");
+            }
         }
         return injector;
     }

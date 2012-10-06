@@ -38,18 +38,15 @@ import org.osgi.framework.BundleReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class BundleScannerService implements ScannerService {
-    
+
     private Logger log = LoggerFactory.getLogger(BundleScannerService.class);
 
     private BeanScanner scanner;
     private Bundle bundle;
     private Set<Class<?>> beanClasses;
     private Map<String, Set<String>> classAnnotations;
-    
-    
-    
+
     public BundleScannerService() {
         classAnnotations = new HashMap<String, Set<String>>();
     }
@@ -60,7 +57,7 @@ public class BundleScannerService implements ScannerService {
     }
 
     @Override
-    public void scan() {        
+    public void scan() {
         bundle = BundleUtils.getContextBundle(true);
         scanner = new BeanScanner(bundle);
         scanner.scan();
@@ -145,7 +142,7 @@ public class BundleScannerService implements ScannerService {
             annStrings.add(ann.getClass().getSimpleName());
         }
     }
-    
+
     @Override
     public boolean isBDABeansXmlScanningEnabled() {
         return false;
@@ -155,24 +152,27 @@ public class BundleScannerService implements ScannerService {
     public BDABeansXmlScanner getBDABeansXmlScanner() {
         return null;
     }
-    
+
     /**
      * Returns bundle (if any) associated with current thread's context classloader.
-     *
-     * @param unwrap if true and if the bundle associated with the context classloader is a
-     *        {@link DelegatingBundle}, this function will return the main application bundle
-     *        backing with the {@link DelegatingBundle}. Otherwise, the bundle associated with
-     *        the context classloader is returned as is. See {@link BundleClassLoader#getBundle(boolean)}
-     *        for more information.
+     * 
+     * @param unwrap
+     *            if true and if the bundle associated with the context classloader is a
+     *            {@link DelegatingBundle}, this function will return the main application bundle
+     *            backing with the {@link DelegatingBundle}. Otherwise, the bundle associated with
+     *            the context classloader is returned as is. See
+     *            {@link BundleClassLoader#getBundle(boolean)} for more information.
      * @return The bundle associated with the current thread's context classloader. Might be null.
      */
     public static Bundle getContextBundle(boolean unwrap) {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (classLoader instanceof BundleClassLoader) {
             return ((BundleClassLoader) classLoader).getBundle(unwrap);
-        } else if (classLoader instanceof BundleReference) {
+        }
+        else if (classLoader instanceof BundleReference) {
             return ((BundleReference) classLoader).getBundle();
-        } else {
+        }
+        else {
             return null;
         }
     }

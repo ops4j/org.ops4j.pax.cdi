@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 public class WeldServletContextListener extends ForwardingServletListener {
 
-    private static final Logger log = LoggerFactory.getLogger(WeldServletContextListener.class);
+    private static Logger log = LoggerFactory.getLogger(WeldServletContextListener.class);
 
     private Bootstrap bootstrap;
     private ServletListener weldListener;

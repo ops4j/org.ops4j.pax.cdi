@@ -89,7 +89,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
 
     private BeanManagerImpl manager;
 
-    private boolean hasShutdownBeenCalled = false;
+    private boolean hasShutdownBeenCalled;
 
     /**
      * Construct a CDI container for the given extended bundle.
@@ -101,9 +101,9 @@ public class WeldCdiContainer extends AbstractCdiContainer {
      * @param extensionBundles
      *            CDI extension bundles to be loaded by OpenWebBeans
      */
-    public WeldCdiContainer(CdiContainerType containerType, Bundle ownBundle, Bundle extendedBundle,
-        Collection<Bundle> extensionBundles) {
-    	super(containerType, ownBundle);
+    public WeldCdiContainer(CdiContainerType containerType, Bundle ownBundle,
+        Bundle extendedBundle, Collection<Bundle> extensionBundles) {
+        super(containerType, ownBundle);
         logger.debug("creating Weld CDI container for bundle {}", extendedBundle);
         this.ownBundle = ownBundle;
         this.extendedBundle = extendedBundle;
@@ -251,12 +251,12 @@ public class WeldCdiContainer extends AbstractCdiContainer {
         }
         return null;
     }
-    
+
     @Override
     public void startContext(Class<? extends Annotation> scope) {
         throw new UnsupportedOperationException("not yet implemented");
     }
-    
+
     @Override
     public void stopContext(Class<? extends Annotation> scope) {
         throw new UnsupportedOperationException("not yet implemented");

@@ -46,6 +46,10 @@ import org.ops4j.pax.exam.util.PathUtils;
  * @author Harald Wellmann
  */
 public class TestConfiguration {
+    
+    
+    private TestConfiguration() {
+    }
 
     public static Option regressionDefaults() {
         return composite(

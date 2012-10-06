@@ -41,170 +41,151 @@ import org.apache.webbeans.spi.ResourceInjectionService;
 import org.apache.webbeans.spi.adaptor.ELAdaptor;
 import org.apache.webbeans.web.context.WebContextsService;
 
-
 public class WabContainerLifecycle extends AbstractLifeCycle {
 
-    /**Manages unused conversations*/
-    private ScheduledExecutorService service = null;
-
+    /** Manages unused conversations */
+    private ScheduledExecutorService service;
 
     /**
-     * Creates a new lifecycle instance and initializes
-     * the instance variables.
+     * Creates a new lifecycle instance and initializes the instance variables.
      */
-    public WabContainerLifecycle()
-    {
+    public WabContainerLifecycle() {
         this.logger = WebBeansLoggerFacade.getLogger(WabContainerLifecycle.class);
     }
 
     /**
-     * Creates a new lifecycle instance and initializes
-     * the instance variables.
+     * Creates a new lifecycle instance and initializes the instance variables.
      */
-    public WabContainerLifecycle(WebBeansContext webBeansContext)
-    {
+    public WabContainerLifecycle(WebBeansContext webBeansContext) {
         super(null, webBeansContext);
         this.logger = WebBeansLoggerFacade.getLogger(WabContainerLifecycle.class);
     }
 
-    protected void afterStartApplication(final Object startupObject)
-    {
-        String strDelay = getWebBeansContext().getOpenWebBeansConfiguration().getProperty(OpenWebBeansConfiguration.CONVERSATION_PERIODIC_DELAY,"150000");
+    protected void afterStartApplication(final Object startupObject) {
+        String strDelay = getWebBeansContext().getOpenWebBeansConfiguration().getProperty(
+            OpenWebBeansConfiguration.CONVERSATION_PERIODIC_DELAY, "150000");
         long delay = Long.parseLong(strDelay);
 
-        service = Executors.newScheduledThreadPool(1, new ThreadFactory()
-        {            
-            public Thread newThread(Runnable runable)
-            {
-              Thread t = new Thread(runable, "OwbConversationCleaner-"
-                  /*+ ServletCompatibilityUtil.getServletInfo((ServletContext) (startupObject))*/);
+        service = Executors.newScheduledThreadPool(1, new ThreadFactory() {
+
+            public Thread newThread(Runnable runable) {
+                Thread t = new Thread(runable, "OwbConversationCleaner-"
+                /* + ServletCompatibilityUtil.getServletInfo((ServletContext) (startupObject)) */);
                 t.setDaemon(true);
-                return t;                
+                return t;
             }
         });
-        service.scheduleWithFixedDelay(new ConversationCleaner(), delay, delay, TimeUnit.MILLISECONDS);
+        service.scheduleWithFixedDelay(new ConversationCleaner(), delay, delay,
+            TimeUnit.MILLISECONDS);
 
         ELAdaptor elAdaptor = getWebBeansContext().getService(ELAdaptor.class);
         ELResolver resolver = elAdaptor.getOwbELResolver();
-        //Application is configured as JSP
-        if(getWebBeansContext().getOpenWebBeansConfiguration().isJspApplication())
-        {
+        // Application is configured as JSP
+        if (getWebBeansContext().getOpenWebBeansConfiguration().isJspApplication()) {
             logger.log(Level.FINE, "Application is configured as JSP. Adding EL Resolver.");
-            
+
             JspFactory factory = JspFactory.getDefaultFactory();
-            if (factory != null) 
-            {
-                JspApplicationContext applicationCtx = factory.getJspApplicationContext((ServletContext)(startupObject));
-                applicationCtx.addELResolver(resolver);                
-            }            
-            else
-            {
+            if (factory != null) {
+                JspApplicationContext applicationCtx = factory
+                    .getJspApplicationContext((ServletContext) (startupObject));
+                applicationCtx.addELResolver(resolver);
+            }
+            else {
                 logger.log(Level.FINE, "Default JSPFactroy instance has not found");
             }
         }
 
     }
 
-    protected void beforeStartApplication(Object startupObject)
-    {
-    	setWebBeansContext(WebBeansContext.currentInstance());
+    protected void beforeStartApplication(Object startupObject) {
+        setWebBeansContext(WebBeansContext.currentInstance());
         this.scannerService.init(startupObject);
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
-    protected void beforeStopApplication(Object stopObject)
-    {
-        if(service != null)
-        {
+    @Override
+    protected void beforeStopApplication(Object stopObject) {
+        if (service != null) {
             service.shutdownNow();
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected void afterStopApplication(Object stopObject)
-    {
-//        ServletContext servletContext;
-//
-//        if(stopObject instanceof ServletContext)
-//        {
-//            servletContext = (ServletContext)stopObject;
-//        }
-//        else
-//        {
-//            //servletContext = getServletContext(stopObject);
-//        }
+    @Override
+    protected void afterStopApplication(Object stopObject) {
+        // ServletContext servletContext;
+        //
+        // if(stopObject instanceof ServletContext)
+        // {
+        // servletContext = (ServletContext)stopObject;
+        // }
+        // else
+        // {
+        // //servletContext = getServletContext(stopObject);
+        // }
 
-        //Clear the resource injection service
-        ResourceInjectionService injectionServices = getWebBeansContext().getService(ResourceInjectionService.class);
-        if(injectionServices != null)
-        {
+        // Clear the resource injection service
+        ResourceInjectionService injectionServices = getWebBeansContext().getService(
+            ResourceInjectionService.class);
+        if (injectionServices != null) {
             injectionServices.clear();
         }
 
-        //Comment out for commit OWB-502
-        //ContextFactory.cleanUpContextFactory();
+        // Comment out for commit OWB-502
+        // ContextFactory.cleanUpContextFactory();
 
         this.cleanupShutdownThreadLocals();
-        
-        if (logger.isLoggable(Level.INFO))
-        {
-          logger.log(Level.INFO, OWBLogConst.INFO_0002 /*, ServletCompatibilityUtil.getServletInfo(servletContext) */);
+
+        if (logger.isLoggable(Level.INFO)) {
+            logger.log(Level.INFO, OWBLogConst.INFO_0002 /*
+                                                          * ,
+                                                          * ServletCompatibilityUtil.getServletInfo
+                                                          * (servletContext)
+                                                          */);
         }
     }
 
-  /**
-     * Ensures that all ThreadLocals, which could have been set in this
-     * (shutdown-) Thread, are removed in order to prevent memory leaks.
+    /**
+     * Ensures that all ThreadLocals, which could have been set in this (shutdown-) Thread, are
+     * removed in order to prevent memory leaks.
      */
-    private void cleanupShutdownThreadLocals()
-    {
+    private void cleanupShutdownThreadLocals() {
         InjectionPointBean.removeThreadLocal();
         WebContextsService.removeThreadLocals();
     }
-    
+
     /**
      * Returns servelt context otherwise throws exception.
-     * @param object object
+     * 
+     * @param object
+     *            object
      * @return servlet context
      */
     @SuppressWarnings("unused")
-	private ServletContext getServletContext(Object object)
-    {
-        if(object != null)
-        {
-            if(object instanceof ServletContextEvent)
-            {
-                object = ((ServletContextEvent) object).getServletContext();
-                return (ServletContext)object;
+    private ServletContext getServletContext(Object object) {
+        if (object != null) {
+            if (object instanceof ServletContextEvent) {
+                ServletContext context = ((ServletContextEvent) object).getServletContext();
+                return context;
             }
-            else
-            {
-                throw new WebBeansException(WebBeansLoggerFacade.getTokenString(OWBLogConst.EXCEPT_0002));
+            else {
+                throw new WebBeansException(
+                    WebBeansLoggerFacade.getTokenString(OWBLogConst.EXCEPT_0002));
             }
-        }                
-        
+        }
+
         throw new IllegalArgumentException("ServletContextEvent object but found null");
     }
-    
+
     /**
-     * Conversation cleaner thread, that
-     * clears unused conversations.
-     *
+     * Conversation cleaner thread, that clears unused conversations.
+     * 
      */
-    private static class ConversationCleaner implements Runnable
-    {
-        public ConversationCleaner()
-        {
+    private static class ConversationCleaner implements Runnable {
+
+        public ConversationCleaner() {
 
         }
 
-        public void run()
-        {
+        public void run() {
             WebBeansContext.currentInstance().getConversationManager().destroyWithRespectToTimout();
 
         }

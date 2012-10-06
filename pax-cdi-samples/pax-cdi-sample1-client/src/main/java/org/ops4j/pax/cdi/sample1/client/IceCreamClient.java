@@ -31,7 +31,7 @@ import org.ops4j.pax.cdi.sample1.IceCreamService;
 public class IceCreamClient {
 
     @Inject
-    @OsgiService(timeout = 2000, dynamic = true, filter="(flavour=chocolate)")
+    @OsgiService(timeout = 2000, dynamic = true, filter = "(flavour=chocolate)")
     private IceCreamService iceCreamService;
 
     @Inject

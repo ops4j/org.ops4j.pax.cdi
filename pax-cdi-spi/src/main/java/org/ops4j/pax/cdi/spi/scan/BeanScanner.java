@@ -131,7 +131,8 @@ public class BeanScanner {
             classPathElements = bundleClassPath.split(",");
         }
 
-        for (String classPath : classPathElements) {
+        for (String cp : classPathElements) {
+            String classPath = cp;
             if (classPath.equals(".")) {
                 classPath = "/";
             }

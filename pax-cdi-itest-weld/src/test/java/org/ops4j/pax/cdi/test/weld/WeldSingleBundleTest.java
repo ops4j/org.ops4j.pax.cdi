@@ -88,8 +88,8 @@ public class WeldSingleBundleTest {
         assertThat(containerFactory.getProviderName(), is("org.ops4j.pax.cdi.weld.impl.Weld"));
         assertThat(containerFactory.getContainers().size(), is(1));
 
-        CdiContainer container = containerFactory.getContainers().iterator().next();
-        assertThat(container.getBundle().getSymbolicName(), is("org.ops4j.pax.cdi.sample1"));
+        CdiContainer cdiContainer = containerFactory.getContainers().iterator().next();
+        assertThat(cdiContainer.getBundle().getSymbolicName(), is("org.ops4j.pax.cdi.sample1"));
         Thread.sleep(2000);
 }
 

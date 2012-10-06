@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
  * 
  * @author Harald Wellmann
  */
-@Target({})
+@Target({ /* none */ })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Property {

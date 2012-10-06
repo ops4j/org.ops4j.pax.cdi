@@ -32,13 +32,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JettyDecorator implements ServletContextHandler.Decorator {
-    
+
     public static final String INJECTOR_KEY = "org.ops4j.pax.cdi.injector";
 
     private static Logger log = LoggerFactory.getLogger(JettyDecorator.class);
-    
+
     private ServletContext servletContext;
-    
+
     private Injector injector;
 
     protected JettyDecorator(ServletContext servletContext) {
@@ -61,8 +61,10 @@ public class JettyDecorator implements ServletContextHandler.Decorator {
         if (injector == null) {
             injector = (Injector) servletContext.getAttribute(INJECTOR_KEY);
 
-            if (injector == null)
-                throw new IllegalArgumentException("no injector found in servlet context attributes");
+            if (injector == null) {
+                throw new IllegalArgumentException(
+                    "no injector found in servlet context attributes");
+            }
         }
         return injector;
     }
@@ -72,7 +74,7 @@ public class JettyDecorator implements ServletContextHandler.Decorator {
         return filter;
     }
 
-    public <T extends Servlet> T decorateServletInstance(T servlet)  {
+    public <T extends Servlet> T decorateServletInstance(T servlet) {
         getInjector().inject(servlet);
         return servlet;
     }

@@ -40,7 +40,7 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class ProxyTest {
-	
+
     @Configuration
     public Option[] config() {
         return options(
@@ -48,10 +48,10 @@ public class ProxyTest {
 
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1"),
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1-client"),
-            
+
             // doesn't work for WABs
             // workspaceBundle("pax-cdi-samples/pax-cdi-sample1-web"),
-            
+
             mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", "0.3.0-SNAPSHOT"),
             workspaceBundle("pax-cdi-extender"),
             workspaceBundle("pax-cdi-extension"),
@@ -78,25 +78,24 @@ public class ProxyTest {
             mavenBundle("org.apache.geronimo.specs", "geronimo-jcdi_1.0_spec").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec")
                 .versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject()
-        );
+            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject());
 
     }
 
     @Test
     public void proxyForPackageVisibleClass() throws Exception {
-		Class<?> klass = Class.forName("org.ops4j.pax.cdi.sample1.web.session.SimpleSessionBean");
-		final ClassLoader classLoader = klass.getClassLoader();
+        Class<?> klass = Class.forName("org.ops4j.pax.cdi.sample1.web.session.SimpleSessionBean");
+        final ClassLoader classLoader = klass.getClassLoader();
 
-		ProxyFactory factory = new ProxyFactory();		
-		factory.setSuperclass(klass);
-		factory.setInterfaces(new Class[]{Serializable.class});
-		
-		Class<?> proxyClass = factory.createClass();
-		Object proxy = proxyClass.newInstance();
-		ClassLoader proxyClassLoader = proxyClass.getClassLoader();
-        
-		assertThat(proxy, is(instanceOf(klass)));
-		assertThat(proxyClassLoader, is(classLoader));
+        ProxyFactory factory = new ProxyFactory();
+        factory.setSuperclass(klass);
+        factory.setInterfaces(new Class[] { Serializable.class });
+
+        Class<?> proxyClass = factory.createClass();
+        Object proxy = proxyClass.newInstance();
+        ClassLoader proxyClassLoader = proxyClass.getClassLoader();
+
+        assertThat(proxy, is(instanceOf(klass)));
+        assertThat(proxyClassLoader, is(classLoader));
     }
 }

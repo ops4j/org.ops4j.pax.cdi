@@ -38,8 +38,9 @@ import org.ops4j.pax.cdi.spi.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OpenWebBeansListener implements ServletContextListener, ServletRequestListener, HttpSessionListener {
-    
+public class OpenWebBeansListener implements ServletContextListener, ServletRequestListener,
+    HttpSessionListener {
+
     private static Logger log = LoggerFactory.getLogger(OpenWebBeansListener.class);
     private ContainerLifecycle lifecycle;
     private WebBeansContext webBeansContext;
@@ -58,7 +59,7 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
         Injector injector = new Injector(manager);
         context.setAttribute(JettyDecorator.INJECTOR_KEY, injector);
         JettyDecorator.register(context);
-        
+
         context.setAttribute(BeanManager.class.getName(), manager);
     }
 
@@ -84,8 +85,7 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
     public void requestDestroyed(ServletRequestEvent event) {
         log.debug("request destroyed");
         ELContextStore elStore = ELContextStore.getInstance(false);
-        if (elStore != null)
-        {
+        if (elStore != null) {
             elStore.destroyELContextStore();
         }
 
@@ -93,15 +93,13 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
 
         cleanupRequestThreadLocals();
     }
-	// TODO Auto-generated method stub
-	
 
-    private void cleanupRequestThreadLocals()
-    {
+    // TODO Auto-generated method stub
+
+    private void cleanupRequestThreadLocals() {
         InjectionPointBean.removeThreadLocal();
         WebContextsService.removeThreadLocals();
     }
-    
 
     @Override
     public void requestInitialized(ServletRequestEvent event) {

@@ -40,44 +40,43 @@ import org.apache.webbeans.spi.ScannerService;
 import org.apache.webbeans.util.WebBeansConstants;
 import org.apache.webbeans.xml.WebBeansXMLConfigurator;
 
-public abstract class AbstractLifeCycle implements ContainerLifecycle
-{
-    //Logger instance
+public abstract class AbstractLifeCycle implements ContainerLifecycle {
+
+    // Logger instance
     protected Logger logger;
-    
-    /**Discover bean classes*/
+
+    /** Discover bean classes */
     protected ScannerService scannerService;
-    
+
     protected ContextsService contextsService;
 
-    /**Deploy discovered beans*/
-    private BeansDeployer deployer;
-
-    /**XML discovery. */
-    //XML discovery is removed from the specification. It is here for next revisions of spec.
-    private WebBeansXMLConfigurator xmlDeployer;
-    
-    /**Using for lookup operations*/
-    private JNDIService jndiService;
-    
-    /**Root container.*/
-    private BeanManagerImpl beanManager;
     protected WebBeansContext webBeansContext;
 
-    protected AbstractLifeCycle()
-    {
+    /** Deploy discovered beans */
+    private BeansDeployer deployer;
+
+    /** XML discovery. */
+    // XML discovery is removed from the specification. It is here for next revisions of spec.
+    private WebBeansXMLConfigurator xmlDeployer;
+
+    /** Using for lookup operations */
+    private JNDIService jndiService;
+
+    /** Root container. */
+    private BeanManagerImpl beanManager;
+
+    protected AbstractLifeCycle() {
         this(null, null);
     }
-    
-    protected AbstractLifeCycle(Properties properties, WebBeansContext webBeansContext)
-    {
+
+    protected AbstractLifeCycle(Properties properties, WebBeansContext webBeansContext) {
         beforeInitApplication(properties);
         if (webBeansContext != null) {
-        	setWebBeansContext(webBeansContext);
+            setWebBeansContext(webBeansContext);
         }
         initApplication(properties);
     }
-    
+
     protected void setWebBeansContext(WebBeansContext webBeansContext) {
         this.webBeansContext = webBeansContext;
         beanManager = this.webBeansContext.getBeanManagerImpl();
@@ -86,159 +85,144 @@ public abstract class AbstractLifeCycle implements ContainerLifecycle
         jndiService = this.webBeansContext.getService(JNDIService.class);
         beanManager.setXMLConfigurator(xmlDeployer);
         scannerService = this.webBeansContext.getScannerService();
-        contextsService = this.webBeansContext.getService(ContextsService.class);    	
+        contextsService = this.webBeansContext.getService(ContextsService.class);
     }
 
-    public WebBeansContext getWebBeansContext()
-    {
+    public WebBeansContext getWebBeansContext() {
         return webBeansContext;
     }
 
-    public BeanManager getBeanManager()
-    {        
+    public BeanManager getBeanManager() {
         return beanManager;
     }
-    
-    public void startApplication(Object startupObject)
-    {
+
+    public void startApplication(Object startupObject) {
         // Initalize Application Context
         logger.info(OWBLogConst.INFO_0005);
-        
+
         long begin = System.currentTimeMillis();
-        
-        //Before Start
+
+        // Before Start
         beforeStartApplication(startupObject);
-        
-        //Load all plugins
+
+        // Load all plugins
         webBeansContext.getPluginLoader().startUp();
-        
-        //Initialize contexts
+
+        // Initialize contexts
         contextsService.init(startupObject);
-        
-        //Scanning process
+
+        // Scanning process
         logger.fine("Scanning classpaths for beans artifacts.");
 
-        //Scan
+        // Scan
         scannerService.scan();
-        
-        //Deploy beans
+
+        // Deploy beans
         logger.fine("Deploying scanned beans.");
 
-        //Deploy
+        // Deploy
         deployer.deploy(scannerService);
 
-        //Start actual starting on sub-classes
+        // Start actual starting on sub-classes
         afterStartApplication(startupObject);
 
-        if (logger.isLoggable(Level.INFO))
-        {
-            logger.log(Level.INFO, OWBLogConst.INFO_0001, Long.toString(System.currentTimeMillis() - begin));
+        if (logger.isLoggable(Level.INFO)) {
+            logger.log(Level.INFO, OWBLogConst.INFO_0001,
+                Long.toString(System.currentTimeMillis() - begin));
         }
     }
 
-    public void stopApplication(Object endObject)
-    {
+    public void stopApplication(Object endObject) {
         logger.fine("OpenWebBeans Container is stopping.");
 
-        try
-        {
-            //Sub-classes operations            
+        try {
+            // Sub-classes operations
             beforeStopApplication(endObject);
 
-            //Set up the thread local for Application scoped as listeners will be App scoped.
+            // Set up the thread local for Application scoped as listeners will be App scoped.
             contextsService.startContext(ApplicationScoped.class, endObject);
-            
-            //Fire shut down
+
+            // Fire shut down
             beanManager.fireEvent(new BeforeShutdownImpl());
-            
-            //Destroys context
+
+            // Destroys context
             contextsService.destroy(endObject);
-            
-            //Unbind BeanManager
+
+            // Unbind BeanManager
             jndiService.unbind(WebBeansConstants.WEB_BEANS_MANAGER_JNDI_NAME);
 
-            //Free all plugin resources
+            // Free all plugin resources
             webBeansContext.getPluginLoader().shutDown();
-            
-            //Clear extensions
+
+            // Clear extensions
             webBeansContext.getExtensionLoader().clear();
-            
-            //Delete Resolutions Cache
-            InjectionResolver injectionResolver = webBeansContext.getBeanManagerImpl().getInjectionResolver();
+
+            // Delete Resolutions Cache
+            InjectionResolver injectionResolver = webBeansContext.getBeanManagerImpl()
+                .getInjectionResolver();
 
             injectionResolver.clearCaches();
-            
-            //Delete AnnotateTypeCache
+
+            // Delete AnnotateTypeCache
             webBeansContext.getAnnotatedElementFactory().clear();
-            
-            //After Stop
+
+            // After Stop
             afterStopApplication(endObject);
 
             // Clear BeanManager
             beanManager.clear();
 
             // Clear singleton list
-            WebBeansFinder.clearInstances(endObject /*WebBeansUtil.getCurrentClassLoader()*/);
-                        
+            WebBeansFinder.clearInstances(endObject /* WebBeansUtil.getCurrentClassLoader() */);
+
         }
-        catch (Exception e)
-        {
-            if (logger.isLoggable(Level.SEVERE))
-            {
+        catch (Exception e) {
+            if (logger.isLoggable(Level.SEVERE)) {
                 logger.log(Level.SEVERE, OWBLogConst.ERROR_0021, e);
             }
         }
-        
+
     }
 
     /**
      * @return the logger
      */
-    protected Logger getLogger()
-    {
+    protected Logger getLogger() {
         return logger;
     }
 
     /**
      * @return the contextsService
      */
-    public ContextsService getContextService()
-    {
+    public ContextsService getContextService() {
         return contextsService;
     }
 
-    public void initApplication(Properties properties)
-    {
+    public void initApplication(Properties properties) {
         afterInitApplication(properties);
-    }    
-    
-    protected void beforeInitApplication(Properties properties)
-    {
-        //Do nothing as default
-    }
-    
-    protected void afterInitApplication(Properties properties)
-    {
-        //Do nothing as default
-    }
-        
-    protected void afterStartApplication(Object startupObject)
-    {
-        //Do nothing as default
     }
 
-    protected void afterStopApplication(Object stopObject)
-    {
-        //Do nothing as default
-    }
-    
-    protected void beforeStartApplication(Object startupObject)
-    {
-        //Do nothing as default
+    protected void beforeInitApplication(Properties properties) {
+        // Do nothing as default
     }
 
-    protected void beforeStopApplication(Object stopObject)
-    {
-        //Do nothing as default
-    }    
+    protected void afterInitApplication(Properties properties) {
+        // Do nothing as default
+    }
+
+    protected void afterStartApplication(Object startupObject) {
+        // Do nothing as default
+    }
+
+    protected void afterStopApplication(Object stopObject) {
+        // Do nothing as default
+    }
+
+    protected void beforeStartApplication(Object startupObject) {
+        // Do nothing as default
+    }
+
+    protected void beforeStopApplication(Object stopObject) {
+        // Do nothing as default
+    }
 }

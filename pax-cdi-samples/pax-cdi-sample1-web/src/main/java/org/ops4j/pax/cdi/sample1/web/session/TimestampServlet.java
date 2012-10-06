@@ -29,12 +29,12 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = "/timestamp")
 public class TimestampServlet extends HttpServlet {
 
-	@Inject
-	private SimpleSessionBean sessionBean;
+    @Inject
+    private SimpleSessionBean sessionBean;
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		resp.setContentType("text/text");
-		resp.getWriter().print(sessionBean.getTimestamp());
-	}
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setContentType("text/text");
+        resp.getWriter().print(sessionBean.getTimestamp());
+    }
 }

@@ -32,27 +32,27 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = "/session")
 public class SessionServlet extends HttpServlet {
 
-	@Inject
-	private BeanManager beanManager;
+    @Inject
+    private BeanManager beanManager;
 
-	@Inject
-	private SimpleSessionBean sessionBean;
+    @Inject
+    private SimpleSessionBean sessionBean;
 
-	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
-		throws ServletException, IOException {
-		if (!beanManager.getContext(SessionScoped.class).isActive()) {
-			throw new ServletException("session is not active");
-		}
-		else {
-			super.service(request, response);
-		}
-	}
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        if (!beanManager.getContext(SessionScoped.class).isActive()) {
+            throw new ServletException("session is not active");
+        }
+        else {
+            super.service(request, response);
+        }
+    }
 
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-		throws IOException {
-		response.setContentType("text/text");
-		response.getWriter().println("It worked!");
-	}
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
+        response.setContentType("text/text");
+        response.getWriter().println("It worked!");
+    }
 }

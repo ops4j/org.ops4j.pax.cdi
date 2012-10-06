@@ -57,8 +57,8 @@ public class NoWabWebContainerTest {
     @Configuration
     public Option[] config() {
         return options(
-        	regressionDefaults(),
-        	
+            regressionDefaults(),
+
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1"),
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1-client"),
             

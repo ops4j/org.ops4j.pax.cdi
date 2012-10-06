@@ -27,7 +27,7 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-    	WebBeansFinder.setSingletonService(new BundleSingletonService());
+        WebBeansFinder.setSingletonService(new BundleSingletonService());
         adapter = new OpenWebBeansWebAdapter(context);
         adapter.start();
     }

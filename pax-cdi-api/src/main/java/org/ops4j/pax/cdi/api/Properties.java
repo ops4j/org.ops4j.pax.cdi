@@ -41,5 +41,5 @@ import java.lang.annotation.Target;
 public @interface Properties {
 
     /** List of properties for service registration. */
-    Property[] value() default {};
+    Property[] value() default { };
 }

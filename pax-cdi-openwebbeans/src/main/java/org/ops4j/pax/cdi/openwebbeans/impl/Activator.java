@@ -31,12 +31,12 @@ import org.osgi.framework.hooks.weaving.WeavingHook;
 public class Activator implements BundleActivator {
 
     /**
-     * Starts this bundle and registers a {@link CdiContainerFactory} service and a weaving
-     * hook for Javassisst proxies.
+     * Starts this bundle and registers a {@link CdiContainerFactory} service and a weaving hook for
+     * Javassisst proxies.
      */
     @Override
     public void start(BundleContext context) throws Exception {
-    	ProxyWeavingHook weavingHook = new ProxyWeavingHook();
+        ProxyWeavingHook weavingHook = new ProxyWeavingHook();
         OpenWebBeansCdiContainerFactory factory = new OpenWebBeansCdiContainerFactory(
             context.getBundle());
         context.registerService(WeavingHook.class, weavingHook, null);

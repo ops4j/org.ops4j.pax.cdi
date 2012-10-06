@@ -35,6 +35,12 @@ import org.slf4j.LoggerFactory;
 public class ProxyFactory {
 
     private static Logger log = LoggerFactory.getLogger(ProxyFactory.class);
+    
+    /**
+     * Hidden constructor of utility class.
+     */
+    private ProxyFactory() {
+    }
 
     public static <T> Object getServiceProxy(InjectionPoint ip) {
         OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);

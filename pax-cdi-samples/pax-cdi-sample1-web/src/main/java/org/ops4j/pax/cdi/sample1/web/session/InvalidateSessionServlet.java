@@ -26,28 +26,29 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/invalidate")
 public class InvalidateSessionServlet extends HttpServlet {
 
-	@Inject
-	private BeanManager beanManager;
+    @Inject
+    private BeanManager beanManager;
 
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		response.setContentType("text/text");
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
+        response.setContentType("text/text");
 
-		if (request.getParameter("timeout") != null) {
-			SimpleSessionBean.setBeanDestroyed(false);
-			request.getSession().setMaxInactiveInterval(Integer.parseInt(request.getParameter("timeout")));
-		}
-		else if (request.getParameter("isBeanDestroyed") != null) {
-			response.getWriter().print(SimpleSessionBean.isBeanDestroyed());
-		}
-		else {
-			SimpleSessionBean.setBeanDestroyed(false);
-			request.getSession().invalidate();
-		}
-	}
+        if (request.getParameter("timeout") != null) {
+            SimpleSessionBean.setBeanDestroyed(false);
+            request.getSession().setMaxInactiveInterval(
+                Integer.parseInt(request.getParameter("timeout")));
+        }
+        else if (request.getParameter("isBeanDestroyed") != null) {
+            response.getWriter().print(SimpleSessionBean.isBeanDestroyed());
+        }
+        else {
+            SimpleSessionBean.setBeanDestroyed(false);
+            request.getSession().invalidate();
+        }
+    }
 }

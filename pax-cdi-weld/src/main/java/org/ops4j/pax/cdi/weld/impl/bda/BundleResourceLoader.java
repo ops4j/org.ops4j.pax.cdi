@@ -27,6 +27,7 @@ import org.ops4j.pax.cdi.weld.impl.EnumerationList;
 import org.osgi.framework.Bundle;
 
 public class BundleResourceLoader implements ResourceLoader {
+
     private Bundle bundle;
 
     public BundleResourceLoader(Bundle bundle) {
@@ -38,7 +39,8 @@ public class BundleResourceLoader implements ResourceLoader {
         try {
             Class<?> clazz = bundle.loadClass(name);
             return clazz;
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             throw new ResourceLoadingException(e);
         }
     }
@@ -52,7 +54,8 @@ public class BundleResourceLoader implements ResourceLoader {
     public Collection<URL> getResources(String name) {
         try {
             return new EnumerationList<URL>(bundle.getResources(name));
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new ResourceLoadingException(e);
         }
     }

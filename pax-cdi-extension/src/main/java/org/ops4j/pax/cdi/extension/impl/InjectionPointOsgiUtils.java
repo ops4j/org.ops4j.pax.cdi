@@ -39,6 +39,11 @@ import org.slf4j.LoggerFactory;
 public class InjectionPointOsgiUtils {
 
     private static Logger log = LoggerFactory.getLogger(InjectionPointOsgiUtils.class);
+    
+
+    /** Hidden constructor of utility class. */
+    private InjectionPointOsgiUtils() {
+    }
 
     public static boolean isServiceAvailable(InjectionPoint ip) {
         return InjectionPointOsgiUtils.getServiceReference(ip) != null;

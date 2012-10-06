@@ -26,23 +26,23 @@ import javax.enterprise.context.SessionScoped;
 @SessionScoped
 class SimpleSessionBean implements Serializable {
 
-	private static boolean beanDestroyed = false;
-	private final long timestamp = System.currentTimeMillis();
+    private static boolean beanDestroyed;
+    private final long timestamp = System.currentTimeMillis();
 
-	public long getTimestamp() {
-		return timestamp;
-	}
+    public long getTimestamp() {
+        return timestamp;
+    }
 
-	@PreDestroy
-	public void destroyBean() {
-		beanDestroyed = true;
-	}
+    @PreDestroy
+    public void destroyBean() {
+        beanDestroyed = true;
+    }
 
-	public static boolean isBeanDestroyed() {
-		return beanDestroyed;
-	}
+    public static boolean isBeanDestroyed() {
+        return beanDestroyed;
+    }
 
-	public static void setBeanDestroyed(boolean beanDestroyed) {
-		SimpleSessionBean.beanDestroyed = beanDestroyed;
-	}
+    public static void setBeanDestroyed(boolean beanDestroyed) {
+        SimpleSessionBean.beanDestroyed = beanDestroyed;
+    }
 }

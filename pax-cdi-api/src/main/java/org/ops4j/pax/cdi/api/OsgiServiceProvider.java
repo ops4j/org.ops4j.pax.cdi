@@ -61,5 +61,5 @@ public @interface OsgiServiceProvider {
      * @return
      */
     @Nonbinding
-    Class<?>[] classes() default {};
+    Class<?>[] classes() default { };
 }
