@@ -22,7 +22,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
-import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.el.WeldELContextListener;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.servlet.WeldListener;
@@ -37,8 +36,9 @@ public class WeldServletContextListener extends ForwardingServletListener {
 
     private static Logger log = LoggerFactory.getLogger(WeldServletContextListener.class);
 
-    private Bootstrap bootstrap;
     private ServletListener weldListener;
+
+    private CdiContainer cdiContainer;
 
     public WeldServletContextListener() {
         weldListener = new WeldListener();
@@ -48,7 +48,7 @@ public class WeldServletContextListener extends ForwardingServletListener {
     public void contextInitialized(ServletContextEvent sce) {
 
         ServletContext context = sce.getServletContext();
-        CdiContainer cdiContainer = (CdiContainer) context
+        cdiContainer = (CdiContainer) context
             .getAttribute("org.ops4j.pax.cdi.container");
         cdiContainer.start(context);
         WeldManager manager = cdiContainer.unwrap(WeldManager.class);
@@ -71,7 +71,7 @@ public class WeldServletContextListener extends ForwardingServletListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        bootstrap.shutdown();
+        cdiContainer.stop();
         sce.getServletContext().removeAttribute(JettyDecorator.INJECTOR_KEY);
 
         super.contextDestroyed(sce);

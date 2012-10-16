@@ -16,14 +16,6 @@
         <module>pax-cdi-sample1-client</module>
         <module>pax-cdi-sample1-web</module>
         <module>pax-cdi-sample2-service</module>
-    </modules>
-
-    <profiles>
-        <profile>
-            <id>weld</id>
-            <modules>
-                <module>pax-cdi-jetty-weld-war</module>
-            </modules>
-        </profile>
-    </profiles>
+        <module>pax-cdi-jetty-weld-war</module>
+   </modules>
 </project>

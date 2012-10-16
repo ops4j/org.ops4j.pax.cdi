@@ -141,7 +141,7 @@ public class ServletTest {
     public void checkContainers() throws InterruptedException {
         assertThat(containerFactory.getContainers().size(), is(3));
         Client client = Client.create();
-        WebResource resource = client.resource("http://localhost:8181/sample/message");
+        WebResource resource = client.resource("http://localhost:8181/sample1/message");
         assertThat(resource.get(String.class), is("Message from managed bean\r\n"));
     }
 }

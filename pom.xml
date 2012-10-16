@@ -24,7 +24,7 @@
     <modules>
         <module>pax-cdi-checkstyle-rules</module>
         <module>pax-cdi-parent</module>
-        
+
         <module>pax-cdi-extender</module>
         <module>pax-cdi-spi</module>
         <module>pax-cdi-openwebbeans</module>
@@ -34,16 +34,11 @@
         <module>pax-cdi-itest</module>
         <module>pax-cdi-extension</module>
         <module>pax-cdi-api</module>
+        <module>pax-cdi-weld</module>
+        <module>pax-cdi-itest-weld</module>
     </modules>
 
     <profiles>
-        <profile>
-            <id>weld</id>
-            <modules>
-                <module>pax-cdi-weld</module>
-                <module>pax-cdi-itest-weld</module>
-            </modules>
-        </profile>
         <profile>
             <id>web</id>
             <modules>

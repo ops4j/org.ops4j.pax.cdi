@@ -214,9 +214,6 @@
                     <systemPropertyVariables>
                         <java.util.logging.config.file>src/test/resources/logging.properties</java.util.logging.config.file>
                     </systemPropertyVariables>
-                    <excludes>
-                        <exclude>**/ServletTest.java</exclude>
-                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
