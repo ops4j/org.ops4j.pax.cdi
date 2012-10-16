@@ -70,7 +70,7 @@ public class ServletTest {
             
             // doesn't work for WABs
             //workspaceBundle("pax-cdi-samples/pax-cdi-sample1-web"),
-            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", "0.2.0-SNAPSHOT"),
+            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", "0.3.0-SNAPSHOT"),
             
             workspaceBundle("pax-cdi-extender"),
             workspaceBundle("pax-cdi-extension"),
@@ -92,7 +92,7 @@ public class ServletTest {
             
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm")
                 .versionAsInProject(), //
-            mavenBundle("org.jboss.weld", "weld-osgi-bundle", "1.2.0-SNAPSHOT"),
+            mavenBundle("org.jboss.weld", "weld-osgi-bundle").versionAsInProject(),
 
             // Pax Web
 

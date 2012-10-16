@@ -23,7 +23,7 @@
         <pax.web.version>3.0.0-SNAPSHOT</pax.web.version>
         <slf4j.version>1.6.4</slf4j.version>
         <pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
-        <weld.version>1.2.0-SNAPSHOT</weld.version>
+        <weld.version>1.2.0.Beta1</weld.version>
     </properties>
 
     <dependencyManagement>

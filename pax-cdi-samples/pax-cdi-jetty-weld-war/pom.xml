@@ -21,13 +21,13 @@
         <dependency>
             <groupId>org.jboss.weld.servlet</groupId>
             <artifactId>weld-servlet-core</artifactId>
-            <version>1.2.0-SNAPSHOT</version>
+            <version>${weld.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core</artifactId>
-            <version>1.2.0-SNAPSHOT</version>
+            <version>${weld.version}</version>
             <scope>provided</scope>
         </dependency>
 <!--        

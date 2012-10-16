@@ -78,7 +78,7 @@ public class WeldSingleBundleTest {
             mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm").versionAsInProject(), //
-            mavenBundle("org.jboss.weld", "weld-osgi-bundle", "1.2.0-SNAPSHOT").startLevel(3)
+            mavenBundle("org.jboss.weld", "weld-osgi-bundle").versionAsInProject().startLevel(3)
 
         );
     }
