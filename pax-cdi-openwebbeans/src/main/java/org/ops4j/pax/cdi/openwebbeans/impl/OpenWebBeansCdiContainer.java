@@ -189,8 +189,21 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
     @Override
     public void stop() {
         logger.debug("OpenWebBeans CDI container is shutting down for bundle {}", extendedBundle);
-        stopContexts();
-        lifecycle.stopApplication(contextClassLoader);
+        try {
+            doWithClassLoader(contextClassLoader, new Callable<Void>() {
+
+                @Override
+                public Void call() throws Exception {
+                    stopContexts();
+                    lifecycle.stopApplication(contextClassLoader);
+                    return null;
+                }
+            });
+        }
+        // CHECKSTYLE:SKIP
+        catch (Exception exc) {
+            throw new Ops4jException(exc);
+        }
     }
 
     @Override
