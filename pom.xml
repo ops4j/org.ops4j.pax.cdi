@@ -36,18 +36,10 @@
         <module>pax-cdi-api</module>
         <module>pax-cdi-weld</module>
         <module>pax-cdi-itest-weld</module>
+        <module>pax-cdi-web</module>
+        <module>pax-cdi-web-weld</module>
+        <module>pax-cdi-web-openwebbeans</module>
     </modules>
-
-    <profiles>
-        <profile>
-            <id>web</id>
-            <modules>
-                <module>pax-cdi-web</module>
-                <module>pax-cdi-web-weld</module>
-                <module>pax-cdi-web-openwebbeans</module>
-            </modules>
-        </profile>
-    </profiles>
 
     <licenses>
         <license>

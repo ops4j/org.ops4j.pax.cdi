@@ -189,6 +189,61 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.ops4j.pax.cdi</groupId>
+            <artifactId>pax-cdi-web</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.cdi</groupId>
+            <artifactId>pax-cdi-web-weld</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-jetty</artifactId>
+            <version>${pax.web.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty.aggregate</groupId>
+            <artifactId>jetty-all-server</artifactId>
+            <version>8.1.4.v20120524</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-spi</artifactId>
+            <version>${pax.web.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-api</artifactId>
+            <version>${pax.web.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-extender-war</artifactId>
+            <version>${pax.web.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-runtime</artifactId>
+            <version>${pax.web.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
     </dependencies>
 
@@ -218,69 +273,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>web</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.ops4j.pax.cdi</groupId>
-                    <artifactId>pax-cdi-web</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.ops4j.pax.cdi</groupId>
-                    <artifactId>pax-cdi-web-weld</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.ops4j.pax.web</groupId>
-                    <artifactId>pax-web-jetty</artifactId>
-                    <version>${pax.web.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.eclipse.jetty.aggregate</groupId>
-                    <artifactId>jetty-all-server</artifactId>
-                    <version>8.1.4.v20120524</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.ops4j.pax.web</groupId>
-                    <artifactId>pax-web-spi</artifactId>
-                    <version>${pax.web.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.ops4j.pax.web</groupId>
-                    <artifactId>pax-web-api</artifactId>
-                    <version>${pax.web.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.ops4j.pax.web</groupId>
-                    <artifactId>pax-web-extender-war</artifactId>
-                    <version>${pax.web.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.ops4j.pax.web</groupId>
-                    <artifactId>pax-web-runtime</artifactId>
-                    <version>${pax.web.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-            </dependencies>
-        </profile>
-    </profiles>
 
 </project>

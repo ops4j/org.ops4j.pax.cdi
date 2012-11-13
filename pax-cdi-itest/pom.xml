@@ -236,6 +236,28 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.ops4j.pax.cdi</groupId>
+            <artifactId>pax-cdi-web</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.cdi</groupId>
+            <artifactId>pax-cdi-web-openwebbeans</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+                <!-- for debugging -->
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-extender-war</artifactId>
+            <version>${pax.web.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -265,34 +287,4 @@
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <id>web</id>
-            <dependencies>
-
-                <dependency>
-                    <groupId>org.ops4j.pax.cdi</groupId>
-                    <artifactId>pax-cdi-web</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.ops4j.pax.cdi</groupId>
-                    <artifactId>pax-cdi-web-openwebbeans</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <!-- for debugging -->
-                <dependency>
-                    <groupId>org.ops4j.pax.web</groupId>
-                    <artifactId>pax-web-extender-war</artifactId>
-                    <version>${pax.web.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-            </dependencies>
-        </profile>
-    </profiles>
 </project>
