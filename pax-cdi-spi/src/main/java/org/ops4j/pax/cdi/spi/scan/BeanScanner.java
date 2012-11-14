@@ -199,7 +199,7 @@ public class BeanScanner {
         }
 
         Collection<URL> entries = wiring.findEntries("/", "*.class",
-            BundleWiring.FINDENTRIES_RECURSE);
+            BundleWiring.LISTRESOURCES_LOCAL);
         for (URL entry : entries) {
             beanClasses.add(toClassName("/", entry));
         }
