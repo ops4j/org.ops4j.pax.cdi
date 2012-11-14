@@ -41,6 +41,15 @@
         <module>pax-cdi-web-openwebbeans</module>
     </modules>
 
+    <profiles>
+        <profile>
+            <id>experimental</id>
+            <modules>
+                <module>pax-cdi-itest-jpa</module>
+            </modules>
+        </profile>
+    </profiles>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
