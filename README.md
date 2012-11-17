@@ -12,8 +12,7 @@ Its licensed under the Apache Software License 2.0 by the OPS4J community.
 
 ## Build
 
-You'll need a machine with Java 6 and Apache Maven 3 installed.
-Java 7 does not work due to munged bytecode in org.osgi:org.osgi.core:4.3.0.
+You'll need a machine with Java 6 or Java 7 and Apache Maven 3 installed.
 
 Checkout:
 
@@ -28,7 +27,7 @@ Run Build:
 
 Releases go to Maven Central.
 
-The current milestone release is Pax CDI 0.2.0.
+The current milestone release is Pax CDI 0.3.0.
 
 ## Issue Tracking
 
