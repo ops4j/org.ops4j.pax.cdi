@@ -68,13 +68,13 @@ public abstract class AbstractCdiContainer implements CdiContainer {
                         props.put("bundleId", bundle.getBundleId());
                         props.put("symbolicName", bundle.getSymbolicName());
 
-                        ServiceRegistration<CdiContainer> registration = bc.registerService(CdiContainer.class, AbstractCdiContainer.this,
-                            props);
-
                         // fire ContainerInitialized event
                         BeanManager beanManager = getBeanManager();
                         beanManager.fireEvent(new ContainerInitialized());
                         
+                        ServiceRegistration<CdiContainer> registration = bc.registerService(CdiContainer.class, AbstractCdiContainer.this,
+                            props);
+
                         return registration;
                     }
                 });
