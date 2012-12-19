@@ -137,7 +137,11 @@ public class BeanScanner {
                 classPath = "/";
             }
             Enumeration<URL> e = bundle.findEntries(classPath, "*.class", true);
-            while (e.hasMoreElements()) {
+            /*
+             * FIXME The following only works for directories like WEB-INF/classes/ but
+             * not for embedded archives like WEB-INF/lib/foo.jar.
+             */
+            while (e != null && e.hasMoreElements()) {
                 URL url = e.nextElement();
                 String klass = toClassName(classPath, url);
                 beanClasses.add(klass);
