@@ -64,7 +64,13 @@ public class CdiWebAppDependencyManager implements ReplaceableServiceListener<Ht
     @Override
     public synchronized void serviceChanged(HttpService oldService, HttpService newService) {
         for (ServiceRegistration<WebAppDependencyHolder> registration : registrations.values()) {
-            registration.unregister();
+            try {
+                registration.unregister();
+            }
+            catch (IllegalStateException exc) {
+                // ignore: service has been unregistered already
+                // TODO Can we detect beforehand that the registration is no longer valid?
+            }
         }
         httpService = newService;
         for (long bundleId : webApps.keySet()) {
