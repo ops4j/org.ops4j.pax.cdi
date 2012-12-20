@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
@@ -67,7 +68,7 @@ public class ServletTest {
             // doesn't work for WABs
             // workspaceBundle("pax-cdi-samples/pax-cdi-sample1-web"),
 
-            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", "0.3.0-SNAPSHOT"),
+            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", Info.getPaxCdiVersion()),
             workspaceBundle("pax-cdi-extender"),
             workspaceBundle("pax-cdi-extension"),
             workspaceBundle("pax-cdi-api"),
