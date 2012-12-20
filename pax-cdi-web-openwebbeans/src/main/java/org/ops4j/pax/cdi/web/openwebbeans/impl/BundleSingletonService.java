@@ -20,34 +20,34 @@
 package org.ops4j.pax.cdi.web.openwebbeans.impl;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.WeakHashMap;
 
 import org.apache.webbeans.config.WebBeansContext;
 import org.apache.webbeans.spi.ContainerLifecycle;
 import org.apache.webbeans.spi.ContextsService;
 import org.apache.webbeans.spi.SingletonService;
 import org.apache.webbeans.util.Asserts;
-import org.apache.xbean.osgi.bundle.util.BundleClassLoader;
 import org.ops4j.lang.Ops4jException;
 import org.osgi.framework.Bundle;
 
 public class BundleSingletonService implements SingletonService<WebBeansContext> {
 
     /**
-     * Maps bundle class loaders to contexts.
+     * Maps bundle IDs to contexts.
      */
-    private final Map<ClassLoader, WebBeansContext> singletonMap = new WeakHashMap<ClassLoader, WebBeansContext>();
+    private final Map<Long, WebBeansContext> singletonMap = new HashMap<Long, WebBeansContext>();
 
     public WebBeansContext get(Object key) {
-        ClassLoader classLoader = (ClassLoader) key;
+        Bundle bundle = toBundle(key);
+        long bundleId = bundle.getBundleId();
         synchronized (singletonMap) {
-            WebBeansContext webBeansContext = singletonMap.get(classLoader);
+            WebBeansContext webBeansContext = singletonMap.get(bundleId);
 
             if (webBeansContext == null) {
-                Bundle bundle = assertBundleClassLoaderKey(key);
                 Properties props = new Properties();
                 Map<Class<?>, Object> initialServices = new HashMap<Class<?>, Object>();
 
@@ -66,7 +66,7 @@ public class BundleSingletonService implements SingletonService<WebBeansContext>
                 }
 
                 webBeansContext = new WebBeansContext(initialServices, props);
-                singletonMap.put(classLoader, webBeansContext);
+                singletonMap.put(bundleId, webBeansContext);
             }
 
             return webBeansContext;
@@ -82,31 +82,51 @@ public class BundleSingletonService implements SingletonService<WebBeansContext>
      */
     public void clearInstances(ClassLoader classLoader) {
         Asserts.assertNotNull(classLoader, "classloader is null");
+        Bundle bundle = toBundle(classLoader);
         synchronized (singletonMap) {
-            singletonMap.remove(classLoader);
+            singletonMap.remove(bundle.getBundleId());
         }
     }
 
     @Override
     public void clear(Object classLoader) {
-        assertBundleClassLoaderKey(classLoader);
         clearInstances((ClassLoader) classLoader);
     }
 
     /**
-     * Assert that key is classloader instance.
+     * Assumes that the key is a bundle classloader and returns the corresponding bundle. The ugly
+     * reflection hack is due to the fact that Pax Web 3.0.0.M1 embeds pax-swissbox-core instead of
+     * importing it, whereas Pax CDI imports the class, resulting in a mismatch.
      * 
      * @param key
-     *            key
+     * @return bundle
      */
-    private Bundle assertBundleClassLoaderKey(Object key) {
-        if (!(key instanceof BundleClassLoader)) {
-            throw new IllegalArgumentException(
-                "key must be BundleClassLoader for using BundleSingletonService");
+    private Bundle toBundle(Object key) {
+        try {
+            Method method = key.getClass().getMethod("getBundle");
+            Bundle bundle = (Bundle) method.invoke(key);
+            return bundle;
         }
+        catch (SecurityException exc) {
+            wrapException(exc, key);
+        }
+        catch (NoSuchMethodException exc) {
+            wrapException(exc, key);
+        }
+        catch (IllegalArgumentException exc) {
+            wrapException(exc, key);
+        }
+        catch (IllegalAccessException exc) {
+            wrapException(exc, key);
+        }
+        catch (InvocationTargetException exc) {
+            wrapException(exc, key);
+        }
+        return null;
+    }
 
-        BundleClassLoader cl = (BundleClassLoader) key;
-        Bundle bundle = cl.getBundle();
-        return bundle;
+    private void wrapException(Exception exc, Object key) {
+        throw new IllegalArgumentException("key is " + key.getClass().getName()
+            + " but must be BundleClassLoader for using BundleSingletonService");
     }
 }
