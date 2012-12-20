@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: PAX-CDI-TCK-PROBE
+DynamicImport-Package: *
+Pax-ManagedBeans: WEB-INF/beans.xml
+Bundle-ClassPath: WEB-INF/classes,
+ WEB-INF/lib/jsr299-tck-impl.jar,
+ WEB-INF/lib/jsr299-tck-api.jar,
+ WEB-INF/lib/jboss-test-harness-api.jar,
+ WEB-INF/lib/jboss-test-harness.jar,
+ WEB-INF/lib/testng.jar,
+ WEB-INF/lib/jboss-test-audit-api.jar,
+ WEB-INF/lib/pax-cdi-tck-porting.jar

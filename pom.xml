@@ -47,6 +47,12 @@
                 <module>pax-cdi-itest-jpa</module>
             </modules>
         </profile>
+        <profile>
+            <id>tck</id>
+            <modules>
+                <module>tck</module>
+            </modules>
+        </profile>
     </profiles>
 
     <licenses>
