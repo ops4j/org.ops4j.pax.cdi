@@ -38,7 +38,7 @@ public class Info {
     /**
      * Pax CDI version.
      */
-    private static final String paxCdiVersion;
+    private static final String PAX_CDI_VERSION;
 
     /**
      * True if Pax CDI is a snapshot version.
@@ -46,23 +46,24 @@ public class Info {
     private static boolean paxCdiSnapshotVersion;
 
     static {
-        String _paxCdiVersion = "";
+        String paxCdiVersion = "";
         try {
             InputStream is = Info.class.getResourceAsStream("/META-INF/pax-cdi-version.properties");
             if (is != null) {
                 Properties properties = new Properties();
                 properties.load(is);
-                _paxCdiVersion = properties.getProperty("pax.cdi.version");
-                if (_paxCdiVersion == null) {
-                	throw new IllegalStateException("pax.cdi.version missing in META-INF/pax-cdi-version.properties");
+                paxCdiVersion = properties.getProperty("pax.cdi.version");
+                if (paxCdiVersion == null) {
+                    throw new IllegalStateException(
+                        "pax.cdi.version missing in META-INF/pax-cdi-version.properties");
                 }
             }
         }
         catch (IOException ignore) {
-        	throw new IllegalStateException("cannot read META-INF/pax-cdi-version.properties");
+            throw new IllegalStateException("cannot read META-INF/pax-cdi-version.properties");
         }
-        paxCdiVersion = _paxCdiVersion;
-        paxCdiSnapshotVersion = _paxCdiVersion.endsWith(SNAPSHOT);
+        PAX_CDI_VERSION = paxCdiVersion;
+        paxCdiSnapshotVersion = paxCdiVersion.endsWith(SNAPSHOT);
     }
 
     /**
@@ -78,7 +79,7 @@ public class Info {
      * @return pax exam version
      */
     public static String getPaxCdiVersion() {
-        return paxCdiVersion;
+        return PAX_CDI_VERSION;
     }
 
     /**
