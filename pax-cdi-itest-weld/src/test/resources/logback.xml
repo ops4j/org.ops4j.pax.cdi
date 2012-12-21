@@ -14,7 +14,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  -->
-<configuration debug="false">
+<configuration INFO="false">
   <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
     <resetJUL>true</resetJUL>
   </contextListener>
@@ -39,9 +39,9 @@
     <appender-ref ref="TEST_LOG"/>
   </root>
   <logger name="org.ops4j.pax.exam" level="INFO"/> 
-  <logger name="org.ops4j.pax.cdi" level="DEBUG"/> 
-  <logger name="org.ops4j.pax.web" level="DEBUG"/> 
+  <logger name="org.ops4j.pax.cdi" level="INFO"/> 
+  <logger name="org.ops4j.pax.web" level="INFO"/> 
   <logger name="org.apache.webbeans" level="INFO"/> 
-  <logger name="org.jboss.weld" level="DEBUG"/> 
+  <logger name="org.jboss.weld" level="INFO"/> 
   
 </configuration>
