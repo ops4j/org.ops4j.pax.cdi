@@ -111,7 +111,7 @@ public class PaxExamContainerImpl implements Containers {
         }
     }
 
-    private File explodeArchive(InputStream archive) throws IOException, FileNotFoundException {
+    private File explodeArchive(InputStream archive) throws IOException {
         File tempDir = Files.createTempDir();
         File zip = File.createTempFile("tck", ".zip");
         FileOutputStream os = new FileOutputStream(zip);
@@ -121,8 +121,7 @@ public class PaxExamContainerImpl implements Containers {
         return tempDir;
     }
 
-    private void createManifest(String name, File tempDir) throws FileNotFoundException,
-        IOException {
+    private void createManifest(String name, File tempDir) throws IOException {
         File manifest = new File(tempDir, "META-INF/MANIFEST.MF");
         FileOutputStream mos = new FileOutputStream(manifest);
         InputStream mis = getClass().getResourceAsStream("/probe-manifest.txt");
