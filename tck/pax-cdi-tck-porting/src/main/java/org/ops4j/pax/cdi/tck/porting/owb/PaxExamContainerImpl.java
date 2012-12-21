@@ -27,10 +27,12 @@ import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Field;
 
 import org.jboss.testharness.api.DeploymentException;
 import org.jboss.testharness.spi.Containers;
@@ -43,6 +45,9 @@ import org.ops4j.pax.exam.TestContainerException;
 import org.ops4j.pax.exam.options.UrlProvisionOption;
 import org.ops4j.pax.exam.spi.PaxExamRuntime;
 import org.ops4j.pax.exam.util.PathUtils;
+import org.ops4j.pax.swissbox.framework.ServiceLookup;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.launch.Framework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,25 +65,11 @@ public class PaxExamContainerImpl implements Containers {
     @Override
     public boolean deploy(InputStream archive, String name) throws IOException {
         try {
+            startPaxExamContainer();
             this.deploymentName = name;
 
-            File tempDir = Files.createTempDir();
-            File zip = File.createTempFile("tck", ".zip");
-            FileOutputStream os = new FileOutputStream(zip);
-            StreamUtils.copyStream(archive, os, true);
-            ZipExploder exploder = new ZipExploder();
-            exploder.processFile(zip.getPath(), tempDir.getPath());
-
-            File manifest = new File(tempDir, "META-INF/MANIFEST.MF");
-            FileOutputStream mos = new FileOutputStream(manifest);
-            InputStream mis = getClass().getResourceAsStream("/probe-manifest.txt");
-            StreamUtils.copyStream(mis, mos, false);
-            OutputStreamWriter writer = new OutputStreamWriter(mos);
-            writer.write(String.format("Web-ContextPath: /%s\n",
-                name.substring(0, name.length() - 4)));
-            writer.close();
-            mis.close();
-            mos.close();
+            File tempDir = explodeArchive(archive);
+            createManifest(name, tempDir);
 
             Files.copy(Resources.newInputStreamSupplier(getClass().getResource(
                 "/META-INF/test-harness.properties")), new File(tempDir,
@@ -87,12 +78,60 @@ public class PaxExamContainerImpl implements Containers {
 
             log.info("test WAR in {}", tempDir);
             testContainer.install(bundle);
+            
+            waitForCdiContainerService();
+            
             return true;
         }
         catch (TestContainerException exc) {
             deploymentException = exc;
             return false;
         }
+    }
+
+    private void waitForCdiContainerService() {
+        try {
+            Field field = testContainer.getClass().getDeclaredField("m_framework");
+            field.setAccessible(true);
+            Framework framework = (Framework) field.get(testContainer);
+            BundleContext bc = framework.getBundleContext();
+            ServiceLookup.getService(bc, "org.ops4j.pax.cdi.spi.CdiContainer");
+        }
+        catch (SecurityException exc) {
+            throw new TestContainerException(exc);
+        }
+        catch (NoSuchFieldException exc) {
+            throw new TestContainerException(exc);
+        }
+        catch (IllegalArgumentException exc) {
+            throw new TestContainerException(exc);
+        }
+        catch (IllegalAccessException exc) {
+            throw new TestContainerException(exc);
+        }
+    }
+
+    private File explodeArchive(InputStream archive) throws IOException, FileNotFoundException {
+        File tempDir = Files.createTempDir();
+        File zip = File.createTempFile("tck", ".zip");
+        FileOutputStream os = new FileOutputStream(zip);
+        StreamUtils.copyStream(archive, os, true);
+        ZipExploder exploder = new ZipExploder();
+        exploder.processFile(zip.getPath(), tempDir.getPath());
+        return tempDir;
+    }
+
+    private void createManifest(String name, File tempDir) throws FileNotFoundException,
+        IOException {
+        File manifest = new File(tempDir, "META-INF/MANIFEST.MF");
+        FileOutputStream mos = new FileOutputStream(manifest);
+        InputStream mis = getClass().getResourceAsStream("/probe-manifest.txt");
+        StreamUtils.copyStream(mis, mos, false);
+        OutputStreamWriter writer = new OutputStreamWriter(mos);
+        writer.write(String.format("Web-ContextPath: /%s\n", name.substring(0, name.length() - 4)));
+        writer.close();
+        mis.close();
+        mos.close();
     }
 
     @Override
@@ -102,12 +141,14 @@ public class PaxExamContainerImpl implements Containers {
 
     @Override
     public void undeploy(String name) throws IOException {
-        // TODO Auto-generated method stub
-
+        testContainer.stop();
     }
 
     @Override
     public void setup() throws IOException {
+    }
+
+    private void startPaxExamContainer() throws IOException {
         Option[] options = getConfigurationOptions();
         ExamSystem system = PaxExamRuntime.createServerSystem(options);
         testContainer = PaxExamRuntime.createContainer(system);
@@ -117,8 +158,6 @@ public class PaxExamContainerImpl implements Containers {
     private Option[] getConfigurationOptions() {
         return options(
 
-            // copy most options from PaxExamRuntime.defaultTestSystemOptions(),
-            // except RBC and Pax Logging
             bootDelegationPackage("sun.*"),
             cleanCaches(),
             frameworkStartLevel(20),
@@ -210,5 +249,4 @@ public class PaxExamContainerImpl implements Containers {
             PathUtils.getBaseDir(), pathFromRoot);
         return bundle(url);
     }
-
 }
