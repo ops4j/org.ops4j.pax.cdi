@@ -47,12 +47,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.ops4j.pax.swissbox</groupId>
-                <artifactId>pax-swissbox-tracker</artifactId>
-                <version>${pax.swissbox.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.core</artifactId>
                 <version>4.3.1</version>
