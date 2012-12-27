@@ -3,6 +3,7 @@ bin
 .classpath
 .project
 .settings
+.checkstyle
 test-output
 *.log
 *~

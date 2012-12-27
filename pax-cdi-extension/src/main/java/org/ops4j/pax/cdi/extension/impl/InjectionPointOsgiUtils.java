@@ -22,7 +22,7 @@ import java.lang.reflect.Type;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.swissbox.framework.ServiceLookup;
+import org.ops4j.pax.swissbox.tracker.ServiceLookup;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.Constants;

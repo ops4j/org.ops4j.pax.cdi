@@ -44,7 +44,7 @@ import org.ops4j.pax.exam.TestContainerException;
 import org.ops4j.pax.exam.options.UrlProvisionOption;
 import org.ops4j.pax.exam.spi.PaxExamRuntime;
 import org.ops4j.pax.exam.util.PathUtils;
-import org.ops4j.pax.swissbox.framework.ServiceLookup;
+import org.ops4j.pax.swissbox.tracker.ServiceLookup;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.launch.Framework;
 import org.slf4j.Logger;

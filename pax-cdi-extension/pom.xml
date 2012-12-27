@@ -25,7 +25,7 @@
 
         <dependency>
             <groupId>org.ops4j.pax.swissbox</groupId>
-            <artifactId>pax-swissbox-framework</artifactId>
+            <artifactId>pax-swissbox-tracker</artifactId>
         </dependency>
 
         <dependency>
