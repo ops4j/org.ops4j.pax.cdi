@@ -145,6 +145,12 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -235,8 +241,7 @@
                     </suiteXmlFiles>
 
                     <systemPropertyVariables>
-                        <org.jboss.testharness.libraryDirectory>target/dependency/lib</org.jboss.testharness.libraryDirectory>
-                        <logback.configurationFile>file:${project.basedir}/src/test/resources/logback.xml</logback.configurationFile>
+                        <logback.configurationFile>file:${project.basedir}/src/main/resources/logback.xml</logback.configurationFile>
                     </systemPropertyVariables>
 
                 </configuration>

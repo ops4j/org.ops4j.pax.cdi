@@ -51,7 +51,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.io.Files;
-import com.google.common.io.Resources;
 
 public class PaxExamContainerImpl implements Containers {
 
@@ -70,9 +69,6 @@ public class PaxExamContainerImpl implements Containers {
             File tempDir = explodeArchive(archive);
             createManifest(name, tempDir);
 
-            Files.copy(Resources.newInputStreamSupplier(getClass().getResource(
-                "/META-INF/test-harness.properties")), new File(tempDir,
-                "META-INF/jboss-test-harness.properties"));
             InputStream bundle = new JarCreator(tempDir).jar();
 
             log.info("test WAR in {}", tempDir);
@@ -177,7 +173,7 @@ public class PaxExamContainerImpl implements Containers {
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-extender", "1.6.0"),
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-framework", "1.6.0"),
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-lifecycle", "1.6.0"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker", "1.6.0"),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
