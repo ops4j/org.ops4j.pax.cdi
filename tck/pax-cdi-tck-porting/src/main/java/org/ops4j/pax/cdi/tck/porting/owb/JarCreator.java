@@ -57,6 +57,12 @@ public class JarCreator {
     }
 
     private void jar(File directory, ZipOutputStream jarOutputStream) throws IOException {
+        // directory entries are required, or else bundle classpath may be broken
+        if (!directory.equals(root)) {
+            String path = normalizePath(directory);
+            ZipEntry jarEntry = new ZipEntry(path + File.separator);
+            jarOutputStream.putNextEntry(jarEntry);
+        }
         File[] children = directory.listFiles();
         // loop through dirList, and zip the files
         for (File child : children) {
@@ -65,13 +71,18 @@ public class JarCreator {
             }
             else {
                 FileInputStream fis = new FileInputStream(child);
-                ZipEntry jarEntry = new ZipEntry(child.getPath()
-                    .substring(root.getPath().length() + 1).replaceAll("\\" + File.separator, "/"));
+                ZipEntry jarEntry = new ZipEntry(normalizePath(child));
                 jarOutputStream.putNextEntry(jarEntry);
                 Files.copy(fis, jarOutputStream);
                 fis.close();
             }
         }
+    }
+
+    private String normalizePath(File file) {
+        String relativePath = file.getPath().substring(root.getPath().length() + 1);
+        String path = relativePath.replaceAll("\\" + File.separator, "/");
+        return path;
     }
 
 }
