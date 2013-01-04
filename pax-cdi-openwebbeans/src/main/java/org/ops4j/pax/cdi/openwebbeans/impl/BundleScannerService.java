@@ -29,12 +29,9 @@ import java.util.Set;
 
 import org.apache.webbeans.spi.BDABeansXmlScanner;
 import org.apache.webbeans.spi.ScannerService;
-import org.apache.xbean.osgi.bundle.util.BundleClassLoader;
 import org.apache.xbean.osgi.bundle.util.BundleUtils;
-import org.apache.xbean.osgi.bundle.util.DelegatingBundle;
 import org.ops4j.pax.cdi.spi.scan.BeanScanner;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
