@@ -33,8 +33,13 @@ import org.apache.webbeans.spi.SingletonService;
 import org.apache.webbeans.util.Asserts;
 import org.ops4j.lang.Ops4jException;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BundleSingletonService implements SingletonService<WebBeansContext> {
+    
+    private static Logger log = LoggerFactory.getLogger(BundleSingletonService.class);
 
     /**
      * Maps bundle IDs to contexts.
@@ -102,6 +107,11 @@ public class BundleSingletonService implements SingletonService<WebBeansContext>
      * @return bundle
      */
     private Bundle toBundle(Object key) {
+        if (key instanceof BundleReference) {
+            return BundleReference.class.cast(key).getBundle();
+        }
+        // fallback for Pax Swissbox < 1.6.0 and Pax Web <= 3.0.0.M1
+        log.warn("classloader {} does not implement BundleReference", key);
         try {
             Method method = key.getClass().getMethod("getBundle");
             Bundle bundle = (Bundle) method.invoke(key);
