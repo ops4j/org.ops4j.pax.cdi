@@ -49,13 +49,6 @@
 
         <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
-            <artifactId>pax-cdi-sample3-service</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi</groupId>
             <artifactId>pax-cdi-extension</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
