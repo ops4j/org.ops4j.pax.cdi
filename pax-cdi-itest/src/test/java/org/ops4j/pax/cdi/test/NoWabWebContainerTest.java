@@ -33,6 +33,7 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.cdi.sample1.client.IceCreamClient;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
@@ -71,6 +72,7 @@ public class NoWabWebContainerTest {
             workspaceBundle("pax-cdi-web-openwebbeans"),
 
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-lifecycle").versionAsInProject(),
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-extender").versionAsInProject(),
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-core").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
@@ -97,13 +99,13 @@ public class NoWabWebContainerTest {
             // Pax Web
 
             systemProperty("org.osgi.service.http.port").value("8181"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-spi").version("3.0.0.M1"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-api").version("3.0.0.M1"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version("3.0.0.M1"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard").version("3.0.0.M1"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-jetty").version("3.0.0.M1"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-runtime").version("3.0.0.M1"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-jsp").version("3.0.0.M1"),
+            mavenBundle("org.ops4j.pax.web", "pax-web-spi").version(Info.getPaxWebVersion()),
+            mavenBundle("org.ops4j.pax.web", "pax-web-api").version(Info.getPaxWebVersion()),
+            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version(Info.getPaxWebVersion()),
+            mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard").version(Info.getPaxWebVersion()),
+            mavenBundle("org.ops4j.pax.web", "pax-web-jetty").version(Info.getPaxWebVersion()),
+            mavenBundle("org.ops4j.pax.web", "pax-web-runtime").version(Info.getPaxWebVersion()),
+            mavenBundle("org.ops4j.pax.web", "pax-web-jsp").version(Info.getPaxWebVersion()),
             mavenBundle("org.eclipse.jdt.core.compiler", "ecj").version("3.5.1"),
             mavenBundle("org.eclipse.jetty", "jetty-util").version("8.1.4.v20120524"),
             mavenBundle("org.eclipse.jetty", "jetty-io").version("8.1.4.v20120524"),
@@ -114,13 +116,13 @@ public class NoWabWebContainerTest {
             mavenBundle("org.eclipse.jetty", "jetty-xml").version("8.1.4.v20120524"),
             mavenBundle("org.eclipse.jetty", "jetty-servlet").version("8.1.4.v20120524"),
             mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec").version("1.0"),
+            mavenBundle("org.osgi", "org.osgi.compendium").version("4.3.1"),
             mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
             mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
             mavenBundle("com.sun.jersey.contribs", "jersey-apache-client").version("1.13"),
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.commons-httpclient", "3.1_7"),
             mavenBundle("commons-codec", "commons-codec", "1.6"),
-            mavenBundle("org.slf4j", "jcl-over-slf4j", "1.6.0"),
-            mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.4.0")
+            mavenBundle("org.slf4j", "jcl-over-slf4j", "1.6.0")
             );
     }
 

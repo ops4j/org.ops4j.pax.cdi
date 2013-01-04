@@ -36,6 +36,16 @@ public class Info {
     private static final String SNAPSHOT = "SNAPSHOT";
 
     /**
+     * Pax Web version.
+     */
+    private static final String PAX_WEB_VERSION;
+
+    /**
+     * True if Pax Web is a snapshot version.
+     */
+    private static boolean paxWebSnapshotVersion;
+
+    /**
      * Pax CDI version.
      */
     private static final String PAX_CDI_VERSION;
@@ -47,6 +57,7 @@ public class Info {
 
     static {
         String paxCdiVersion = "";
+        String paxWebVersion = "";
         try {
             InputStream is = Info.class.getResourceAsStream("/META-INF/pax-cdi-version.properties");
             if (is != null) {
@@ -57,6 +68,11 @@ public class Info {
                     throw new IllegalStateException(
                         "pax.cdi.version missing in META-INF/pax-cdi-version.properties");
                 }
+                paxWebVersion = properties.getProperty("pax.web.version");
+                if (paxWebVersion == null) {
+                    throw new IllegalStateException(
+                        "pax.web.version missing in META-INF/pax-web-version.properties");
+                }
             }
         }
         catch (IOException ignore) {
@@ -64,6 +80,8 @@ public class Info {
         }
         PAX_CDI_VERSION = paxCdiVersion;
         paxCdiSnapshotVersion = paxCdiVersion.endsWith(SNAPSHOT);
+        PAX_WEB_VERSION = paxWebVersion;
+        paxWebSnapshotVersion = paxWebVersion.endsWith(SNAPSHOT);
     }
 
     /**
@@ -74,9 +92,9 @@ public class Info {
     }
 
     /**
-     * Discovers the Pax Exam version. If version cannot be determined returns an empty string.
+     * Discovers the Pax CDI version. If version cannot be determined returns an empty string.
      * 
-     * @return pax exam version
+     * @return Pax CDI version
      */
     public static String getPaxCdiVersion() {
         return PAX_CDI_VERSION;
@@ -85,9 +103,27 @@ public class Info {
     /**
      * Getter.
      * 
-     * @return true if pax exam is a snapshot version, false otherwise
+     * @return true if Pax CDI is a snapshot version, false otherwise
      */
     public static boolean isPaxCdiSnapshotVersion() {
         return paxCdiSnapshotVersion;
+    }
+
+    /**
+     * Discovers the Pax Web version. If version cannot be determined returns an empty string.
+     * 
+     * @return Pax Web version
+     */
+    public static String getPaxWebVersion() {
+        return PAX_WEB_VERSION;
+    }
+
+    /**
+     * Getter.
+     * 
+     * @return true if Pax Web is a snapshot version, false otherwise
+     */
+    public static boolean isPaxWebSnapshotVersion() {
+        return paxWebSnapshotVersion;
     }
 }
