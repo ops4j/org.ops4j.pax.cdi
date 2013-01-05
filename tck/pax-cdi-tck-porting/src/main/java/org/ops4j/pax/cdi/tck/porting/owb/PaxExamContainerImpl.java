@@ -24,7 +24,9 @@ import static org.ops4j.pax.exam.CoreOptions.frameworkProperty;
 import static org.ops4j.pax.exam.CoreOptions.frameworkStartLevel;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.CoreOptions.systemPackages;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import static org.ops4j.pax.exam.CoreOptions.vmOption;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,6 +34,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Field;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.jboss.testharness.api.DeploymentException;
 import org.jboss.testharness.spi.Containers;
@@ -49,6 +62,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.launch.Framework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import com.google.common.io.Files;
 
@@ -68,19 +84,65 @@ public class PaxExamContainerImpl implements Containers {
 
             File tempDir = explodeArchive(archive);
             createManifest(name, tempDir);
-
+            customizeWebXml(tempDir);
             InputStream bundle = new JarCreator(tempDir).jar();
 
-            log.info("test WAR in {}", tempDir);
+            log.info("test WAR for {} in {}", name, tempDir);
             testContainer.install(bundle);
-            
+
             waitForCdiContainerService();
-            
+
             return true;
         }
         catch (TestContainerException exc) {
             deploymentException = exc;
             return false;
+        }
+    }
+
+    /**
+     * Inserts a startup listener for MyFaces - this should not be required for a Servlet 3.0
+     * container, but Pax Web/Jetty currently needs it.
+     * 
+     * @param tempDir
+     * @throws IOException
+     */
+    private void customizeWebXml(File tempDir) throws IOException {
+        File webXml = new File(tempDir, "WEB-INF/web.xml");
+        if (!webXml.exists()) {
+            return;
+        }
+        
+        try {
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = builder.parse(webXml);
+            Element root = doc.getDocumentElement();
+            
+            
+            Element listener = doc.createElement("listener");
+            Element listenerClass = doc.createElement("listener-class");
+            listenerClass.setTextContent("org.ops4j.pax.cdi.tck.porting.owb.FacesStartupListener");
+            listener.appendChild(listenerClass);
+            root.appendChild(listener);
+            
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer t = tf.newTransformer();
+            t.setOutputProperty(OutputKeys.INDENT, "yes");
+            t.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "3");
+            FileOutputStream fos = new FileOutputStream(webXml);
+            t.transform(new DOMSource(doc), new StreamResult(new OutputStreamWriter(fos, "utf-8")));
+        }
+        catch (ParserConfigurationException e) {
+            throw new IOException(e);
+        }
+        catch (SAXException e) {
+            throw new IOException(e);
+        }
+        catch (TransformerConfigurationException e) {
+            throw new IOException(e);
+        }
+        catch (TransformerException e) {
+            throw new IOException(e);
         }
     }
 
@@ -146,13 +208,18 @@ public class PaxExamContainerImpl implements Containers {
         Option[] options = getConfigurationOptions();
         ExamSystem system = PaxExamRuntime.createServerSystem(options);
         testContainer = PaxExamRuntime.createContainer(system);
-        testContainer.start();
+        try {
+            testContainer.start();
+        }
+        catch (TestContainerException exc) {
+            log.error("error starting Pax Exam container", exc);
+        }
     }
 
     private Option[] getConfigurationOptions() {
-        return options(
-
+        return options(            
             bootDelegationPackage("sun.*"),
+            systemPackages("javax.annotation;version=1.0.0"),
             cleanCaches(),
             frameworkStartLevel(20),
             frameworkProperty("osgi.console").value("6666"),
@@ -218,6 +285,16 @@ public class PaxExamContainerImpl implements Containers {
             mavenBundle("org.eclipse.jetty", "jetty-xml").version("8.1.4.v20120524"),
             mavenBundle("org.eclipse.jetty", "jetty-servlet").version("8.1.4.v20120524"),
             mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec").version("1.0"),
+
+            mavenBundle("org.apache.myfaces.core", "myfaces-api", "2.0.9"),
+            mavenBundle("org.apache.myfaces.core", "myfaces-impl", "2.0.9"),
+            mavenBundle("commons-beanutils", "commons-beanutils", "1.8.3"),
+            mavenBundle("commons-collections", "commons-collections", "3.2.1"),
+            mavenBundle("org.apache.servicemix.bundles",
+                "org.apache.servicemix.bundles.commons-digester", "1.8_4"),
+            //mavenBundle("org.apache.geronimo.specs", "geronimo-annotation_1.1_spec").version("1.0.1"),
+            mavenBundle("org.apache.openwebbeans", "openwebbeans-jsf", "1.1.7"),
+
             mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
             mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
             mavenBundle("com.sun.jersey.contribs", "jersey-apache-client").version("1.13"),
@@ -229,13 +306,18 @@ public class PaxExamContainerImpl implements Containers {
 
             mavenBundle("org.slf4j", "slf4j-api").versionAsInProject(),
             mavenBundle("ch.qos.logback", "logback-core").versionAsInProject(),
-            mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject());
+            mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject(),
+
+            // options required for Forked Container, having no effect in Native Container
+            vmOption("-ea"),
+            systemProperty("logback.configurationFile").value(System.getProperty("logback.configurationFile"))
+            );
 
     }
 
     @Override
     public void cleanup() throws IOException {
-        testContainer.stop();
+        //testContainer.stop();
     }
 
     public static UrlProvisionOption workspaceBundle(String pathFromRoot) {

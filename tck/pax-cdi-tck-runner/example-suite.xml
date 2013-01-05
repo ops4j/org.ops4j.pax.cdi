@@ -25,8 +25,13 @@
  -->        
         <classes>
            <class name="org.jboss.jsr299.tck.tests.definition.bean.BeanDefinitionTest"></class>
+
+           <class name="org.jboss.jsr299.tck.tests.definition.bean.custom.CustomBeanImplementationTest"></class>
            <class name="org.jboss.jsr299.tck.tests.decorators.definition.DecoratorDefinitionTest"></class>
            <class name="org.jboss.jsr299.tck.tests.decorators.interceptor.DecoratorAndInterceptorTest"></class>
+<!-- 
+           <class name="org.jboss.jsr299.tck.tests.context.conversation.ClientConversationContextTest"></class>
+ -->
         </classes>
 
     </test>
