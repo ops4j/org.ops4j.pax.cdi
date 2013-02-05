@@ -60,7 +60,6 @@ public class ProxyTest {
             workspaceBundle("pax-cdi-spi"),
             workspaceBundle("pax-cdi-openwebbeans").startLevel(2),
 
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
 

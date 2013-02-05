@@ -77,7 +77,6 @@ public class ServletTest {
             workspaceBundle("pax-cdi-openwebbeans").startLevel(2),
             workspaceBundle("pax-cdi-web-openwebbeans"),
 
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),

@@ -18,7 +18,6 @@
 package org.ops4j.pax.cdi.test;
 
 import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
-import static org.ops4j.pax.exam.CoreOptions.bootDelegationPackage;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.cleanCaches;
 import static org.ops4j.pax.exam.CoreOptions.composite;
@@ -27,7 +26,6 @@ import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
-import static org.ops4j.pax.exam.CoreOptions.url;
 
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.options.UrlProvisionOption;
@@ -54,30 +52,8 @@ public class TestConfiguration {
     public static Option regressionDefaults() {
         return composite(
 
-            // copy most options from PaxExamRuntime.defaultTestSystemOptions(),
-            // except RBC and Pax Logging
-            bootDelegationPackage("sun.*"),
             cleanCaches(),
             frameworkStartLevel(20),
-
-            url("link:classpath:META-INF/links/org.ops4j.pax.exam.link").startLevel(
-                START_LEVEL_SYSTEM_BUNDLES),
-            url("link:classpath:META-INF/links/org.ops4j.pax.exam.inject.link").startLevel(
-                START_LEVEL_SYSTEM_BUNDLES),
-            url("link:classpath:META-INF/links/org.ops4j.pax.extender.service.link").startLevel(
-                START_LEVEL_SYSTEM_BUNDLES),
-            url("link:classpath:META-INF/links/org.ops4j.base.link").startLevel(
-                START_LEVEL_SYSTEM_BUNDLES),
-            url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.core.link").startLevel(
-                START_LEVEL_SYSTEM_BUNDLES),
-            url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.extender.link").startLevel(
-                START_LEVEL_SYSTEM_BUNDLES),
-            url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.lifecycle.link").startLevel(
-                START_LEVEL_SYSTEM_BUNDLES),
-            url("link:classpath:META-INF/links/org.ops4j.pax.swissbox.framework.link").startLevel(
-                START_LEVEL_SYSTEM_BUNDLES),
-            url("link:classpath:META-INF/links/org.apache.geronimo.specs.atinject.link")
-                .startLevel(START_LEVEL_SYSTEM_BUNDLES),
 
             // add SLF4J and logback bundles
             mavenBundle("org.slf4j", "slf4j-api").versionAsInProject().startLevel(

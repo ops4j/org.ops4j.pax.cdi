@@ -71,7 +71,6 @@ public class SingleBundleTest {
             workspaceBundle("pax-cdi-spi"),
             workspaceBundle("pax-cdi-openwebbeans"),
 
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.javassist")
