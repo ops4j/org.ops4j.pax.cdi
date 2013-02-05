@@ -61,6 +61,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-finder</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
             <artifactId>pax-cdi-openwebbeans</artifactId>
             <version>${project.version}</version>

@@ -88,6 +88,7 @@ public class ServletTest {
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-core").versionAsInProject(),
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-lifecycle").versionAsInProject(),
             mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
+            mavenBundle("org.apache.xbean", "xbean-finder").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec")
                 .versionAsInProject(),
             
