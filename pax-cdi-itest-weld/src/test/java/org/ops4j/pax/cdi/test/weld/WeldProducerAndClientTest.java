@@ -66,10 +66,6 @@ public class WeldProducerAndClientTest {
 
             mavenBundle("org.slf4j", "slf4j-ext", "1.6.4"),
             mavenBundle("ch.qos.cal10n", "cal10n-api", "0.7.4"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker").versionAsInProject(),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-extender").versionAsInProject(),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-core").versionAsInProject(),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-lifecycle").versionAsInProject(),
             mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
