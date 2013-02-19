@@ -17,12 +17,14 @@
  */
 package org.ops4j.pax.cdi.weld.impl;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
@@ -40,8 +42,7 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
 
     private Bundle ownBundle;
     private Map<Long, CdiContainer> containers = new HashMap<Long, CdiContainer>();
-    private Collection<Bundle> extensionBundles;
-    private List<CdiContainerListener> listeners = new ArrayList<CdiContainerListener>();
+    private List<CdiContainerListener> listeners = new CopyOnWriteArrayList<CdiContainerListener>();
 
     public WeldCdiContainerFactory(Bundle ownBundle) {
         this.ownBundle = ownBundle;
@@ -53,9 +54,8 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
     }
 
     @Override
-    public CdiContainer createContainer(Bundle bundle, CdiContainerType containerType) {
-        WeldCdiContainer container = new WeldCdiContainer(containerType, ownBundle, bundle,
-            extensionBundles);
+    public CdiContainer createContainer(Bundle bundle, Collection<URL> descriptors, Collection<Bundle> extensions, CdiContainerType containerType) {
+        WeldCdiContainer container = new WeldCdiContainer(containerType, ownBundle, bundle, descriptors, extensions);
         containers.put(bundle.getBundleId(), container);
         for (CdiContainerListener listener : listeners) {
             listener.postCreate(container);
@@ -82,13 +82,11 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
     }
 
     @Override
-    public void setExtensionBundles(Collection<Bundle> extensionBundles) {
-        this.extensionBundles = extensionBundles;
-    }
-
-    @Override
     public void addListener(CdiContainerListener listener) {
         listeners.add(listener);
+        for (CdiContainer container : containers.values()) {
+            listener.postCreate(container);
+        }
     }
 
     @Override

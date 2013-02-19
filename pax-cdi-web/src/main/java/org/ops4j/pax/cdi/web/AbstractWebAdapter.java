@@ -40,7 +40,6 @@ public abstract class AbstractWebAdapter extends AbstractLifecycle implements
 
     protected BundleContext bundleContext;
     private CdiWebAppDependencyManager dependencyManager;
-    private ReplaceableService<HttpService> httpService;
     private ReplaceableService<CdiContainerFactory> cdiContainerFactory;
 
     protected AbstractWebAdapter(BundleContext bundleContext) {
@@ -49,24 +48,16 @@ public abstract class AbstractWebAdapter extends AbstractLifecycle implements
 
     @Override
     protected void onStart() {
-
-        dependencyManager = new CdiWebAppDependencyManager(bundleContext,
-            getServletContextListener());
-
-        httpService = new ReplaceableService<HttpService>(bundleContext, HttpService.class,
-            dependencyManager);
-        httpService.start();
-
-        cdiContainerFactory = new ReplaceableService<CdiContainerFactory>(bundleContext,
-            CdiContainerFactory.class, this);
+        dependencyManager = new CdiWebAppDependencyManager(getServletContextListener());
+        cdiContainerFactory = new ReplaceableService<CdiContainerFactory>(bundleContext, CdiContainerFactory.class, this);
         cdiContainerFactory.start();
     }
 
     @Override
-    public synchronized void serviceChanged(CdiContainerFactory oldService,
-        CdiContainerFactory newService) {
+    public synchronized void serviceChanged(CdiContainerFactory oldService, CdiContainerFactory newService) {
         if (oldService != null) {
             oldService.removeListener(dependencyManager);
+            dependencyManager.unregisterAll();
         }
         if (newService != null) {
             newService.addListener(dependencyManager);
@@ -77,7 +68,6 @@ public abstract class AbstractWebAdapter extends AbstractLifecycle implements
 
     @Override
     protected void onStop() {
-        httpService.stop();
         cdiContainerFactory.stop();
     }
 }

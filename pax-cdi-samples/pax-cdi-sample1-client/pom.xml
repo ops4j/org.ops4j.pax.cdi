@@ -51,9 +51,25 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>org.ops4j.pax.cdi.sample1.client</Bundle-SymbolicName>
-                        <Pax-ManagedBeans>META-INF/beans.xml</Pax-ManagedBeans>
+                        <Require-Capability>
+                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=pax-cdi-extension)(version>=${version;==;${pax.cdi.osgi.version.clean}})(!(version>=${version;=+;${pax.cdi.osgi.version.clean}})))"
+                        </Require-Capability>
                     </instructions>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>versions</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>cleanVersions</goal>
+                        </goals>
+                        <configuration>
+                            <versions>
+                                <pax.cdi.osgi.version.clean>${project.version}</pax.cdi.osgi.version.clean>
+                            </versions>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

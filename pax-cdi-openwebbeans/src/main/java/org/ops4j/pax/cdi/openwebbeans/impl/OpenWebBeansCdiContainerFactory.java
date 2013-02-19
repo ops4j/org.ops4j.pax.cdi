@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.cdi.openwebbeans.impl;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,7 +42,6 @@ public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
 
     private Bundle ownBundle;
     private Map<Long, CdiContainer> containers = new HashMap<Long, CdiContainer>();
-    private Collection<Bundle> extensionBundles;
     private List<CdiContainerListener> listeners = new ArrayList<CdiContainerListener>();
 
     public OpenWebBeansCdiContainerFactory(Bundle ownBundle) {
@@ -54,9 +54,9 @@ public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
     }
 
     @Override
-    public CdiContainer createContainer(Bundle bundle, CdiContainerType containerType) {
+    public CdiContainer createContainer(Bundle bundle, Collection<URL> descriptors, Collection<Bundle> extensions, CdiContainerType containerType) {
         OpenWebBeansCdiContainer container = new OpenWebBeansCdiContainer(containerType, ownBundle,
-            bundle, extensionBundles);
+            bundle, extensions, descriptors);
         containers.put(bundle.getBundleId(), container);
         for (CdiContainerListener listener : listeners) {
             listener.postCreate(container);
@@ -80,11 +80,6 @@ public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
         for (CdiContainerListener listener : listeners) {
             listener.preDestroy(container);
         }
-    }
-
-    @Override
-    public void setExtensionBundles(Collection<Bundle> extensionBundles) {
-        this.extensionBundles = extensionBundles;
     }
 
     @Override

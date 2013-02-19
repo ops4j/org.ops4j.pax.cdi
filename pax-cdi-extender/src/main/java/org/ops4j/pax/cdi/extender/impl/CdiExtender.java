@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Harald Wellmann.
+ * Copyright 2013 Guillaume Nodet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,162 +17,193 @@
  */
 package org.ops4j.pax.cdi.extender.impl;
 
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
-import org.ops4j.lang.Ops4jException;
+import org.ops4j.pax.cdi.api.Constants;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
-import org.ops4j.pax.swissbox.tracker.ServiceLookup;
+import org.ops4j.pax.swissbox.tracker.ReplaceableService;
+import org.ops4j.pax.swissbox.tracker.ReplaceableServiceListener;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.util.tracker.BundleTracker;
+import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CdiExtender {
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-    private static Logger log = LoggerFactory.getLogger(CdiExtender.class);
+/**
+ * TODO: the SynchronousBundleWatcher uses the STOPPED event instead of STOPPING
+ */
+public class CdiExtender implements BundleActivator,
+                                    ReplaceableServiceListener<CdiContainerFactory>,
+                                    BundleTrackerCustomizer<List<Object>>
+{
 
-    /** Context of this bundle. */
-    private BundleContext bc;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CdiExtender.class);
 
-    private CdiContainerFactory containerFactory;
-    private CdiExtensionObserver extensionObserver;
-    private ScheduledExecutorService executor;
-    private ScheduledFuture<Void> afterQuietPeriod;
+    private BundleContext context;
+    private ReplaceableService<CdiContainerFactory> factoryTracker;
+    private ExecutorService executor;
+    private BundleTracker<List<Object>> bundleWatcher;
+    private CdiContainerFactory factory;
 
-    private Callable<Void> createContainersTask = new Callable<Void>() {
+    @Override
+    public void start(BundleContext context) throws Exception {
+        LOGGER.info("Starting CDI extender {}", context.getBundle().getSymbolicName());
+        this.context = context;
+        this.factoryTracker = new ReplaceableService<CdiContainerFactory>(context, CdiContainerFactory.class, this);
+        this.executor = Executors.newSingleThreadScheduledExecutor();
+        this.bundleWatcher = new BundleTracker<List<Object>>(context, Bundle.ACTIVE, this);
+        this.factoryTracker.start();
+    }
 
-        @Override
-        public Void call() throws Exception {
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        LOGGER.info("Stopping CDI extender {}", context.getBundle().getSymbolicName());
+        this.factoryTracker.stop();
+    }
+
+    @Override
+    public synchronized void serviceChanged(CdiContainerFactory oldService, CdiContainerFactory newService) {
+        if (oldService != null) {
+            this.bundleWatcher.close();
+        }
+        this.factory = newService;
+        if (newService != null) {
+            this.bundleWatcher.open();
+        }
+    }
+
+    @Override
+    public List<Object> addingBundle(final Bundle bundle, BundleEvent event) {
+        final List<Object> beansXml = scan(bundle);
+        if (beansXml != null && !beansXml.isEmpty()) {
             try {
-                createCdiContainers();
-                return null;
-            }
-            // CHECKSTYLE:SKIP
-            catch (Throwable t) {
-                log.error("exception in Executor", t);
-                throw new Ops4jException(t);
+                createContainer(bundle, beansXml);
+            } catch (Exception e) {
+                LOGGER.error("Error creating CDI container for bundle " + bundle.toString(), e);
             }
         }
-    };
-
-    private Map<Long, Bundle> toBeCreated = new LinkedHashMap<Long, Bundle>();
-    private Map<Long, Bundle> toBeDestroyed = new LinkedHashMap<Long, Bundle>();
-
-    private State state = State.QUIET_PERIOD;
-
-    enum State {
-        QUIET_PERIOD, OPERATIONAL
+        return beansXml;
     }
 
-    public CdiExtender(BundleContext bc, CdiExtensionObserver extensionObserver) {
-        this.bc = bc;
-        this.extensionObserver = extensionObserver;
-        executor = Executors.newSingleThreadScheduledExecutor();
-        afterQuietPeriod = executor.schedule(createContainersTask, 2, TimeUnit.SECONDS);
+    @Override
+    public void modifiedBundle(Bundle bundle, BundleEvent event, List<Object> object) {
+        // We don't care about state changes
     }
 
-    public void createCdiContainers() {
-        containerFactory = ServiceLookup.getService(bc, CdiContainerFactory.class);
-        containerFactory.setExtensionBundles(extensionObserver.getExtensionBundles());
-        List<Bundle> bundles = new ArrayList<Bundle>(toBeCreated.values());
-        for (Bundle beanBundle : bundles) {
-            createCdiContainer(beanBundle);
+    @Override
+    public void removedBundle(Bundle bundle, BundleEvent event, List<Object> object) {
+        CdiContainer container = this.factory.getContainer(bundle);
+        synchronized (container) {
+            container.stop();
         }
-
-        synchronized (state) {
-            for (Bundle beanBundle : bundles) {
-                toBeCreated.remove(beanBundle.getBundleId());
-            }
-            state = State.OPERATIONAL;
-        }
+        this.factory.removeContainer(bundle);
     }
 
-    private void createCdiContainer(final Bundle bundle) {
-        // check if this is a web bundle
-        Dictionary<String, String> headers = bundle.getHeaders();
-        String contextPath = headers.get("Web-ContextPath");
-        CdiContainerType containerType = (contextPath == null) ? CdiContainerType.STANDALONE
-            : CdiContainerType.WEB;
-        
-        // create container, but do not start it
-        final CdiContainer container = containerFactory.createContainer(bundle, containerType);
-
-        /* Web containers will be started later when the servlet context is available.
-         * Standalone containers a started right now.
-         */ 
-        if (containerType == CdiContainerType.STANDALONE) {
-            container.start(null);
-        }
-    }
-
-    private void destroyCdiContainer(final Bundle bundle) {
-        CdiContainer container = containerFactory.getContainer(bundle);
-        container.stop();
-        containerFactory.removeContainer(bundle);
-        toBeDestroyed.remove(bundle.getBundleId());
-    }
-
-    public synchronized void createContainer(final Bundle bundle) {
-        toBeCreated.put(bundle.getBundleId(), bundle);
-        if (state == State.QUIET_PERIOD) {
-            // TODO make period configurable
-            afterQuietPeriod.cancel(false);
-            afterQuietPeriod = executor.schedule(createContainersTask, 2, TimeUnit.SECONDS);
-        }
-        else {
-            executor.submit(new Callable<Long>() {
-
-                @Override
-                public Long call() throws Exception {
-                    try {
-                        createCdiContainer(bundle);
-                        return bundle.getBundleId();
+    private void createContainer(Bundle bundle, List<Object> beansXml) {
+        CdiContainerFactory cf = factory;
+        if (cf != null) {
+            // Get all urls
+            List<URL> urls = new ArrayList<URL>();
+            for (Object path : beansXml) {
+                if (path instanceof URL) {
+                    urls.add((URL) path);
+                } else if (path instanceof String) {
+                    URL url = bundle.getEntry((String) path);
+                    if (url == null) {
+                        throw new IllegalArgumentException("Unable to find CDI configuration file for " + path);
                     }
-                    // CHECKSTYLE:SKIP
-                    catch (Throwable t) {
-                        log.error("exception in Executor", t);
-                        throw new Ops4jException(t);
-                    }
+                    urls.add(url);
+                } else {
+                    // Should never happen
+                    throw new IllegalArgumentException("Unsupported path: " + path);
                 }
-
-            });
-        }
-    }
-
-    public synchronized void destroyContainer(final Bundle bundle) {
-        toBeCreated.remove(bundle.getBundleId());
-        toBeDestroyed.put(bundle.getBundleId(), bundle);
-        if (state == State.OPERATIONAL) {
-            executor.submit(new Callable<Long>() {
-
-                @Override
-                public Long call() throws Exception {
-                    try {
-                        destroyCdiContainer(bundle);
-                        return bundle.getBundleId();
-                    }
-                    // CHECKSTYLE:SKIP
-                    catch (Throwable t) {
-                        log.error("exception in Executor", t);
-                        throw new Ops4jException(t);
-                    }
+            }
+            // Find extensions
+            Set<Bundle> extensions = new HashSet<Bundle>();
+            List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires("org.ops4j.pax.cdi.extension");
+            if (wires != null) {
+                for (BundleWire wire : wires) {
+                    extensions.add(wire.getProviderWiring().getBundle());
                 }
-            });
+            }
+
+            // check if this is a web bundle
+            Dictionary<String, String> headers = bundle.getHeaders();
+            String contextPath = headers.get("Web-ContextPath");
+            CdiContainerType containerType = (contextPath == null) ? CdiContainerType.STANDALONE : CdiContainerType.WEB;
+            // create container, but do not start it
+            final CdiContainer container = cf.createContainer(bundle, urls, extensions, containerType);
+            // Web containers will be started later when the servlet context is available.
+            // Standalone containers are started right now.
+            if (containerType == CdiContainerType.STANDALONE) {
+                container.start(null);
+            }
         }
     }
 
-    public void stop() {
-        executor.shutdownNow();
+    private List<Object> scan(Bundle bundle) {
+        LOGGER.debug("Scanning bundle {} for CDI application", bundle.getSymbolicName());
+        List<Object> pathList = new ArrayList<Object>();
+        String header = bundle.getHeaders().get(Constants.MANAGED_BEANS_KEY);
+        if (header == null) {
+            if (bundle.findEntries("META-INF/", "beans.xml", false) != null) {
+                header = "META-INF/beans.xml";
+            }
+        }
+        Parser.Clause[] paths = Parser.parseHeader(header);
+        for (Parser.Clause path : paths) {
+            String name = path.getName();
+            if (name.endsWith("/")) {
+                Enumeration<URL> e = bundle.findEntries(name, "*.xml", false);
+                while (e != null && e.hasMoreElements()) {
+                    URL u = e.nextElement();
+                    pathList.add(u);
+                }
+            } else {
+                String baseName;
+                String filePattern;
+                int pos = name.lastIndexOf('/');
+                if (pos < 0) {
+                    baseName = "/";
+                    filePattern = name;
+                } else {
+                    baseName = name.substring(0, pos + 1);
+                    filePattern = name.substring(pos + 1);
+                }
+                if (filePattern.contains("*")) {
+                    Enumeration<URL> e = bundle.findEntries(baseName, filePattern, false);
+                    while (e != null && e.hasMoreElements()) {
+                        URL u = e.nextElement();
+                        pathList.add(u);
+                    }
+                } else {
+                    pathList.add(name);
+                }
+            }
+        }
+        if (!pathList.isEmpty()) {
+            LOGGER.debug("Found CDI application in bundle {} with paths: {}", bundle.getSymbolicName(), pathList);
+            // TODO: Check compatibility
+            return pathList;
+        } else {
+            LOGGER.debug("No CDI application found in bundle {}", bundle.getSymbolicName());
+        }
+        return null;
     }
+
 }

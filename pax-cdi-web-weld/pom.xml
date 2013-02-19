@@ -70,7 +70,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Bundle-Activator>${bundle.namespace}.impl.Activator</Bundle-Activator>
-                        <Import-Package>org.jboss.weld.bootstrap, *</Import-Package>
+                        <Import-Package>org.jboss.weld.bootstrap, javax.servlet.*;version="[2,4)", *</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

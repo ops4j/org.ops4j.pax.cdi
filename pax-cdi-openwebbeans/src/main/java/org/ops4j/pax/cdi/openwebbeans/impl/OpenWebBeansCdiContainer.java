@@ -20,6 +20,7 @@ package org.ops4j.pax.cdi.openwebbeans.impl;
 import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoader;
 
 import java.lang.annotation.Annotation;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -60,19 +61,21 @@ import org.slf4j.LoggerFactory;
  */
 public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
 
-    private Logger logger = LoggerFactory.getLogger(OpenWebBeansCdiContainer.class);
+    private static final Logger logger = LoggerFactory.getLogger(OpenWebBeansCdiContainer.class);
 
     /** Bundle owning this class. */
     private Bundle ownBundle;
-
-    /** The bundle extended by this CDI container. */
-    private Bundle extendedBundle;
 
     /**
      * All CDI extension bundles discovered by the Pax CDI extender before creating the
      * CdiContainerFactory.
      */
     private Collection<Bundle> extensionBundles;
+
+    /**
+     * Collection of CDI beans xml descriptors URLs.
+     */
+    private Collection<URL> descriptors;
 
     /**
      * OpenWebBeans container lifecycle.
@@ -104,12 +107,12 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
      *            CDI extension bundles to be loaded by OpenWebBeans
      */
     public OpenWebBeansCdiContainer(CdiContainerType containerType, Bundle ownBundle,
-        Bundle extendedBundle, Collection<Bundle> extensionBundles) {
-        super(containerType, ownBundle);
+        Bundle extendedBundle, Collection<Bundle> extensionBundles, Collection<URL> descriptors) {
+        super(containerType, extendedBundle);
         logger.debug("creating OpenWebBeans CDI container for bundle {}", extendedBundle);
         this.ownBundle = ownBundle;
-        this.extendedBundle = extendedBundle;
         this.extensionBundles = extensionBundles;
+        this.descriptors = descriptors;
     }
 
     /**
@@ -182,20 +185,25 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
     }
 
     @Override
-    public Bundle getBundle() {
-        return extendedBundle;
+    protected void doStart(Object environment) {
+        context = createWebBeansContext(getBundle(), environment);
+        if (logger.isDebugEnabled()) {
+            for (Bean<?> bean : context.getBeanManagerImpl().getBeans()) {
+                logger.debug("  {}", bean);
+            }
+        }
     }
 
     @Override
-    public void stop() {
-        logger.debug("OpenWebBeans CDI container is shutting down for bundle {}", extendedBundle);
+    protected void doStop() {
         try {
             doWithClassLoader(contextClassLoader, new Callable<Void>() {
-
                 @Override
                 public Void call() throws Exception {
-                    stopContexts();
-                    lifecycle.stopApplication(contextClassLoader);
+                    if (lifecycle != null) {
+                        stopContexts();
+                        lifecycle.stopApplication(contextClassLoader);
+                    }
                     return null;
                 }
             });
@@ -204,17 +212,6 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
         catch (Exception exc) {
             throw new Ops4jException(exc);
         }
-    }
-
-    @Override
-    public void start(Object environment) {
-        context = createWebBeansContext(extendedBundle, environment);
-        if (logger.isDebugEnabled()) {
-            for (Bean<?> bean : context.getBeanManagerImpl().getBeans()) {
-                logger.debug("  {}", bean);
-            }
-        }
-        finishStartup();
     }
 
     @Override

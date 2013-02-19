@@ -22,7 +22,11 @@ import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoa
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.ops4j.lang.Ops4jException;
@@ -41,27 +45,66 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractCdiContainer implements CdiContainer {
 
-    private static Logger log = LoggerFactory.getLogger(AbstractCdiContainer.class);
+    private static final Logger log = LoggerFactory.getLogger(AbstractCdiContainer.class);
 
     private Bundle bundle;
     private CdiContainerType containerType;
+    private ServiceRegistration<CdiContainer> registration;
+    private boolean started;
 
     protected AbstractCdiContainer(CdiContainerType containerType, Bundle bundle) {
         this.containerType = containerType;
         this.bundle = bundle;
     }
 
+    @Override
+    public synchronized void start(Object environment) {
+        if (!started) {
+            log.info("Starting CDI container for bundle {}", getBundle());
+            doStart(environment);
+            finishStartup();
+            started = true;
+        }
+    }
+
+    @Override
+    public synchronized void stop() {
+        if (started) {
+            log.info("Stopping CDI container for bundle {}", getBundle());
+            doStop();
+            if (registration != null) {
+                try {
+                    registration.unregister();
+                } catch (Exception e) {
+                    // Ignore
+                }
+            }
+            started = false;
+        }
+    }
+
+    protected abstract void doStart(Object environment);
+
+    protected abstract void doStop();
+
     protected void finishStartup() {
         try {
-            doWithClassLoader(getContextClassLoader(),
+            registration = doWithClassLoader(getContextClassLoader(),
                 new Callable<ServiceRegistration<CdiContainer>>() {
 
                     @Override
                     public ServiceRegistration<CdiContainer> call() throws Exception {
-                        // set bundle context on BeanBundle CDI bean
-                        BeanBundle cdiBundle = getInstance().select(BeanBundle.class).get();
                         BundleContext bc = bundle.getBundleContext();
-                        cdiBundle.setBundleContext(bc);
+
+                        // set bundle context on BeanBundle CDI bean
+                        try {
+                            BeanBundle cdiBundle = getInstance().select(BeanBundle.class).get();
+                            cdiBundle.setBundleContext(bc);
+                        } catch (RuntimeException e) {
+                            // Ignore, this is certainly because the bundle does not use the pax-cdi-extension
+                            // which should not be mandatory is there's no OSGi access
+                            // TODO: better detection if there's an import on the osgi extension, we should maybe fail
+                        }
 
                         // register CdiContainer service
                         Dictionary<String, Object> props = new Hashtable<String, Object>();

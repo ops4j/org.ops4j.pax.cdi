@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.cdi.spi;
 
+import java.net.URL;
 import java.util.Collection;
 
 import org.osgi.framework.Bundle;
@@ -42,23 +43,13 @@ public interface CdiContainerFactory {
      * container has a lifecycle of its own. The container returned by this method is not yet
      * started.
      * 
-     * @param bundle
-     *            a bundle to be extended with a CDI container
+     * @param bundle a bundle to be extended with a CDI container
+     * @param descriptors the beans xml descriptors
+     * @param extensions the collection of extension bundles
      * @param containerType 
      * @return
      */
-    CdiContainer createContainer(Bundle bundle, CdiContainerType containerType);
-
-    /**
-     * Sets the collection of CDI extension bundles to be loaded when building the CDI container for
-     * a given bundle. This collection must at least contain the Pax CDI OSGi extension.
-     * <p>
-     * A CDI extension bundle is any JAR which is both an OSGi bundle and a portable CDI extension.
-     * 
-     * @param extensionBundles
-     *            collection of CDI extension bundles
-     */
-    void setExtensionBundles(Collection<Bundle> extensionBundles);
+    CdiContainer createContainer(Bundle bundle, Collection<URL> descriptors, Collection<Bundle> extensions, CdiContainerType containerType);
 
     /**
      * Gets the CDI container for the given bundle, or null if the bundle is not a bean bundle.

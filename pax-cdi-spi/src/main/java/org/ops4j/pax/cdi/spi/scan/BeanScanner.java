@@ -90,6 +90,7 @@ public class BeanScanner {
         scanOwnBundle();
         scanImportedPackages();
         scanRequiredBundles();
+        scanExtensions();
         logBeanClasses();
     }
 
@@ -104,23 +105,6 @@ public class BeanScanner {
     }
 
     private void scanOwnBundle() {
-        String managedBeans = bundle.getHeaders().get(MANAGED_BEANS_KEY);
-        if (managedBeans == null) {
-            return;
-        }
-
-        String[] descriptors = managedBeans.split(",");
-        for (String descriptor : descriptors) {
-            URL descriptorUrl = bundle.getEntry(descriptor);
-            if (descriptorUrl != null) {
-                beanDescriptors.add(descriptorUrl);
-            }
-        }
-
-        if (beanDescriptors.isEmpty()) {
-            return;
-        }
-
         String[] classPathElements;
 
         String bundleClassPath = bundle.getHeaders().get(Constants.BUNDLE_CLASSPATH);
@@ -216,6 +200,13 @@ public class BeanScanner {
     private void scanRequiredBundles() {
         BundleWiring wiring = bundle.adapt(BundleWiring.class);
         List<BundleWire> wires = wiring.getRequiredWires(BundleRevision.BUNDLE_NAMESPACE);
+        for (BundleWire wire : wires) {
+            scanForClasses(wire);
+        }
+    }
+
+    private void scanExtensions() {
+        List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires("org.ops4j.pax.cdi.extension");
         for (BundleWire wire : wires) {
             scanForClasses(wire);
         }

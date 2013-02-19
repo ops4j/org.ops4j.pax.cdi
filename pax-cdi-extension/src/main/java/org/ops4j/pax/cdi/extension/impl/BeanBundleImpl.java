@@ -18,11 +18,15 @@
 package org.ops4j.pax.cdi.extension.impl;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
@@ -32,20 +36,20 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
 import org.ops4j.pax.cdi.api.BeanBundle;
-import org.ops4j.pax.cdi.api.ContainerInitialized;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.Properties;
 import org.ops4j.pax.cdi.api.Property;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
+import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * A CDI bean representing a CDI enabled OSGi bundle, or bean bundle, for short.
  * <p>
- * Not intended to be used by application code. This bean is used internally to catch the
- * {@link ContainerInititialized} event and to publish CDI beans as OSGi services.
+ * Not intended to be used by application code. This bean is used internally
+ * to catch the to publish CDI beans as OSGi services.
  * 
  * @author Harald Wellmann
  * 
@@ -67,18 +71,33 @@ public class BeanBundleImpl implements BeanBundle {
     private BeanManager beanManager;
 
     private BundleContext bundleContext;
+
+    private List<ServiceRegistration> registrations = new ArrayList<ServiceRegistration>();
     
     
     /**
-     * Observes ContainerInitialized event and registers all OSGi service beans published by this
-     * bundle.
-     * 
-     * @param event
+     * Register OSGi services when the bean is initialized
      */
-    public void onInitialized(@Observes ContainerInitialized event) {
+    @PostConstruct
+    public void onInitialized() {
         for (Object service : services) {
             registerService(service);
         }
+    }
+
+    /**
+     * Unregister OSGi services when the bean is destroyed
+     */
+    @PreDestroy
+    public void onDestroy() {
+        for (ServiceRegistration reg : registrations) {
+            try {
+                reg.unregister();
+            } catch (IllegalStateException e) {
+                // Ignore if the service has already been unregistered
+            }
+        }
+        registrations.clear();
     }
 
     private void registerService(Object service) {
@@ -96,7 +115,8 @@ public class BeanBundleImpl implements BeanBundle {
         
         Dictionary<String, Object> props = createProperties(klass, service);
         log.debug("publishing service {}, props = {}", typeNames[0], props);
-        getBundleContext(klass).registerService(typeNames, service, props);        
+        ServiceRegistration  reg = getBundleContext(klass).registerService(typeNames, service, props);
+        registrations.add(reg);
     }
 
     private String[] getTypeNamesForTypeClosure(Object service, Class<?> klass,

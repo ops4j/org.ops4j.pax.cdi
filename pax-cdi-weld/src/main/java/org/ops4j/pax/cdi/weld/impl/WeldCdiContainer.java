@@ -20,9 +20,11 @@ package org.ops4j.pax.cdi.weld.impl;
 import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoader;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
+import java.net.URL;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -44,7 +46,10 @@ import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.ops4j.pax.cdi.weld.impl.bda.BundleDeployment;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleReference;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.wiring.BundleRevision;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,8 +67,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
     /** Bundle owning this class. */
     private Bundle ownBundle;
 
-    /** The bundle extended by this CDI container. */
-    private Bundle extendedBundle;
+    private Collection<URL> descriptors;
 
     /**
      * All CDI extension bundles discovered by the Pax CDI extender before creating the
@@ -83,131 +87,56 @@ public class WeldCdiContainer extends AbstractCdiContainer {
      */
     private InstanceManager instanceManager;
 
-    private boolean started;
-
     private WeldBootstrap bootstrap;
 
     private BeanManagerImpl manager;
-
-    private boolean hasShutdownBeenCalled;
 
     /**
      * Construct a CDI container for the given extended bundle.
      * 
      * @param ownBundle
      *            bundle containing this class
-     * @param extendedBundle
+     * @param bundle
      *            bundle to be extended with CDI container
      * @param extensionBundles
      *            CDI extension bundles to be loaded by OpenWebBeans
      */
     public WeldCdiContainer(CdiContainerType containerType, Bundle ownBundle,
-        Bundle extendedBundle, Collection<Bundle> extensionBundles) {
-        super(containerType, ownBundle);
-        logger.debug("creating Weld CDI container for bundle {}", extendedBundle);
+        Bundle bundle, Collection<URL> descriptors, Collection<Bundle> extensionBundles) {
+        super(containerType, bundle);
+        logger.debug("creating Weld CDI container for bundle {}", bundle);
         this.ownBundle = ownBundle;
-        this.extendedBundle = extendedBundle;
+        this.descriptors = descriptors;
         this.extensionBundles = extensionBundles;
     }
 
-    /**
-     * Creates and starts a WebBeansContext for the given bundle using an appropriate class loader
-     * as TCCL.
-     * 
-     * @param bundle
-     * @return
-     */
-    private Void createWeldContainer(Bundle bundle) {
-        buildContextClassLoader(bundle);
+    @Override
+    protected void doStart(Object environment) {
+        // Creates and starts a WebBeansContext for the given bundle using an
+        // appropriate class loader as TCCL.
+        buildContextClassLoader();
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(contextClassLoader);
         try {
-            return doWithClassLoader(contextClassLoader, new Callable<Void>() {
+            bootstrap = new WeldBootstrap();
+            BundleDeployment deployment = new BundleDeployment(getBundle(), descriptors, bootstrap);
+            BeanDeploymentArchive beanDeploymentArchive = deployment.getBeanDeploymentArchive();
 
-                @Override
-                public Void call() throws Exception {
-                    try {
-                        initialize();
-                        return null;
-                    }
-                    // CHECKSTYLE:SKIP
-                    catch (Throwable exc) {
-                        logger.error("", exc);
-                        throw new Ops4jException(exc);
-                    }
-                }
-            });
-        }
-        // CHECKSTYLE:SKIP
-        catch (Exception exc) {
-            logger.error("", exc);
-            throw new Ops4jException(exc);
-        }
-    }
-
-    public boolean initialize() {
-        started = false;
-        bootstrap = new WeldBootstrap();
-        BundleDeployment deployment = new BundleDeployment(extendedBundle, bootstrap);
-        BeanDeploymentArchive beanDeploymentArchive = deployment.getBeanDeploymentArchive();
-
-        String contextId = extendedBundle.getSymbolicName() + ":" + extendedBundle.getBundleId();
-        bootstrap.startContainer(contextId, OsgiEnvironment.getInstance(), deployment);
-        bootstrap.startInitialization();
-        bootstrap.deployBeans();
-        bootstrap.validateBeans();
-        bootstrap.endInitialization();
-        manager = bootstrap.getManager(beanDeploymentArchive);
-        started = true;
-        return started;
-    }
-
-    /**
-     * Builds the composite class loader for the given bundle, also including the bundle containing
-     * this class and all extension bundles.
-     * 
-     * @param bundle
-     */
-    private void buildContextClassLoader(Bundle bundle) {
-        List<Bundle> delegateBundles = new ArrayList<Bundle>();
-        delegateBundles.add(bundle);
-        delegateBundles.add(ownBundle);
-        BundleReference bundleRef = BundleReference.class.cast(Bootstrap.class.getClassLoader());
-        delegateBundles.add(bundleRef.getBundle());
-        delegateBundles.addAll(extensionBundles);
-        DelegatingBundle delegatingBundle = new DelegatingBundle(delegateBundles);
-        contextClassLoader = new BundleClassLoader(delegatingBundle);
-    }
-
-    @Override
-    public Bundle getBundle() {
-        return extendedBundle;
-    }
-
-    @Override
-    public void stop() {
-        logger.debug("Weld CDI container is shutting down for bundle {}", extendedBundle);
-        if (started) {
-            synchronized (this) {
-                if (!hasShutdownBeenCalled) {
-                    logger.info("Stopping Weld instance for bundle {}", extendedBundle);
-                    hasShutdownBeenCalled = true;
-                    try {
-                        bootstrap.shutdown();
-                    }
-                    // CHECKSTYLE:SKIP
-                    catch (Throwable t) {
-                        logger.error(extendedBundle.getSymbolicName()
-                            + ": error on CDI container shutdown", t);
-                    }
-                    started = false;
-                }
-            }
+            String contextId = getBundle().getSymbolicName() + ":" + getBundle().getBundleId();
+            bootstrap.startContainer(contextId, OsgiEnvironment.getInstance(), deployment);
+            bootstrap.startInitialization();
+            bootstrap.deployBeans();
+            bootstrap.validateBeans();
+            bootstrap.endInitialization();
+            manager = bootstrap.getManager(beanDeploymentArchive);
+        } finally {
+            Thread.currentThread().setContextClassLoader(tccl);
         }
     }
 
     @Override
-    public void start(Object environment) {
-        createWeldContainer(extendedBundle);
-        finishStartup();
+    public void doStop() {
+        bootstrap.shutdown();
     }
 
     @Override
@@ -225,14 +154,33 @@ public class WeldCdiContainer extends AbstractCdiContainer {
         return getInstanceManager().getInstance();
     }
 
+    /**
+     * Builds the composite class loader for the given bundle, also including the bundle containing
+     * this class and all extension bundles.
+     */
+    private void buildContextClassLoader() {
+        Bundle bundle = getBundle();
+        Set<Bundle> delegateBundles = new HashSet<Bundle>();
+        delegateBundles.add(bundle);
+        delegateBundles.add(ownBundle);
+        delegateBundles.add(FrameworkUtil.getBundle(Bootstrap.class));
+
+        BundleWiring wiring = bundle.adapt(BundleWiring.class);
+        List<BundleWire> wires = wiring.getRequiredWires(BundleRevision.BUNDLE_NAMESPACE);
+        for (BundleWire wire : wires) {
+            delegateBundles.add(wire.getProviderWiring().getBundle());
+        }
+        delegateBundles.addAll(extensionBundles);
+        DelegatingBundle delegatingBundle = new DelegatingBundle(delegateBundles);
+        contextClassLoader = new BundleClassLoader(delegatingBundle);
+    }
+
     private InstanceManager getInstanceManager() {
         if (instanceManager == null) {
             BeanManager beanManager = getBeanManager();
             instanceManager = new InstanceManager();
-            AnnotatedType<InstanceManager> annotatedType = beanManager
-                .createAnnotatedType(InstanceManager.class);
-            InjectionTarget<InstanceManager> target = beanManager
-                .createInjectionTarget(annotatedType);
+            AnnotatedType<InstanceManager> annotatedType = beanManager.createAnnotatedType(InstanceManager.class);
+            InjectionTarget<InstanceManager> target = beanManager.createInjectionTarget(annotatedType);
             CreationalContext<InstanceManager> cc = beanManager.createCreationalContext(null);
             target.inject(instanceManager, cc);
         }
