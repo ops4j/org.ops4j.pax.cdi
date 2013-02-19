@@ -7,3 +7,5 @@ bin
 test-output
 *.log
 *~
+.idea
+*.iml
