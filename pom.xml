@@ -38,6 +38,7 @@
         <module>pax-cdi-web</module>
         <module>pax-cdi-web-weld</module>
         <module>pax-cdi-web-openwebbeans</module>
+        <module>pax-cdi-features</module>
     </modules>
 
     <profiles>
