@@ -58,8 +58,8 @@ public class CdiExtender implements BundleActivator,
 
     @Override
     public void start(BundleContext ctx) throws Exception {
-        LOGGER.info("Starting CDI extender {}", context.getBundle().getSymbolicName());
         this.context = ctx;
+        LOGGER.info("Starting CDI extender {}", context.getBundle().getSymbolicName());
         this.factoryTracker = new ReplaceableService<CdiContainerFactory>(context, CdiContainerFactory.class, this);
         this.bundleWatcher = new BundleTracker<CdiContainer>(context, Bundle.ACTIVE, this);
         this.factoryTracker.start();
