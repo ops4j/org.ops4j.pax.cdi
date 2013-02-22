@@ -55,6 +55,7 @@
     <feature name="pax-cdi-web-openwebbeans" description="OpenWebBeans Web CDI support" version="${project.version}" resolver="(obr)">
         <feature version="${project.version}">pax-cdi-web</feature>
         <feature version="${project.version}">pax-cdi-openwebbeans</feature>
+        <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-web/${openwebbeans.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-web-openwebbeans/${project.version}</bundle>
     </feature>
 
