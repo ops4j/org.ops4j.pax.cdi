@@ -17,25 +17,20 @@
  */
 package org.ops4j.pax.cdi.web.impl;
 
+import org.ops4j.pax.cdi.spi.CdiContainer;
+import org.ops4j.pax.cdi.spi.CdiContainerListener;
+import org.ops4j.pax.web.service.WebAppDependencyHolder;
+import org.ops4j.pax.web.service.WebContainerConstants;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletContextListener;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-
-import javax.servlet.ServletContextListener;
-
-import org.ops4j.pax.cdi.spi.CdiContainer;
-import org.ops4j.pax.cdi.spi.CdiContainerListener;
-import org.ops4j.pax.swissbox.tracker.ReplaceableServiceListener;
-import org.ops4j.pax.web.service.WebAppDependencyHolder;
-import org.ops4j.pax.web.service.WebContainerConstants;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.http.HttpService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Keeps track of runtime dependencies of web bean bundles and registers a

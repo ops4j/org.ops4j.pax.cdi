@@ -28,7 +28,6 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -93,7 +92,8 @@ public class BeanBundleImpl implements BeanBundle {
         for (ServiceRegistration reg : registrations) {
             try {
                 reg.unregister();
-            } catch (IllegalStateException e) {
+            }
+            catch (IllegalStateException e) {
                 // Ignore if the service has already been unregistered
             }
         }

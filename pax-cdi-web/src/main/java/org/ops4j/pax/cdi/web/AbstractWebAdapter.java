@@ -25,7 +25,6 @@ import org.ops4j.pax.swissbox.lifecycle.AbstractLifecycle;
 import org.ops4j.pax.swissbox.tracker.ReplaceableService;
 import org.ops4j.pax.swissbox.tracker.ReplaceableServiceListener;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.http.HttpService;
 
 /**
  * Abstract base class for Pax CDI web adapters. For each CDI provider with web support, a derived

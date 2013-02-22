@@ -20,7 +20,6 @@ package org.ops4j.pax.cdi.web.impl;
 import javax.servlet.ServletContainerInitializer;
 
 import org.ops4j.pax.web.service.WebAppDependencyHolder;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;

@@ -18,7 +18,6 @@
 package org.ops4j.pax.cdi.weld.impl;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;

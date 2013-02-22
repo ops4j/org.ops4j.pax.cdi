@@ -21,17 +21,20 @@ package org.ops4j.pax.cdi.extender.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Parser
-{
-    private Parser() { }
+public final class Parser {
 
-    public static Clause[] parseHeader(String header) throws IllegalArgumentException
-    {
+    private static final int CHAR = 1;
+    private static final int DELIMITER = 2;
+    private static final int STARTQUOTE = 4;
+    private static final int ENDQUOTE = 8;
+
+    private Parser() {
+    }
+
+    public static Clause[] parseHeader(String header) {
         Clause[] clauses = null;
-        if (header != null)
-        {
-            if (header.length() == 0)
-            {
+        if (header != null) {
+            if (header.length() == 0) {
                 throw new IllegalArgumentException("The header cannot be an empty string.");
             }
             String[] ss = parseDelimitedString(header, ",");
@@ -40,16 +43,13 @@ public final class Parser
         return (clauses == null) ? new Clause[0] : clauses;
     }
 
-    public static Clause[] parseClauses(String[] ss) throws IllegalArgumentException
-    {
-        if (ss == null)
-        {
+    public static Clause[] parseClauses(String[] ss) {
+        if (ss == null) {
             return null;
         }
 
         List completeList = new ArrayList();
-        for (int ssIdx = 0; ssIdx < ss.length; ssIdx++)
-        {
+        for (int ssIdx = 0; ssIdx < ss.length; ssIdx++) {
             // Break string into semi-colon delimited pieces.
             String[] pieces = parseDelimitedString(ss[ssIdx], ";");
 
@@ -58,42 +58,38 @@ public final class Parser
             // that clauses come first, before directives and
             // attributes.
             int pathCount = 0;
-            for (int pieceIdx = 0; pieceIdx < pieces.length; pieceIdx++)
-            {
-                if (pieces[pieceIdx].indexOf('=') >= 0)
-                {
+            for (int pieceIdx = 0; pieceIdx < pieces.length; pieceIdx++) {
+                if (pieces[pieceIdx].indexOf('=') >= 0) {
                     break;
                 }
                 pathCount++;
             }
 
             // Error if no packages were specified.
-            if (pathCount == 0)
-            {
+            if (pathCount == 0) {
                 throw new IllegalArgumentException("No path specified on clause: " + ss[ssIdx]);
             }
 
             // Parse the directives/attributes.
             Directive[] dirs = new Directive[pieces.length - pathCount];
             Attribute[] attrs = new Attribute[pieces.length - pathCount];
-            int dirCount = 0, attrCount = 0;
+            int dirCount = 0;
+            int attrCount = 0;
             int idx = -1;
             String sep = null;
-            for (int pieceIdx = pathCount; pieceIdx < pieces.length; pieceIdx++)
-            {
+            for (int pieceIdx = pathCount; pieceIdx < pieces.length; pieceIdx++) {
                 // Check if it is a directive.
-                if ((idx = pieces[pieceIdx].indexOf(":=")) >= 0)
-                {
+                // CHECKSTYLE:SKIP
+                if ((idx = pieces[pieceIdx].indexOf(":=")) >= 0) {
                     sep = ":=";
                 }
                 // Check if it is an attribute.
-                else if ((idx = pieces[pieceIdx].indexOf("=")) >= 0)
-                {
+                // CHECKSTYLE:SKIP
+                else if ((idx = pieces[pieceIdx].indexOf("=")) >= 0) {
                     sep = "=";
                 }
                 // It is an error.
-                else
-                {
+                else {
                     throw new IllegalArgumentException("Not a directive/attribute: " + ss[ssIdx]);
                 }
 
@@ -101,18 +97,15 @@ public final class Parser
                 String value = pieces[pieceIdx].substring(idx + sep.length()).trim();
 
                 // Remove quotes, if value is quoted.
-                if (value.startsWith("\"") && value.endsWith("\""))
-                {
+                if (value.startsWith("\"") && value.endsWith("\"")) {
                     value = value.substring(1, value.length() - 1);
                 }
 
                 // Save the directive/attribute in the appropriate array.
-                if (sep.equals(":="))
-                {
+                if (sep.equals(":=")) {
                     dirs[dirCount++] = new Directive(key, value);
                 }
-                else
-                {
+                else {
                     attrs[attrCount++] = new Attribute(key, value);
                 }
             }
@@ -128,8 +121,7 @@ public final class Parser
             // set directives/attributes. Add each package to
             // completel list of packages.
             Clause[] pkgs = new Clause[pathCount];
-            for (int pkgIdx = 0; pkgIdx < pathCount; pkgIdx++)
-            {
+            for (int pkgIdx = 0; pkgIdx < pathCount; pkgIdx++) {
                 pkgs[pkgIdx] = new Clause(pieces[pkgIdx], dirsFinal, attrsFinal);
                 completeList.add(pkgs[pkgIdx]);
             }
@@ -144,148 +136,115 @@ public final class Parser
      * parser obeys quotes, so the delimiter character will be ignored if it is
      * inside of a quote. This method assumes that the quote character is not
      * included in the set of delimiter characters.
+     *
      * @param value the delimited string to parse.
      * @param delim the characters delimiting the tokens.
      * @return an array of string tokens or null if there were no tokens.
-     **/
-    public static String[] parseDelimitedString(String value, String delim)
-    {
-        if (value == null)
-        {
-            value = "";
-        }
+     */
+    public static String[] parseDelimitedString(String value, String delim) {
+        String val = (value != null) ? value : "";
 
         List list = new ArrayList();
-
-        int CHAR = 1;
-        int DELIMITER = 2;
-        int STARTQUOTE = 4;
-        int ENDQUOTE = 8;
 
         StringBuffer sb = new StringBuffer();
 
         int expecting = (CHAR | DELIMITER | STARTQUOTE);
 
-        for (int i = 0; i < value.length(); i++)
-        {
-            char c = value.charAt(i);
+        for (int i = 0; i < val.length(); i++) {
+            char c = val.charAt(i);
 
             boolean isDelimiter = (delim.indexOf(c) >= 0);
             boolean isQuote = (c == '"');
 
-            if (isDelimiter && ((expecting & DELIMITER) > 0))
-            {
+            if (isDelimiter && ((expecting & DELIMITER) > 0)) {
                 list.add(sb.toString().trim());
                 sb.delete(0, sb.length());
                 expecting = (CHAR | DELIMITER | STARTQUOTE);
             }
-            else if (isQuote && ((expecting & STARTQUOTE) > 0))
-            {
+            else if (isQuote && ((expecting & STARTQUOTE) > 0)) {
                 sb.append(c);
                 expecting = CHAR | ENDQUOTE;
             }
-            else if (isQuote && ((expecting & ENDQUOTE) > 0))
-            {
+            else if (isQuote && ((expecting & ENDQUOTE) > 0)) {
                 sb.append(c);
                 expecting = (CHAR | STARTQUOTE | DELIMITER);
             }
-            else if ((expecting & CHAR) > 0)
-            {
+            else if ((expecting & CHAR) > 0) {
                 sb.append(c);
             }
-            else
-            {
-                throw new IllegalArgumentException("Invalid delimited string: " + value);
+            else {
+                throw new IllegalArgumentException("Invalid delimited string: " + val);
             }
         }
 
         String s = sb.toString().trim();
-        if (s.length() > 0)
-        {
+        if (s.length() > 0) {
             list.add(s);
         }
 
         return (String[]) list.toArray(new String[list.size()]);
     }
 
-    public static class Clause
-    {
+    public static class Clause {
 
         private final String name;
         private final Directive[] directives;
         private final Attribute[] attributes;
 
-        public Clause(String name, Directive[] directives, Attribute[] attributes)
-        {
+        public Clause(String name, Directive[] directives, Attribute[] attributes) {
             this.name = name;
             this.directives = directives;
             this.attributes = attributes;
         }
 
-        public String getName()
-        {
+        public String getName() {
             return name;
         }
 
-        public Directive[] getDirectives()
-        {
+        public Directive[] getDirectives() {
             return directives;
         }
 
-        public Attribute[] getAttributes()
-        {
+        public Attribute[] getAttributes() {
             return attributes;
         }
 
-        public String getDirective(String name)
-        {
-            for (int i = 0; i < directives.length; i++)
-            {
-                if (name.equals(directives[i].getName()))
-                {
+        public String getDirective(String directive) {
+            for (int i = 0; i < directives.length; i++) {
+                if (directive.equals(directives[i].getName())) {
                     return directives[i].getValue();
                 }
             }
             return null;
         }
 
-        public String getAttribute(String name)
-        {
-            for (int i = 0; i < attributes.length; i++)
-            {
-                if (name.equals(attributes[i].getName()))
-                {
+        public String getAttribute(String attribute) {
+            for (int i = 0; i < attributes.length; i++) {
+                if (attribute.equals(attributes[i].getName())) {
                     return attributes[i].getValue();
                 }
             }
             return null;
         }
 
-        public String toString()
-        {
+        public String toString() {
             StringBuffer sb = new StringBuffer();
             sb.append(name);
-            for (int i = 0; directives != null && i < directives.length; i++)
-            {
+            for (int i = 0; directives != null && i < directives.length; i++) {
                 sb.append(";").append(directives[i].getName()).append(":=");
-                if (directives[i].getValue().indexOf(",") >= 0)
-                {
+                if (directives[i].getValue().indexOf(",") >= 0) {
                     sb.append("\"").append(directives[i].getValue()).append("\"");
                 }
-                else
-                {
+                else {
                     sb.append(directives[i].getValue());
                 }
             }
-            for (int i = 0; attributes != null && i < attributes.length; i++)
-            {
+            for (int i = 0; attributes != null && i < attributes.length; i++) {
                 sb.append(";").append(attributes[i].getName()).append("=");
-                if (attributes[i].getValue().indexOf(",") >= 0)
-                {
+                if (attributes[i].getValue().indexOf(",") >= 0) {
                     sb.append("\"").append(attributes[i].getValue()).append("\"");
                 }
-                else
-                {
+                else {
                     sb.append(attributes[i].getValue());
                 }
             }
@@ -293,49 +252,41 @@ public final class Parser
         }
     }
 
-    public static class Directive
-    {
+    public static class Directive {
 
         private final String name;
         private final String value;
 
-        public Directive(String name, String value)
-        {
+        public Directive(String name, String value) {
             this.name = name;
             this.value = value;
         }
 
-        public String getName()
-        {
+        public String getName() {
             return name;
         }
 
-        public String getValue()
-        {
+        public String getValue() {
             return value;
         }
 
     }
 
-    public static class Attribute
-    {
+    public static class Attribute {
 
         private final String name;
         private final String value;
 
-        public Attribute(String name, String value)
-        {
+        public Attribute(String name, String value) {
             this.name = name;
             this.value = value;
         }
 
-        public String getName()
-        {
+        public String getName() {
             return name;
         }
 
-        public String getValue()
-        {
+        public String getValue() {
             return value;
         }
 

@@ -17,18 +17,6 @@
  */
 package org.ops4j.pax.cdi.spi;
 
-import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoader;
-
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-
 import org.ops4j.lang.Ops4jException;
 import org.ops4j.pax.cdi.api.BeanBundle;
 import org.ops4j.pax.cdi.api.ContainerInitialized;
@@ -38,6 +26,13 @@ import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.enterprise.inject.spi.BeanManager;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.concurrent.Callable;
+
+import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoader;
+
 /**
  * Abstract base class for {@link CdiContainer} implementations.
  * 
@@ -45,7 +40,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractCdiContainer implements CdiContainer {
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractCdiContainer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractCdiContainer.class);
 
     private Bundle bundle;
     private CdiContainerType containerType;
@@ -60,7 +55,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     @Override
     public synchronized void start(Object environment) {
         if (!started) {
-            log.info("Starting CDI container for bundle {}", getBundle());
+            LOG.info("Starting CDI container for bundle {}", getBundle());
             doStart(environment);
             finishStartup();
             started = true;
@@ -70,12 +65,14 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     @Override
     public synchronized void stop() {
         if (started) {
-            log.info("Stopping CDI container for bundle {}", getBundle());
+            LOG.info("Stopping CDI container for bundle {}", getBundle());
             doStop();
             if (registration != null) {
                 try {
                     registration.unregister();
-                } catch (Exception e) {
+                }
+                // CHECKSTYLE:SKIP
+                catch (Exception e) {
                     // Ignore
                 }
             }
@@ -100,7 +97,9 @@ public abstract class AbstractCdiContainer implements CdiContainer {
                         try {
                             BeanBundle cdiBundle = getInstance().select(BeanBundle.class).get();
                             cdiBundle.setBundleContext(bc);
-                        } catch (RuntimeException e) {
+                        }
+                        // CHECKSTYLE:SKIP
+                        catch (RuntimeException e) {
                             // Ignore, this is certainly because the bundle does not use the pax-cdi-extension
                             // which should not be mandatory is there's no OSGi access
                             // TODO: better detection if there's an import on the osgi extension, we should maybe fail
@@ -115,16 +114,16 @@ public abstract class AbstractCdiContainer implements CdiContainer {
                         BeanManager beanManager = getBeanManager();
                         beanManager.fireEvent(new ContainerInitialized());
                         
-                        ServiceRegistration<CdiContainer> registration = bc.registerService(CdiContainer.class, AbstractCdiContainer.this,
+                        ServiceRegistration<CdiContainer> reg = bc.registerService(CdiContainer.class, AbstractCdiContainer.this,
                             props);
 
-                        return registration;
+                        return reg;
                     }
                 });
         }
         // CHECKSTYLE:SKIP
         catch (Exception exc) {
-            log.error("", exc);
+            LOG.error("", exc);
             throw new Ops4jException(exc);
         }
     }

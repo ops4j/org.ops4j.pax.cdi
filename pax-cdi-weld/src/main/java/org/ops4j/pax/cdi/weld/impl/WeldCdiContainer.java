@@ -17,15 +17,12 @@
  */
 package org.ops4j.pax.cdi.weld.impl;
 
-import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoader;
-
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Event;
@@ -40,7 +37,6 @@ import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.ops4j.lang.Ops4jException;
 import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
@@ -129,7 +125,8 @@ public class WeldCdiContainer extends AbstractCdiContainer {
             bootstrap.validateBeans();
             bootstrap.endInitialization();
             manager = bootstrap.getManager(beanDeploymentArchive);
-        } finally {
+        }
+        finally {
             Thread.currentThread().setContextClassLoader(tccl);
         }
     }

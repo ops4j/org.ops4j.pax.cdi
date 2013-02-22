@@ -41,16 +41,13 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * TODO: the SynchronousBundleWatcher uses the STOPPED event instead of STOPPING
  */
 public class CdiExtender implements BundleActivator,
                                     ReplaceableServiceListener<CdiContainerFactory>,
-                                    BundleTrackerCustomizer<CdiContainer>
-{
+                                    BundleTrackerCustomizer<CdiContainer> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CdiExtender.class);
 
@@ -60,16 +57,16 @@ public class CdiExtender implements BundleActivator,
     private CdiContainerFactory factory;
 
     @Override
-    public void start(BundleContext context) throws Exception {
+    public void start(BundleContext ctx) throws Exception {
         LOGGER.info("Starting CDI extender {}", context.getBundle().getSymbolicName());
-        this.context = context;
+        this.context = ctx;
         this.factoryTracker = new ReplaceableService<CdiContainerFactory>(context, CdiContainerFactory.class, this);
         this.bundleWatcher = new BundleTracker<CdiContainer>(context, Bundle.ACTIVE, this);
         this.factoryTracker.start();
     }
 
     @Override
-    public void stop(BundleContext context) throws Exception {
+    public void stop(BundleContext ctx) throws Exception {
         LOGGER.info("Stopping CDI extender {}", context.getBundle().getSymbolicName());
         this.factoryTracker.stop();
     }
@@ -101,10 +98,13 @@ public class CdiExtender implements BundleActivator,
             try {
                 LOGGER.debug("Found CDI application in bundle {}", bundle.getSymbolicName());
                 return createContainer(bundle);
-            } catch (Exception e) {
+            }
+            // CHECKSTYLE:SKIP
+            catch (Exception e) {
                 LOGGER.error("Error creating CDI container for bundle " + bundle.toString(), e);
             }
-        } else {
+        }
+        else {
             LOGGER.debug("No CDI application found in bundle {}", bundle.getSymbolicName());
         }
         return null;
@@ -181,14 +181,16 @@ public class CdiExtender implements BundleActivator,
                     URL u = e.nextElement();
                     pathList.add(u);
                 }
-            } else {
+            }
+            else {
                 String baseName;
                 String filePattern;
                 int pos = name.lastIndexOf('/');
                 if (pos < 0) {
                     baseName = "/";
                     filePattern = name;
-                } else {
+                }
+                else {
                     baseName = name.substring(0, pos + 1);
                     filePattern = name.substring(pos + 1);
                 }
@@ -198,7 +200,8 @@ public class CdiExtender implements BundleActivator,
                         URL u = e.nextElement();
                         pathList.add(u);
                     }
-                } else {
+                }
+                else {
                     URL url = bundle.getEntry(name);
                     if (url == null) {
                         throw new IllegalArgumentException("Unable to find CDI configuration file for " + path);
