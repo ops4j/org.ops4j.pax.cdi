@@ -78,6 +78,9 @@
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Bundle-Activator>${bundle.namespace}.impl.CdiExtender</Bundle-Activator>
+                        <Provide-Capability>
+                            osgi.extender; osgi.extender="pax.cdi"
+                        </Provide-Capability>
                     </instructions>
                 </configuration>
             </plugin>

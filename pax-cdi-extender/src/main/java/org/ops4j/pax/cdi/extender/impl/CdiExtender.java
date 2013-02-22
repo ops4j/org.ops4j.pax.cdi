@@ -49,15 +49,14 @@ import java.util.concurrent.Executors;
  */
 public class CdiExtender implements BundleActivator,
                                     ReplaceableServiceListener<CdiContainerFactory>,
-                                    BundleTrackerCustomizer<List<Object>>
+                                    BundleTrackerCustomizer<CdiContainer>
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CdiExtender.class);
 
     private BundleContext context;
     private ReplaceableService<CdiContainerFactory> factoryTracker;
-    private ExecutorService executor;
-    private BundleTracker<List<Object>> bundleWatcher;
+    private BundleTracker<CdiContainer> bundleWatcher;
     private CdiContainerFactory factory;
 
     @Override
@@ -65,8 +64,7 @@ public class CdiExtender implements BundleActivator,
         LOGGER.info("Starting CDI extender {}", context.getBundle().getSymbolicName());
         this.context = context;
         this.factoryTracker = new ReplaceableService<CdiContainerFactory>(context, CdiContainerFactory.class, this);
-        this.executor = Executors.newSingleThreadScheduledExecutor();
-        this.bundleWatcher = new BundleTracker<List<Object>>(context, Bundle.ACTIVE, this);
+        this.bundleWatcher = new BundleTracker<CdiContainer>(context, Bundle.ACTIVE, this);
         this.factoryTracker.start();
     }
 
@@ -88,35 +86,55 @@ public class CdiExtender implements BundleActivator,
     }
 
     @Override
-    public List<Object> addingBundle(final Bundle bundle, BundleEvent event) {
-        final List<Object> beansXml = scan(bundle);
-        if (beansXml != null && !beansXml.isEmpty()) {
+    public CdiContainer addingBundle(final Bundle bundle, BundleEvent event) {
+        boolean wired = false;
+        List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires("osgi.extender");
+        if (wires != null) {
+            for (BundleWire wire : wires) {
+                if (wire.getProviderWiring().getBundle() == context.getBundle()) {
+                    wired = true;
+                    break;
+                }
+            }
+        }
+        if (wired) {
             try {
-                createContainer(bundle, beansXml);
+                LOGGER.debug("Found CDI application in bundle {}", bundle.getSymbolicName());
+                return createContainer(bundle);
             } catch (Exception e) {
                 LOGGER.error("Error creating CDI container for bundle " + bundle.toString(), e);
             }
+        } else {
+            LOGGER.debug("No CDI application found in bundle {}", bundle.getSymbolicName());
         }
-        return beansXml;
+        return null;
     }
 
     @Override
-    public void modifiedBundle(Bundle bundle, BundleEvent event, List<Object> object) {
+    public void modifiedBundle(Bundle bundle, BundleEvent event, CdiContainer object) {
         // We don't care about state changes
     }
 
     @Override
-    public void removedBundle(Bundle bundle, BundleEvent event, List<Object> object) {
-        CdiContainer container = this.factory.getContainer(bundle);
+    public void removedBundle(Bundle bundle, BundleEvent event, CdiContainer container) {
         synchronized (container) {
             container.stop();
         }
         this.factory.removeContainer(bundle);
     }
 
-    private void createContainer(Bundle bundle, List<Object> beansXml) {
+    private CdiContainer createContainer(Bundle bundle) {
         CdiContainerFactory cf = factory;
         if (cf != null) {
+            // Find extensions
+            Set<Bundle> extensions = new HashSet<Bundle>();
+            findExtensions(bundle, extensions);
+            // Find beans xml
+            final List<Object> beansXml = new ArrayList<Object>();
+            scan(bundle, beansXml);
+            for (Bundle ext : extensions) {
+                scan(ext, beansXml);
+            }
             // Get all urls
             List<URL> urls = new ArrayList<URL>();
             for (Object path : beansXml) {
@@ -133,32 +151,37 @@ public class CdiExtender implements BundleActivator,
                     throw new IllegalArgumentException("Unsupported path: " + path);
                 }
             }
-            // Find extensions
-            Set<Bundle> extensions = new HashSet<Bundle>();
-            List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires("org.ops4j.pax.cdi.extension");
-            if (wires != null) {
-                for (BundleWire wire : wires) {
-                    extensions.add(wire.getProviderWiring().getBundle());
-                }
-            }
 
             // check if this is a web bundle
             Dictionary<String, String> headers = bundle.getHeaders();
             String contextPath = headers.get("Web-ContextPath");
             CdiContainerType containerType = (contextPath == null) ? CdiContainerType.STANDALONE : CdiContainerType.WEB;
             // create container, but do not start it
+            LOGGER.info("Creating CDI container for bundle {} with beans xml {} and extensions {}", new Object[] { bundle, urls, extensions });
             final CdiContainer container = cf.createContainer(bundle, urls, extensions, containerType);
             // Web containers will be started later when the servlet context is available.
             // Standalone containers are started right now.
             if (containerType == CdiContainerType.STANDALONE) {
                 container.start(null);
             }
+            return container;
+        }
+        return null;
+    }
+
+    private void findExtensions(Bundle bundle, Set<Bundle> extensions) {
+        List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires("org.ops4j.pax.cdi.extension");
+        if (wires != null) {
+            for (BundleWire wire : wires) {
+                Bundle b = wire.getProviderWiring().getBundle();
+                extensions.add(b);
+                findExtensions(b, extensions);
+            }
         }
     }
 
-    private List<Object> scan(Bundle bundle) {
+    private void scan(Bundle bundle, List<Object> pathList) {
         LOGGER.debug("Scanning bundle {} for CDI application", bundle.getSymbolicName());
-        List<Object> pathList = new ArrayList<Object>();
         String header = bundle.getHeaders().get(Constants.MANAGED_BEANS_KEY);
         if (header == null) {
             if (bundle.findEntries("META-INF/", "beans.xml", false) != null) {
@@ -196,14 +219,6 @@ public class CdiExtender implements BundleActivator,
                 }
             }
         }
-        if (!pathList.isEmpty()) {
-            LOGGER.debug("Found CDI application in bundle {} with paths: {}", bundle.getSymbolicName(), pathList);
-            // TODO: Check compatibility
-            return pathList;
-        } else {
-            LOGGER.debug("No CDI application found in bundle {}", bundle.getSymbolicName());
-        }
-        return null;
     }
 
 }

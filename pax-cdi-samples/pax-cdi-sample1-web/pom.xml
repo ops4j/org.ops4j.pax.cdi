@@ -42,9 +42,25 @@
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Web-ContextPath>sample1</Web-ContextPath>
                         <Pax-ManagedBeans>WEB-INF/beans.xml</Pax-ManagedBeans>
+                        <Require-Capability>
+                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=pax-cdi-extension)(version>=${version;==;${pax.cdi.osgi.version.clean}})(!(version>=${version;=+;${pax.cdi.osgi.version.clean}})))",
+                            osgi.extender; filter:="(osgi.extender=pax.cdi)"
+                        </Require-Capability>
                     </instructions>
                 </configuration>
                 <executions>
+                    <execution>
+                        <id>versions</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>cleanVersions</goal>
+                        </goals>
+                        <configuration>
+                            <versions>
+                                <pax.cdi.osgi.version.clean>${project.version}</pax.cdi.osgi.version.clean>
+                            </versions>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>generate-manifest</id>
                         <phase>process-classes</phase>

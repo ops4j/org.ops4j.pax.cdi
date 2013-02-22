@@ -20,10 +20,13 @@ package org.ops4j.pax.cdi.api;
 
 public class Constants {
 
+    /**
+     * Opt-in manifest header, starting a CDI container
+     */
+    public static final String CDI_EXTENDER_KEY = "pax.cdi";
     
     /**
-     * Opt-in manifest header, listing beans descriptors.
-     * At the moment, only a single bundle resource is supported.
+     * Manifest header listing beans descriptors (default is META-INF/beans.xml)
      */
     public static final String MANAGED_BEANS_KEY = "Pax-ManagedBeans";
 
