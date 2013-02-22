@@ -130,26 +130,10 @@ public class CdiExtender implements BundleActivator,
             Set<Bundle> extensions = new HashSet<Bundle>();
             findExtensions(bundle, extensions);
             // Find beans xml
-            final List<Object> beansXml = new ArrayList<Object>();
+            final List<URL> beansXml = new ArrayList<URL>();
             scan(bundle, beansXml);
             for (Bundle ext : extensions) {
                 scan(ext, beansXml);
-            }
-            // Get all urls
-            List<URL> urls = new ArrayList<URL>();
-            for (Object path : beansXml) {
-                if (path instanceof URL) {
-                    urls.add((URL) path);
-                } else if (path instanceof String) {
-                    URL url = bundle.getEntry((String) path);
-                    if (url == null) {
-                        throw new IllegalArgumentException("Unable to find CDI configuration file for " + path);
-                    }
-                    urls.add(url);
-                } else {
-                    // Should never happen
-                    throw new IllegalArgumentException("Unsupported path: " + path);
-                }
             }
 
             // check if this is a web bundle
@@ -157,8 +141,8 @@ public class CdiExtender implements BundleActivator,
             String contextPath = headers.get("Web-ContextPath");
             CdiContainerType containerType = (contextPath == null) ? CdiContainerType.STANDALONE : CdiContainerType.WEB;
             // create container, but do not start it
-            LOGGER.info("Creating CDI container for bundle {} with beans xml {} and extensions {}", new Object[] { bundle, urls, extensions });
-            final CdiContainer container = cf.createContainer(bundle, urls, extensions, containerType);
+            LOGGER.info("Creating CDI container for bundle {} with beans xml {} and extensions {}", new Object[] { bundle, beansXml, extensions });
+            final CdiContainer container = cf.createContainer(bundle, beansXml, extensions, containerType);
             // Web containers will be started later when the servlet context is available.
             // Standalone containers are started right now.
             if (containerType == CdiContainerType.STANDALONE) {
@@ -180,7 +164,7 @@ public class CdiExtender implements BundleActivator,
         }
     }
 
-    private void scan(Bundle bundle, List<Object> pathList) {
+    private void scan(Bundle bundle, List<URL> pathList) {
         LOGGER.debug("Scanning bundle {} for CDI application", bundle.getSymbolicName());
         String header = bundle.getHeaders().get(Constants.MANAGED_BEANS_KEY);
         if (header == null) {
@@ -215,7 +199,11 @@ public class CdiExtender implements BundleActivator,
                         pathList.add(u);
                     }
                 } else {
-                    pathList.add(name);
+                    URL url = bundle.getEntry(name);
+                    if (url == null) {
+                        throw new IllegalArgumentException("Unable to find CDI configuration file for " + path);
+                    }
+                    pathList.add(url);
                 }
             }
         }
