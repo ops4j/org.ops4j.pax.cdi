@@ -50,6 +50,7 @@ import org.jboss.testharness.api.DeploymentException;
 import org.jboss.testharness.spi.Containers;
 import org.ops4j.io.StreamUtils;
 import org.ops4j.io.ZipExploder;
+import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.exam.ExamSystem;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.TestContainer;
@@ -84,7 +85,7 @@ public class PaxExamContainerImpl implements Containers {
 
             File tempDir = explodeArchive(archive);
             createManifest(name, tempDir);
-            customizeWebXml(tempDir);
+            //customizeWebXml(tempDir);
             InputStream bundle = new JarCreator(tempDir).jar();
 
             log.info("test WAR for {} in {}", name, tempDir);
@@ -267,14 +268,14 @@ public class PaxExamContainerImpl implements Containers {
             // Pax Web
 
             systemProperty("org.osgi.service.http.port").value("8181"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-spi").version("3.0.0.M1"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-api").version("3.0.0.M1"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version("3.0.0.M1")
+            mavenBundle("org.ops4j.pax.web", "pax-web-spi").version(Info.getPaxWebVersion()),
+            mavenBundle("org.ops4j.pax.web", "pax-web-api").version(Info.getPaxWebVersion()),
+            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version(Info.getPaxWebVersion())
                 .startLevel(10),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard").version("3.0.0.M1"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-jetty").version("3.0.0.M1"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-runtime").version("3.0.0.M1"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-jsp").version("3.0.0.M1"),
+            mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard").version(Info.getPaxWebVersion()),
+            mavenBundle("org.ops4j.pax.web", "pax-web-jetty").version(Info.getPaxWebVersion()),
+            mavenBundle("org.ops4j.pax.web", "pax-web-runtime").version(Info.getPaxWebVersion()),
+            mavenBundle("org.ops4j.pax.web", "pax-web-jsp").version(Info.getPaxWebVersion()),
             mavenBundle("org.eclipse.jdt.core.compiler", "ecj").version("3.5.1"),
             mavenBundle("org.eclipse.jetty", "jetty-util").version("8.1.4.v20120524"),
             mavenBundle("org.eclipse.jetty", "jetty-io").version("8.1.4.v20120524"),

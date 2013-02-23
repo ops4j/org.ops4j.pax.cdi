@@ -25,11 +25,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.jboss.weld.bootstrap.api.SingletonProvider;
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 /**
  * {@link CdiContainerFactory} implementation based on Apache OpenWebBeans.
@@ -39,12 +42,17 @@ import org.osgi.framework.Bundle;
  */
 public class WeldCdiContainerFactory implements CdiContainerFactory {
 
-    private Bundle ownBundle;
     private Map<Long, CdiContainer> containers = new HashMap<Long, CdiContainer>();
     private List<CdiContainerListener> listeners = new CopyOnWriteArrayList<CdiContainerListener>();
+    private BundleContext bundleContext;
 
-    public WeldCdiContainerFactory(Bundle ownBundle) {
-        this.ownBundle = ownBundle;
+    public void activate(BundleContext bc) {
+        this.bundleContext = bc;
+        SingletonProvider.initialize(new RegistrySingletonProvider());        
+    }
+
+    public void deactivate() {
+        SingletonProvider.reset();        
     }
 
     @Override
@@ -54,7 +62,7 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
 
     @Override
     public CdiContainer createContainer(Bundle bundle, Collection<URL> descriptors, Collection<Bundle> extensions, CdiContainerType containerType) {
-        WeldCdiContainer container = new WeldCdiContainer(containerType, ownBundle, bundle, descriptors, extensions);
+        WeldCdiContainer container = new WeldCdiContainer(containerType, bundleContext.getBundle(), bundle, descriptors, extensions);
         containers.put(bundle.getBundleId(), container);
         for (CdiContainerListener listener : listeners) {
             listener.postCreate(container);

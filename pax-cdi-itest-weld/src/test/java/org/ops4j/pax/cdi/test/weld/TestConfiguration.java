@@ -62,6 +62,8 @@ public class TestConfiguration {
             mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject().startLevel(
                 START_LEVEL_SYSTEM_BUNDLES),
 
+            mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
+
             // Set logback configuration via system property.
             // This way, both the driver and the container use the same configuration
             systemProperty("logback.configurationFile").value(

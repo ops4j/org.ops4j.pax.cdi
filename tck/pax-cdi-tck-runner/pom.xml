@@ -235,9 +235,23 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <useManifestOnlyJar>false</useManifestOnlyJar>
-                    <argLine>-ea -XX:MaxPermSize=192m</argLine>
+                    <argLine>-ea -XX:MaxPermSize=256m</argLine>
+                    <!-- use chunked suites and fork always to avoid PermGen exceptions -->
+                    <forkMode>always</forkMode>
                     <suiteXmlFiles>
-                        <suiteXmlFile>example-suite.xml</suiteXmlFile>
+                        <suiteXmlFile>interceptors.xml</suiteXmlFile>
+                        <suiteXmlFile>context1.xml</suiteXmlFile>
+                        <suiteXmlFile>context2.xml</suiteXmlFile>
+                        <suiteXmlFile>decorators1.xml</suiteXmlFile>
+                        <suiteXmlFile>decorators2.xml</suiteXmlFile>
+                        <suiteXmlFile>definition.xml</suiteXmlFile>
+                        <suiteXmlFile>deployment.xml</suiteXmlFile>
+                        <suiteXmlFile>event.xml</suiteXmlFile>
+                        <suiteXmlFile>extensions.xml</suiteXmlFile>
+                        <suiteXmlFile>implementation.xml</suiteXmlFile>
+                        <suiteXmlFile>inheritance.xml</suiteXmlFile>
+                        <suiteXmlFile>interceptors2.xml</suiteXmlFile>
+                        <suiteXmlFile>policy.xml</suiteXmlFile>
                     </suiteXmlFiles>
 
                     <systemPropertyVariables>

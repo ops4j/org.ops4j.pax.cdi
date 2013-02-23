@@ -71,7 +71,7 @@ public class ServletTest {
             mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", Info.getPaxCdiVersion()),
 
             // FIXME startlevel hack to compensate for missing quiet period
-            workspaceBundle("pax-cdi-extender").startLevel(10),
+            workspaceBundle("pax-cdi-extender"),
             
             workspaceBundle("pax-cdi-extension"),
             workspaceBundle("pax-cdi-api"),

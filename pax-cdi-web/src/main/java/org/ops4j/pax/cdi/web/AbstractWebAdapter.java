@@ -17,9 +17,13 @@
  */
 package org.ops4j.pax.cdi.web;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 import javax.servlet.ServletContextListener;
 
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
+import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.ops4j.pax.cdi.web.impl.CdiWebAppDependencyManager;
 import org.ops4j.pax.swissbox.lifecycle.AbstractLifecycle;
 import org.ops4j.pax.swissbox.tracker.ReplaceableService;
@@ -34,12 +38,10 @@ import org.osgi.framework.BundleContext;
  * @author Harald Wellmann
  * 
  */
-public abstract class AbstractWebAdapter extends AbstractLifecycle implements
-    ReplaceableServiceListener<CdiContainerFactory> {
+public abstract class AbstractWebAdapter extends AbstractLifecycle {
 
     protected BundleContext bundleContext;
     private CdiWebAppDependencyManager dependencyManager;
-    private ReplaceableService<CdiContainerFactory> cdiContainerFactory;
 
     protected AbstractWebAdapter(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
@@ -48,25 +50,14 @@ public abstract class AbstractWebAdapter extends AbstractLifecycle implements
     @Override
     protected void onStart() {
         dependencyManager = new CdiWebAppDependencyManager(getServletContextListener());
-        cdiContainerFactory = new ReplaceableService<CdiContainerFactory>(bundleContext, CdiContainerFactory.class, this);
-        cdiContainerFactory.start();
-    }
-
-    @Override
-    public synchronized void serviceChanged(CdiContainerFactory oldService, CdiContainerFactory newService) {
-        if (oldService != null) {
-            oldService.removeListener(dependencyManager);
-            dependencyManager.unregisterAll();
-        }
-        if (newService != null) {
-            newService.addListener(dependencyManager);
-        }
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("type", "web");
+        bundleContext.registerService(CdiContainerListener.class, dependencyManager, props);
     }
 
     protected abstract ServletContextListener getServletContextListener();
 
     @Override
     protected void onStop() {
-        cdiContainerFactory.stop();
     }
 }

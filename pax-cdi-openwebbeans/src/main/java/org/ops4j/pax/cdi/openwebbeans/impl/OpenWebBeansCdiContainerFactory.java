@@ -31,6 +31,7 @@ import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.osgi.framework.Bundle;
+import org.osgi.service.component.ComponentContext;
 
 /**
  * {@link CdiContainerFactory} implementation based on Apache OpenWebBeans.
@@ -40,12 +41,15 @@ import org.osgi.framework.Bundle;
  */
 public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
 
-    private Bundle ownBundle;
     private Map<Long, CdiContainer> containers = new HashMap<Long, CdiContainer>();
     private List<CdiContainerListener> listeners = new ArrayList<CdiContainerListener>();
+    private ComponentContext componentContext;
 
-    public OpenWebBeansCdiContainerFactory(Bundle ownBundle) {
-        this.ownBundle = ownBundle;
+    public OpenWebBeansCdiContainerFactory() {
+    }
+    
+    protected void activate(ComponentContext cc) {
+        this.componentContext = cc;
     }
 
     @Override
@@ -55,6 +59,7 @@ public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
 
     @Override
     public CdiContainer createContainer(Bundle bundle, Collection<URL> descriptors, Collection<Bundle> extensions, CdiContainerType containerType) {
+        Bundle ownBundle = componentContext.getBundleContext().getBundle();
         OpenWebBeansCdiContainer container = new OpenWebBeansCdiContainer(containerType, ownBundle,
             bundle, extensions, descriptors);
         containers.put(bundle.getBundleId(), container);
