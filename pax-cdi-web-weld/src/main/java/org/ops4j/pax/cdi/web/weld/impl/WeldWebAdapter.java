@@ -19,14 +19,9 @@ package org.ops4j.pax.cdi.web.weld.impl;
 
 import javax.servlet.ServletContextListener;
 
-import org.ops4j.pax.cdi.web.AbstractWebAdapter;
-import org.osgi.framework.BundleContext;
+import org.ops4j.pax.cdi.web.CdiWebAppDependencyManager;
 
-public class WeldWebAdapter extends AbstractWebAdapter {
-
-    public WeldWebAdapter(BundleContext bundleContext) {
-        super(bundleContext);
-    }
+public class WeldWebAdapter extends CdiWebAppDependencyManager {
 
     @Override
     protected ServletContextListener getServletContextListener() {

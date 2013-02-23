@@ -19,17 +19,23 @@ package org.ops4j.pax.cdi.web.openwebbeans.impl;
 
 import javax.servlet.ServletContextListener;
 
-import org.ops4j.pax.cdi.web.AbstractWebAdapter;
+import org.apache.webbeans.config.WebBeansFinder;
+import org.ops4j.pax.cdi.web.CdiWebAppDependencyManager;
 import org.osgi.framework.BundleContext;
 
-public class OpenWebBeansWebAdapter extends AbstractWebAdapter {
+public class OpenWebBeansWebAdapter extends CdiWebAppDependencyManager {
 
-    public OpenWebBeansWebAdapter(BundleContext bundleContext) {
-        super(bundleContext);
+    public void activate(BundleContext context) {
+        WebBeansFinder.setSingletonService(new BundleSingletonService());
     }
 
+    public void deactivate(BundleContext context) {
+        WebBeansFinder.setSingletonService(null);
+    }
+
+    
     @Override
-    protected ServletContextListener getServletContextListener() {
+    public ServletContextListener getServletContextListener() {
         return new OpenWebBeansListener();
     }
 }

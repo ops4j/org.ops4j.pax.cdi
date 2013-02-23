@@ -15,10 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.web.impl;
+package org.ops4j.pax.cdi.web;
 
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerListener;
+import org.ops4j.pax.cdi.web.impl.CdiServletContainerInitializer;
+import org.ops4j.pax.cdi.web.impl.CdiWebAppDependencyHolder;
 import org.ops4j.pax.web.service.WebAppDependencyHolder;
 import org.ops4j.pax.web.service.WebContainerConstants;
 import org.osgi.framework.Bundle;
@@ -40,20 +42,19 @@ import java.util.Map;
  * @author Harald Wellmann
  * 
  */
-public class CdiWebAppDependencyManager implements CdiContainerListener {
+public abstract class CdiWebAppDependencyManager implements CdiContainerListener {
 
     private static Logger logger = LoggerFactory.getLogger(CdiWebAppDependencyManager.class);
 
     private Map<Bundle, ServiceRegistration<WebAppDependencyHolder>> registrations = new HashMap<Bundle, ServiceRegistration<WebAppDependencyHolder>>();
-    private ServletContextListener servletContextListener;
 
-    public CdiWebAppDependencyManager(ServletContextListener listener) {
-        this.servletContextListener = listener;
-    }
+    protected abstract ServletContextListener getServletContextListener();
 
+    
+    
     private void register(Bundle bundle, CdiContainer cdiContainer) {
         CdiServletContainerInitializer initializer = new CdiServletContainerInitializer(
-            cdiContainer, servletContextListener);
+            cdiContainer, getServletContextListener());
         WebAppDependencyHolder dependencyHolder = new CdiWebAppDependencyHolder(
             bundle.getBundleContext(), initializer);
         Dictionary<String, String> props = new Hashtable<String, String>();

@@ -69,7 +69,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
-                        <Bundle-Activator>${bundle.namespace}.impl.Activator</Bundle-Activator>
+                        <Service-Component>OSGI-INF/*</Service-Component>
                         <Import-Package>org.jboss.weld.bootstrap, javax.servlet.*;version="[2,4)", *</Import-Package>
                     </instructions>
                 </configuration>

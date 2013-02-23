@@ -83,7 +83,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
-                        <Bundle-Activator>${bundle.namespace}.impl.Activator</Bundle-Activator>
+                        <Service-Component>OSGI-INF/*</Service-Component>
                     </instructions>
                 </configuration>
             </plugin>
