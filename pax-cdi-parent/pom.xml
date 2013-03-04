@@ -19,7 +19,7 @@
         <pax.exam.version>3.0.0</pax.exam.version>
         <pax.swissbox.version>1.6.0</pax.swissbox.version>
         <pax.url.version>1.5.0</pax.url.version>
-        <pax.web.version>3.0.0.M2</pax.web.version>
+        <pax.web.version>3.0.0.M3</pax.web.version>
         <slf4j.version>1.6.4</slf4j.version>
         <pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
         <weld.version>1.2.0.Beta1</weld.version>
