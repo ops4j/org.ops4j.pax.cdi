@@ -30,7 +30,11 @@ public class OpenWebBeansWebAdapter extends CdiWebAppDependencyManager {
     }
 
     public void deactivate(BundleContext context) {
-        WebBeansFinder.setSingletonService(null);
+        // TODO the following causes an exception:
+        // org.apache.webbeans.exception.WebBeansConfigurationException: 
+        // Already using another custom SingletonService!
+
+        // WebBeansFinder.setSingletonService(null);
     }
 
     
