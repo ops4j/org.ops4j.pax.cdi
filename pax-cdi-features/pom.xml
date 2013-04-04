@@ -10,11 +10,10 @@
         <relativePath>../pax-cdi-parent</relativePath>
     </parent>
 
-    <groupId>org.ops4j.pax.cdi</groupId>
     <artifactId>pax-cdi-features</artifactId>
     <packaging>pom</packaging>
 
-    <name>OPS4J Pax CDI - Features</name>
+    <name>OPS4J Pax CDI Karaf Features</name>
 
     <description>
         Pax Cdi module creating a features xml file to deploy Pax Cdi components as features in Apache Karaf.
