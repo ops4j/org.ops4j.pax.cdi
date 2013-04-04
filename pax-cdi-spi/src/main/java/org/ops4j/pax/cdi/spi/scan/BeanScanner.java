@@ -17,8 +17,6 @@
  */
 package org.ops4j.pax.cdi.spi.scan;
 
-import static org.ops4j.pax.cdi.api.Constants.MANAGED_BEANS_KEY;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -165,8 +163,8 @@ public class BeanScanner {
                 }
             }
         }
-        catch (IOException ignore) {
-            log.warn("Fail to check zip file " + zipName, ignore);
+        catch (IOException exc) {
+            log.warn("error scanning zip file " + zipName, exc);
         }
         finally {
             if (in != null) {
@@ -233,15 +231,26 @@ public class BeanScanner {
             return;
         }
 
-        Collection<URL> entries = wiring.findEntries("/", "*.class",
+        Collection<String> entries = wiring.listResources("/", "*.class",
             BundleWiring.LISTRESOURCES_LOCAL);
-        for (URL entry : entries) {
-            beanClasses.add(toClassName("/", entry));
+        for (String entry : entries) {
+            beanClasses.add(toClassName("", entry));
         }
     }
 
     private boolean isBeanBundle(Bundle candidate) {
-        return candidate.getHeaders().get(MANAGED_BEANS_KEY) != null;
+        List<BundleWire> wires = candidate.adapt(BundleWiring.class).getRequiredWires(
+            "osgi.extender");
+        for (BundleWire wire : wires) {
+            Object object = wire.getCapability().getAttributes().get("osgi.extender");
+            if (object instanceof String) {
+                String extender = (String) object;
+                if (extender.equals("pax.cdi")) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void scanRequiredBundles() {
