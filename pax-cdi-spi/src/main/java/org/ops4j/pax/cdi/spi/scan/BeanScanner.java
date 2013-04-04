@@ -18,6 +18,8 @@
 package org.ops4j.pax.cdi.spi.scan;
 
 import static org.ops4j.pax.cdi.api.Constants.MANAGED_BEANS_KEY;
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,6 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
@@ -50,6 +54,8 @@ import org.slf4j.LoggerFactory;
  */
 public class BeanScanner {
 
+    private static final String CLASS_EXT = ".class";
+
     private Logger log = LoggerFactory.getLogger(BeanScanner.class);
 
     private Bundle bundle;
@@ -59,7 +65,9 @@ public class BeanScanner {
 
     /**
      * Constructs a bean scanner for the given bundle.
-     * @param bundle bundle to be scanned
+     * 
+     * @param bundle
+     *            bundle to be scanned
      */
     public BeanScanner(Bundle bundle) {
         this.bundle = bundle;
@@ -69,6 +77,7 @@ public class BeanScanner {
 
     /**
      * Returns the class names of all bean candidate classes.
+     * 
      * @return unmodifiable set
      */
     public Set<String> getBeanClasses() {
@@ -77,6 +86,7 @@ public class BeanScanner {
 
     /**
      * Return the URLs of all bean descriptors (beans.xml).
+     * 
      * @return unmodifiable set
      */
     public Set<URL> getBeanDescriptors() {
@@ -120,15 +130,52 @@ public class BeanScanner {
             if (classPath.equals(".")) {
                 classPath = "/";
             }
-            Enumeration<URL> e = bundle.findEntries(classPath, "*.class", true);
-            /*
-             * FIXME The following only works for directories like WEB-INF/classes/ but
-             * not for embedded archives like WEB-INF/lib/foo.jar.
-             */
-            while (e != null && e.hasMoreElements()) {
-                URL url = e.nextElement();
-                String klass = toClassName(classPath, url);
-                beanClasses.add(klass);
+
+            if (classPath.endsWith(".jar") || classPath.endsWith(".zip")) {
+                scanZip(classPath);
+            }
+            else {
+                scanDirectory(classPath);
+            }
+        }
+    }
+
+    private void scanDirectory(String classPath) {
+        Enumeration<URL> e = bundle.findEntries(classPath, "*.class", true);
+        while (e != null && e.hasMoreElements()) {
+            URL url = e.nextElement();
+            String klass = toClassName(classPath, url);
+            beanClasses.add(klass);
+        }
+    }
+
+    private void scanZip(String zipName) {
+        URL zipEntry = bundle.getEntry(zipName);
+        if (zipEntry == null) {
+            return;
+        }
+        ZipInputStream in = null;
+        try {
+            in = new ZipInputStream(zipEntry.openStream());
+            ZipEntry entry;
+            while ((entry = in.getNextEntry()) != null) {
+                String name = entry.getName();
+                if (name.endsWith(CLASS_EXT)) {
+                    beanClasses.add(toClassName("", name));
+                }
+            }
+        }
+        catch (IOException ignore) {
+            log.warn("Fail to check zip file " + zipName, ignore);
+        }
+        finally {
+            if (in != null) {
+                try {
+                    in.close();
+                }
+                catch (IOException e) {
+                    // ignore
+                }
             }
         }
     }
@@ -149,10 +196,10 @@ public class BeanScanner {
         if (klass.charAt(0) == '/') {
             klass = klass.substring(1);
         }
-        
+
         String prefix = classPath;
         if (classPath.length() > 1) {
-            if ( classPath.charAt(0) == '/') {
+            if (classPath.charAt(0) == '/') {
                 prefix = classPath.substring(1);
             }
             assert klass.startsWith(prefix);
@@ -162,7 +209,7 @@ public class BeanScanner {
             }
             klass = klass.substring(startIndex);
         }
-        
+
         klass = klass.replace("/", ".").replace(".class", "");
         log.trace("file = {}, class = {}", file, klass);
         return klass;
@@ -206,7 +253,8 @@ public class BeanScanner {
     }
 
     private void scanExtensions() {
-        List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires("org.ops4j.pax.cdi.extension");
+        List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires(
+            "org.ops4j.pax.cdi.extension");
         for (BundleWire wire : wires) {
             scanForClasses(wire);
         }
