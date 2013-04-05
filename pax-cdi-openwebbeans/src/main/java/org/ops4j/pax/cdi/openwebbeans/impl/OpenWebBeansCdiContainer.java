@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OpenWebBeansCdiContainer.class);
+    private static Logger log = LoggerFactory.getLogger(OpenWebBeansCdiContainer.class);
 
     /** Bundle owning this class. */
     private Bundle ownBundle;
@@ -103,7 +103,7 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
     public OpenWebBeansCdiContainer(CdiContainerType containerType, Bundle ownBundle,
         Bundle extendedBundle, Collection<Bundle> extensionBundles) {
         super(containerType, extendedBundle);
-        LOGGER.debug("creating OpenWebBeans CDI container for bundle {}", extendedBundle);
+        log.debug("creating OpenWebBeans CDI container for bundle {}", extendedBundle);
         this.ownBundle = ownBundle;
         this.extensionBundles = extensionBundles;
     }
@@ -180,9 +180,9 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
     @Override
     protected void doStart(Object environment) {
         context = createWebBeansContext(getBundle(), environment);
-        if (LOGGER.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             for (Bean<?> bean : context.getBeanManagerImpl().getBeans()) {
-                LOGGER.debug("  {}", bean);
+                log.debug("  {}", bean);
             }
         }
     }

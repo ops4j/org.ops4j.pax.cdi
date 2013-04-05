@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  */
 public class WeldCdiContainer extends AbstractCdiContainer {
 
-    private Logger logger = LoggerFactory.getLogger(WeldCdiContainer.class);
+    private Logger log = LoggerFactory.getLogger(WeldCdiContainer.class);
 
     /** Bundle owning this class. */
     private Bundle ownBundle;
@@ -97,7 +97,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
     public WeldCdiContainer(CdiContainerType containerType, Bundle ownBundle,
         Bundle bundle, Collection<Bundle> extensionBundles) {
         super(containerType, bundle);
-        logger.debug("creating Weld CDI container for bundle {}", bundle);
+        log.debug("creating Weld CDI container for bundle {}", bundle);
         this.ownBundle = ownBundle;
         this.extensionBundles = extensionBundles;
     }

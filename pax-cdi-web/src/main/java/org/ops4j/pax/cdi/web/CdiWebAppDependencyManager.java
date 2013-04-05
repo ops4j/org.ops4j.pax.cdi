@@ -44,7 +44,7 @@ import java.util.Map;
  */
 public abstract class CdiWebAppDependencyManager implements CdiContainerListener {
 
-    private static Logger logger = LoggerFactory.getLogger(CdiWebAppDependencyManager.class);
+    private static Logger log = LoggerFactory.getLogger(CdiWebAppDependencyManager.class);
 
     private Map<Bundle, ServiceRegistration<WebAppDependencyHolder>> registrations = new HashMap<Bundle, ServiceRegistration<WebAppDependencyHolder>>();
 
@@ -62,7 +62,7 @@ public abstract class CdiWebAppDependencyManager implements CdiContainerListener
         ServiceRegistration<WebAppDependencyHolder> registration = bundle.getBundleContext()
             .registerService(WebAppDependencyHolder.class, dependencyHolder, props);
         registrations.put(bundle, registration);
-        logger.info("registered WebAppDependencyHolder for bundle [{}]", cdiContainer.getBundle());
+        log.info("registered WebAppDependencyHolder for bundle [{}]", cdiContainer.getBundle());
     }
 
     private void unregister(Bundle bundle) {

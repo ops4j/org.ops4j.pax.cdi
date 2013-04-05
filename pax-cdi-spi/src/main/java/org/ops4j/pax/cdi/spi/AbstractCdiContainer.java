@@ -40,7 +40,7 @@ import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoa
  */
 public abstract class AbstractCdiContainer implements CdiContainer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractCdiContainer.class);
+    private static Logger log = LoggerFactory.getLogger(AbstractCdiContainer.class);
 
     private Bundle bundle;
     private CdiContainerType containerType;
@@ -55,7 +55,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     @Override
     public synchronized void start(Object environment) {
         if (!started) {
-            LOG.info("Starting CDI container for bundle {}", getBundle());
+            log.info("Starting CDI container for bundle {}", getBundle());
             doStart(environment);
             finishStartup();
             started = true;
@@ -65,7 +65,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     @Override
     public synchronized void stop() {
         if (started) {
-            LOG.info("Stopping CDI container for bundle {}", getBundle());
+            log.info("Stopping CDI container for bundle {}", getBundle());
             doStop();
             if (registration != null) {
                 try {
@@ -123,7 +123,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
         }
         // CHECKSTYLE:SKIP
         catch (Exception exc) {
-            LOG.error("", exc);
+            log.error("", exc);
             throw new Ops4jException(exc);
         }
     }
