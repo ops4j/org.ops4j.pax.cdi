@@ -23,7 +23,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 import javax.el.ELResolver;
 import javax.servlet.ServletContext;
@@ -40,8 +39,12 @@ import org.apache.webbeans.logger.WebBeansLoggerFacade;
 import org.apache.webbeans.spi.ResourceInjectionService;
 import org.apache.webbeans.spi.adaptor.ELAdaptor;
 import org.apache.webbeans.web.context.WebContextsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WabContainerLifecycle extends AbstractLifeCycle {
+    
+    private static Logger log = LoggerFactory.getLogger(WabContainerLifecycle.class);
 
     /** Manages unused conversations */
     private ScheduledExecutorService service;
@@ -50,7 +53,6 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
      * Creates a new lifecycle instance and initializes the instance variables.
      */
     public WabContainerLifecycle() {
-        this.logger = WebBeansLoggerFacade.getLogger(WabContainerLifecycle.class);
     }
 
     /**
@@ -58,7 +60,6 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
      */
     public WabContainerLifecycle(WebBeansContext webBeansContext) {
         super(null, webBeansContext);
-        this.logger = WebBeansLoggerFacade.getLogger(WabContainerLifecycle.class);
     }
 
     protected void afterStartApplication(final Object startupObject) {
@@ -82,7 +83,7 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
         ELResolver resolver = elAdaptor.getOwbELResolver();
         // Application is configured as JSP
         if (getWebBeansContext().getOpenWebBeansConfiguration().isJspApplication()) {
-            logger.log(Level.FINE, "Application is configured as JSP. Adding EL Resolver.");
+            log.debug("Application is configured as JSP. Adding EL Resolver.");
 
             JspFactory factory = JspFactory.getDefaultFactory();
             if (factory != null) {
@@ -91,7 +92,7 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
                 applicationCtx.addELResolver(resolver);
             }
             else {
-                logger.log(Level.FINE, "Default JSPFactroy instance has not found");
+                log.debug("could not find default JspFactory instance");
             }
         }
 
@@ -134,13 +135,7 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
 
         this.cleanupShutdownThreadLocals();
 
-        if (logger.isLoggable(Level.INFO)) {
-            logger.log(Level.INFO, OWBLogConst.INFO_0002 /*
-                                                          * ,
-                                                          * ServletCompatibilityUtil.getServletInfo
-                                                          * (servletContext)
-                                                          */);
-        }
+        log.debug("OpenWebBeans container has stopped");
     }
 
     /**

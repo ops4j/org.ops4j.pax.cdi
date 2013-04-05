@@ -20,14 +20,11 @@
 package org.ops4j.pax.cdi.web.openwebbeans.impl;
 
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.apache.webbeans.config.BeansDeployer;
-import org.apache.webbeans.config.OWBLogConst;
 import org.apache.webbeans.config.WebBeansContext;
 import org.apache.webbeans.config.WebBeansFinder;
 import org.apache.webbeans.container.BeanManagerImpl;
@@ -39,11 +36,13 @@ import org.apache.webbeans.spi.JNDIService;
 import org.apache.webbeans.spi.ScannerService;
 import org.apache.webbeans.util.WebBeansConstants;
 import org.apache.webbeans.xml.WebBeansXMLConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractLifeCycle implements ContainerLifecycle {
 
     // Logger instance
-    protected Logger logger;
+    private Logger log = LoggerFactory.getLogger(AbstractLifeCycle.class);
 
     /** Discover bean classes */
     protected ScannerService scannerService;
@@ -98,7 +97,7 @@ public abstract class AbstractLifeCycle implements ContainerLifecycle {
 
     public void startApplication(Object startupObject) {
         // Initalize Application Context
-        logger.info(OWBLogConst.INFO_0005);
+        log.debug("OpenWebBeans Container is starting.");
 
         long begin = System.currentTimeMillis();
 
@@ -112,13 +111,13 @@ public abstract class AbstractLifeCycle implements ContainerLifecycle {
         contextsService.init(startupObject);
 
         // Scanning process
-        logger.fine("Scanning classpaths for beans artifacts.");
+        log.debug("Scanning classpaths for beans artifacts.");
 
         // Scan
         scannerService.scan();
 
         // Deploy beans
-        logger.fine("Deploying scanned beans.");
+        log.debug("Deploying scanned beans.");
 
         // Deploy
         deployer.deploy(scannerService);
@@ -126,14 +125,11 @@ public abstract class AbstractLifeCycle implements ContainerLifecycle {
         // Start actual starting on sub-classes
         afterStartApplication(startupObject);
 
-        if (logger.isLoggable(Level.INFO)) {
-            logger.log(Level.INFO, OWBLogConst.INFO_0001,
-                Long.toString(System.currentTimeMillis() - begin));
-        }
+        log.debug("startup took {} ms", System.currentTimeMillis() - begin);
     }
 
     public void stopApplication(Object endObject) {
-        logger.fine("OpenWebBeans Container is stopping.");
+        log.debug("OpenWebBeans Container is stopping.");
 
         try {
             // Sub-classes operations
@@ -178,18 +174,9 @@ public abstract class AbstractLifeCycle implements ContainerLifecycle {
         }
         // CHECKSTYLE:SKIP
         catch (Exception e) {
-            if (logger.isLoggable(Level.SEVERE)) {
-                logger.log(Level.SEVERE, OWBLogConst.ERROR_0021, e);
-            }
+            log.error("error shutting down OpenWebBeans context", e);
         }
 
-    }
-
-    /**
-     * @return the logger
-     */
-    protected Logger getLogger() {
-        return logger;
     }
 
     /**
