@@ -17,8 +17,6 @@
  */
 package org.ops4j.pax.cdi.weld.impl.bda;
 
-import java.net.URL;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,21 +41,21 @@ public class BundleDeployment implements Deployment {
     private Iterable<Metadata<Extension>> extensions;
     private BundleBeanDeploymentArchive beanDeploymentArchive;
 
-    public BundleDeployment(Bundle bundle, Collection<URL> descriptors, Bootstrap bootstrap) {
+    public BundleDeployment(Bundle bundle, Bootstrap bootstrap) {
 
         serviceRegistry = new SimpleServiceRegistry();
         serviceRegistry.add(ProxyServices.class, new OsgiProxyService());
         extensions = bootstrap.loadExtensions(Thread.currentThread().getContextClassLoader());
 
-        createBeanDeploymentArchive(bundle, descriptors, bootstrap);
+        createBeanDeploymentArchive(bundle, bootstrap);
     }
 
-    private void createBeanDeploymentArchive(Bundle bundle, Collection<URL> descriptors, Bootstrap bootstrap) {
+    private void createBeanDeploymentArchive(Bundle bundle, Bootstrap bootstrap) {
         BeanScanner scanner = new BeanScanner(bundle);
         scanner.scan();
         beanDeploymentArchive = new BundleBeanDeploymentArchive("pax-cdi-bda"
             + bundle.getBundleId());
-        beanDeploymentArchive.setBeansXml(bootstrap.parse(descriptors));
+        beanDeploymentArchive.setBeansXml(bootstrap.parse(scanner.getBeanDescriptors()));
         beanDeploymentArchive.setBeanClasses(scanner.getBeanClasses());
         ResourceLoader loader = new BundleResourceLoader(bundle);
         beanDeploymentArchive.getServices().add(ResourceLoader.class, loader);

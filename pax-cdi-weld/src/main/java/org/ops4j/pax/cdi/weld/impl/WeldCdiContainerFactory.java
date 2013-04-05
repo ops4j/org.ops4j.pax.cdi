@@ -17,7 +17,6 @@
  */
 package org.ops4j.pax.cdi.weld.impl;
 
-import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,8 +60,8 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
     }
 
     @Override
-    public CdiContainer createContainer(Bundle bundle, Collection<URL> descriptors, Collection<Bundle> extensions, CdiContainerType containerType) {
-        WeldCdiContainer container = new WeldCdiContainer(containerType, bundleContext.getBundle(), bundle, descriptors, extensions);
+    public CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions, CdiContainerType containerType) {
+        WeldCdiContainer container = new WeldCdiContainer(containerType, bundleContext.getBundle(), bundle, extensions);
         containers.put(bundle.getBundleId(), container);
         for (CdiContainerListener listener : listeners) {
             listener.postCreate(container);

@@ -17,17 +17,13 @@
  */
 package org.ops4j.pax.cdi.extender.impl;
 
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.ops4j.pax.cdi.api.Constants;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.cdi.spi.CdiContainerListener;
@@ -141,16 +137,9 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
         // Find extensions
         Set<Bundle> extensions = new HashSet<Bundle>();
         findExtensions(bundle, extensions);
-        // Find beans xml
-        List<URL> beansXml = new ArrayList<URL>();
-        scan(bundle, beansXml);
-        for (Bundle ext : extensions) {
-            scan(ext, beansXml);
-        }
 
-        log.info("Creating CDI container for bundle {} with beans xml {} and extensions {}",
-            new Object[] { bundle, beansXml, extensions });
-        return factory.createContainer(bundle, beansXml, extensions, containerType);
+        log.info("Creating CDI container for bundle {} with extensions {}", bundle, extensions);
+        return factory.createContainer(bundle, extensions, containerType);
     }
 
     private void findExtensions(Bundle bundle, Set<Bundle> extensions) {
@@ -161,55 +150,6 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
                 Bundle b = wire.getProviderWiring().getBundle();
                 extensions.add(b);
                 findExtensions(b, extensions);
-            }
-        }
-    }
-
-    private void scan(Bundle bundle, List<URL> pathList) {
-        log.debug("Scanning bundle {} for CDI application", bundle.getSymbolicName());
-        String header = bundle.getHeaders().get(Constants.MANAGED_BEANS_KEY);
-        if (header == null) {
-            if (bundle.findEntries("META-INF/", "beans.xml", false) != null) {
-                header = "META-INF/beans.xml";
-            }
-        }
-        Parser.Clause[] paths = Parser.parseHeader(header);
-        for (Parser.Clause path : paths) {
-            String name = path.getName();
-            if (name.endsWith("/")) {
-                Enumeration<URL> e = bundle.findEntries(name, "*.xml", false);
-                while (e != null && e.hasMoreElements()) {
-                    URL u = e.nextElement();
-                    pathList.add(u);
-                }
-            }
-            else {
-                String baseName;
-                String filePattern;
-                int pos = name.lastIndexOf('/');
-                if (pos < 0) {
-                    baseName = "/";
-                    filePattern = name;
-                }
-                else {
-                    baseName = name.substring(0, pos + 1);
-                    filePattern = name.substring(pos + 1);
-                }
-                if (filePattern.contains("*")) {
-                    Enumeration<URL> e = bundle.findEntries(baseName, filePattern, false);
-                    while (e != null && e.hasMoreElements()) {
-                        URL u = e.nextElement();
-                        pathList.add(u);
-                    }
-                }
-                else {
-                    URL url = bundle.getEntry(name);
-                    if (url == null) {
-                        throw new IllegalArgumentException(
-                            "Unable to find CDI configuration file for " + path);
-                    }
-                    pathList.add(url);
-                }
             }
         }
     }

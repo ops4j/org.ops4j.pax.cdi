@@ -29,6 +29,7 @@ import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.ops4j.pax.cdi.spi.BeanBundles;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.osgi.framework.wiring.BundleRevision;
@@ -53,6 +54,11 @@ import org.slf4j.LoggerFactory;
 public class BeanScanner {
 
     private static final String CLASS_EXT = ".class";
+    
+    private static final String[] BEAN_DESCRIPTOR_PATHS = new String[]  {
+      "META-INF/beans.xml",
+      "WEB-INF/beans.xml"
+    };
 
     private Logger log = LoggerFactory.getLogger(BeanScanner.class);
 
@@ -98,7 +104,6 @@ public class BeanScanner {
         scanOwnBundle();
         scanImportedPackages();
         scanRequiredBundles();
-        scanExtensions();
         logBeanClasses();
     }
 
@@ -113,6 +118,8 @@ public class BeanScanner {
     }
 
     private void scanOwnBundle() {
+        findBeanDescriptors();
+        
         String[] classPathElements;
 
         String bundleClassPath = bundle.getHeaders().get(Constants.BUNDLE_CLASSPATH);
@@ -135,6 +142,16 @@ public class BeanScanner {
             else {
                 scanDirectory(classPath);
             }
+        }
+    }
+
+    private void findBeanDescriptors() {
+        for (String path : BEAN_DESCRIPTOR_PATHS) {
+            URL url = bundle.getEntry(path);
+            if (url != null) {
+                beanDescriptors.add(url);
+                return;
+            }            
         }
     }
 
@@ -227,7 +244,7 @@ public class BeanScanner {
         if (wiring.getBundle().getBundleId() == bundle.getBundleId()) {
             return;
         }
-        if (!isBeanBundle(wiring.getBundle())) {
+        if (!BeanBundles.isBeanBundle(wiring.getBundle())) {
             return;
         }
 
@@ -238,32 +255,9 @@ public class BeanScanner {
         }
     }
 
-    private boolean isBeanBundle(Bundle candidate) {
-        List<BundleWire> wires = candidate.adapt(BundleWiring.class).getRequiredWires(
-            "osgi.extender");
-        for (BundleWire wire : wires) {
-            Object object = wire.getCapability().getAttributes().get("osgi.extender");
-            if (object instanceof String) {
-                String extender = (String) object;
-                if (extender.equals("pax.cdi")) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     private void scanRequiredBundles() {
         BundleWiring wiring = bundle.adapt(BundleWiring.class);
         List<BundleWire> wires = wiring.getRequiredWires(BundleRevision.BUNDLE_NAMESPACE);
-        for (BundleWire wire : wires) {
-            scanForClasses(wire);
-        }
-    }
-
-    private void scanExtensions() {
-        List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires(
-            "org.ops4j.pax.cdi.extension");
         for (BundleWire wire : wires) {
             scanForClasses(wire);
         }

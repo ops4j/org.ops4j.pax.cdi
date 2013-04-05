@@ -18,7 +18,6 @@
 package org.ops4j.pax.cdi.weld.impl;
 
 import java.lang.annotation.Annotation;
-import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -63,8 +62,6 @@ public class WeldCdiContainer extends AbstractCdiContainer {
     /** Bundle owning this class. */
     private Bundle ownBundle;
 
-    private Collection<URL> descriptors;
-
     /**
      * All CDI extension bundles discovered by the Pax CDI extender before creating the
      * CdiContainerFactory.
@@ -98,11 +95,10 @@ public class WeldCdiContainer extends AbstractCdiContainer {
      *            CDI extension bundles to be loaded by OpenWebBeans
      */
     public WeldCdiContainer(CdiContainerType containerType, Bundle ownBundle,
-        Bundle bundle, Collection<URL> descriptors, Collection<Bundle> extensionBundles) {
+        Bundle bundle, Collection<Bundle> extensionBundles) {
         super(containerType, bundle);
         logger.debug("creating Weld CDI container for bundle {}", bundle);
         this.ownBundle = ownBundle;
-        this.descriptors = descriptors;
         this.extensionBundles = extensionBundles;
     }
 
@@ -115,7 +111,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
         Thread.currentThread().setContextClassLoader(contextClassLoader);
         try {
             bootstrap = new WeldBootstrap();
-            BundleDeployment deployment = new BundleDeployment(getBundle(), descriptors, bootstrap);
+            BundleDeployment deployment = new BundleDeployment(getBundle(), bootstrap);
             BeanDeploymentArchive beanDeploymentArchive = deployment.getBeanDeploymentArchive();
 
             String contextId = getBundle().getSymbolicName() + ":" + getBundle().getBundleId();

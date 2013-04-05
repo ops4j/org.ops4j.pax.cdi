@@ -20,7 +20,6 @@ package org.ops4j.pax.cdi.openwebbeans.impl;
 import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoader;
 
 import java.lang.annotation.Annotation;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -73,11 +72,6 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
     private Collection<Bundle> extensionBundles;
 
     /**
-     * Collection of CDI beans xml descriptors URLs.
-     */
-    private Collection<URL> descriptors;
-
-    /**
      * OpenWebBeans container lifecycle.
      */
     private ContainerLifecycle lifecycle;
@@ -107,12 +101,11 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
      *            CDI extension bundles to be loaded by OpenWebBeans
      */
     public OpenWebBeansCdiContainer(CdiContainerType containerType, Bundle ownBundle,
-        Bundle extendedBundle, Collection<Bundle> extensionBundles, Collection<URL> descriptors) {
+        Bundle extendedBundle, Collection<Bundle> extensionBundles) {
         super(containerType, extendedBundle);
         LOGGER.debug("creating OpenWebBeans CDI container for bundle {}", extendedBundle);
         this.ownBundle = ownBundle;
         this.extensionBundles = extensionBundles;
-        this.descriptors = descriptors;
     }
 
     /**

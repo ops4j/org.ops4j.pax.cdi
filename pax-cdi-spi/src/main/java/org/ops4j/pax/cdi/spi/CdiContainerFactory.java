@@ -17,7 +17,6 @@
  */
 package org.ops4j.pax.cdi.spi;
 
-import java.net.URL;
 import java.util.Collection;
 
 import org.osgi.framework.Bundle;
@@ -44,12 +43,11 @@ public interface CdiContainerFactory {
      * started.
      * 
      * @param bundle a bundle to be extended with a CDI container
-     * @param descriptors the beans xml descriptors
      * @param extensions the collection of extension bundles
      * @param containerType 
      * @return
      */
-    CdiContainer createContainer(Bundle bundle, Collection<URL> descriptors, Collection<Bundle> extensions, CdiContainerType containerType);
+    CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions, CdiContainerType containerType);
 
     /**
      * Gets the CDI container for the given bundle, or null if the bundle is not a bean bundle.

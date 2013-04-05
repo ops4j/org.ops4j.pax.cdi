@@ -26,11 +26,6 @@ public class Constants {
     public static final String CDI_EXTENDER_KEY = "pax.cdi";
     
     /**
-     * Manifest header listing beans descriptors (default is META-INF/beans.xml)
-     */
-    public static final String MANAGED_BEANS_KEY = "Pax-ManagedBeans";
-
-    /**
      * Hidden constructor of utility class.
      */
     private Constants() {

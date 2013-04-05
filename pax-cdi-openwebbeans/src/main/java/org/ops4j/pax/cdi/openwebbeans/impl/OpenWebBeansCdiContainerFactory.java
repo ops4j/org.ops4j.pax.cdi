@@ -17,7 +17,6 @@
  */
 package org.ops4j.pax.cdi.openwebbeans.impl;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -58,10 +57,10 @@ public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
     }
 
     @Override
-    public CdiContainer createContainer(Bundle bundle, Collection<URL> descriptors, Collection<Bundle> extensions, CdiContainerType containerType) {
+    public CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions, CdiContainerType containerType) {
         Bundle ownBundle = componentContext.getBundleContext().getBundle();
         OpenWebBeansCdiContainer container = new OpenWebBeansCdiContainer(containerType, ownBundle,
-            bundle, extensions, descriptors);
+            bundle, extensions);
         containers.put(bundle.getBundleId(), container);
         for (CdiContainerListener listener : listeners) {
             listener.postCreate(container);
