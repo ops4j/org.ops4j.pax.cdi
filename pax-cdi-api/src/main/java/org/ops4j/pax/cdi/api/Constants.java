@@ -23,7 +23,11 @@ public class Constants {
     /**
      * Opt-in manifest header, starting a CDI container
      */
-    public static final String CDI_EXTENDER_KEY = "pax.cdi";
+    public static final String CDI_EXTENDER = "pax.cdi";
+    
+    public static final String EXTENDER_CAPABILITY = "osgi.extender";
+
+    public static final String CDI_EXTENSION_CAPABILITY = "org.ops4j.pax.cdi.extension";
     
     /**
      * Hidden constructor of utility class.

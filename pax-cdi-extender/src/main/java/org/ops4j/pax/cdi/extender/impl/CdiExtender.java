@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Guillaume Nodet
+ * Copyright 2013 Guillaume Nodet, Harald Wellmann
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 package org.ops4j.pax.cdi.extender.impl;
+
+import static org.ops4j.pax.cdi.api.Constants.CDI_EXTENSION_CAPABILITY;
+import static org.ops4j.pax.cdi.api.Constants.EXTENDER_CAPABILITY;
 
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -69,7 +72,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
     @Override
     public CdiContainer addingBundle(final Bundle bundle, BundleEvent event) {
         boolean wired = false;
-        List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires("osgi.extender");
+        List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires(EXTENDER_CAPABILITY);
         if (wires != null) {
             for (BundleWire wire : wires) {
                 if (wire.getProviderWiring().getBundle() == context.getBundle()) {
@@ -144,7 +147,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
 
     private void findExtensions(Bundle bundle, Set<Bundle> extensions) {
         List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires(
-            "org.ops4j.pax.cdi.extension");
+            CDI_EXTENSION_CAPABILITY);
         if (wires != null) {
             for (BundleWire wire : wires) {
                 Bundle b = wire.getProviderWiring().getBundle();

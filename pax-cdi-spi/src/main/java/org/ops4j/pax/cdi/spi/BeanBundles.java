@@ -18,6 +18,9 @@
 
 package org.ops4j.pax.cdi.spi;
 
+import static org.ops4j.pax.cdi.api.Constants.CDI_EXTENDER;
+import static org.ops4j.pax.cdi.api.Constants.EXTENDER_CAPABILITY;
+
 import java.util.List;
 
 import org.osgi.framework.Bundle;
@@ -37,12 +40,12 @@ public class BeanBundles {
 
     public static boolean isBeanBundle(Bundle candidate) {
         List<BundleWire> wires = candidate.adapt(BundleWiring.class).getRequiredWires(
-            "osgi.extender");
+            EXTENDER_CAPABILITY);
         for (BundleWire wire : wires) {
-            Object object = wire.getCapability().getAttributes().get("osgi.extender");
+            Object object = wire.getCapability().getAttributes().get(EXTENDER_CAPABILITY);
             if (object instanceof String) {
                 String extender = (String) object;
-                if (extender.equals("pax.cdi")) {
+                if (extender.equals(CDI_EXTENDER)) {
                     return true;
                 }
             }
