@@ -43,6 +43,9 @@ public class InvalidateSessionServlet extends HttpServlet {
             request.getSession().setMaxInactiveInterval(
                 Integer.parseInt(request.getParameter("timeout")));
         }
+        else if (request.getParameter("isBeanConstructed") != null) {
+            response.getWriter().print(SimpleSessionBean.isBeanConstructed());
+        }
         else if (request.getParameter("isBeanDestroyed") != null) {
             response.getWriter().print(SimpleSessionBean.isBeanDestroyed());
         }

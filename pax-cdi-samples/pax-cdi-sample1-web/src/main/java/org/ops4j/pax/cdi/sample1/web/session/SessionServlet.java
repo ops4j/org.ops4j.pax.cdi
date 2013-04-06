@@ -52,6 +52,7 @@ public class SessionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws IOException {
+        sessionBean.getTimestamp();
         response.setContentType("text/text");
         response.getWriter().println("It worked!");
     }

@@ -19,13 +19,25 @@ package org.ops4j.pax.cdi.sample1.web.session;
 
 import java.io.Serializable;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
 
+/**
+ * TODO This class must be public as long as Weld does not handle proxies for non-public
+ * classes correctly. (Seems to be related to javassist being embedded and not imported.)
+ * <p>
+ * OpenWebBeans has no problems generating a proxy for a class with protected or package
+ * visibility, using dynamic imports for javassist,util.proxy added by a weaving hook.
+ * 
+ * @author Harald Wellmann
+ *
+ */
 @SuppressWarnings("serial")
 @SessionScoped
-class SimpleSessionBean implements Serializable {
+public class SimpleSessionBean implements Serializable {
 
+    private static boolean beanConstructed;
     private static boolean beanDestroyed;
     private final long timestamp = System.currentTimeMillis();
 
@@ -33,9 +45,18 @@ class SimpleSessionBean implements Serializable {
         return timestamp;
     }
 
+    @PostConstruct
+    public void constructBean() {
+        beanConstructed = true;
+    }
+
     @PreDestroy
     public void destroyBean() {
         beanDestroyed = true;
+    }
+
+    public static boolean isBeanConstructed() {
+        return beanConstructed;
     }
 
     public static boolean isBeanDestroyed() {

@@ -187,6 +187,21 @@ public class ServletTest {
 
         String timestamp4 = resource2.get(String.class);
         assertThat(timestamp4, is(timestamp3));
-
     }
+    
+    @Test
+    public void checkInvalidateSession() {
+        Client client = Client.create();
+        WebResource resource1 = client.resource("http://localhost:8181/sample1/session");
+        assertThat(resource1.get(String.class), is("It worked!\n"));
+        
+        WebResource resource2 = client.resource("http://localhost:8181/sample1/invalidate?isBeanConstructed");
+        assertThat(resource2.get(String.class), is("true"));
+
+        WebResource resource3 = client.resource("http://localhost:8181/sample1/invalidate");
+        assertThat(resource3.get(String.class), is(""));
+
+        WebResource resource4 = client.resource("http://localhost:8181/sample1/invalidate?isBeanDestroyed");
+        assertThat(resource4.get(String.class), is("false"));
+    }    
 }
