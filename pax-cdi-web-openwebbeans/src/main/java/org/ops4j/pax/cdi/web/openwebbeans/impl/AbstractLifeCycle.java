@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractLifeCycle implements ContainerLifecycle {
 
     // Logger instance
-    private Logger log = LoggerFactory.getLogger(AbstractLifeCycle.class);
+    private static Logger log = LoggerFactory.getLogger(AbstractLifeCycle.class);
 
     /** Discover bean classes */
     protected ScannerService scannerService;
