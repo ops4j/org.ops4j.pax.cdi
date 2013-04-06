@@ -27,6 +27,7 @@ import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +39,6 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.ops4j.pax.exam.util.Filter;
 import org.osgi.framework.BundleContext;
 
 import com.sun.jersey.api.client.Client;
@@ -51,14 +51,17 @@ import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
 @ExamReactorStrategy(PerClass.class)
 public class ServletTest {
 
-    @Inject @Filter (timeout = 20000000)
+    @Inject
     private BundleContext bc;
 
-    @Inject @Filter (timeout = 20000000)
+    @Inject
     private CdiContainerFactory containerFactory;
 
-    @Inject @Filter (timeout = 20000000)
+    @Inject
     private CdiContainer container;
+    
+    @Inject
+    private ServletContext servletContext;
 
     @Configuration
     public Option[] config() {
@@ -70,7 +73,6 @@ public class ServletTest {
 
             mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", Info.getPaxCdiVersion()),
 
-            // FIXME startlevel hack to compensate for missing quiet period
             workspaceBundle("pax-cdi-extender"),
             
             workspaceBundle("pax-cdi-extension"),
