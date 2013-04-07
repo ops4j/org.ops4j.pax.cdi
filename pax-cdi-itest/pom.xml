@@ -219,7 +219,15 @@
             <scope>provided</scope>
         </dependency>
 
-                <!-- for debugging -->
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.javassist</artifactId>
+            <version>3.12.1.GA_3</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <!-- for debugging -->
         <dependency>
             <groupId>org.ops4j.pax.web</groupId>
             <artifactId>pax-web-extender-war</artifactId>
