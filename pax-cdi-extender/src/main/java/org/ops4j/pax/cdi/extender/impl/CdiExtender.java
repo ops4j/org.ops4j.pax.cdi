@@ -59,13 +59,13 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
             handleWebBundles();
         }
 
-        log.info("Starting CDI extender {}", context.getBundle().getSymbolicName());
+        log.info("starting CDI extender {}", context.getBundle().getSymbolicName());
         this.bundleWatcher = new BundleTracker<CdiContainer>(context, Bundle.ACTIVE, this);
         bundleWatcher.open();
     }
 
     public void deactivate(BundleContext ctx) {
-        log.info("Stopping CDI extender {}", context.getBundle().getSymbolicName());
+        log.info("stopping CDI extender {}", context.getBundle().getSymbolicName());
         bundleWatcher.close();
     }
 
@@ -82,17 +82,11 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
             }
         }
         if (wired) {
-            try {
-                log.debug("Found CDI application in bundle {}", bundle.getSymbolicName());
-                return createContainer(bundle);
-            }
-            // CHECKSTYLE:SKIP
-            catch (Exception e) {
-                log.error("Error creating CDI container for bundle " + bundle.toString(), e);
-            }
+            log.debug("found bean bundle: {}", bundle.getSymbolicName());
+            return createContainer(bundle);
         }
         else {
-            log.debug("No CDI application found in bundle {}", bundle.getSymbolicName());
+            log.trace("not a bean bundle: {}", bundle.getSymbolicName());
         }
         return null;
     }
@@ -141,7 +135,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
         Set<Bundle> extensions = new HashSet<Bundle>();
         findExtensions(bundle, extensions);
 
-        log.info("Creating CDI container for bundle {} with extensions {}", bundle, extensions);
+        log.info("creating CDI container for bean bundle {} with extension bundles {}", bundle, extensions);
         return factory.createContainer(bundle, extensions, containerType);
     }
 
