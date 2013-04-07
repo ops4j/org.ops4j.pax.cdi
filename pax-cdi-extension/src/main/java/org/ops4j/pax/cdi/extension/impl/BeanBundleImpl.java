@@ -42,15 +42,16 @@ import org.ops4j.pax.cdi.api.Property;
 import org.ops4j.pax.cdi.spi.BeanBundles;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A CDI bean representing a CDI enabled OSGi bundle, or bean bundle, for short.
+ * A CDI bean representing a CDI-enabled OSGi bundle, or bean bundle, for short.
  * <p>
  * Not intended to be used by application code. This bean is used internally
- * to catch the to publish CDI beans as OSGi services.
+ * to observe the ContainerInitialized event and then to publish CDI beans as OSGi services.
  * 
  * @author Harald Wellmann
  * 
@@ -102,7 +103,14 @@ public class BeanBundleImpl implements BeanBundle {
     }
 
     private void registerService(Object service) {
+        // only register services for classes located in the extended bundle
+        long extendedBundleId = getBundleContext().getBundle().getBundleId();
         Class<?> klass = service.getClass();
+        long serviceBundleId = FrameworkUtil.getBundle(klass).getBundleId();
+        if (serviceBundleId != extendedBundleId) {
+            return;
+        }
+        
         AnnotatedType<?> annotatedType = beanManager.createAnnotatedType(klass);
         OsgiServiceProvider provider = annotatedType.getAnnotation(OsgiServiceProvider.class);
         
