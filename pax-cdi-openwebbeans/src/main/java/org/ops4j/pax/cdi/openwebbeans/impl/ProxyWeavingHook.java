@@ -18,7 +18,10 @@
 package org.ops4j.pax.cdi.openwebbeans.impl;
 
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
+import org.ops4j.pax.cdi.spi.BeanBundles;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 import org.osgi.framework.hooks.weaving.WovenClass;
@@ -37,20 +40,29 @@ import org.slf4j.LoggerFactory;
 public class ProxyWeavingHook implements WeavingHook {
 
     private static Logger log = LoggerFactory.getLogger(ProxyWeavingHook.class);
-
+    
+    private Map<Bundle, Boolean> bundleMap = new WeakHashMap<Bundle, Boolean>();
+    
+    
     @Override
     public void weave(WovenClass wovenClass) {
         Bundle bundle = wovenClass.getBundleWiring().getBundle();
-        // TODO process each bundle only once
+        Boolean seen = bundleMap.get(bundle);
+        if (seen != null) {
+            return;
+        }
+        boolean isBeanBundle = false;
         if (isBeanBundle(bundle)) {
             log.debug("weaving {}", wovenClass.getClassName());
             wovenClass.getDynamicImports().add("javassist.util.proxy");
+            isBeanBundle = true;
         }
+        bundleMap.put(bundle, isBeanBundle);
     }
     
     /**
      * TODO Copied from BeanBundles.isBeanBundle(). Using that method from pax-cdi-spi
-     * causes a ClassNotFoundException. Is there a better way to avoid this?
+     * causes a ClassCircularityError. Is there a better way to avoid this?
      * @param candidate
      * @return
      */
