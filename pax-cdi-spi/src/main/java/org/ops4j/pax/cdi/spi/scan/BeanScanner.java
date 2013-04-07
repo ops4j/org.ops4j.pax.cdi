@@ -249,7 +249,7 @@ public class BeanScanner {
         }
 
         Collection<String> entries = wiring.listResources("/", "*.class",
-            BundleWiring.LISTRESOURCES_LOCAL);
+            BundleWiring.LISTRESOURCES_RECURSE);
         for (String entry : entries) {
             beanClasses.add(toClassName("", entry));
         }
