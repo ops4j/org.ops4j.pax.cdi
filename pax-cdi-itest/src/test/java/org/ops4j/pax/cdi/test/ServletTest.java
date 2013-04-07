@@ -179,8 +179,11 @@ public class ServletTest {
         resource = client.resource("http://localhost:8181/sample1/timestamp");
         String timestamp1 = resource.get(String.class);
         Thread.sleep(500);
-
+        
+        // force new session
         Client client2 = ApacheHttpClient.create(config);
+        client2.resource("http://localhost:8181/sample1/session").get(String.class);
+        
         WebResource resource2 = client2.resource("http://localhost:8181/sample1/timestamp");
         String timestamp3 = resource2.get(String.class);
         assertThat(timestamp3, is(not(timestamp1)));
