@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.ops4j.pax.cdi.spi.BeanBundles;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 import org.osgi.framework.hooks.weaving.WovenClass;
