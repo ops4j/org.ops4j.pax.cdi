@@ -165,9 +165,4 @@ public class BeanBundleImpl implements BeanBundle {
         }
         return bundleContext;
     }
-
-    @Override
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
-    }
 }

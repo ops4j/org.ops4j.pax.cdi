@@ -33,14 +33,4 @@ public interface BeanBundle {
      * @return
      */
     BundleContext getBundleContext();
-
-    /**
-     * Sets the bundle context of this bean bundle.
-     * <p>
-     * DO NOT USE IN APPLICATION CODE.
-     * 
-     * @param bundleContext
-     *            bundle context
-     */
-    void setBundleContext(BundleContext bundle);
 }
