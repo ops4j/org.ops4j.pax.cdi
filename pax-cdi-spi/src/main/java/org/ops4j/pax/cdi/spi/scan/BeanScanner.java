@@ -17,6 +17,10 @@
  */
 package org.ops4j.pax.cdi.spi.scan;
 
+import static org.osgi.framework.Constants.BUNDLE_CLASSPATH;
+import static org.osgi.framework.wiring.BundleRevision.BUNDLE_NAMESPACE;
+import static org.osgi.framework.wiring.BundleRevision.PACKAGE_NAMESPACE;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -31,8 +35,7 @@ import java.util.zip.ZipInputStream;
 
 import org.ops4j.pax.cdi.spi.BeanBundles;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.Constants;
-import org.osgi.framework.wiring.BundleRevision;
+import org.osgi.framework.wiring.BundleCapability;
 import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 import org.slf4j.Logger;
@@ -66,6 +69,8 @@ public class BeanScanner {
 
     private Set<URL> beanDescriptors;
     private Set<String> beanClasses;
+    
+    private Set<String> scannedPackages;
 
     /**
      * Constructs a bean scanner for the given bundle.
@@ -101,6 +106,7 @@ public class BeanScanner {
      * Scans the given bundle and all imports for bean classes.
      */
     public void scan() {
+        scannedPackages = new HashSet<String>();
         scanOwnBundle();
         scanImportedPackages();
         scanRequiredBundles();
@@ -122,7 +128,7 @@ public class BeanScanner {
         
         String[] classPathElements;
 
-        String bundleClassPath = bundle.getHeaders().get(Constants.BUNDLE_CLASSPATH);
+        String bundleClassPath = bundle.getHeaders().get(BUNDLE_CLASSPATH);
         if (bundleClassPath == null) {
             classPathElements = new String[] { "/" };
         }
@@ -232,34 +238,51 @@ public class BeanScanner {
 
     private void scanImportedPackages() {
         BundleWiring wiring = bundle.adapt(BundleWiring.class);
-        List<BundleWire> wires = wiring.getRequiredWires(BundleRevision.PACKAGE_NAMESPACE);
+        List<BundleWire> wires = wiring.getRequiredWires(PACKAGE_NAMESPACE);
         for (BundleWire wire : wires) {
+            log.debug("scanning imported package [{}]", wire);
             scanForClasses(wire);
         }
     }
 
     private void scanForClasses(BundleWire wire) {
-        log.debug("scanning wire [{}]", wire);
         BundleWiring wiring = wire.getProviderWiring();
-        if (wiring.getBundle().getBundleId() == bundle.getBundleId()) {
+        Bundle providerBundle = wiring.getBundle();
+        if (!BeanBundles.isBeanBundle(providerBundle)) {
             return;
         }
-        if (!BeanBundles.isBeanBundle(wiring.getBundle())) {
+        scanExportedPackage(wiring, wire.getCapability());
+    }
+    
+    private void scanExportedPackage(BundleWiring wiring, BundleCapability capability) {
+        String pkg = (String) capability.getAttributes().get(PACKAGE_NAMESPACE);
+        if (scannedPackages.contains(pkg)) {
             return;
         }
-
-        Collection<String> entries = wiring.listResources("/", "*.class",
-            BundleWiring.LISTRESOURCES_RECURSE);
+        
+        log.debug("scanning exported package [{}]", pkg);
+        scannedPackages.add(pkg);
+        Collection<String> entries = wiring.listResources(toPath(pkg), "*.class",
+            BundleWiring.LISTRESOURCES_LOCAL);
         for (String entry : entries) {
             beanClasses.add(toClassName("", entry));
-        }
+        }        
+    }
+
+    private String toPath(String pkg) {
+        return pkg.replaceAll("\\.", "/");
     }
 
     private void scanRequiredBundles() {
         BundleWiring wiring = bundle.adapt(BundleWiring.class);
-        List<BundleWire> wires = wiring.getRequiredWires(BundleRevision.BUNDLE_NAMESPACE);
+        List<BundleWire> wires = wiring.getRequiredWires(BUNDLE_NAMESPACE);
         for (BundleWire wire : wires) {
-            scanForClasses(wire);
+            BundleWiring providerWiring = wire.getProviderWiring();
+            log.debug("scanning required bundle [{}]", providerWiring.getBundle());
+            List<BundleCapability> capabilities = providerWiring.getCapabilities(PACKAGE_NAMESPACE);
+            for (BundleCapability pkgCapability : capabilities) {
+                scanExportedPackage(providerWiring, pkgCapability);
+            }
         }
     }
 }
