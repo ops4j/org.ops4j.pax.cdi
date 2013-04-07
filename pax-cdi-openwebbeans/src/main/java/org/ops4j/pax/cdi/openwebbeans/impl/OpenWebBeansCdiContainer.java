@@ -20,9 +20,8 @@ package org.ops4j.pax.cdi.openwebbeans.impl;
 import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoader;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import java.util.concurrent.Callable;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -41,8 +40,6 @@ import javax.inject.Singleton;
 import org.apache.webbeans.config.WebBeansContext;
 import org.apache.webbeans.spi.ContainerLifecycle;
 import org.apache.webbeans.spi.ContextsService;
-import org.apache.xbean.osgi.bundle.util.BundleClassLoader;
-import org.apache.xbean.osgi.bundle.util.DelegatingBundle;
 import org.ops4j.lang.Ops4jException;
 import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
@@ -62,26 +59,10 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
 
     private static Logger log = LoggerFactory.getLogger(OpenWebBeansCdiContainer.class);
 
-    /** Bundle owning this class. */
-    private Bundle ownBundle;
-
-    /**
-     * All CDI extension bundles discovered by the Pax CDI extender before creating the
-     * CdiContainerFactory.
-     */
-    private Collection<Bundle> extensionBundles;
-
     /**
      * OpenWebBeans container lifecycle.
      */
     private ContainerLifecycle lifecycle;
-
-    /**
-     * A composite class loader used as thread context class loader for OpenWebBeans. This class
-     * loader delegates to the bundle class loaders of our own bundle, the extended bundle and all
-     * extension bundles.
-     */
-    private BundleClassLoader contextClassLoader;
 
     /**
      * Helper for accessing Instance and Event of CDI container.
@@ -102,10 +83,8 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
      */
     public OpenWebBeansCdiContainer(CdiContainerType containerType, Bundle ownBundle,
         Bundle extendedBundle, Collection<Bundle> extensionBundles) {
-        super(containerType, extendedBundle);
+        super(containerType, extendedBundle, extensionBundles, Collections.singletonList(ownBundle));
         log.debug("creating OpenWebBeans CDI container for bundle {}", extendedBundle);
-        this.ownBundle = ownBundle;
-        this.extensionBundles = extensionBundles;
     }
 
     /**
@@ -116,9 +95,9 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
      * @return
      */
     private WebBeansContext createWebBeansContext(Bundle bundle, final Object environment) {
-        buildContextClassLoader(bundle);
+        buildContextClassLoader();
         try {
-            return doWithClassLoader(contextClassLoader, new Callable<WebBeansContext>() {
+            return doWithClassLoader(getContextClassLoader(), new Callable<WebBeansContext>() {
 
                 @Override
                 public WebBeansContext call() throws Exception {
@@ -134,21 +113,6 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
         catch (Exception exc) {
             throw new Ops4jException(exc);
         }
-    }
-
-    /**
-     * Builds the composite class loader for the given bundle, also including the bundle containing
-     * this class and all extension bundles.
-     * 
-     * @param bundle
-     */
-    private void buildContextClassLoader(Bundle bundle) {
-        List<Bundle> delegateBundles = new ArrayList<Bundle>();
-        delegateBundles.add(bundle);
-        delegateBundles.add(ownBundle);
-        delegateBundles.addAll(extensionBundles);
-        DelegatingBundle delegatingBundle = new DelegatingBundle(delegateBundles);
-        contextClassLoader = new BundleClassLoader(delegatingBundle);
     }
 
     /**
@@ -190,12 +154,12 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
     @Override
     protected void doStop() {
         try {
-            doWithClassLoader(contextClassLoader, new Callable<Void>() {
+            doWithClassLoader(getContextClassLoader(), new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
                     if (lifecycle != null) {
                         stopContexts();
-                        lifecycle.stopApplication(contextClassLoader);
+                        lifecycle.stopApplication(getContextClassLoader());
                     }
                     return null;
                 }
@@ -234,11 +198,6 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
             target.inject(instanceManager, cc);
         }
         return instanceManager;
-    }
-
-    @Override
-    public ClassLoader getContextClassLoader() {
-        return contextClassLoader;
     }
 
     @Override

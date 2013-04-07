@@ -19,15 +19,20 @@ package org.ops4j.pax.cdi.spi;
 
 import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoader;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.apache.xbean.osgi.bundle.util.DelegatingBundle;
 import org.ops4j.lang.Ops4jException;
 import org.ops4j.pax.cdi.api.ContainerInitialized;
 import org.ops4j.pax.cdi.api.ServicesPublished;
+import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -48,9 +53,32 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     private ServiceRegistration<CdiContainer> registration;
     private boolean started;
 
-    protected AbstractCdiContainer(CdiContainerType containerType, Bundle bundle) {
+    /**
+     * All CDI extension bundles discovered by the Pax CDI extender before creating the
+     * CdiContainerFactory.
+     */
+    private Collection<Bundle> extensionBundles;
+
+    /**
+     * Any additional bundles to be included in the composite context class loader. This must
+     * include at least the adapter bundle containing the concrete implementation of this abstract
+     * class.
+     */
+    private Collection<Bundle> additionalBundles;
+
+    /**
+     * A composite class loader used as thread context class loader for the CDI provider. This class
+     * loader delegates to the bundle class loaders of the extended bundle, its extension bundle and
+     * any required additional bundles.
+     */
+    private BundleClassLoader contextClassLoader;
+
+    protected AbstractCdiContainer(CdiContainerType containerType, Bundle bundle,
+        Collection<Bundle> extensionBundles, Collection<Bundle> additionalBundles) {
         this.containerType = containerType;
         this.bundle = bundle;
+        this.extensionBundles = extensionBundles;
+        this.additionalBundles = additionalBundles;
     }
 
     @Override
@@ -87,6 +115,26 @@ public abstract class AbstractCdiContainer implements CdiContainer {
 
     protected abstract void doStop();
 
+    /**
+     * Builds the composite class loader for the given bundle, also including the bundle containing
+     * this class and all extension bundles.
+     * 
+     * @param bundle
+     */
+    protected void buildContextClassLoader() {
+        List<Bundle> delegateBundles = new ArrayList<Bundle>();
+        delegateBundles.add(bundle);
+        delegateBundles.addAll(additionalBundles);
+        delegateBundles.addAll(extensionBundles);
+        DelegatingBundle delegatingBundle = new DelegatingBundle(delegateBundles);
+        contextClassLoader = new BundleClassLoader(delegatingBundle);
+    }
+
+    @Override
+    public ClassLoader getContextClassLoader() {
+        return contextClassLoader;
+    }
+
     protected void finishStartup() {
         try {
             registration = doWithClassLoader(getContextClassLoader(),
@@ -99,18 +147,18 @@ public abstract class AbstractCdiContainer implements CdiContainer {
                         // fire ContainerInitialized event
                         BeanManager beanManager = getBeanManager();
                         beanManager.fireEvent(new ContainerInitialized());
-                        
+
                         // register CdiContainer service
                         Dictionary<String, Object> props = new Hashtable<String, Object>();
                         props.put("bundleId", bundle.getBundleId());
                         props.put("symbolicName", bundle.getSymbolicName());
 
-                        ServiceRegistration<CdiContainer> reg = bc.registerService(CdiContainer.class, AbstractCdiContainer.this,
-                            props);
+                        ServiceRegistration<CdiContainer> reg = bc.registerService(
+                            CdiContainer.class, AbstractCdiContainer.this, props);
 
                         // fire ServicesPublished event
                         beanManager.fireEvent(new ServicesPublished());
-                        
+
                         return reg;
                     }
                 });

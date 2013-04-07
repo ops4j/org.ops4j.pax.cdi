@@ -59,6 +59,7 @@ public class BeanScannerTest {
 
             workspaceBundle("pax-cdi-api"), workspaceBundle("pax-cdi-spi"),
 
+            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec")
                 .versionAsInProject(),
