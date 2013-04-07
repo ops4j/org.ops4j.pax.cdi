@@ -25,9 +25,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -35,11 +35,13 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
 import org.ops4j.pax.cdi.api.BeanBundle;
+import org.ops4j.pax.cdi.api.ContainerInitialized;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.Properties;
 import org.ops4j.pax.cdi.api.Property;
+import org.ops4j.pax.cdi.spi.BeanBundles;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleReference;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,14 +73,13 @@ public class BeanBundleImpl implements BeanBundle {
 
     private BundleContext bundleContext;
 
-    private List<ServiceRegistration> registrations = new ArrayList<ServiceRegistration>();
+    private List<ServiceRegistration<?>> registrations = new ArrayList<ServiceRegistration<?>>();
     
     
     /**
      * Register OSGi services when the bean is initialized
      */
-    @PostConstruct
-    public void onInitialized() {
+    public void onInitialized(@Observes ContainerInitialized event) {
         for (Object service : services) {
             registerService(service);
         }
@@ -89,7 +90,7 @@ public class BeanBundleImpl implements BeanBundle {
      */
     @PreDestroy
     public void onDestroy() {
-        for (ServiceRegistration reg : registrations) {
+        for (ServiceRegistration<?> reg : registrations) {
             try {
                 reg.unregister();
             }
@@ -115,7 +116,7 @@ public class BeanBundleImpl implements BeanBundle {
         
         Dictionary<String, Object> props = createProperties(klass, service);
         log.debug("publishing service {}, props = {}", typeNames[0], props);
-        ServiceRegistration  reg = getBundleContext(klass).registerService(typeNames, service, props);
+        ServiceRegistration<?>  reg = getBundleContext().registerService(typeNames, service, props);
         registrations.add(reg);
     }
 
@@ -158,20 +159,11 @@ public class BeanBundleImpl implements BeanBundle {
 
     @Override
     public BundleContext getBundleContext() {
+        if (bundleContext == null) {
+            Bundle bundle = BeanBundles.getBundle(Thread.currentThread().getContextClassLoader());
+            bundleContext = bundle.getBundleContext();            
+        }
         return bundleContext;
-    }
-    
-    private BundleContext getBundleContext(Class<?> klass) {
-        BundleContext bc;
-        try {
-            BundleReference bundleRef = BundleReference.class.cast(klass.getClassLoader());
-            bc = bundleRef.getBundle().getBundleContext();
-            return bc;
-        }
-        catch (ClassCastException exc) {
-            log.error("class " + klass.getName() + " is not loaded from an OSGi bundle");
-            throw exc;
-        }
     }
 
     @Override

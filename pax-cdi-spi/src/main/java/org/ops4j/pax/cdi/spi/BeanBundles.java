@@ -21,7 +21,9 @@ package org.ops4j.pax.cdi.spi;
 import static org.ops4j.pax.cdi.api.Constants.CDI_EXTENDER;
 import static org.ops4j.pax.cdi.api.Constants.EXTENDER_CAPABILITY;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleWire;
@@ -33,6 +35,8 @@ import org.osgi.framework.wiring.BundleWiring;
  *
  */
 public class BeanBundles {
+    
+    private static Map<ClassLoader, Bundle> bundleMap = new HashMap<ClassLoader, Bundle>();
     
     private BeanBundles() {
         
@@ -51,5 +55,17 @@ public class BeanBundles {
             }
         }
         return false;
+    }
+    
+    public static synchronized void addBundle(ClassLoader cl, Bundle bundle) {
+        bundleMap.put(cl, bundle);
+    }
+
+    public static synchronized void removeBundle(ClassLoader cl, Bundle bundle) {
+        bundleMap.remove(cl);
+    }
+    
+    public static synchronized Bundle getBundle(ClassLoader cl) {
+        return bundleMap.get(cl);
     }
 }
