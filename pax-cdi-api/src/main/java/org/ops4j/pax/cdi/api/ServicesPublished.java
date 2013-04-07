@@ -18,9 +18,9 @@
 package org.ops4j.pax.cdi.api;
 
 /**
- * CDI event published after container initialization.
+ * CDI event fired after the OSGi extension has finished publishing OSGi services.
  * <p>
- * Application classes in bean bundles may observe this event to start using CDI features.
+ * Application classes in bean bundles may observe this event.
  * 
  * @author Harald Wellmann
  * 
