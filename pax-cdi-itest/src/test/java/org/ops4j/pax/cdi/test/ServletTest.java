@@ -178,6 +178,7 @@ public class ServletTest {
 
         resource = client.resource("http://localhost:8181/sample1/timestamp");
         String timestamp1 = resource.get(String.class);
+        Thread.sleep(500);
 
         Client client2 = ApacheHttpClient.create(config);
         WebResource resource2 = client2.resource("http://localhost:8181/sample1/timestamp");
