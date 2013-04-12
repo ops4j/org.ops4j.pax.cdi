@@ -3,7 +3,7 @@
     <parent>
         <artifactId>pax-cdi-samples</artifactId>
         <groupId>org.ops4j.pax.cdi</groupId>
-        <version>0.4.0-SNAPSHOT</version>
+        <version>0.5.0-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
     
@@ -52,7 +52,7 @@
                     <instructions>
                         <Bundle-SymbolicName>org.ops4j.pax.cdi.sample4.client</Bundle-SymbolicName>
                         <Require-Capability>
-                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=pax-cdi-extension)(version>=${version;==;${pax.cdi.osgi.version.clean}})(!(version>=${version;=+;${pax.cdi.osgi.version.clean}})))",
+                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=pax-cdi-extension)(version&gt;=${version;==;${pax.cdi.osgi.version.clean}})(!(version&gt;=${version;=+;${pax.cdi.osgi.version.clean}})))",
                             osgi.extender; filter:="(osgi.extender=pax.cdi)"
                         </Require-Capability>
                     </instructions>
