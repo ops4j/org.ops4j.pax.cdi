@@ -39,8 +39,6 @@ import org.ops4j.pax.cdi.api.ContainerInitialized;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.Properties;
 import org.ops4j.pax.cdi.api.Property;
-import org.ops4j.pax.cdi.spi.BeanBundles;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
@@ -50,14 +48,14 @@ import org.slf4j.LoggerFactory;
 /**
  * A CDI bean representing a CDI-enabled OSGi bundle, or bean bundle, for short.
  * <p>
- * Not intended to be used by application code. This bean is used internally
- * to observe the ContainerInitialized event and then to publish CDI beans as OSGi services.
+ * Not intended to be used by application code. This bean is used internally to observe the
+ * ContainerInitialized event and then to publish CDI beans as OSGi services.
  * 
  * @author Harald Wellmann
  * 
  */
 @ApplicationScoped
-public class BeanBundleImpl implements BeanBundle {
+public class BeanBundleImpl implements BeanBundle  {
 
     private static Logger log = LoggerFactory.getLogger(BeanBundleImpl.class);
 
@@ -68,15 +66,19 @@ public class BeanBundleImpl implements BeanBundle {
     @Any
     @OsgiServiceProvider
     private Instance<Object> services;
-    
+
     @Inject
     private BeanManager beanManager;
+    
+    @Inject
+    private BundleEventBridge bundleEventBridge;
 
+    @Inject
     private BundleContext bundleContext;
 
     private List<ServiceRegistration<?>> registrations = new ArrayList<ServiceRegistration<?>>();
-    
-    
+
+
     /**
      * Register OSGi services when the bean is initialized
      */
@@ -84,6 +86,7 @@ public class BeanBundleImpl implements BeanBundle {
         for (Object service : services) {
             registerService(service);
         }
+        bundleEventBridge.start();
     }
 
     /**
@@ -91,6 +94,7 @@ public class BeanBundleImpl implements BeanBundle {
      */
     @PreDestroy
     public void onDestroy() {
+        bundleEventBridge.stop();
         for (ServiceRegistration<?> reg : registrations) {
             try {
                 reg.unregister();
@@ -110,21 +114,21 @@ public class BeanBundleImpl implements BeanBundle {
         if (serviceBundleId != extendedBundleId) {
             return;
         }
-        
+
         AnnotatedType<?> annotatedType = beanManager.createAnnotatedType(klass);
         OsgiServiceProvider provider = annotatedType.getAnnotation(OsgiServiceProvider.class);
-        
-        String[] typeNames;        
+
+        String[] typeNames;
         if (provider.classes().length == 0) {
             typeNames = getTypeNamesForTypeClosure(service, klass, annotatedType);
         }
         else {
             typeNames = getTypeNamesForClasses(provider.classes());
         }
-        
+
         Dictionary<String, Object> props = createProperties(klass, service);
         log.debug("publishing service {}, props = {}", typeNames[0], props);
-        ServiceRegistration<?>  reg = getBundleContext().registerService(typeNames, service, props);
+        ServiceRegistration<?> reg = getBundleContext().registerService(typeNames, service, props);
         registrations.add(reg);
     }
 
@@ -167,10 +171,6 @@ public class BeanBundleImpl implements BeanBundle {
 
     @Override
     public BundleContext getBundleContext() {
-        if (bundleContext == null) {
-            Bundle bundle = BeanBundles.getBundle(Thread.currentThread().getContextClassLoader());
-            bundleContext = bundle.getBundleContext();            
-        }
         return bundleContext;
     }
 }

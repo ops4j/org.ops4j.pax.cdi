@@ -70,6 +70,8 @@ public class OsgiExtension implements Extension {
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager manager) {
         log.debug("beforeBeanDiscovery");
         event.addAnnotatedType(manager.createAnnotatedType(BeanBundleImpl.class));
+        event.addAnnotatedType(manager.createAnnotatedType(BundleEventBridge.class));
+        event.addAnnotatedType(manager.createAnnotatedType(BundleContextProducer.class));
     }
 
     /**
@@ -122,7 +124,8 @@ public class OsgiExtension implements Extension {
                 addBean(event, type, typeToIpMap.get(type));
             }
             else {
-                String msg = "Instance<T> injection points not yet supported";
+                InjectionPoint ip = typeToIpMap.get(type).iterator().next();
+                String msg = "The type of an @OSGi service injection point must not be parameterized. Injection point = " + ip;
                 event.addDefinitionError(new UnsupportedOperationException(msg));
                 continue;
             }
