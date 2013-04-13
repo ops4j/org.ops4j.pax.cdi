@@ -54,11 +54,11 @@ public @interface OsgiService {
      * <p>
      * A static proxy (the default) looks up a matching OSGi service once during the CDI bean
      * validation phase. If no service is found, bean validation fails. Otherwise, any bean method
-     * invocation is forwarded to the services instance acquired during bean validation. If the
-     * service has been unregistered, the beans throws an exception and will not try to acquire
+     * invocation is forwarded to the service instance acquired during bean validation. If the
+     * service has been unregistered, the proxy throws an exception and will not try to acquire
      * another service instance.
      * 
-     * @return
+     * @return dynamic proxy flag
      */
     boolean dynamic() default false;
 
@@ -66,17 +66,17 @@ public @interface OsgiService {
      * An LDAP filter in the usual OSGi syntax for narrowing down the set of matching OSGi services.
      * The {@code objectClass} property is always implicitly set to the type of the injection point.
      * 
-     * @return
+     * @return service filter
      */
     String filter() default "";
 
     /**
      * Timeout in milliseconds for obtaining a matching service. When {@link #dynamic()} is true,
      * this timeout applies to every method invocation of the injected bean: If a matching service
-     * is aviable, the proxied method is invoked immediately. Otherwise, the proxy method blocks for
+     * is available, the proxied method is invoked immediately. Otherwise, the proxy method blocks for
      * at most the given timeout period until a matching service has been acquired.
      * 
-     * @return
+     * @return service availability timeout in ms
      */
     int timeout() default 0;
 }
