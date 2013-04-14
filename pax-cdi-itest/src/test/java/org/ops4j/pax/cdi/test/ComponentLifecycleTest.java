@@ -19,6 +19,7 @@ package org.ops4j.pax.cdi.test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
@@ -46,6 +47,7 @@ import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.swissbox.tracker.ServiceLookup;
 import org.ops4j.pax.swissbox.tracker.ServiceLookupException;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerMethod.class)
@@ -100,9 +102,13 @@ public class ComponentLifecycleTest {
         StrawberryService strawberryService = new StrawberryService();
         Dictionary<String,String> props = new Hashtable<String, String>();
         props.put("flavour", "strawberry");
-        bc.registerService(IceCreamService.class, strawberryService, props);
+        ServiceRegistration<IceCreamService> reg = bc.registerService(IceCreamService.class, strawberryService, props);
         StrawberryClient strawberryClient = ServiceLookup.getService(bc, StrawberryClient.class, 100);
         assertThat(strawberryClient, is(notNullValue()));
         assertThat(strawberryClient.getFlavour(), is("Strawberry"));
+        
+        reg.unregister();
+        assertThat(bc.getServiceReference(StrawberryClient.class), is(nullValue()));
+        
     }
 }

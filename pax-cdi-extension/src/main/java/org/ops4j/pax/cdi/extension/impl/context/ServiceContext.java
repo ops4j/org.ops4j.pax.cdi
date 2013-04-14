@@ -52,8 +52,7 @@ public class ServiceContext implements Context {
         }
 
         T instance = component.create(creationalContext);
-        serviceBean = new ServiceContextEntry(component, instance,
-            creationalContext);
+        serviceBean = new ServiceContextEntry(component, instance, creationalContext);
         serviceBeans.put(component, serviceBean);
 
         return instance;
@@ -62,19 +61,21 @@ public class ServiceContext implements Context {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <T> T get(Contextual<T> component) {
-        ServiceContextEntry transactionBeanEntry = serviceBeans.get(component);
-        if (transactionBeanEntry != null) {
-            return (T) transactionBeanEntry.getContextualInstance();
+        ServiceContextEntry serviceBean = serviceBeans.get(component);
+        if (serviceBean != null) {
+            return (T) serviceBean.getContextualInstance();
         }
         return null;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void destroy(Contextual<?> component) {
-        ServiceContextEntry transactionBeanEntry = serviceBeans.get(component);
-        Object instance = transactionBeanEntry.getContextualInstance();
-        CreationalContext cc = transactionBeanEntry.getCreationalContext();
-        transactionBeanEntry.getBean().destroy(instance, cc);
+        ServiceContextEntry serviceBean = serviceBeans.get(component);
+        if (serviceBean != null) {
+            Object instance = serviceBean.getContextualInstance();
+            CreationalContext cc = serviceBean.getCreationalContext();
+            serviceBean.getBean().destroy(instance, cc);
+        }
     }
 
     @Override

@@ -20,8 +20,11 @@ package org.ops4j.pax.cdi.extension.impl.component;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.ops4j.pax.swissbox.lifecycle.AbstractLifecycle;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * An OSGi service dependency of a given service component.
@@ -29,8 +32,8 @@ import org.osgi.framework.ServiceReference;
  * @author Harald Wellmann
  * 
  */
-public class ComponentDependency {
-
+public class ComponentDependency<S, T> extends AbstractLifecycle implements ServiceTrackerCustomizer<T, T> {
+    
     /**
      * Injection point of this dependency. Must be qualified with {@code @OsgiService).
      */
@@ -46,10 +49,15 @@ public class ComponentDependency {
      */
     private boolean satisfied;
 
+    private ServiceTracker<T, T> tracker;
+
+    private ComponentDescriptor<S> parent;
+
     /**
      * 
      */
-    public ComponentDependency(InjectionPoint ip, Filter filter) {
+    public ComponentDependency(ComponentDescriptor<S> parent, InjectionPoint ip, Filter filter) {
+        this.parent = parent;
         this.injectionPoint = ip;
         this.filter = filter;
     }
@@ -99,20 +107,37 @@ public class ComponentDependency {
         this.satisfied = satisfied;
     }
 
-    /**
-     * Checks if the given service reference matches this dependency
-     * 
-     * @param ref
-     *            service reference
-     * @param service
-     *            service object
-     * @return true if the dependency was unsatisfied and is now satisfied by the given reference
-     */
-    public <S> boolean checkDependency(ServiceReference<S> ref, S service) {
+    @Override
+    protected void onStart() {
+        tracker = new ServiceTracker<T, T>(parent.getBundleContext(), filter, this);
+        tracker.open();
+    }
+
+    @Override
+    protected void onStop() {
+        tracker.close();
+    }
+
+    @Override
+    public T addingService(ServiceReference<T> reference) {
         if (!satisfied) {
-            satisfied = filter.match(ref);
-            return satisfied;
+            satisfied = true;
+            parent.onDependencySatisfied();
+            return parent.getBundleContext().getService(reference);
         }
-        return false;
+        return null;
+    }
+
+    @Override
+    public void modifiedService(ServiceReference<T> reference, T service) {
+        // not used
+    }
+
+    @Override
+    public void removedService(ServiceReference<T> reference, T service) {
+        if (satisfied) {
+            satisfied = false;
+            parent.onDependencyUnsatisfied();            
+        }
     }
 }

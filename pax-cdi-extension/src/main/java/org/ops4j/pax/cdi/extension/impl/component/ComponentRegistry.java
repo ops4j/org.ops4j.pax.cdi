@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,14 +42,20 @@ public class ComponentRegistry {
     
     private static Logger log = LoggerFactory.getLogger(ComponentRegistry.class);
     
-    private Map<Bean<?>, ComponentDescriptor> descriptors = new HashMap<Bean<?>, ComponentDescriptor>();
+    private Map<Bean<?>, ComponentDescriptor<?>> descriptors = new HashMap<Bean<?>, ComponentDescriptor<?>>();
+    
+    private BundleContext bundleContext;
+    
+    
+    public ComponentRegistry() {
+    }
     
     /**
      * Adds a component bean type to the registry, creating an empty descriptor for it.
      * @param component
      */
-    public void addComponent(Bean<?> component) {
-        descriptors.put(component, new ComponentDescriptor());
+    public <S> void addComponent(Bean<S> component) {
+        descriptors.put(component, new ComponentDescriptor<S>(component, bundleContext));
     }
     
     /**
@@ -58,9 +65,9 @@ public class ComponentRegistry {
      * @param component component bean
      * @param ip injection point of the given bean, qualified as {@code OsgiService}
      */
-    public void addDependency(Bean<?> component, InjectionPoint ip) {
+    public <S> void addDependency(Bean<S> component, InjectionPoint ip) {
         log.debug("adding dependency {} -> {}", component, ip);
-        ComponentDescriptor descriptor = descriptors.get(component);
+        ComponentDescriptor<?> descriptor = descriptors.get(component);
         descriptor.addDependency(ip);        
     }
     
@@ -77,7 +84,23 @@ public class ComponentRegistry {
      * @param component service component bean
      * @return component descriptor, or null if the bean is not a service component
      */
-    public ComponentDescriptor getDescriptor(Bean<?> component) {
+    public ComponentDescriptor<?> getDescriptor(Bean<?> component) {
         return descriptors.get(component);
+    }
+
+    
+    /**
+     * @return the bundleContext
+     */
+    public BundleContext getBundleContext() {
+        return bundleContext;
+    }
+
+    
+    /**
+     * @param bundleContext the bundleContext to set
+     */
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
     }
 }
