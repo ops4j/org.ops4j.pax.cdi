@@ -30,11 +30,13 @@ import org.ops4j.pax.cdi.api.OsgiService;
 public class OsgiServiceQualifierType extends AnnotationLiteral<OsgiService> implements OsgiService {
 
     private boolean dynamic;
+    private boolean required;
     private String filter = "";
     private int timeout;
 
     public OsgiServiceQualifierType(OsgiService qualifier) {
         this.dynamic = qualifier.dynamic();
+        this.required = qualifier.required();
         this.filter = qualifier.filter();
         this.timeout = qualifier.timeout();
     }
@@ -47,6 +49,11 @@ public class OsgiServiceQualifierType extends AnnotationLiteral<OsgiService> imp
     @Override
     public boolean dynamic() {
         return dynamic;
+    }
+
+    @Override
+    public boolean required() {
+        return required;
     }
 
     @Override

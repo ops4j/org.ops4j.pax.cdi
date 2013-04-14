@@ -68,4 +68,9 @@ public class BeanBundles {
     public static synchronized Bundle getBundle(ClassLoader cl) {
         return bundleMap.get(cl);
     }
+
+    public static synchronized Bundle getCurrentBundle() {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        return bundleMap.get(cl);
+    }
 }

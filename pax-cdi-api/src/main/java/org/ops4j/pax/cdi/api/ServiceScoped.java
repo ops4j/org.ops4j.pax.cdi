@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Harald Wellmann.
+ * Copyright 2013 Harald Wellmann
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.ops4j.pax.cdi.api;
 
-import org.osgi.framework.BundleContext;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import javax.enterprise.context.NormalScope;
+
 
 /**
- * Interface for CDI beans representing a CDI-enabled OSGi bundle.
- * 
  * @author Harald Wellmann
- * 
+ *
  */
-public interface BeanBundle {
+@Target( { TYPE, METHOD, FIELD })
+@Retention(RUNTIME)
+@Documented
+@NormalScope
+@Inherited
+public @interface ServiceScoped {
 
-    /**
-     * Gets the bundle context of this bean bundle.
-     * 
-     * @return
-     */
-    BundleContext getBundleContext();
 }

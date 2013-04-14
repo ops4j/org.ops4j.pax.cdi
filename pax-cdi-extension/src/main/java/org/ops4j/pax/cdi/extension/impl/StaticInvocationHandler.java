@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceException;
 import org.osgi.framework.ServiceReference;

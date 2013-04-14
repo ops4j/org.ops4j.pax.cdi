@@ -19,7 +19,6 @@ package org.ops4j.pax.cdi.extension.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Set;
 
@@ -30,6 +29,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.ops4j.pax.cdi.api.OsgiService;
+import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -78,7 +78,7 @@ public class OsgiInjectionTarget<T> implements InjectionTarget<T> {
         if (qualifier == null) {
             return;
         }
-        Type instanceType = getInstanceType(ip);
+        Type instanceType = InjectionPointOsgiUtils.getInstanceType(ip);
         if (instanceType == null) {
             return;
         }
@@ -105,18 +105,6 @@ public class OsgiInjectionTarget<T> implements InjectionTarget<T> {
 
     }
 
-    private Type getInstanceType(InjectionPoint ip) {
-        if (ip.getType() instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) ip.getType();
-            Type[] argTypes = parameterizedType.getActualTypeArguments();
-            if (argTypes.length > 0) {
-                Type instanceType = argTypes[0];
-                return instanceType;
-            }
-        }
-        return null;
-    }
-
     private OsgiService getOsgiServiceQualifier(InjectionPoint ip) {
         for (Annotation qualifier : ip.getQualifiers()) {
             if (qualifier instanceof OsgiService) {
@@ -135,5 +123,4 @@ public class OsgiInjectionTarget<T> implements InjectionTarget<T> {
     public void preDestroy(T instance) {
         delegate.preDestroy(instance);
     }
-
 }

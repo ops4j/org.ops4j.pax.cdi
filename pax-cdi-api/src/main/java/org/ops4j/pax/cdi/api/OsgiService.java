@@ -62,6 +62,8 @@ public @interface OsgiService {
      */
     boolean dynamic() default false;
 
+    boolean required() default false;
+
     /**
      * An LDAP filter in the usual OSGi syntax for narrowing down the set of matching OSGi services.
      * The {@code objectClass} property is always implicitly set to the type of the injection point.
@@ -79,4 +81,5 @@ public @interface OsgiService {
      * @return service availability timeout in ms
      */
     int timeout() default 0;
+    
 }

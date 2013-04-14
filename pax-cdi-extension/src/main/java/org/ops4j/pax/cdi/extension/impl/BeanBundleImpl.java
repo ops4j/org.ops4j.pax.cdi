@@ -17,31 +17,15 @@
  */
 package org.ops4j.pax.cdi.extension.impl;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Set;
-
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.api.BeanBundle;
 import org.ops4j.pax.cdi.api.ContainerInitialized;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
-import org.ops4j.pax.cdi.api.Properties;
-import org.ops4j.pax.cdi.api.Property;
+import org.ops4j.pax.cdi.extension.impl.component.ComponentLifecycleManager;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,17 +39,9 @@ import org.slf4j.LoggerFactory;
  * 
  */
 @ApplicationScoped
-public class BeanBundleImpl implements BeanBundle  {
-
+public class BeanBundleImpl {
+    
     private static Logger log = LoggerFactory.getLogger(BeanBundleImpl.class);
-
-    /**
-     * All beans qualified as OSGi service provider. These beans will be registered as services.
-     */
-    @Inject
-    @Any
-    @OsgiServiceProvider
-    private Instance<Object> services;
 
     @Inject
     private BeanManager beanManager;
@@ -75,18 +51,17 @@ public class BeanBundleImpl implements BeanBundle  {
 
     @Inject
     private BundleContext bundleContext;
-
-    private List<ServiceRegistration<?>> registrations = new ArrayList<ServiceRegistration<?>>();
-
+    
+    @Inject
+    private ComponentLifecycleManager componentLifecycleManager;
 
     /**
      * Register OSGi services when the bean is initialized
      */
     public void onInitialized(@Observes ContainerInitialized event) {
-        for (Object service : services) {
-            registerService(service);
-        }
+        log.debug("onInitialized {}", bundleContext.getBundle());
         bundleEventBridge.start();
+        componentLifecycleManager.start();        
     }
 
     /**
@@ -94,83 +69,8 @@ public class BeanBundleImpl implements BeanBundle  {
      */
     @PreDestroy
     public void onDestroy() {
+        log.debug("onDestroy {}", bundleContext.getBundle());
+        componentLifecycleManager.stop();
         bundleEventBridge.stop();
-        for (ServiceRegistration<?> reg : registrations) {
-            try {
-                reg.unregister();
-            }
-            catch (IllegalStateException e) {
-                // Ignore if the service has already been unregistered
-            }
-        }
-        registrations.clear();
-    }
-
-    private void registerService(Object service) {
-        // only register services for classes located in the extended bundle
-        long extendedBundleId = getBundleContext().getBundle().getBundleId();
-        Class<?> klass = service.getClass();
-        long serviceBundleId = FrameworkUtil.getBundle(klass).getBundleId();
-        if (serviceBundleId != extendedBundleId) {
-            return;
-        }
-
-        AnnotatedType<?> annotatedType = beanManager.createAnnotatedType(klass);
-        OsgiServiceProvider provider = annotatedType.getAnnotation(OsgiServiceProvider.class);
-
-        String[] typeNames;
-        if (provider.classes().length == 0) {
-            typeNames = getTypeNamesForTypeClosure(service, klass, annotatedType);
-        }
-        else {
-            typeNames = getTypeNamesForClasses(provider.classes());
-        }
-
-        Dictionary<String, Object> props = createProperties(klass, service);
-        log.debug("publishing service {}, props = {}", typeNames[0], props);
-        ServiceRegistration<?> reg = getBundleContext().registerService(typeNames, service, props);
-        registrations.add(reg);
-    }
-
-    private String[] getTypeNamesForTypeClosure(Object service, Class<?> klass,
-        AnnotatedType<?> annotatedType) {
-        Set<Type> closure = annotatedType.getTypeClosure();
-        String[] typeNames = new String[closure.size()];
-        int i = 0;
-        for (Type type : closure) {
-            Class<?> c = (Class<?>) type;
-            if (c.isInterface()) {
-                typeNames[i++] = c.getName();
-            }
-        }
-        if (i == 0) {
-            typeNames[i++] = klass.getName();
-        }
-        return Arrays.copyOf(typeNames, i);
-    }
-
-    private String[] getTypeNamesForClasses(Class<?>[] classes) {
-        String[] typeNames = new String[classes.length];
-        for (int i = 0; i < classes.length; i++) {
-            typeNames[i] = classes[i].getName();
-        }
-        return typeNames;
-    }
-
-    private Dictionary<String, Object> createProperties(Class<?> klass, Object service) {
-        Properties props = klass.getAnnotation(Properties.class);
-        if (props == null) {
-            return null;
-        }
-        Hashtable<String, Object> dict = new Hashtable<String, Object>();
-        for (Property property : props.value()) {
-            dict.put(property.name(), property.value());
-        }
-        return dict;
-    }
-
-    @Override
-    public BundleContext getBundleContext() {
-        return bundleContext;
     }
 }

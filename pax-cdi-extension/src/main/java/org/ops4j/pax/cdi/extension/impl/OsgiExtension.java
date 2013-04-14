@@ -30,14 +30,21 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 
-import org.ops4j.pax.cdi.api.BeanBundle;
 import org.ops4j.pax.cdi.api.OsgiService;
+import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.ServiceScoped;
+import org.ops4j.pax.cdi.extension.impl.component.ComponentLifecycleManager;
+import org.ops4j.pax.cdi.extension.impl.component.ComponentRegistry;
+import org.ops4j.pax.cdi.extension.impl.context.ServiceContext;
+import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.osgi.framework.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,13 +63,21 @@ public class OsgiExtension implements Extension {
 
     /** Maps service types to injection points. */
     private Map<Type, Set<InjectionPoint>> typeToIpMap = new HashMap<Type, Set<InjectionPoint>>();
+    
+    /**
+     * Registry for service components and their dependencies.
+     */
+    private ComponentRegistry componentRegistry = new ComponentRegistry();
+    
+    private ServiceContext serviceContext;
 
     public OsgiExtension() {
         log.debug("constructing OsgiExtension");
     }
-
+    
     /**
-     * BeforeBeanDiscovery observer which creates an additional {@link BeanBundle} bean.
+     * BeforeBeanDiscovery observer which creates some additional beans and the Service Scope
+     * for OSGi components.
      * 
      * @param event
      * @param manager
@@ -72,6 +87,8 @@ public class OsgiExtension implements Extension {
         event.addAnnotatedType(manager.createAnnotatedType(BeanBundleImpl.class));
         event.addAnnotatedType(manager.createAnnotatedType(BundleEventBridge.class));
         event.addAnnotatedType(manager.createAnnotatedType(BundleContextProducer.class));
+        event.addAnnotatedType(manager.createAnnotatedType(ComponentLifecycleManager.class));
+        event.addScope(ServiceScoped.class, true, false);
     }
 
     /**
@@ -107,6 +124,27 @@ public class OsgiExtension implements Extension {
         }
         typeToIpMap.get(key).add(injectionPoint);
     }
+    
+    /**
+     * ProcessBean observer which registers OSGi components and their service dependencies
+     * in the {@link ComponentRegistry}.
+     * @param event
+     */
+    public <T> void processBean(@Observes ProcessBean<T> event) {
+        Bean<T> bean = event.getBean();
+        log.debug("processBean {}", bean);
+        
+        OsgiServiceProvider qualifier = event.getAnnotated().getAnnotation(OsgiServiceProvider.class);
+        if (qualifier != null) {
+            componentRegistry.addComponent(bean);
+            for (InjectionPoint ip : bean.getInjectionPoints()) {
+                OsgiService annotation = ip.getAnnotated().getAnnotation(OsgiService.class);
+                if (annotation != null) {
+                    componentRegistry.addDependency(bean, ip);
+                }
+            }
+        }
+    }
 
     /**
      * AfterBeanDiscovery observer which registers {@code OsgiServiceBean}s for all types required
@@ -114,8 +152,10 @@ public class OsgiExtension implements Extension {
      * 
      * @param event
      */
-    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event) {
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event) {       
         log.debug("afterBeanDiscovery");
+        serviceContext = new ServiceContext();
+        event.addContext(serviceContext);
         for (Type type : typeToIpMap.keySet()) {
             if (isInstance(type)) {
                 // handled by OsgiInjectionTarget
@@ -161,5 +201,13 @@ public class OsgiExtension implements Extension {
             return Instance.class.isAssignableFrom(rawType);
         }
         return false;
+    }
+    
+    public ComponentRegistry getComponentRegistry() {
+        return componentRegistry;
+    }
+
+    public ServiceContext getServiceContext() {
+        return serviceContext;
     }
 }

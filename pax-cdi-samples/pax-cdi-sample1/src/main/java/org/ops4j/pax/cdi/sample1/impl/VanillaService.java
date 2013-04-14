@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.cdi.sample1.impl;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Default;
 
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
@@ -30,8 +31,18 @@ import org.ops4j.pax.cdi.sample1.Vanilla;
 @OsgiServiceProvider(classes = { VanillaService.class, IceCreamService.class })
 @Properties(@Property(name = "flavour", value = "vanilla"))
 class VanillaService implements IceCreamService {
+    
+    private boolean initialized;
+    
+    @PostConstruct
+    public void init() {
+        initialized = true;
+    }
 
     public String getFlavour() {
+        if (!initialized) {
+            throw new AssertionError("VanillaService is not initialized");
+        }
         return "Vanilla";
     }
 }

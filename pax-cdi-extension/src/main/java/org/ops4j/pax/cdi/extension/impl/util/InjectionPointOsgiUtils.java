@@ -15,8 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.extension.impl;
+package org.ops4j.pax.cdi.extension.impl.util;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -77,6 +78,33 @@ public class InjectionPointOsgiUtils {
         log.debug("filter = " + filter);
         return filter;
     }
+    
+    public static String getFilter(InjectionPoint ip) {
+        Class<?> klass = getServiceType(ip);
+        OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
+        return getFilter(klass, os);
+    }
+    
+    public static Type getInstanceType(InjectionPoint ip) {
+        if (ip.getType() instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) ip.getType();
+            Type[] argTypes = parameterizedType.getActualTypeArguments();
+            if (argTypes.length > 0) {
+                Type instanceType = argTypes[0];
+                return instanceType;
+            }
+        }
+        return null;
+    }
+    
+    public static Class<?> getServiceType(InjectionPoint ip) {
+        Type serviceType = getInstanceType(ip);
+        if (serviceType == null) {
+            serviceType = ip.getType();
+        }
+        return (Class<?>) serviceType;        
+    }
+    
 
     public static BundleContext getBundleContext(InjectionPoint ip) {
         return getBundleContext(ip.getMember().getDeclaringClass());

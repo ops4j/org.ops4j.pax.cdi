@@ -50,7 +50,7 @@ public class ProducerAndClientTest {
     private CdiContainerFactory containerFactory;
 
     @Inject
-    @Filter(timeout = 10000000)
+    @Filter(timeout = 1000000)
     private IceCreamClient client;
 
     @Configuration
