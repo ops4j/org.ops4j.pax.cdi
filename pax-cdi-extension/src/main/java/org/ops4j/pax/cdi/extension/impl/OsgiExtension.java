@@ -88,7 +88,7 @@ public class OsgiExtension implements Extension {
         event.addAnnotatedType(manager.createAnnotatedType(BundleEventBridge.class));
         event.addAnnotatedType(manager.createAnnotatedType(BundleContextProducer.class));
         event.addAnnotatedType(manager.createAnnotatedType(ComponentLifecycleManager.class));
-        event.addScope(ServiceScoped.class, true, false);
+        event.addScope(ServiceScoped.class, false, false);
     }
 
     /**
