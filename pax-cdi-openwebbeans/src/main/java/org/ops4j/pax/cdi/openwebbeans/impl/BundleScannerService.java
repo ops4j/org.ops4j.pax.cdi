@@ -17,10 +17,6 @@
  */
 package org.ops4j.pax.cdi.openwebbeans.impl;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -88,56 +84,6 @@ public class BundleScannerService implements ScannerService {
             }
         }
         return beanClasses;
-    }
-
-    @Override
-    public Set<String> getAllAnnotations(String className) {
-        Set<String> annotations = classAnnotations.get(className);
-        if (annotations == null) {
-            annotations = new HashSet<String>();
-            try {
-                Class<?> klass = bundle.loadClass(className);
-                collectAnnotations(annotations, klass);
-            }
-            catch (ClassNotFoundException exc) {
-                log.debug("cannot load class {}", className);
-            }
-            classAnnotations.put(className, annotations);
-        }
-        return annotations;
-    }
-
-    private Set<String> collectAnnotations(Set<String> annotations, Class<?> cls) {
-
-        addAnnotations(annotations, cls.getAnnotations());
-
-        Constructor<?>[] constructors = cls.getDeclaredConstructors();
-        for (Constructor<?> c : constructors) {
-            addAnnotations(annotations, c.getAnnotations());
-        }
-
-        Field[] fields = cls.getDeclaredFields();
-        for (Field f : fields) {
-            addAnnotations(annotations, f.getAnnotations());
-        }
-
-        Method[] methods = cls.getDeclaredMethods();
-        for (Method m : methods) {
-            addAnnotations(annotations, m.getAnnotations());
-
-            Annotation[][] paramsAnns = m.getParameterAnnotations();
-            for (Annotation[] pAnns : paramsAnns) {
-                addAnnotations(annotations, pAnns);
-            }
-        }
-
-        return annotations;
-    }
-
-    private void addAnnotations(Set<String> annStrings, Annotation[] annotations) {
-        for (Annotation ann : annotations) {
-            annStrings.add(ann.getClass().getSimpleName());
-        }
     }
 
     @Override

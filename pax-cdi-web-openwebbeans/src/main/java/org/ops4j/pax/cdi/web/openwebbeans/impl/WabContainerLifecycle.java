@@ -143,7 +143,7 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
      * removed in order to prevent memory leaks.
      */
     private void cleanupShutdownThreadLocals() {
-        InjectionPointBean.removeThreadLocal();
+        //InjectionPointBean.removeThreadLocal();
         WebContextsService.removeThreadLocals();
     }
 

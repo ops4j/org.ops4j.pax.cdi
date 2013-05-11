@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.cdi.web.openwebbeans.impl;
 
+import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.spi.BeanManager;
@@ -28,10 +29,10 @@ import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import org.apache.webbeans.component.InjectionPointBean;
 import org.apache.webbeans.config.WebBeansContext;
 import org.apache.webbeans.el.ELContextStore;
 import org.apache.webbeans.spi.ContainerLifecycle;
+import org.apache.webbeans.spi.ContextsService;
 import org.apache.webbeans.web.context.WebContextsService;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.Injector;
@@ -78,7 +79,9 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
     @Override
     public void sessionDestroyed(HttpSessionEvent event) {
         log.debug("session destroyed");
-        lifecycle.getContextService().endContext(SessionScoped.class, event.getSession());
+        ContextsService contextsService = lifecycle.getContextService();
+        contextsService.endContext(SessionScoped.class, event.getSession());
+        contextsService.endContext(ConversationScoped.class, event.getSession());
     }
 
     @Override
@@ -91,13 +94,6 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
 
         lifecycle.getContextService().endContext(RequestScoped.class, event);
 
-        cleanupRequestThreadLocals();
-    }
-
-    // TODO Auto-generated method stub
-
-    private void cleanupRequestThreadLocals() {
-        InjectionPointBean.removeThreadLocal();
         WebContextsService.removeThreadLocals();
     }
 

@@ -77,6 +77,29 @@ public class TestConfiguration {
             junitBundles());
     }
 
+    public static Option cdiProviderBundles() {
+        return openWebBeansBundles();
+    }    
+    
+    public static Option openWebBeansBundles() {
+        return composite(
+            mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
+            mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
+            mavenBundle("org.apache.xbean", "xbean-asm-shaded").versionAsInProject(), //
+            mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(), //
+            mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec")
+                .versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-validation_1.0_spec")
+                .versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-jcdi_1.0_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec")
+                .versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject());
+    }
+
     public static UrlProvisionOption workspaceBundle(String pathFromRoot) {
         String url = String.format("reference:file:%s/../%s/target/classes",
             PathUtils.getBaseDir(), pathFromRoot);

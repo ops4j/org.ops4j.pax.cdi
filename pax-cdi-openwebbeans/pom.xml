@@ -77,12 +77,6 @@
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Bundle-Activator>${bundle.namespace}.impl.Activator</Bundle-Activator>
                         <Service-Component>OSGI-INF/*</Service-Component>
-                        <Import-Package>
-                            javassist.util.proxy,
-                            javax.enterprise.context.*,
-                            org.apache.webbeans.intercept,
-                            *
-                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

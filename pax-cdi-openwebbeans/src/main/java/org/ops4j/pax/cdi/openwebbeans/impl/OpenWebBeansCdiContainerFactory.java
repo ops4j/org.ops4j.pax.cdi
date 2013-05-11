@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.webbeans.context.WebBeansContext;
+import org.apache.webbeans.config.WebBeansContext;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.cdi.spi.CdiContainerListener;
