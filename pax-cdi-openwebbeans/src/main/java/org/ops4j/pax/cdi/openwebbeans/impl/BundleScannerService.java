@@ -79,7 +79,7 @@ public class BundleScannerService implements ScannerService {
                     beanClasses.add(klass);
                 }
                 catch (ClassNotFoundException exc) {
-                    log.debug("cannot load {}", className);
+                    log.debug("cannot load {}, cause: {}", className, exc.getMessage());
                 }
             }
         }

@@ -1,0 +1,19 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="JSR-299 TCK" verbose="2">
+
+    <test name="definition" enabled="true">
+       <classes>     
+
+            <class name="org.jboss.cdi.tck.tests.definition.bean.BeanDefinitionTest"/>
+            <class name="org.jboss.cdi.tck.tests.definition.bean.custom.CustomBeanImplementationTest"/>
+            
+            <!-- broken, see OWB-860
+            <class name="org.jboss.cdi.tck.tests.definition.bean.types.ManagedBeanTypesTest"/>
+             -->
+             
+            <class name="org.jboss.cdi.tck.tests.definition.name.NameDefinitionTest"/>
+            <class name="org.jboss.cdi.tck.tests.definition.qualifier.QualifierDefinitionTest"/>
+        </classes>
+    </test>
+    
+</suite>
