@@ -10,11 +10,6 @@
 	<groupId>org.ops4j.pax.cdi.tck</groupId>
 	<artifactId>pax-cdi-tck11-runner</artifactId>
 
-	<properties>
-		<arquillian.version>1.0.3.Final</arquillian.version>
-		<cdi.tck.version>1.1.0.Final</cdi.tck.version>
-	</properties>
-
 	<dependencies>
 
 		<dependency>
@@ -29,8 +24,8 @@
 			<version>${cdi.tck.version}</version>
 			<exclusions>
 				<exclusion>
-					<artifactId>cdi-api</artifactId>
 					<groupId>javax.enterprise</groupId>
+					<artifactId>cdi-api</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -40,8 +35,6 @@
 			<artifactId>pax-cdi-arquillian</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
-
 
 		<dependency>
 			<groupId>org.ops4j.pax.swissbox</groupId>
@@ -64,6 +57,12 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jul-to-slf4j</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
 
@@ -108,8 +107,14 @@
 			<artifactId>geronimo-el_2.2_spec</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
-
+		
+		<dependency>
+			<groupId>org.eclipse.tycho</groupId>
+			<artifactId>org.eclipse.osgi</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		
 
 	</dependencies>
 
@@ -182,7 +187,7 @@
 
 					<systemPropertyVariables>
 					    <pax.cdi.root>${basedir}/../..</pax.cdi.root>
-						<logback.configurationFile>file:${basedir}/src/main/resources/logback.xml</logback.configurationFile>
+						<logback.configurationFile>file:${basedir}/src/test/resources/logback.xml</logback.configurationFile>
 					</systemPropertyVariables>
 
 				</configuration>

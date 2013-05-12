@@ -10,10 +10,6 @@
 	<groupId>org.ops4j.pax.cdi.tck</groupId>
 	<artifactId>pax-cdi-arquillian</artifactId>
 
-	<properties>
-		<arquillian.version>1.0.3.Final</arquillian.version>
-	</properties>
-
 	<dependencies>
 
 		<dependency>

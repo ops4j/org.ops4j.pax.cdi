@@ -6,11 +6,9 @@
         <artifactId>tck</artifactId>
         <version>0.5.0-SNAPSHOT</version>
     </parent>
+
     <groupId>org.ops4j.pax.cdi.tck</groupId>
     <artifactId>pax-cdi-tck11-porting</artifactId>
-    <properties>
-        <cdi.tck.version>1.1.0.Final</cdi.tck.version>
-    </properties>
 
     <dependencies>
 
@@ -18,21 +16,6 @@
             <groupId>org.ops4j.pax.cdi</groupId>
             <artifactId>pax-cdi-api</artifactId>
             <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-container-native</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.swissbox</groupId>
-            <artifactId>pax-swissbox-tracker</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.url</groupId>
-            <artifactId>pax-url-aether</artifactId>
         </dependency>
 
         <dependency>
@@ -44,19 +27,6 @@
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jta_1.1_spec</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.myfaces.core</groupId>
-            <artifactId>myfaces-impl</artifactId>
-            <version>2.0.9</version>
-        </dependency>
-
 
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
@@ -115,22 +85,6 @@
             <artifactId>com.sun.el</artifactId>
             <version>2.2.0.v201108011116</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>org.eclipse.osgi</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-        </dependency>
-
 
     </dependencies>
 
