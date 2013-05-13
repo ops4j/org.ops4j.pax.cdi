@@ -27,7 +27,7 @@ Run Build:
 
 Releases go to Maven Central.
 
-The current milestone release is Pax CDI 0.3.0.
+The current milestone release is Pax CDI 0.4.0.
 
 ## Issue Tracking
 
