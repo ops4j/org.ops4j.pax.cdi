@@ -520,42 +520,39 @@ public class WabContextsService extends AbstractContextsService {
             currentApplicationContexts.remove(servletContext);
         }
 
-        //destroyDependents all sessions
-        Collection<SessionContext> allSessionContexts = sessionCtxManager.getAllSessionContexts().values();
-        if (allSessionContexts != null && allSessionContexts.size() > 0)
-        {
-            for (SessionContext sessionContext : allSessionContexts)
-            {
+        // destroyDependents all sessions
+        Collection<SessionContext> allSessionContexts = sessionCtxManager.getAllSessionContexts()
+            .values();
+        if (allSessionContexts != null && allSessionContexts.size() > 0) {
+            for (SessionContext sessionContext : allSessionContexts) {
                 sessionContexts.set(sessionContext);
-                
+
                 sessionContext.destroy();
 
                 sessionContexts.set(null);
                 sessionContexts.remove();
             }
 
-            //Clear map
+            // Clear map
             allSessionContexts.clear();
         }
-        
-        //destroyDependents all conversations
-        Collection<ConversationContext> allConversationContexts = conversationManager.getAllConversationContexts().values();
-        if (allConversationContexts != null && allConversationContexts.size() > 0)
-        {
-            for (ConversationContext conversationContext : allConversationContexts) 
-            {
+
+        // destroyDependents all conversations
+        Collection<ConversationContext> allConversationContexts = conversationManager
+            .getAllConversationContexts().values();
+        if (allConversationContexts != null && allConversationContexts.size() > 0) {
+            for (ConversationContext conversationContext : allConversationContexts) {
                 conversationContexts.set(conversationContext);
-                
+
                 conversationContext.destroy();
 
                 conversationContexts.set(null);
                 conversationContexts.remove();
             }
 
-            //Clear conversations
+            // Clear conversations
             allConversationContexts.clear();
         }
-
 
         // Also clear application and singleton context
         applicationContexts.set(null);

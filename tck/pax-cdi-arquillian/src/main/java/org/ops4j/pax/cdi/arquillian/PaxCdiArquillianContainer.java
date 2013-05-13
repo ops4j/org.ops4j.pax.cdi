@@ -25,7 +25,6 @@ import static org.ops4j.pax.exam.CoreOptions.frameworkProperty;
 import static org.ops4j.pax.exam.CoreOptions.frameworkStartLevel;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.propagateSystemProperty;
 import static org.ops4j.pax.exam.CoreOptions.systemPackages;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.vmOption;
@@ -60,7 +59,6 @@ import org.ops4j.pax.exam.TestContainer;
 import org.ops4j.pax.exam.TestContainerException;
 import org.ops4j.pax.exam.options.UrlProvisionOption;
 import org.ops4j.pax.exam.spi.PaxExamRuntime;
-import org.ops4j.pax.exam.util.PathUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -72,6 +70,8 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
 
     private static Logger log = LoggerFactory.getLogger(PaxCdiArquillianContainer.class);
 
+    private static String paxCdiRoot;
+
     private TestContainer testContainer;
 
     private BundleContext bundleContext;
@@ -79,8 +79,6 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
     private long probeBundleId;
 
     private Stack<Long> installed;
-
-    private static String paxCdiRoot;
 
     public Class<PaxCdiConfiguration> getConfigurationClass() {
         return PaxCdiConfiguration.class;
@@ -317,5 +315,4 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
                 .versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject());
     }
-
 }
