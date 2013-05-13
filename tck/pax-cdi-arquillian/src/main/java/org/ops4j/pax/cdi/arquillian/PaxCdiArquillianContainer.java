@@ -25,6 +25,7 @@ import static org.ops4j.pax.exam.CoreOptions.frameworkProperty;
 import static org.ops4j.pax.exam.CoreOptions.frameworkStartLevel;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.CoreOptions.propagateSystemProperty;
 import static org.ops4j.pax.exam.CoreOptions.systemPackages;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.vmOption;
@@ -33,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.Properties;
 import java.util.Stack;
 
 import org.codehaus.plexus.util.IOUtil;
@@ -58,6 +60,7 @@ import org.ops4j.pax.exam.TestContainer;
 import org.ops4j.pax.exam.TestContainerException;
 import org.ops4j.pax.exam.options.UrlProvisionOption;
 import org.ops4j.pax.exam.spi.PaxExamRuntime;
+import org.ops4j.pax.exam.util.PathUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -70,7 +73,7 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
     private static Logger log = LoggerFactory.getLogger(PaxCdiArquillianContainer.class);
 
     private TestContainer testContainer;
-    
+
     private BundleContext bundleContext;
 
     private long probeBundleId;
@@ -98,7 +101,7 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
             field.setAccessible(true);
             Framework framework = (Framework) field.get(testContainer);
             bundleContext = framework.getBundleContext();
-            
+
             field = testContainer.getClass().getDeclaredField("installed");
             field.setAccessible(true);
             installed = (Stack<Long>) field.get(testContainer);
@@ -133,12 +136,13 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
 
     public ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
         archive.delete("WEB-INF/web.xml");
-        
+
         WebArchive war = archive.as(WebArchive.class);
         Asset manifest = buildManifest(war);
         war.setManifest(manifest);
-        
-        war.setWebXML(new File(paxCdiRoot, "tck/pax-cdi-arquillian/src/main/resources/probe-web.xml"));
+
+        war.setWebXML(new File(getPaxCdiRoot(),
+            "tck/pax-cdi-arquillian/src/main/resources/probe-web.xml"));
         InputStream is = archive.as(ZipExporter.class).exportAsInputStream();
         probeBundleId = testContainer.install(is);
 
@@ -148,7 +152,7 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
         metadata.addContext(context);
         return metadata;
     }
-    
+
     private Asset buildManifest(WebArchive war) {
         String manifest = null;
         try {
@@ -157,7 +161,7 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
         catch (IOException exc) {
             throw new Ops4jException(exc);
         }
-        
+
         StringBuilder buffer = new StringBuilder(manifest);
         buffer.append("Bundle-ClassPath: WEB-INF/classes");
         for (ArchivePath path : war.getContent().keySet()) {
@@ -263,17 +267,32 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
             mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject(),
 
             // options required for Forked Container, having no effect in Native Container
-            vmOption("-ea"),
-            systemProperty("logback.configurationFile").value(System.getProperty("logback.configurationFile"))
-        );
+            vmOption("-ea"), 
+            systemProperty("logback.configurationFile").value(getPaxCdiRoot() + "/tck/pax-cdi-arquillian/src/test/resources/logback.xml"));
 
     }
 
     public static UrlProvisionOption workspaceBundle(String pathFromRoot) {
-        paxCdiRoot = System.getProperty("pax.cdi.root");
-        String url = String.format("reference:file:%s/%s/target/classes",
-            paxCdiRoot, pathFromRoot);
+        String url = String.format("reference:file:%s/%s/target/classes", getPaxCdiRoot(), pathFromRoot);
         return bundle(url);
+    }
+
+    public static String getPaxCdiRoot() {
+        if (paxCdiRoot == null) {
+            paxCdiRoot = System.getProperty("pax.cdi.root");
+            if (paxCdiRoot == null) {
+                Properties props = new Properties();
+                try {
+                    props.load(PaxCdiArquillianContainer.class
+                        .getResourceAsStream("/org.ops4j.pax.cdi.properties"));
+                    paxCdiRoot = props.getProperty("pax.cdi.root");
+                }
+                catch (IOException exc) {
+                    throw new Ops4jException(exc);
+                }
+            }
+        }
+        return paxCdiRoot;
     }
 
     public static Option openWebBeansBundles() {
