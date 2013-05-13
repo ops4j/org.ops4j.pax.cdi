@@ -17,39 +17,30 @@
  */
 package org.ops4j.pax.cdi.test;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
-import java.util.List;
+import java.io.Serializable;
 
-import javax.inject.Inject;
+import javassist.util.proxy.ProxyFactory;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.cdi.api.event.BundleCdiEvent;
-import org.ops4j.pax.cdi.sample1.BundleEventCollector;
+import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleEvent;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class BundleEventTest {
-
-    @Inject
-    private BundleEventCollector collector;
-
-    @Inject
-    private BundleContext bc;
+public class ProxyTest {
 
     @Configuration
     public Option[] config() {
@@ -57,14 +48,21 @@ public class BundleEventTest {
             regressionDefaults(),
 
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1"),
+            workspaceBundle("pax-cdi-samples/pax-cdi-sample1-client"),
+
+            // doesn't work for WABs
+            // workspaceBundle("pax-cdi-samples/pax-cdi-sample1-web"),
+
+            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", Info.getPaxCdiVersion()),
             workspaceBundle("pax-cdi-extender"),
             workspaceBundle("pax-cdi-extension"),
             workspaceBundle("pax-cdi-api"),
             workspaceBundle("pax-cdi-spi"),
-            workspaceBundle("pax-cdi-openwebbeans"),
+            workspaceBundle("pax-cdi-openwebbeans").startLevel(2),
 
             mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
+
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.javassist")
                 .versionAsInProject(),
             mavenBundle("org.apache.geronimo.bundles", "scannotation").versionAsInProject(),
@@ -81,16 +79,23 @@ public class BundleEventTest {
             mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec")
                 .versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject());
+
     }
 
     @Test
-    public void checkBundleEvents() {
-        List<BundleCdiEvent> events = collector.getBundleStartedEvents();
-        assertThat(events.isEmpty(), is(false));
-        for (BundleCdiEvent event : collector.getBundleStartedEvents()) {
-            assertThat(event.getBundle(), is(notNullValue()));
-            assertThat(event.getBundleEvent().getBundle(), is(event.getBundle()));
-            assertThat(event.getBundleEvent().getType(), is(BundleEvent.STARTED));
-        }
+    public void proxyForPackageVisibleClass() throws Exception {
+        Class<?> klass = Class.forName("org.ops4j.pax.cdi.sample1.web.session.SimpleSessionBean");
+        final ClassLoader classLoader = klass.getClassLoader();
+
+        ProxyFactory factory = new ProxyFactory();
+        factory.setSuperclass(klass);
+        factory.setInterfaces(new Class[] { Serializable.class });
+
+        Class<?> proxyClass = factory.createClass();
+        Object proxy = proxyClass.newInstance();
+        ClassLoader proxyClassLoader = proxyClass.getClassLoader();
+
+        assertThat(proxy, is(instanceOf(klass)));
+        assertThat(proxyClassLoader, is(classLoader));
     }
 }

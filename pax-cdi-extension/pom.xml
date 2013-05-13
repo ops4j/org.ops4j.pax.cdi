@@ -74,7 +74,6 @@
                         <Provide-Capability>
                             org.ops4j.pax.cdi.extension; extension=pax-cdi-extension; version:Version=${version;====;${replace;${project.version};-;.}}
                         </Provide-Capability>
-                        <DynamicImport-Package>org.apache.webbeans.*</DynamicImport-Package>
                     </instructions>
                 </configuration>
             </plugin>

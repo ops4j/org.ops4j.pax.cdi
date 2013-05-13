@@ -99,6 +99,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.asm</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-junit4</artifactId>
             <scope>test</scope>
@@ -226,9 +232,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.xbean</groupId>
-            <artifactId>xbean-asm-shaded</artifactId>
-            <version>3.13</version>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.javassist</artifactId>
             <scope>provided</scope>
         </dependency>
 

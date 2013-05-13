@@ -20,7 +20,6 @@ package org.ops4j.pax.cdi.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItems;
-import static org.ops4j.pax.cdi.test.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
@@ -71,12 +70,29 @@ public class NoWabWebContainerTest {
             workspaceBundle("pax-cdi-web"),
             workspaceBundle("pax-cdi-openwebbeans").startLevel(2),
             workspaceBundle("pax-cdi-web-openwebbeans"),
-            
-            cdiProviderBundles(),
 
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject(),
-            
+            mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
+            mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
+            mavenBundle("org.apache.openwebbeans", "openwebbeans-web").version("1.1.5"),
+
+            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.javassist")
+                .versionAsInProject(),
+            mavenBundle("org.apache.geronimo.bundles", "scannotation").versionAsInProject(),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
+            mavenBundle("org.apache.xbean", "xbean-finder").versionAsInProject(),
+            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm")
+                .versionAsInProject(), //
+            mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec")
+                .versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-validation_1.0_spec")
+                .versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-jcdi_1.0_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec")
+                .versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
+
             // Pax Web
 
             systemProperty("org.osgi.service.http.port").value("8181"),
@@ -109,7 +125,7 @@ public class NoWabWebContainerTest {
 
     @Test
     public void checkContainers() throws InterruptedException {
-        assertThat(containerFactory.getProviderName(), is("org.apache.webbeans.config.WebBeansContext"));
+        assertThat(containerFactory.getProviderName(), is("org.apache.webbeans.context.WebBeansContext"));
         assertThat(containerFactory.getContainers().size(), is(2));
         List<String> beanBundles = new ArrayList<String>();
         for (CdiContainer container : containerFactory.getContainers()) {
