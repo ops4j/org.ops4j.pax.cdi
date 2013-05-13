@@ -1,313 +1,313 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.ops4j.pax</groupId>
-		<artifactId>cdi</artifactId>
-		<version>0.5.0-SNAPSHOT</version>
-	</parent>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.ops4j.pax</groupId>
+        <artifactId>cdi</artifactId>
+        <version>0.5.0-SNAPSHOT</version>
+    </parent>
 
-	<groupId>org.ops4j.pax.cdi</groupId>
-	<artifactId>pax-cdi-parent</artifactId>
-	<packaging>pom</packaging>
+    <groupId>org.ops4j.pax.cdi</groupId>
+    <artifactId>pax-cdi-parent</artifactId>
+    <packaging>pom</packaging>
 
-	<name>OPS4J Pax CDI Parent POM</name>
+    <name>OPS4J Pax CDI Parent POM</name>
 
-	<properties>
-		<jersey.version>1.13</jersey.version>
-		<logback.version>1.0.0</logback.version>
-		<openwebbeans.version>1.2.1-SNAPSHOT</openwebbeans.version>
-		<ops4j.base.version>1.4.0</ops4j.base.version>
-		<pax.exam.version>3.0.3</pax.exam.version>
-		<pax.swissbox.version>1.6.0</pax.swissbox.version>
-		<pax.url.version>1.5.0</pax.url.version>
-		<pax.web.version>3.0.0.RC</pax.web.version>
-		<slf4j.version>1.6.4</slf4j.version>
-		<pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
-		<weld.version>1.2.0.Beta1</weld.version>
-		<xbean.version>3.12</xbean.version>
-	</properties>
+    <properties>
+        <jersey.version>1.13</jersey.version>
+        <logback.version>1.0.0</logback.version>
+        <openwebbeans.version>1.2.1-SNAPSHOT</openwebbeans.version>
+        <ops4j.base.version>1.4.0</ops4j.base.version>
+        <pax.exam.version>3.0.3</pax.exam.version>
+        <pax.swissbox.version>1.6.0</pax.swissbox.version>
+        <pax.url.version>1.5.0</pax.url.version>
+        <pax.web.version>3.0.0.RC</pax.web.version>
+        <slf4j.version>1.6.4</slf4j.version>
+        <pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
+        <weld.version>1.2.0.Beta1</weld.version>
+        <xbean.version>3.12</xbean.version>
+    </properties>
 
-	<dependencyManagement>
-		<dependencies>
+    <dependencyManagement>
+        <dependencies>
 
-			<dependency>
-				<groupId>org.ops4j.pax.swissbox</groupId>
-				<artifactId>pax-swissbox-core</artifactId>
-				<version>${pax.swissbox.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.swissbox</groupId>
+                <artifactId>pax-swissbox-core</artifactId>
+                <version>${pax.swissbox.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.ops4j.pax.swissbox</groupId>
-				<artifactId>pax-swissbox-extender</artifactId>
-				<version>${pax.swissbox.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.swissbox</groupId>
+                <artifactId>pax-swissbox-extender</artifactId>
+                <version>${pax.swissbox.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.ops4j.pax.swissbox</groupId>
-				<artifactId>pax-swissbox-tracker</artifactId>
-				<version>${pax.swissbox.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.swissbox</groupId>
+                <artifactId>pax-swissbox-tracker</artifactId>
+                <version>${pax.swissbox.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.osgi</groupId>
-				<artifactId>org.osgi.core</artifactId>
-				<version>4.3.1</version>
-			</dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.core</artifactId>
+                <version>4.3.1</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.osgi</groupId>
-				<artifactId>org.osgi.compendium</artifactId>
-				<version>4.3.1</version>
-			</dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.compendium</artifactId>
+                <version>4.3.1</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>org.eclipse.osgi</artifactId>
-				<version>3.7.0.v20110613</version>
-			</dependency>
+            <dependency>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>org.eclipse.osgi</artifactId>
+                <version>3.7.0.v20110613</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.ops4j.pax.exam</groupId>
-				<artifactId>pax-exam-junit4</artifactId>
-				<version>${pax.exam.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.exam</groupId>
+                <artifactId>pax-exam-junit4</artifactId>
+                <version>${pax.exam.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.ops4j.pax.exam</groupId>
-				<artifactId>pax-exam</artifactId>
-				<version>${pax.exam.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.exam</groupId>
+                <artifactId>pax-exam</artifactId>
+                <version>${pax.exam.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.ops4j.pax.exam</groupId>
-				<artifactId>pax-exam-container-native</artifactId>
-				<version>${pax.exam.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.exam</groupId>
+                <artifactId>pax-exam-container-native</artifactId>
+                <version>${pax.exam.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.ops4j.pax.exam</groupId>
-				<artifactId>pax-exam-link-mvn</artifactId>
-				<version>${pax.exam.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.exam</groupId>
+                <artifactId>pax-exam-link-mvn</artifactId>
+                <version>${pax.exam.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.ops4j.pax.url</groupId>
-				<artifactId>pax-url-aether</artifactId>
-				<version>${pax.url.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.url</groupId>
+                <artifactId>pax-url-aether</artifactId>
+                <version>${pax.url.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.ops4j.pax.url</groupId>
-				<artifactId>pax-url-wrap</artifactId>
-				<version>${pax.url.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.url</groupId>
+                <artifactId>pax-url-wrap</artifactId>
+                <version>${pax.url.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.ops4j.base</groupId>
-				<artifactId>ops4j-base-spi</artifactId>
-				<version>${ops4j.base.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.ops4j.base</groupId>
+                <artifactId>ops4j-base-spi</artifactId>
+                <version>${ops4j.base.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.9</version>
-			</dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.9</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.apache.geronimo.specs</groupId>
-				<artifactId>geronimo-atinject_1.0_spec</artifactId>
-				<version>1.0</version>
-			</dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-atinject_1.0_spec</artifactId>
+                <version>1.0</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.apache.geronimo.specs</groupId>
-				<artifactId>geronimo-jcdi_1.0_spec</artifactId>
-				<version>1.0</version>
-			</dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-jcdi_1.0_spec</artifactId>
+                <version>1.0</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.apache.geronimo.specs</groupId>
-				<artifactId>geronimo-servlet_3.0_spec</artifactId>
-				<version>1.0</version>
-			</dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-servlet_3.0_spec</artifactId>
+                <version>1.0</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.apache.geronimo.specs</groupId>
-				<artifactId>geronimo-jta_1.1_spec</artifactId>
-				<version>1.1.1</version>
-			</dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-jta_1.1_spec</artifactId>
+                <version>1.1.1</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.apache.geronimo.specs</groupId>
-				<artifactId>geronimo-validation_1.0_spec</artifactId>
-				<version>1.1</version>
-			</dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-validation_1.0_spec</artifactId>
+                <version>1.1</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.apache.geronimo.specs</groupId>
-				<artifactId>geronimo-interceptor_1.1_spec</artifactId>
-				<version>1.0</version>
-			</dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-interceptor_1.1_spec</artifactId>
+                <version>1.0</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.apache.geronimo.specs</groupId>
-				<artifactId>geronimo-el_2.2_spec</artifactId>
-				<version>1.0.3</version>
-			</dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-el_2.2_spec</artifactId>
+                <version>1.0.3</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>jul-to-slf4j</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-core</artifactId>
-				<version>${logback.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-classic</artifactId>
-				<version>${logback.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.apache.xbean</groupId>
-				<artifactId>xbean-bundleutils</artifactId>
-				<version>${xbean.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.apache.xbean</groupId>
+                <artifactId>xbean-bundleutils</artifactId>
+                <version>${xbean.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.apache.xbean</groupId>
-				<artifactId>xbean-finder</artifactId>
-				<version>${xbean.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.apache.xbean</groupId>
+                <artifactId>xbean-finder</artifactId>
+                <version>${xbean.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.apache.openwebbeans</groupId>
-				<artifactId>openwebbeans-spi</artifactId>
-				<version>${openwebbeans.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.apache.openwebbeans</groupId>
+                <artifactId>openwebbeans-spi</artifactId>
+                <version>${openwebbeans.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.apache.openwebbeans</groupId>
-				<artifactId>openwebbeans-impl</artifactId>
-				<version>${openwebbeans.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.apache.openwebbeans</groupId>
+                <artifactId>openwebbeans-impl</artifactId>
+                <version>${openwebbeans.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.apache.openwebbeans</groupId>
-				<artifactId>openwebbeans-web</artifactId>
-				<version>${openwebbeans.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.apache.openwebbeans</groupId>
+                <artifactId>openwebbeans-web</artifactId>
+                <version>${openwebbeans.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.apache.geronimo.bundles</groupId>
-				<artifactId>scannotation</artifactId>
-				<version>1.0.2_1</version>
-			</dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.bundles</groupId>
+                <artifactId>scannotation</artifactId>
+                <version>1.0.2_1</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.apache.servicemix.bundles</groupId>
-				<artifactId>org.apache.servicemix.bundles.asm</artifactId>
-				<version>3.3.1_1</version>
-			</dependency>
+            <dependency>
+                <groupId>org.apache.servicemix.bundles</groupId>
+                <artifactId>org.apache.servicemix.bundles.asm</artifactId>
+                <version>3.3.1_1</version>
+            </dependency>
 
-			<dependency>
-				<groupId>com.sun.jersey</groupId>
-				<artifactId>jersey-client</artifactId>
-				<version>${jersey.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-client</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>com.sun.jersey.contribs</groupId>
-				<artifactId>jersey-apache-client</artifactId>
-				<version>${jersey.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>com.sun.jersey.contribs</groupId>
+                <artifactId>jersey-apache-client</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.apache.servicemix.bundles</groupId>
-				<artifactId>org.apache.servicemix.bundles.javassist</artifactId>
-				<version>3.12.1.GA_3</version>
-				<scope>provided</scope>
-			</dependency>
+            <dependency>
+                <groupId>org.apache.servicemix.bundles</groupId>
+                <artifactId>org.apache.servicemix.bundles.javassist</artifactId>
+                <version>3.12.1.GA_3</version>
+                <scope>provided</scope>
+            </dependency>
 
-		</dependencies>
-	</dependencyManagement>
+        </dependencies>
+    </dependencyManagement>
 
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<configuration>
-						<source>1.6</source>
-						<target>1.6</target>
-					</configuration>
-				</plugin>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                    </configuration>
+                </plugin>
 
-				<plugin>
-					<groupId>org.apache.felix</groupId>
-					<artifactId>maven-bundle-plugin</artifactId>
-					<version>2.3.7</version>
-					<extensions>true</extensions>
-					<configuration>
-						<instructions>
-							<Bundle-DocURL>${pax.cdi.wiki.url}</Bundle-DocURL>
-						</instructions>
-					</configuration>
-				</plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>2.3.7</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <instructions>
+                            <Bundle-DocURL>${pax.cdi.wiki.url}</Bundle-DocURL>
+                        </instructions>
+                    </configuration>
+                </plugin>
 
-				<plugin>
-					<groupId>org.apache.servicemix.tooling</groupId>
-					<artifactId>depends-maven-plugin</artifactId>
-					<version>1.2</version>
-				</plugin>
+                <plugin>
+                    <groupId>org.apache.servicemix.tooling</groupId>
+                    <artifactId>depends-maven-plugin</artifactId>
+                    <version>1.2</version>
+                </plugin>
 
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>2.9.1</version>
-					<executions>
-						<execution>
-							<id>verify-style</id>
-							<phase>verify</phase>
-							<goals>
-								<goal>check</goal>
-							</goals>
-						</execution>
-					</executions>
-					<configuration>
-						<configLocation>checkstyle/pax-cdi-checks.xml</configLocation>
-					</configuration>
-					<dependencies>
-						<dependency>
-							<groupId>org.ops4j.pax.cdi</groupId>
-							<artifactId>pax-cdi-checkstyle-rules</artifactId>
-							<version>${project.version}</version>
-						</dependency>
-					</dependencies>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>2.9.1</version>
+                    <executions>
+                        <execution>
+                            <id>verify-style</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <configLocation>checkstyle/pax-cdi-checks.xml</configLocation>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.ops4j.pax.cdi</groupId>
+                            <artifactId>pax-cdi-checkstyle-rules</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
-	<licenses>
-		<license>
-			<name>Apache License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
-			<comments>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <comments>
                 Copyright 2012 Harald Wellmann
 
                 Licensed under the Apache License, Version 2.0 (the "License");
@@ -324,40 +324,40 @@
                 See the License for the specific language governing permissions and
                 limitations under the License.
             </comments>
-		</license>
-	</licenses>
+        </license>
+    </licenses>
 
-	<url>${pax.cdi.wiki.url}</url>
+    <url>${pax.cdi.wiki.url}</url>
 
-	<issueManagement>
-		<system>jira</system>
-		<url>http://issues.ops4j.org/jira/browse/PAXCDI</url>
-	</issueManagement>
+    <issueManagement>
+        <system>jira</system>
+        <url>http://issues.ops4j.org/jira/browse/PAXCDI</url>
+    </issueManagement>
 
-	<developers>
-		<developer>
-			<id>hwellmann</id>
-			<name>Harald Wellmann</name>
-			<email>harald.wellmann@gmx.de</email>
-			<organization>independent software developer</organization>
-			<roles>
-				<role>Developer</role>
-			</roles>
-			<timezone>UTC+1</timezone>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <id>hwellmann</id>
+            <name>Harald Wellmann</name>
+            <email>harald.wellmann@gmx.de</email>
+            <organization>independent software developer</organization>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>UTC+1</timezone>
+        </developer>
+    </developers>
 
-	<repositories>
-		<repository>
-			<id>apache-snapshots</id>
-			<url>https://repository.apache.org/content/groups/snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+    <repositories>
+        <repository>
+            <id>apache-snapshots</id>
+            <url>https://repository.apache.org/content/groups/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>
