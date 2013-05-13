@@ -13,6 +13,16 @@
              
             <class name="org.jboss.cdi.tck.tests.definition.name.NameDefinitionTest"/>
             <class name="org.jboss.cdi.tck.tests.definition.qualifier.QualifierDefinitionTest"/>
+            <class name="org.jboss.cdi.tck.tests.definition.scope.ScopeDefinitionTest"/>
+            <class name="org.jboss.cdi.tck.tests.definition.stereotype.StereotypeDefinitionTest"/>
+            <class name="org.jboss.cdi.tck.tests.definition.stereotype.inheritance.StereotypeInheritenceTest"/>
+
+            <!--class name="org.jboss.cdi.tck.tests.definition.stereotype.interceptor.StereotypeWithMultipleInterceptorBindingsTest"/-->
+
+            <class name="org.jboss.cdi.tck.tests.definition.stereotype.named.DefaultNamedTest"/>
+
+            
+            
         </classes>
     </test>
     
