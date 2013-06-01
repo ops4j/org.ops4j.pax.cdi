@@ -17,12 +17,11 @@
  */
 package org.ops4j.pax.cdi.arquillian;
 
-import org.jboss.arquillian.container.spi.ConfigurationException;
 import org.jboss.arquillian.container.spi.client.container.ContainerConfiguration;
 
 public class PaxCdiConfiguration implements ContainerConfiguration {
 
-    public void validate() throws ConfigurationException {
+    public void validate() {
         // empty
     }
 }
