@@ -16,18 +16,30 @@
 package org.osgi.service.cdi;
 
 import javax.inject.Qualifier;
-import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
+ * The @Service annotation can be used to annotate a CDI injection
+ * point and inform the CDI extender that the injection should
+ * be done by a service grabbed from the OSGi registry.
+ *
+ * @see Filter
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.CONSTRUCTOR})
 @Qualifier
+@Target({FIELD, PARAMETER, CONSTRUCTOR})
+@Retention(RUNTIME)
+@Documented
 public @interface Service {
 
     boolean required() default false;
+
+    ServiceType type() default ServiceType.NullObject;
 
 }

@@ -16,16 +16,28 @@
 package org.osgi.service.cdi;
 
 import javax.inject.Qualifier;
-import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
+ * The @Filter annotation can be used to filter objects.
+ * It can be applied to @Service or @EventAdmin injection
+ * points.
+ *
+ * @see Service
+ * @see EventAdmin
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.TYPE, ElementType.PARAMETER, ElementType.CONSTRUCTOR})
 @Qualifier
+@Target({FIELD, TYPE, PARAMETER, CONSTRUCTOR})
+@Retention(RUNTIME)
+@Documented
 public @interface Filter {
 
     String value() default "";

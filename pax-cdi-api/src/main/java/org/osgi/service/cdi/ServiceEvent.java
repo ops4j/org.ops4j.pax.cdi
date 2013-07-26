@@ -18,6 +18,13 @@ package org.osgi.service.cdi;
 import org.osgi.framework.ServiceReference;
 
 /**
+ * The event sent by the CDI extender whenever a service that matches
+ * an injection point is registered or unregistered from the OSGi
+ * registry.
+ *
+ * @see ServiceAdded
+ * @see ServiceRemoved
+ * @see javax.enterprise.event.Observes
  */
 public class ServiceEvent<T> {
 

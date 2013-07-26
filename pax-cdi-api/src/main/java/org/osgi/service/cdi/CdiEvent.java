@@ -18,6 +18,10 @@ package org.osgi.service.cdi;
 import org.osgi.framework.Bundle;
 
 /**
+ * CdiEvent are sent by the cdi extender and received by
+ * registered CdiListener services.
+ *
+ * @see CdiListener
  */
 public class CdiEvent {
 

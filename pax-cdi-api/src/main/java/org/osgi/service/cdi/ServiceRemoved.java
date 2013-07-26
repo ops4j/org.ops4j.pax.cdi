@@ -15,16 +15,24 @@
  */
 package org.osgi.service.cdi;
 
-import javax.inject.Qualifier;
-import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
+ * The @ServiceRemoved can be used to observe
+ * ServiceEvent events whenever a matching service
+ * injected via @Service is unregistered in the OSGi
+ * registry.
+ *
+ * @see ServiceEvent
+ * @see javax.enterprise.event.Observes
  */
-@Target(ElementType.PARAMETER)
-@Retention(RetentionPolicy.RUNTIME)
-@Qualifier
+@Target(PARAMETER)
+@Retention(RUNTIME)
+@Documented
 public @interface ServiceRemoved {
 }

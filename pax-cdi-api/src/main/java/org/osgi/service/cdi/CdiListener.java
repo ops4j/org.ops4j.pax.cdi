@@ -16,6 +16,11 @@
 package org.osgi.service.cdi;
 
 /**
+ * A CdiListener object can be registered in the OSGi registry.
+ * The cdi extender will call each listener whenever an event
+ * happens.
+ *
+ * @see CdiEvent
  */
 public interface CdiListener {
 

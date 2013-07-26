@@ -18,6 +18,8 @@ package org.osgi.service.cdi;
 import javax.enterprise.inject.spi.BeanManager;
 
 /**
+ * A CdiContainer object is registered by the the cdi extender
+ * in the OSGi registry for each managed CDI bundle.
  */
 public interface CdiContainer {
 

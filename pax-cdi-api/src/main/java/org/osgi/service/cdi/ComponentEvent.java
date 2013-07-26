@@ -18,6 +18,13 @@ package org.osgi.service.cdi;
 import org.osgi.framework.ServiceRegistration;
 
 /**
+ * CDI Event sent by the CDI extender whenever a component
+ * has been registered or unregistered to/from the OSGi
+ * registry.
+ *
+ * @see ComponentRegistered
+ * @see ComponentUnregistered
+ * @see javax.enterprise.event.Observes
  */
 public class ComponentEvent<T> {
 

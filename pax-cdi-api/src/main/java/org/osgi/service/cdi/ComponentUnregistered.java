@@ -15,16 +15,23 @@
  */
 package org.osgi.service.cdi;
 
-import javax.inject.Qualifier;
-import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
+ * The @ComponentUnregistered can be used to observe
+ * ComponentEvent events whenever a component has been
+ * unregistered from the OSGi registry.
+ *
+ * @see ComponentEvent
+ * @see javax.enterprise.event.Observes
  */
-@Target(ElementType.PARAMETER)
-@Retention(RetentionPolicy.RUNTIME)
-@Qualifier
+@Target(PARAMETER)
+@Retention(RUNTIME)
+@Documented
 public @interface ComponentUnregistered {
 }

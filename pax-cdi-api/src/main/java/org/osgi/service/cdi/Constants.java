@@ -16,6 +16,7 @@
 package org.osgi.service.cdi;
 
 /**
+ * Defines CDI constants
  */
 public final class Constants {
 

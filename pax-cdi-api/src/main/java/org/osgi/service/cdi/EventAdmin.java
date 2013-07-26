@@ -16,19 +16,29 @@
 package org.osgi.service.cdi;
 
 import javax.inject.Qualifier;
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * The @EventAdmin can be used to observe or publish
+ * events to / from the OSGI Event Admin service.
+ * When used to consume events, it can used with
+ * the @Filter annotation.
+ *
+ * @see Filter
+ * @see javax.enterprise.event.Event
+ * @see javax.enterprise.event.Observes
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ FIELD, TYPE, PARAMETER })
 @Qualifier
+@Target({ FIELD, TYPE, PARAMETER })
+@Retention(RUNTIME)
+@Documented
 public @interface EventAdmin {
 
     /**

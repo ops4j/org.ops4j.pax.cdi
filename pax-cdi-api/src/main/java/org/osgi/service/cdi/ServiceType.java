@@ -15,13 +15,15 @@
  */
 package org.osgi.service.cdi;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
 /**
+ * Defines the type of service injected.
  */
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ServiceProperty {
-    String key();
-    String value();
+public enum ServiceType {
+
+    /**
+     * A dummy proxy that simply returns <code>null</code>
+     * when a matching OSGi service is not available.
+     */
+    NullObject
+
 }

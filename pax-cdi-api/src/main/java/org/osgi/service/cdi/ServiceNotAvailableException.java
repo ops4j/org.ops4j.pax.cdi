@@ -15,23 +15,14 @@
  */
 package org.osgi.service.cdi;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 /**
- * The @ComponentRegistered can be used to observe
- * ComponentEvent events whenever a component has been
- * registered from the OSGi registry.
- *
- * @see ComponentEvent
- * @see javax.enterprise.event.Observes
+ * Exception that can be thrown from the injected Service
+ * if a matching service is not available.
  */
-@Target(PARAMETER)
-@Retention(RUNTIME)
-@Documented
-public @interface ComponentRegistered {
+public class ServiceNotAvailableException extends RuntimeException {
+
+    public ServiceNotAvailableException(String message) {
+        super(message);
+    }
+
 }
