@@ -242,6 +242,24 @@
                 <version>3.12.1.GA_3</version>
                 <scope>provided</scope>
             </dependency>
+            
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-core</artifactId>
+                <version>${weld.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-osgi-bundle</artifactId>
+                <version>${weld.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-api</artifactId>
+                <version>${weld.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
