@@ -34,7 +34,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @see Service
  * @see EventAdmin
  */
-@Qualifier
 @Target({FIELD, TYPE, PARAMETER, CONSTRUCTOR})
 @Retention(RUNTIME)
 @Documented

@@ -15,6 +15,7 @@
  */
 package org.osgi.service.cdi;
 
+import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -36,10 +37,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 public @interface Component {
 
+    @Nonbinding
     Class<?>[] interfaces() default {};
 
+    @Nonbinding
     ComponentProperty[] properties() default {};
 
+    @Nonbinding
     String requireConfiguration() default "";
 
 }
