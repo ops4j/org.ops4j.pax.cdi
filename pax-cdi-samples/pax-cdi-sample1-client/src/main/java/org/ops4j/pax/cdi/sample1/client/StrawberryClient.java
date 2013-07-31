@@ -19,15 +19,19 @@ package org.ops4j.pax.cdi.sample1.client;
 
 import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.Timeout;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
+import org.osgi.service.cdi.Component;
+import org.osgi.service.cdi.Filter;
+import org.osgi.service.cdi.Service;
 
-@OsgiServiceProvider
+@Component
 public class StrawberryClient {
 
     @Inject
-    @OsgiService(timeout = 2000, dynamic = true, filter = "(flavour=strawberry)")
+    @Service
+    @Filter("flavour=strawberry")
+    @Timeout(2000)
     private IceCreamService iceCreamService;
 
     public String getFlavour() {

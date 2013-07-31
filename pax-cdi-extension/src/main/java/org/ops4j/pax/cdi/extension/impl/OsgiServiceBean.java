@@ -30,8 +30,8 @@ import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.ops4j.pax.cdi.api.OsgiService;
 import org.osgi.framework.ServiceException;
+import org.osgi.service.cdi.Service;
 
 /**
  * Represents an OSGi service bean. Instances of a bean are proxied to an OSGi services. The services
@@ -46,12 +46,12 @@ public class OsgiServiceBean<T> implements Bean<T> {
 
     private Type type;
     private InjectionPoint ip;
-    private OsgiService qualifier;
+    private Service qualifier;
 
     public OsgiServiceBean(InjectionPoint injectionPoint) {
         this.ip = injectionPoint;
         this.type = ip.getType();
-        this.qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
+        this.qualifier = ip.getAnnotated().getAnnotation(Service.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -128,7 +128,7 @@ public class OsgiServiceBean<T> implements Bean<T> {
         return type;
     }
     
-    protected OsgiService getQualifier() {
+    protected Service getQualifier() {
         return qualifier;
     }
     

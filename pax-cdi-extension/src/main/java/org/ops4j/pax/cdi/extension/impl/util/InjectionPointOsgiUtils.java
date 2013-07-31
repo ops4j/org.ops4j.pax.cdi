@@ -17,17 +17,22 @@
  */
 package org.ops4j.pax.cdi.extension.impl.util;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.ops4j.pax.cdi.api.OsgiService;
+import org.ops4j.pax.cdi.api.Timeout;
 import org.ops4j.pax.swissbox.tracker.ServiceLookup;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.cdi.Filter;
+import org.osgi.service.cdi.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,39 +57,69 @@ public class InjectionPointOsgiUtils {
 
     @SuppressWarnings("rawtypes")
     public static ServiceReference getServiceReference(InjectionPoint ip) {
-        OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
+        Service os = ip.getAnnotated().getAnnotation(Service.class);
+        Timeout timeout = ip.getAnnotated().getAnnotation(Timeout.class);
         Type serviceType = ip.getType();
         Class<?> klass = (Class<?>) serviceType;
-        String filter = getFilter(klass, qualifier);
+        String filter = getFilter(ip);
         BundleContext bc = getBundleContext(ip);
-        return ServiceLookup.getServiceReference(bc, klass.getName(), qualifier.timeout(), filter);
+        return ServiceLookup.getServiceReference(bc, klass.getName(), timeout != null ? timeout.value() : 0, filter);
     }
 
     public static Object lookupService(InjectionPoint ip) {
         Class<?> klass = (Class<?>) ip.getType();
-        OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
+        Service os = ip.getAnnotated().getAnnotation(Service.class);
+        Timeout timeout = ip.getAnnotated().getAnnotation(Timeout.class);
 
         BundleContext bc = getBundleContext(ip);
 
-        String filter = getFilter(klass, os);
-        int timeout = os.timeout() == -1 ? 1 : os.timeout();
-        Object service = ServiceLookup.getService(bc, klass, timeout, filter);
+        String filter = getFilter(ip);
+        Object service = ServiceLookup.getService(bc, klass, timeout != null ? timeout.value() : 0, filter);
         return service;
     }
 
-    public static String getFilter(Class<?> serviceType, OsgiService qualifier) {
-        String objectClassClause = "(" + Constants.OBJECTCLASS + "=" + serviceType.getName() + ")";
-        String filter = "(&" + objectClassClause + qualifier.filter() + ")";
-        log.debug("filter = " + filter);
-        return filter;
-    }
-    
     public static String getFilter(InjectionPoint ip) {
-        Class<?> klass = getServiceType(ip);
-        OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
-        return getFilter(klass, os);
+        List<String> filters = new ArrayList<String>();
+        filters.add("(" + Constants.OBJECTCLASS + "=" + getServiceType(ip).getName() + ")");
+        for (Annotation annotation : ip.getAnnotated().getAnnotations()) {
+            if (annotation.annotationType() == Filter.class) {
+                String str = ((Filter) annotation).value();
+                if (!str.startsWith("(") || !str.endsWith(")")) {
+                    str = "(" + str + ")";
+                }
+                filters.add(str);
+            } else {
+                Class<? extends Annotation> clazz = annotation.annotationType();
+                Filter flt = clazz.getAnnotation(Filter.class);
+                if (flt != null) {
+                    try {
+                        String key = (flt.value() == null || flt.value().isEmpty()) ? clazz.getSimpleName() : flt.value();
+                        Object val = clazz.getMethod("value").invoke(annotation);
+                        String str = "(" + key + "=" + (val == null ? "null" : val.toString()) + ")";
+                        filters.add(str);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+        if (filters.size() == 0) {
+            return "";
+        } else if (filters.size() == 1) {
+            return filters.get(0);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            sb.append("(&");
+            for (String str : filters) {
+                sb.append(str);
+            }
+            sb.append(")");
+            return sb.toString();
+        }
     }
-    
+
+
+
     public static Type getInstanceType(InjectionPoint ip) {
         if (ip.getType() instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) ip.getType();

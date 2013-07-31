@@ -25,11 +25,13 @@ import org.ops4j.pax.cdi.api.Properties;
 import org.ops4j.pax.cdi.api.Property;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
 import org.ops4j.pax.cdi.sample1.Vanilla;
+import org.osgi.service.cdi.Component;
+import org.osgi.service.cdi.ComponentProperty;
 
 @Vanilla
 @Default
-@OsgiServiceProvider(classes = { VanillaService.class, IceCreamService.class })
-@Properties(@Property(name = "flavour", value = "vanilla"))
+@Component(interfaces = { VanillaService.class, IceCreamService.class },
+           properties = { @ComponentProperty(key = "flavour", value = "vanilla") })
 class VanillaService implements IceCreamService {
     
     private boolean initialized;

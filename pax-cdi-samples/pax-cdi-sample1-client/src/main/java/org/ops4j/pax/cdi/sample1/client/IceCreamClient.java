@@ -23,19 +23,23 @@ import java.util.List;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.Timeout;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
+import org.osgi.service.cdi.Component;
+import org.osgi.service.cdi.Filter;
+import org.osgi.service.cdi.Service;
 
-@OsgiServiceProvider
+@Component
 public class IceCreamClient {
 
     @Inject
-    @OsgiService(timeout = 2000, dynamic = true, filter = "(flavour=chocolate)")
+    @Filter("flavour=chocolate")
+    @Timeout(2000)
     private IceCreamService iceCreamService;
 
     @Inject
-    @OsgiService(timeout = 2000, dynamic = true)
+    @Service
+    @Timeout(2000)
     private Instance<IceCreamService> iceCreamServices;
     
 

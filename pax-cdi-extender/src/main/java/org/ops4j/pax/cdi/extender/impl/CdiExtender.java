@@ -17,9 +17,6 @@
  */
 package org.ops4j.pax.cdi.extender.impl;
 
-import static org.ops4j.pax.cdi.api.Constants.CDI_EXTENSION_CAPABILITY;
-import static org.ops4j.pax.cdi.api.Constants.EXTENDER_CAPABILITY;
-
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,6 +37,9 @@ import org.osgi.util.tracker.BundleTracker;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.osgi.service.cdi.Constants.CDI_EXTENSION_CAPABILITY;
+import static org.osgi.service.cdi.Constants.EXTENDER_CAPABILITY;
 
 public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
 
@@ -133,6 +133,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
     private CdiContainer doCreateContainer(Bundle bundle, CdiContainerType containerType) {
         // Find extensions
         Set<Bundle> extensions = new HashSet<Bundle>();
+        findExtensions(context.getBundle(), extensions);
         findExtensions(bundle, extensions);
 
         log.info("creating CDI container for bean bundle {} with extension bundles {}", bundle, extensions);

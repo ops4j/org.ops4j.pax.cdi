@@ -20,6 +20,8 @@ package org.ops4j.pax.cdi.extension.impl;
 import javax.enterprise.util.AnnotationLiteral;
 
 import org.ops4j.pax.cdi.api.OsgiService;
+import org.osgi.service.cdi.Service;
+import org.osgi.service.cdi.ServiceType;
 
 /**
  * An {@link AnnotationLiteral} for the {@link OsgiService} qualifier.
@@ -27,28 +29,14 @@ import org.ops4j.pax.cdi.api.OsgiService;
  * @author Harald Wellmann
  */
 @SuppressWarnings("serial")
-public class OsgiServiceQualifierType extends AnnotationLiteral<OsgiService> implements OsgiService {
+public class OsgiServiceQualifierType extends AnnotationLiteral<Service> implements Service {
 
-    private boolean dynamic;
     private boolean required;
-    private String filter = "";
-    private int timeout;
+    private ServiceType type;
 
-    public OsgiServiceQualifierType(OsgiService qualifier) {
-        this.dynamic = qualifier.dynamic();
+    public OsgiServiceQualifierType(Service qualifier) {
         this.required = qualifier.required();
-        this.filter = qualifier.filter();
-        this.timeout = qualifier.timeout();
-    }
-
-    @Override
-    public String filter() {
-        return filter;
-    }
-
-    @Override
-    public boolean dynamic() {
-        return dynamic;
+        this.type = qualifier.type();
     }
 
     @Override
@@ -57,7 +45,8 @@ public class OsgiServiceQualifierType extends AnnotationLiteral<OsgiService> imp
     }
 
     @Override
-    public int timeout() {
-        return timeout;
+    public ServiceType type() {
+        return type;
     }
+
 }

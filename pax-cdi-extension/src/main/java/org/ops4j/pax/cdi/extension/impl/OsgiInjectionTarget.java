@@ -28,13 +28,13 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
-import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.cdi.Service;
 
 /**
  * Wrapped {@link InjectionTarget} for OSGi services. Overrides injection into
- * Instance<T> when qualified as {@link OsgiService}.
+ * Instance<T> when qualified as {@link Service}.
  * 
  * @author Harald Wellmann
  *
@@ -74,7 +74,7 @@ public class OsgiInjectionTarget<T> implements InjectionTarget<T> {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private void overrideInstanceInjection(T beanInstance, InjectionPoint ip) {
-        OsgiService qualifier = getOsgiServiceQualifier(ip);
+        Service qualifier = getOsgiServiceQualifier(ip);
         if (qualifier == null) {
             return;
         }
@@ -84,8 +84,8 @@ public class OsgiInjectionTarget<T> implements InjectionTarget<T> {
         }
 
         BundleContext bc = InjectionPointOsgiUtils.getBundleContext(ip);
-        OsgiServiceInstance instance = new OsgiServiceInstance(bc, (Class) instanceType,
-            qualifier.filter());
+        String filter = InjectionPointOsgiUtils.getFilter(ip);
+        OsgiServiceInstance instance = new OsgiServiceInstance(bc, (Class) instanceType, filter);
 
         Annotated annotated = ip.getAnnotated();
         if (annotated instanceof AnnotatedField) {
@@ -105,10 +105,10 @@ public class OsgiInjectionTarget<T> implements InjectionTarget<T> {
 
     }
 
-    private OsgiService getOsgiServiceQualifier(InjectionPoint ip) {
+    private Service getOsgiServiceQualifier(InjectionPoint ip) {
         for (Annotation qualifier : ip.getQualifiers()) {
-            if (qualifier instanceof OsgiService) {
-                return (OsgiService) qualifier;
+            if (qualifier instanceof Service) {
+                return (Service) qualifier;
             }
         }
         return null;

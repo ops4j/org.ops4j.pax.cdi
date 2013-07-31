@@ -22,7 +22,7 @@ import java.lang.reflect.Proxy;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.ops4j.pax.cdi.api.OsgiService;
+import org.osgi.service.cdi.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ public class ProxyFactory {
     }
 
     public static <T> Object getServiceProxy(InjectionPoint ip) {
-        OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
+        Service qualifier = ip.getAnnotated().getAnnotation(Service.class);
         log.debug("getting service proxy for {}, {} ", ip.getType(), qualifier);
         T instance = createServiceProxy(ip);
         return instance;
@@ -51,9 +51,9 @@ public class ProxyFactory {
 
     private static <T> T createServiceProxy(InjectionPoint ip) {
         Class<?> klass = (Class<?>) ip.getType();
-        OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
+        Service os = ip.getAnnotated().getAnnotation(Service.class);
 
-        InvocationHandler handler = os.dynamic() ? new DynamicInvocationHandler(ip)
+        InvocationHandler handler = /* TODO: os.dynamic()*/ true ? new DynamicInvocationHandler(ip)
             : new StaticInvocationHandler(ip);
 
         ClassLoader classLoader = ip.getMember().getDeclaringClass().getClassLoader();

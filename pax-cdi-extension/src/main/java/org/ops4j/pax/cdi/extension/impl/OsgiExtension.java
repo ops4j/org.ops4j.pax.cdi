@@ -38,14 +38,14 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 
-import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.ServiceScoped;
 import org.ops4j.pax.cdi.extension.impl.component.ComponentLifecycleManager;
 import org.ops4j.pax.cdi.extension.impl.component.ComponentRegistry;
 import org.ops4j.pax.cdi.extension.impl.context.ServiceContext;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.osgi.framework.ServiceException;
+import org.osgi.service.cdi.Component;
+import org.osgi.service.cdi.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,7 +105,7 @@ public class OsgiExtension implements Extension {
     }
 
     private void processInjectionPoint(InjectionPoint ip) {
-        OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
+        Service qualifier = ip.getAnnotated().getAnnotation(Service.class);
         if (qualifier != null) {
             log.debug("service injection point {} with qualifier {}", ip, qualifier);
             storeServiceInjectionPoint(ip);
@@ -133,12 +133,12 @@ public class OsgiExtension implements Extension {
     public <T> void processBean(@Observes ProcessBean<T> event) {
         Bean<T> bean = event.getBean();
         log.debug("processBean {}", bean);
-        
-        OsgiServiceProvider qualifier = event.getAnnotated().getAnnotation(OsgiServiceProvider.class);
+
+        Component qualifier = event.getAnnotated().getAnnotation(Component.class);
         if (qualifier != null) {
             componentRegistry.addComponent(bean);
             for (InjectionPoint ip : bean.getInjectionPoints()) {
-                OsgiService annotation = ip.getAnnotated().getAnnotation(OsgiService.class);
+                Service annotation = ip.getAnnotated().getAnnotation(Service.class);
                 if (annotation != null) {
                     componentRegistry.addDependency(bean, ip);
                 }
@@ -174,13 +174,13 @@ public class OsgiExtension implements Extension {
 
     @SuppressWarnings("rawtypes")
     private void addBean(AfterBeanDiscovery event, Type type, Set<InjectionPoint> injectionPoints) {
-        List<OsgiService> registeredBeans = new ArrayList<OsgiService>();
+        List<Service> registeredBeans = new ArrayList<Service>();
         for (InjectionPoint ip : injectionPoints) {
-            OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
+            Service qualifier = ip.getAnnotated().getAnnotation(Service.class);
             if (!registeredBeans.contains(qualifier)) {
                 log.debug("adding an OSGi service bean {} for {}", type, ip);
 
-                if (qualifier.dynamic() || InjectionPointOsgiUtils.isServiceAvailable(ip)) {
+                if (/* TODO: qualifier.dynamic()*/ true || InjectionPointOsgiUtils.isServiceAvailable(ip)) {
                     event.addBean(new OsgiServiceBean(ip));
                     registeredBeans.add(qualifier);
                 }

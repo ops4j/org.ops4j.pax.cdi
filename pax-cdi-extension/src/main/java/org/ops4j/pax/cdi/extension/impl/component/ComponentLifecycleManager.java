@@ -31,13 +31,12 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
-import org.ops4j.pax.cdi.api.Properties;
-import org.ops4j.pax.cdi.api.Property;
 import org.ops4j.pax.cdi.extension.impl.context.ServiceContext;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.cdi.Component;
+import org.osgi.service.cdi.ComponentProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -141,17 +140,17 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
 
         Class<?> klass = bean.getBeanClass();
         AnnotatedType<?> annotatedType = beanManager.createAnnotatedType(klass);
-        OsgiServiceProvider provider = annotatedType.getAnnotation(OsgiServiceProvider.class);
+        Component provider = annotatedType.getAnnotation(Component.class);
 
         String[] typeNames;
-        if (provider.classes().length == 0) {
+        if (provider.interfaces().length == 0) {
             typeNames = getTypeNamesForBeanTypes(bean);
         }
         else {
-            typeNames = getTypeNamesForClasses(provider.classes());
+            typeNames = getTypeNamesForClasses(provider.interfaces());
         }
 
-        Dictionary<String, Object> props = createProperties(klass, service);
+        Dictionary<String, Object> props = createProperties(annotatedType);
         log.debug("publishing service {}, props = {}", typeNames[0], props);
         ServiceRegistration<?> reg = bundleContext.registerService(typeNames, service, props);
         descriptor.setServiceRegistration(reg);
@@ -195,14 +194,13 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
         return typeNames;
     }
 
-    private Dictionary<String, Object> createProperties(Class<?> klass, Object service) {
-        Properties props = klass.getAnnotation(Properties.class);
-        if (props == null) {
-            return null;
-        }
+    private Dictionary<String, Object> createProperties(AnnotatedType type) {
         Hashtable<String, Object> dict = new Hashtable<String, Object>();
-        for (Property property : props.value()) {
-            dict.put(property.name(), property.value());
+        Component comp = type.getAnnotation(Component.class);
+        if (comp != null) {
+            for (ComponentProperty prop : comp.properties()) {
+                dict.put(prop.key(), prop.value());
+            }
         }
         return dict;
     }

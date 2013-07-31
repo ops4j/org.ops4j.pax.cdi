@@ -78,8 +78,11 @@
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Service-Component>OSGI-INF/*</Service-Component>
                         <Provide-Capability>
-                            osgi.extender; osgi.extender="pax.cdi"
+                            osgi.extender; osgi.extender="osgi.cdi"
                         </Provide-Capability>
+                        <Require-Capability>
+                            osgi.cdi.extension; filter:="(osgi.cdi.extension=pax-cdi-extension)"
+                        </Require-Capability>
                     </instructions>
                 </configuration>
             </plugin>
