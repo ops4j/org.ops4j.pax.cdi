@@ -19,6 +19,7 @@ package org.ops4j.pax.cdi.test.weld;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.cdi.test.weld.TestConfiguration.paxWebBundles;
 import static org.ops4j.pax.cdi.test.weld.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.weld.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
@@ -98,38 +99,7 @@ public class ServletTest {
             // Pax Web
 
             systemProperty("org.osgi.service.http.port").value("8181"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-spi")
-                .version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-api")
-                .version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war")
-                .version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard")
-                .version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-jetty")
-                .version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-runtime")
-                .version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-jsp")
-                .version(Info.getPaxWebVersion()),
-            mavenBundle("org.eclipse.jdt.core.compiler", "ecj")
-                .version("3.5.1"),
-            mavenBundle("org.eclipse.jetty", "jetty-util")
-                .version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-io")
-                .version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-http")
-                .version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-continuation")
-                .version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-server")
-                .version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-security")
-                .version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-xml")
-                .version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-servlet")
-                .version("8.1.4.v20120524"),
+            paxWebBundles(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec").version("1.0"),
             mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
             mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),

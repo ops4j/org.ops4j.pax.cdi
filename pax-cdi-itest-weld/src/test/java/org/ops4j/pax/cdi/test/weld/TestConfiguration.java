@@ -27,6 +27,7 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
 
+import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.util.PathUtils;
 
@@ -44,7 +45,8 @@ import org.ops4j.pax.exam.util.PathUtils;
  */
 public class TestConfiguration {
     
-    
+    private static final String JETTY_VERSION = "8.1.9.v20130131";
+
     private TestConfiguration() {
     }
 
@@ -75,6 +77,29 @@ public class TestConfiguration {
             systemTimeout(3000000),
             junitBundles());
     }
+    
+    public static Option paxWebBundles() {
+        return composite(
+            mavenBundle("org.ops4j.pax.web", "pax-web-spi").version(Info.getPaxWebVersion()),
+            mavenBundle("org.ops4j.pax.web", "pax-web-api").version(Info.getPaxWebVersion()),
+            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version(Info.getPaxWebVersion())
+                .startLevel(10),
+            mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard").version(
+                Info.getPaxWebVersion()),
+            mavenBundle("org.ops4j.pax.web", "pax-web-jetty").version(Info.getPaxWebVersion()),
+            mavenBundle("org.ops4j.pax.web", "pax-web-runtime").version(Info.getPaxWebVersion()),
+            mavenBundle("org.ops4j.pax.web", "pax-web-jsp").version(Info.getPaxWebVersion()),
+            mavenBundle("org.eclipse.jdt.core.compiler", "ecj").version("3.5.1"),
+            mavenBundle("org.eclipse.jetty", "jetty-util").version(JETTY_VERSION),
+            mavenBundle("org.eclipse.jetty", "jetty-io").version(JETTY_VERSION),
+            mavenBundle("org.eclipse.jetty", "jetty-http").version(JETTY_VERSION),
+            mavenBundle("org.eclipse.jetty", "jetty-continuation").version(JETTY_VERSION),
+            mavenBundle("org.eclipse.jetty", "jetty-server").version(JETTY_VERSION),
+            mavenBundle("org.eclipse.jetty", "jetty-security").version(JETTY_VERSION),
+            mavenBundle("org.eclipse.jetty", "jetty-xml").version(JETTY_VERSION),
+            mavenBundle("org.eclipse.jetty", "jetty-servlet").version(JETTY_VERSION));
+    }
+    
 
     public static Option workspaceBundle(String pathFromRoot) {
         String url = String.format("reference:file:%s/../%s/target/classes",

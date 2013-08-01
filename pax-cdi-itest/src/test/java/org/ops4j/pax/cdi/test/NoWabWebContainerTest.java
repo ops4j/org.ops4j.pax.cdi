@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.ops4j.pax.cdi.test.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.TestConfiguration.paxWebBundles;
 import static org.ops4j.pax.cdi.test.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
@@ -34,7 +35,6 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.cdi.sample1.client.IceCreamClient;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
@@ -80,23 +80,8 @@ public class NoWabWebContainerTest {
             // Pax Web
 
             systemProperty("org.osgi.service.http.port").value("8181"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-spi").version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-api").version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard").version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-jetty").version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-runtime").version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-jsp").version(Info.getPaxWebVersion()),
-            mavenBundle("org.eclipse.jdt.core.compiler", "ecj").version("3.5.1"),
-            mavenBundle("org.eclipse.jetty", "jetty-util").version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-io").version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-http").version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-continuation").version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-server").version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-security").version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-xml").version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-servlet").version("8.1.4.v20120524"),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec").version("1.0"),
+            paxWebBundles(),
+            
             mavenBundle("org.osgi", "org.osgi.compendium").version("4.3.1"),
             mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
             mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
