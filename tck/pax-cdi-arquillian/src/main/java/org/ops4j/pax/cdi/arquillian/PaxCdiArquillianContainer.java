@@ -67,6 +67,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConfiguration> {
+    
+    private static final String JETTY_VERSION = "8.1.9.v20130131";
 
     private static Logger log = LoggerFactory.getLogger(PaxCdiArquillianContainer.class);
 
@@ -213,11 +215,11 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
 
             mavenBundle("org.ops4j.base", "ops4j-base-lang", "1.4.0"),
             mavenBundle("org.ops4j.base", "ops4j-base-spi", "1.4.0"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-core", "1.6.0"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-extender", "1.6.0"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-framework", "1.6.0"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-lifecycle", "1.6.0"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker", "1.6.0"),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-core", "1.7.0"),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-extender", "1.7.0"),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-framework", "1.7.0"),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-lifecycle", "1.7.0"),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker", "1.7.0"),
             mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
 
             openWebBeansBundles(),
@@ -235,14 +237,14 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
             mavenBundle("org.ops4j.pax.web", "pax-web-runtime").version(Info.getPaxWebVersion()),
             mavenBundle("org.ops4j.pax.web", "pax-web-jsp").version(Info.getPaxWebVersion()),
             mavenBundle("org.eclipse.jdt.core.compiler", "ecj").version("3.5.1"),
-            mavenBundle("org.eclipse.jetty", "jetty-util").version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-io").version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-http").version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-continuation").version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-server").version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-security").version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-xml").version("8.1.4.v20120524"),
-            mavenBundle("org.eclipse.jetty", "jetty-servlet").version("8.1.4.v20120524"),
+            mavenBundle("org.eclipse.jetty", "jetty-util").version(JETTY_VERSION),
+            mavenBundle("org.eclipse.jetty", "jetty-io").version(JETTY_VERSION),
+            mavenBundle("org.eclipse.jetty", "jetty-http").version(JETTY_VERSION),
+            mavenBundle("org.eclipse.jetty", "jetty-continuation").version(JETTY_VERSION),
+            mavenBundle("org.eclipse.jetty", "jetty-server").version(JETTY_VERSION),
+            mavenBundle("org.eclipse.jetty", "jetty-security").version(JETTY_VERSION),
+            mavenBundle("org.eclipse.jetty", "jetty-xml").version(JETTY_VERSION),
+            mavenBundle("org.eclipse.jetty", "jetty-servlet").version(JETTY_VERSION),
 
             mavenBundle("org.apache.myfaces.core", "myfaces-api", "2.0.9"),
             mavenBundle("org.apache.myfaces.core", "myfaces-impl", "2.0.9"),
