@@ -67,6 +67,7 @@ public class ServletTest {
         return options(
             regressionDefaults(),
 
+
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1"),
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1-client"),
             
@@ -86,6 +87,7 @@ public class ServletTest {
             mavenBundle("ch.qos.cal10n", "cal10n-api", "0.7.4"),
             mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
             mavenBundle("org.apache.xbean", "xbean-finder").versionAsInProject(),
+            mavenBundle("javax.el", "javax.el-api").version("3.0.0"),
             mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec")
                 .versionAsInProject(),
             

@@ -24,6 +24,7 @@ import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.frameworkStartLevel;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.systemPackage;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
 
@@ -52,6 +53,12 @@ public class TestConfiguration {
 
     public static Option regressionDefaults() {
         return composite(
+            /*
+             *  This is a HACK to make pax-cdi-sample1 pick the provided javax.annotation API instead of the one
+             *  from system bundle. Otherwise, the sample for some reason uses javax.annotation from the system bundle
+             *  while Weld uses the one from Maven. As the result, annotations like @PostConstruct are not detected by Weld.
+             */
+            systemPackage("javax.annotation;version=10.0.0"),
 
             cleanCaches(),
             frameworkStartLevel(20),

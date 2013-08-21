@@ -56,6 +56,8 @@ public class WeldProducerAndClientTest {
         return options(
             regressionDefaults(),
 
+            mavenBundle("javax.annotation", "javax.annotation-api").version("1.2"),
+
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1"),
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1-client"),
             workspaceBundle("pax-cdi-extender"),

@@ -64,6 +64,8 @@ public class WeldSingleBundleTest {
         return options(
             regressionDefaults(),
 
+            mavenBundle("javax.annotation", "javax.annotation-api").version("1.2"),
+
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1"),
             workspaceBundle("pax-cdi-extender"),
             workspaceBundle("pax-cdi-extension"),
