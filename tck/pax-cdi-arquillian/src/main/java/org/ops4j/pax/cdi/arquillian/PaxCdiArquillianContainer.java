@@ -198,7 +198,19 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
     private Option[] getConfigurationOptions() {
         return options(
             bootDelegationPackage("sun.*"),
-            systemPackages("javax.annotation;version=1.0.0"),
+            systemProperty("osgi.java.profile").value("J2SE-1.5.profile"),
+            systemPackages("javax.activation", 
+                "javax.annotation.processing",
+                "javax.lang.model",
+                "javax.lang.model.element",
+                "javax.lang.model.type",
+                "javax.lang.model.util",
+                "javax.tools",
+                "javax.xml.bind",
+                "javax.xml.bind.annotation",
+                "javax.xml.stream"
+                ),
+                        
             cleanCaches(),
             frameworkStartLevel(20),
             frameworkProperty("osgi.console").value("6666"),
@@ -306,6 +318,7 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
             mavenBundle("org.apache.xbean", "xbean-asm-shaded").versionAsInProject(), //
             mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(), //
             mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-annotation_1.1_spec").version("1.0.1"),            
             mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec")
                 .versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),

@@ -24,6 +24,7 @@ import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.frameworkStartLevel;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.systemPackages;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
 
@@ -71,10 +72,24 @@ public class TestConfiguration {
             systemProperty("logback.configurationFile").value(
                 "file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.xml"),
             
-            systemProperty("osgi.console").value("6666"), 
+            systemProperty("osgi.console").value("6666"),             
+            systemProperty("eclipse.consoleLog").value("true"),
             
-            systemProperty("eclipse.consoleLog").value("true"), 
+            systemProperty("osgi.java.profile").value("J2SE-1.5.profile"),
+            systemPackages("javax.activation", 
+            	"javax.annotation.processing",
+            	"javax.lang.model",
+            	"javax.lang.model.element",
+            	"javax.lang.model.type",
+            	"javax.lang.model.util",
+            	"javax.tools",
+            	"javax.xml.bind",
+            	"javax.xml.bind.annotation",
+            	"javax.xml.stream"
+            	),
+                        
             systemTimeout(3000000),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-annotation_1.1_spec").version("1.0.1"),            
             junitBundles());
     }
     

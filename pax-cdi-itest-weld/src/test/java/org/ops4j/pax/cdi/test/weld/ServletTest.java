@@ -32,7 +32,6 @@ import javax.servlet.ServletContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.api.Info;
-import org.ops4j.pax.cdi.sample1.client.IceCreamClient;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
@@ -56,9 +55,9 @@ public class ServletTest {
     @Inject
     private CdiContainerFactory containerFactory;
 
-    @Inject
-    private IceCreamClient iceCreamClient;
-    
+    /**
+     * Inject this to make sure the servlet context is available before tests are executed.
+     */
     @Inject
     private ServletContext servletContext;
 

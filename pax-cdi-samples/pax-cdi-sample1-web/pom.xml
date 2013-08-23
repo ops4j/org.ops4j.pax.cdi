@@ -12,21 +12,31 @@
     <name>OPS4J Pax CDI Sample1 WAB</name>
 
     <dependencies>
+
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jcdi_1.0_spec</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-atinject_1.0_spec</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-annotation_1.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-servlet_3.0_spec</artifactId>
             <scope>provided</scope>
         </dependency>
+
     </dependencies>
 
     <build>
