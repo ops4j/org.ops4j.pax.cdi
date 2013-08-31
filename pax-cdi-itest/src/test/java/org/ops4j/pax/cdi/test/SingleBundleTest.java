@@ -23,6 +23,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.TestConfiguration.paxCdiProviderAdapter;
 import static org.ops4j.pax.cdi.test.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
@@ -69,15 +70,14 @@ public class SingleBundleTest {
             workspaceBundle("pax-cdi-extension"),
             workspaceBundle("pax-cdi-api"),
             workspaceBundle("pax-cdi-spi"),
-            workspaceBundle("pax-cdi-openwebbeans"),
-            
+            paxCdiProviderAdapter(),            
             cdiProviderBundles());
     }
 
     @Test
     public void checkContainerFactory() {
-        assertThat(containerFactory.getProviderName(),
-            is("org.apache.webbeans.config.WebBeansContext"));
+//        assertThat(containerFactory.getProviderName(),
+//            is("org.apache.webbeans.config.WebBeansContext"));
         assertThat(containerFactory.getContainers().size(), is(1));
 
         CdiContainer cdiContainer = containerFactory.getContainers().iterator().next();

@@ -20,7 +20,7 @@ package org.ops4j.pax.cdi.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.TestConfiguration.*;
 import static org.ops4j.pax.cdi.test.TestConfiguration.paxWebBundles;
 import static org.ops4j.pax.cdi.test.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
@@ -81,14 +81,10 @@ public class ServletTest {
             workspaceBundle("pax-cdi-api"),
             workspaceBundle("pax-cdi-spi"),
             workspaceBundle("pax-cdi-web"),
-            workspaceBundle("pax-cdi-openwebbeans").startLevel(2),
-            workspaceBundle("pax-cdi-web-openwebbeans"),
             
             cdiProviderBundles(),
-
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject(),
-
+            paxCdiProviderAdapter(),
+            paxCdiProviderWebAdapter(),
 
             // Pax Web
 

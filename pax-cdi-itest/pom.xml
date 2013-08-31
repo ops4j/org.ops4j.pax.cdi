@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.ops4j.pax.cdi</groupId>
@@ -218,21 +219,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.ops4j.pax.cdi</groupId>
-            <artifactId>pax-cdi-web-openwebbeans</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.xbean</groupId>
-            <artifactId>xbean-asm-shaded</artifactId>
-            <version>3.13</version>
-            <scope>provided</scope>
-        </dependency>
-
-
         <!-- for debugging -->
         <dependency>
             <groupId>org.ops4j.pax.web</groupId>
@@ -265,10 +251,73 @@
                     <runOrder>alphabetical</runOrder>
                     <systemPropertyVariables>
                         <java.util.logging.config.file>src/test/resources/logging.properties</java.util.logging.config.file>
+                        <pax.cdi.provider>${pax.cdi.provider}</pax.cdi.provider>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>owb1</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <pax.cdi.provider>owb1</pax.cdi.provider>
+            </properties>
+            <dependencies>
+
+                <dependency>
+                    <groupId>org.ops4j.pax.cdi</groupId>
+                    <artifactId>pax-cdi-web-openwebbeans</artifactId>
+                    <version>${project.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.xbean</groupId>
+                    <artifactId>xbean-asm-shaded</artifactId>
+                    <version>3.13</version>
+                    <scope>provided</scope>
+                </dependency>
+
+            </dependencies>
+        </profile>
+        <profile>
+            <id>weld1</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <pax.cdi.provider>weld1</pax.cdi.provider>
+            </properties>
+            <dependencies>
+
+                <dependency>
+                    <groupId>org.ops4j.pax.cdi</groupId>
+                    <artifactId>pax-cdi-web-weld</artifactId>
+                    <version>${project.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.servicemix.bundles</groupId>
+                    <artifactId>org.apache.servicemix.bundles.asm</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.weld</groupId>
+                    <artifactId>weld-osgi-bundle</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+
+
+            </dependencies>
+        </profile>
+    </profiles>
 
 </project>

@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.ops4j.pax.cdi.test.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.TestConfiguration.paxCdiProviderAdapter;
 import static org.ops4j.pax.cdi.test.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
@@ -64,14 +65,14 @@ public class ProducerAndClientTest {
             workspaceBundle("pax-cdi-extension"),
             workspaceBundle("pax-cdi-api"),
             workspaceBundle("pax-cdi-spi"),
-            workspaceBundle("pax-cdi-openwebbeans"),
             
+            paxCdiProviderAdapter(),            
             cdiProviderBundles());
     }
 
     @Test
     public void checkContainers() throws InterruptedException {
-        assertThat(containerFactory.getProviderName(), is("org.apache.webbeans.config.WebBeansContext"));
+        //assertThat(containerFactory.getProviderName(), is("org.apache.webbeans.config.WebBeansContext"));
         assertThat(containerFactory.getContainers().size(), is(2));
         List<String> beanBundles = new ArrayList<String>();
         for (CdiContainer container : containerFactory.getContainers()) {

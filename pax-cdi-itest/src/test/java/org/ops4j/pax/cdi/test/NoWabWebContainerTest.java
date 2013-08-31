@@ -21,6 +21,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.ops4j.pax.cdi.test.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.TestConfiguration.paxCdiProviderWebAdapter;
 import static org.ops4j.pax.cdi.test.TestConfiguration.paxWebBundles;
 import static org.ops4j.pax.cdi.test.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
@@ -69,16 +71,12 @@ public class NoWabWebContainerTest {
             workspaceBundle("pax-cdi-api"),
             workspaceBundle("pax-cdi-spi"),
             workspaceBundle("pax-cdi-web"),
-            workspaceBundle("pax-cdi-openwebbeans").startLevel(2),
-            workspaceBundle("pax-cdi-web-openwebbeans"),
             
+            paxCdiProviderAdapter(),
+            paxCdiProviderWebAdapter(),
             cdiProviderBundles(),
 
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject(),
             
-            // Pax Web
-
             systemProperty("org.osgi.service.http.port").value("8181"),
             paxWebBundles(),
             
@@ -94,7 +92,7 @@ public class NoWabWebContainerTest {
 
     @Test
     public void checkContainers() throws InterruptedException {
-        assertThat(containerFactory.getProviderName(), is("org.apache.webbeans.config.WebBeansContext"));
+        // assertThat(containerFactory.getProviderName(), is("org.apache.webbeans.config.WebBeansContext"));
         assertThat(containerFactory.getContainers().size(), is(2));
         List<String> beanBundles = new ArrayList<String>();
         for (CdiContainer container : containerFactory.getContainers()) {

@@ -40,6 +40,9 @@ import org.ops4j.pax.exam.util.PathUtils;
  */
 public class TestConfiguration {
     
+    public static final String WELD1 = "weld1";
+    public static final String OWB1 = "owb1";
+    
     
     private static final String JETTY_VERSION = "8.1.9.v20130131";
 
@@ -88,9 +91,56 @@ public class TestConfiguration {
     }
 
     public static Option cdiProviderBundles() {
-        return openWebBeansBundles();
-    }    
-    
+        switch (getCdiProvider()) {
+
+            case OWB1:
+                return openWebBeansBundles();
+            
+            case WELD1:    
+                return weldBundles();
+        }
+        throw new IllegalArgumentException("pax.cdi.provider unknown or null");
+    }
+
+    public static Option paxCdiProviderAdapter() {
+        switch (getCdiProvider()) {
+
+            case OWB1:
+                return workspaceBundle("pax-cdi-openwebbeans");
+            
+            case WELD1:    
+                return workspaceBundle("pax-cdi-weld");
+        }
+        throw new IllegalArgumentException("pax.cdi.provider unknown or null");
+    }
+
+    public static Option paxCdiProviderWebAdapter() {
+        switch (getCdiProvider()) {
+
+            case OWB1:
+                return composite(
+                    workspaceBundle("pax-cdi-web-openwebbeans"),
+                    mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
+                    mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject()
+                    );
+            
+            case WELD1:    
+                return composite(
+                    workspaceBundle("pax-cdi-web-weld"),
+                    mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec").versionAsInProject()
+                    );
+        }
+        throw new IllegalArgumentException("pax.cdi.provider unknown or null");
+    }
+
+    public static CdiProvider getCdiProvider() {
+        String provider = System.getProperty("pax.cdi.provider");
+        if (provider == null) {
+            throw new IllegalArgumentException("system property pax.cdi.provider must not be null");
+        }
+        return CdiProvider.valueOf(provider.toUpperCase());
+    }
+
     public static Option openWebBeansBundles() {
         return composite(
             mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
@@ -111,8 +161,23 @@ public class TestConfiguration {
             mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject());
     }
 
+    public static Option weldBundles() {
+        return composite(
+            workspaceBundle("pax-cdi-weld"),
+
+            mavenBundle("ch.qos.cal10n", "cal10n-api", "0.7.4"),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-annotation_1.1_spec", "1.0.1"),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
+            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm").versionAsInProject(), //
+            mavenBundle("org.jboss.weld", "weld-osgi-bundle").versionAsInProject().startLevel(3));
+    }
+
     public static Option paxWebBundles() {
         return composite(
+            mavenBundle("org.apache.xbean", "xbean-asm-shaded").versionAsInProject(), //
+            mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(), //
             mavenBundle("org.ops4j.pax.web", "pax-web-spi").version(Info.getPaxWebVersion()),
             mavenBundle("org.ops4j.pax.web", "pax-web-api").version(Info.getPaxWebVersion()),
             mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version(Info.getPaxWebVersion())
