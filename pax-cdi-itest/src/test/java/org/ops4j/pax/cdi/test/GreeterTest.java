@@ -58,10 +58,6 @@ public class GreeterTest {
 
             workspaceBundle("pax-cdi-samples/pax-cdi-sample3"),
             workspaceBundle("pax-cdi-samples/pax-cdi-sample3-client"),
-            workspaceBundle("pax-cdi-extender"),
-            workspaceBundle("pax-cdi-extension"),
-            workspaceBundle("pax-cdi-api"),
-            workspaceBundle("pax-cdi-spi"),
 
             paxCdiProviderAdapter(),
             cdiProviderBundles());

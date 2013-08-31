@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.cdi.test;
 
+import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.cleanCaches;
@@ -87,6 +88,17 @@ public class TestConfiguration {
     }
 
     public static Option cdiProviderBundles() {
+        return composite(
+            cdiProviderSpecificBundles(),
+
+            workspaceBundle("pax-cdi-extender"),
+            workspaceBundle("pax-cdi-extension"),
+            workspaceBundle("pax-cdi-api"),
+            workspaceBundle("pax-cdi-spi"),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject());
+    }
+
+    public static Option cdiProviderSpecificBundles() {
         switch (getCdiProvider()) {
 
             case OWB1:
@@ -119,6 +131,7 @@ public class TestConfiguration {
 
             case OWB1:
                 return composite(
+                    workspaceBundle("pax-cdi-web"),                    
                     workspaceBundle("pax-cdi-web-openwebbeans"),
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject()
@@ -127,6 +140,7 @@ public class TestConfiguration {
             case WELD1:    
             case WELD2:    
                 return composite(
+                    workspaceBundle("pax-cdi-web"),                    
                     workspaceBundle("pax-cdi-web-weld"),
                     mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec").versionAsInProject()
                     );
@@ -146,7 +160,6 @@ public class TestConfiguration {
         return composite(
             mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
             mavenBundle("org.apache.xbean", "xbean-asm-shaded").versionAsInProject(), //
             mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(), //
             mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),
@@ -180,7 +193,6 @@ public class TestConfiguration {
             workspaceBundle("pax-cdi-weld"),
 
             mavenBundle("ch.qos.cal10n", "cal10n-api", "0.7.7"),
-            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
             mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
             mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),

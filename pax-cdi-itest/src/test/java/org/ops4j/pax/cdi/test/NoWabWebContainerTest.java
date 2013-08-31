@@ -66,12 +66,6 @@ public class NoWabWebContainerTest {
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1"),
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1-client"),
             
-            workspaceBundle("pax-cdi-extender"),
-            workspaceBundle("pax-cdi-extension"),
-            workspaceBundle("pax-cdi-api"),
-            workspaceBundle("pax-cdi-spi"),
-            workspaceBundle("pax-cdi-web"),
-            
             paxCdiProviderAdapter(),
             paxCdiProviderWebAdapter(),
             cdiProviderBundles(),

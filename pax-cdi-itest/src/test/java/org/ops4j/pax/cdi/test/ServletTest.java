@@ -75,13 +75,6 @@ public class ServletTest {
 
             mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", Info.getPaxCdiVersion()),
 
-            workspaceBundle("pax-cdi-extender"),
-            
-            workspaceBundle("pax-cdi-extension"),
-            workspaceBundle("pax-cdi-api"),
-            workspaceBundle("pax-cdi-spi"),
-            workspaceBundle("pax-cdi-web"),
-            
             cdiProviderBundles(),
             paxCdiProviderAdapter(),
             paxCdiProviderWebAdapter(),
