@@ -224,7 +224,7 @@ public class TestConfiguration {
     }
 
     public static UrlProvisionOption workspaceBundle(String pathFromRoot) {
-        String url = String.format("reference:file:%s/../%s/target/classes",
+        String url = String.format("reference:file:%s/../../../../%s/target/classes",
             PathUtils.getBaseDir(), pathFromRoot);
         return bundle(url);
     }

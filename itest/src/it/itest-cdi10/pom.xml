@@ -5,11 +5,11 @@
         <groupId>org.ops4j.pax.cdi</groupId>
         <version>0.5.0-SNAPSHOT</version>
         <artifactId>pax-cdi-parent</artifactId>
-        <relativePath>../pax-cdi-parent</relativePath>
+        <relativePath>../../../pax-cdi-parent</relativePath>
     </parent>
-    <artifactId>pax-cdi-itest</artifactId>
+    <artifactId>itest-cdi10</artifactId>
 
-    <name>OPS4J Pax CDI Integration Tests</name>
+    <name>OPS4J Pax CDI 1.0 Integration Tests</name>
 
     <dependencies>
 
@@ -207,12 +207,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>org.eclipse.osgi</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
             <artifactId>pax-cdi-web</artifactId>
             <version>${project.version}</version>
@@ -259,6 +253,19 @@
     </build>
 
     <profiles>
+        <profile>
+            <id>equinox</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>org.eclipse.osgi</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
         <profile>
             <id>owb1</id>
             <activation>
@@ -362,4 +369,5 @@
         </profile>
     </profiles>
 
+    <groupId>org.ops4j.pax.cdi.itest</groupId>
 </project>

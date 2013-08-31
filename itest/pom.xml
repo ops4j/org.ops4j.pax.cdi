@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.ops4j.pax.cdi</groupId>
+        <artifactId>pax-cdi-parent</artifactId>
+        <version>0.5.0-SNAPSHOT</version>
+        <relativePath>../pom</relativePath>
+    </parent>
+
+    <groupId>org.ops4j.pax.cdi</groupId>
+    <artifactId>itest</artifactId>
+    <packaging>pom</packaging>
+
+    <name>OPS4J Pax CDI Integration Tests</name>
+
+    <profiles>
+
+        <profile>
+            <id>matrix</id>
+            <modules>
+                <module>src/it/itest-cdi10</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>invoker</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-invoker-plugin</artifactId>
+                        <version>1.5</version>
+                        <configuration>
+                            <streamLogs>true</streamLogs>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>equinox-owb1</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <profiles>
+                                        <profile>equinox</profile>
+                                        <profile>owb1</profile>
+                                    </profiles>
+                                    <cloneProjectsTo>${project.build.directory}/equinox-owb1</cloneProjectsTo>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>equinox-weld1</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <profiles>
+                                        <profile>equinox</profile>
+                                        <profile>weld1</profile>
+                                    </profiles>
+                                    <cloneProjectsTo>${project.build.directory}/equinox-weld1</cloneProjectsTo>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>equinox-weld2</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <profiles>
+                                        <profile>equinox</profile>
+                                        <profile>weld2</profile>
+                                    </profiles>
+                                    <cloneProjectsTo>${project.build.directory}/equinox-weld2</cloneProjectsTo>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+    </profiles>
+</project>
