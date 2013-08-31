@@ -17,7 +17,6 @@
  */
 package org.ops4j.pax.cdi.test;
 
-import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.cleanCaches;
@@ -28,6 +27,8 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.systemPackages;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
+
+import java.io.File;
 
 import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.exam.Option;
@@ -223,9 +224,17 @@ public class TestConfiguration {
             mavenBundle("org.eclipse.jetty", "jetty-servlet").version(JETTY_VERSION));
     }
 
-    public static UrlProvisionOption workspaceBundle(String pathFromRoot) {
-        String url = String.format("reference:file:%s/../../../../%s/target/classes",
+    public static Option workspaceBundle(String pathFromRoot) {
+        String fileName = String.format("%s/../../../../%s/target/classes",
             PathUtils.getBaseDir(), pathFromRoot);
-        return bundle(url);
+        
+        if (new File(fileName).exists()) {
+            String url = String.format("reference:file:%s/../../../../%s/target/classes",
+                PathUtils.getBaseDir(), pathFromRoot);
+            return bundle(url);            
+        }
+        else {
+            return mavenBundle("org.ops4j.pax.cdi", pathFromRoot, Info.getPaxCdiVersion());
+        }
     }
 }
