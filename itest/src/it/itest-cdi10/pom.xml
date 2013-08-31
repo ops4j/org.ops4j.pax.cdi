@@ -7,6 +7,8 @@
         <artifactId>pax-cdi-parent</artifactId>
         <relativePath>../../../pax-cdi-parent</relativePath>
     </parent>
+
+    <groupId>org.ops4j.pax.cdi.itest</groupId>
     <artifactId>itest-cdi10</artifactId>
 
     <name>OPS4J Pax CDI 1.0 Integration Tests</name>
@@ -368,6 +370,19 @@
             </repositories>
         </profile>
     </profiles>
+    
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/ops4j-snapshots</url>
+        </repository>
+    </repositories>
 
-    <groupId>org.ops4j.pax.cdi.itest</groupId>
 </project>
