@@ -81,6 +81,45 @@
                                     <cloneProjectsTo>${project.build.directory}/equinox-weld2</cloneProjectsTo>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>felix-owb1</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <profiles>
+                                        <profile>felix</profile>
+                                        <profile>owb1</profile>
+                                    </profiles>
+                                    <cloneProjectsTo>${project.build.directory}/felix-owb1</cloneProjectsTo>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>felix-weld1</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <profiles>
+                                        <profile>felix</profile>
+                                        <profile>weld1</profile>
+                                    </profiles>
+                                    <cloneProjectsTo>${project.build.directory}/felix-weld1</cloneProjectsTo>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>felix-weld2</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <profiles>
+                                        <profile>felix</profile>
+                                        <profile>weld2</profile>
+                                    </profiles>
+                                    <cloneProjectsTo>${project.build.directory}/felix-weld2</cloneProjectsTo>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                 </plugins>
