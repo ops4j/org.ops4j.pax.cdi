@@ -40,10 +40,6 @@ import org.ops4j.pax.exam.util.PathUtils;
  */
 public class TestConfiguration {
     
-    public static final String WELD1 = "weld1";
-    public static final String OWB1 = "owb1";
-    
-    
     private static final String JETTY_VERSION = "8.1.9.v20130131";
 
     private TestConfiguration() {
@@ -98,6 +94,9 @@ public class TestConfiguration {
             
             case WELD1:    
                 return weldBundles();
+
+            case WELD2:    
+                return weld2Bundles();
         }
         throw new IllegalArgumentException("pax.cdi.provider unknown or null");
     }
@@ -109,6 +108,7 @@ public class TestConfiguration {
                 return workspaceBundle("pax-cdi-openwebbeans");
             
             case WELD1:    
+            case WELD2:    
                 return workspaceBundle("pax-cdi-weld");
         }
         throw new IllegalArgumentException("pax.cdi.provider unknown or null");
@@ -125,6 +125,7 @@ public class TestConfiguration {
                     );
             
             case WELD1:    
+            case WELD2:    
                 return composite(
                     workspaceBundle("pax-cdi-web-weld"),
                     mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec").versionAsInProject()
@@ -172,6 +173,18 @@ public class TestConfiguration {
             mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm").versionAsInProject(), //
             mavenBundle("org.jboss.weld", "weld-osgi-bundle").versionAsInProject().startLevel(3));
+    }
+
+    public static Option weld2Bundles() {
+        return composite(
+            workspaceBundle("pax-cdi-weld"),
+
+            mavenBundle("ch.qos.cal10n", "cal10n-api", "0.7.7"),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
+            mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
+            mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
+            mavenBundle("org.jboss.weld", "weld-osgi-bundle").versionAsInProject());
     }
 
     public static Option paxWebBundles() {
