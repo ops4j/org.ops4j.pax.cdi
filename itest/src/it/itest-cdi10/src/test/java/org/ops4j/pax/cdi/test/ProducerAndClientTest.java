@@ -59,8 +59,8 @@ public class ProducerAndClientTest {
         return options(
             regressionDefaults(),
 
-            workspaceBundle("pax-cdi-samples/pax-cdi-sample1"),
-            workspaceBundle("pax-cdi-samples/pax-cdi-sample1-client"),
+            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
+            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-client"),
             
             paxCdiProviderAdapter(),            
             cdiProviderBundles());

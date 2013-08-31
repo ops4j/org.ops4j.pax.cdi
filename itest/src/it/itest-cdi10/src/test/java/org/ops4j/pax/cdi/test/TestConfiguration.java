@@ -92,10 +92,10 @@ public class TestConfiguration {
         return composite(
             cdiProviderSpecificBundles(),
 
-            workspaceBundle("pax-cdi-extender"),
-            workspaceBundle("pax-cdi-extension"),
-            workspaceBundle("pax-cdi-api"),
-            workspaceBundle("pax-cdi-spi"),
+            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-extender"),
+            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-extension"),
+            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-api"),
+            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-spi"),
             mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject());
     }
 
@@ -118,11 +118,11 @@ public class TestConfiguration {
         switch (getCdiProvider()) {
 
             case OWB1:
-                return workspaceBundle("pax-cdi-openwebbeans");
+                return workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-openwebbeans");
             
             case WELD1:    
             case WELD2:    
-                return workspaceBundle("pax-cdi-weld");
+                return workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-weld");
         }
         throw new IllegalArgumentException("pax.cdi.provider unknown or null");
     }
@@ -132,8 +132,8 @@ public class TestConfiguration {
 
             case OWB1:
                 return composite(
-                    workspaceBundle("pax-cdi-web"),                    
-                    workspaceBundle("pax-cdi-web-openwebbeans"),
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web"),                    
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web-openwebbeans"),
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject()
                     );
@@ -141,8 +141,8 @@ public class TestConfiguration {
             case WELD1:    
             case WELD2:    
                 return composite(
-                    workspaceBundle("pax-cdi-web"),                    
-                    workspaceBundle("pax-cdi-web-weld"),
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web"),                    
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web-weld"),
                     mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec").versionAsInProject()
                     );
         }
@@ -178,7 +178,7 @@ public class TestConfiguration {
 
     public static Option weldBundles() {
         return composite(
-            workspaceBundle("pax-cdi-weld"),
+            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-weld"),
 
             mavenBundle("ch.qos.cal10n", "cal10n-api", "0.7.4"),
             mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
@@ -191,7 +191,7 @@ public class TestConfiguration {
 
     public static Option weld2Bundles() {
         return composite(
-            workspaceBundle("pax-cdi-weld"),
+            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-weld"),
 
             mavenBundle("ch.qos.cal10n", "cal10n-api", "0.7.7"),
             mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
@@ -224,17 +224,17 @@ public class TestConfiguration {
             mavenBundle("org.eclipse.jetty", "jetty-servlet").version(JETTY_VERSION));
     }
 
-    public static Option workspaceBundle(String pathFromRoot) {
-        String fileName = String.format("%s/../../../../%s/target/classes",
-            PathUtils.getBaseDir(), pathFromRoot);
+    public static Option workspaceBundle(String groupId, String artifactId) {
+        String samples = groupId.endsWith(".samples") ? "pax-cdi-samples/" : "";
+        String fileName = String.format("%s/../../../../%s%s/target/classes",
+            PathUtils.getBaseDir(), samples, artifactId);
         
         if (new File(fileName).exists()) {
-            String url = String.format("reference:file:%s/../../../../%s/target/classes",
-                PathUtils.getBaseDir(), pathFromRoot);
+            String url = "reference:file:" + fileName;
             return bundle(url);            
         }
         else {
-            return mavenBundle("org.ops4j.pax.cdi", pathFromRoot, Info.getPaxCdiVersion());
+            return mavenBundle(groupId, artifactId, Info.getPaxCdiVersion());
         }
     }
 }

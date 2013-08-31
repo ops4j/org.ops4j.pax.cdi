@@ -57,7 +57,7 @@ public class BundleEventTest {
         return options(
             regressionDefaults(),
 
-            workspaceBundle("pax-cdi-samples/pax-cdi-sample1"),
+            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
             
             paxCdiProviderAdapter(),            
             cdiProviderBundles());

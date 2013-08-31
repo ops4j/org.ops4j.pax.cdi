@@ -71,7 +71,7 @@ public class ServletTest {
             regressionDefaults(),
 
             // doesn't work for WABs
-            // workspaceBundle("pax-cdi-samples/pax-cdi-sample1-web"),
+            // workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-samples/pax-cdi-sample1-web"),
 
             mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", Info.getPaxCdiVersion()),
 

@@ -57,8 +57,8 @@ public class BeanScannerTest {
             // This is a bundle with embedded JARs on the bundle classpath
             mavenBundle("org.ops4j.pax.tinybundles", "tinybundles", "1.0.0"),
 
-            workspaceBundle("pax-cdi-api"), 
-            workspaceBundle("pax-cdi-spi"),
+            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-api"), 
+            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-spi"),
 
             mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),

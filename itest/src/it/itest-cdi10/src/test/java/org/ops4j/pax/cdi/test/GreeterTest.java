@@ -56,8 +56,8 @@ public class GreeterTest {
         return options(
             regressionDefaults(),
 
-            workspaceBundle("pax-cdi-samples/pax-cdi-sample3"),
-            workspaceBundle("pax-cdi-samples/pax-cdi-sample3-client"),
+            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample3"),
+            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample3-client"),
 
             paxCdiProviderAdapter(),
             cdiProviderBundles());
