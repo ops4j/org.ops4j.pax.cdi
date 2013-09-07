@@ -196,6 +196,7 @@ public class TestConfiguration {
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-weld"),
 
             mavenBundle("ch.qos.cal10n", "cal10n-api", "0.7.7"),
+            mavenBundle("org.jboss.logging", "jboss-logging", "3.1.0.GA"),
             mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
             mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
