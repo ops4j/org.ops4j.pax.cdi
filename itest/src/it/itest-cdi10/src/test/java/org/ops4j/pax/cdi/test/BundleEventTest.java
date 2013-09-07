@@ -30,6 +30,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.api.event.BundleCdiEvent;
@@ -44,6 +45,7 @@ import org.osgi.framework.BundleEvent;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
+@Ignore("synchronization issues between bundle and CDI lifecycle")
 public class BundleEventTest {
 
     @Inject

@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Typed;
 
 import org.ops4j.pax.cdi.api.ServiceScoped;
 
@@ -34,6 +35,7 @@ import org.ops4j.pax.cdi.api.ServiceScoped;
  * @author Harald Wellmann
  * 
  */
+@Typed()
 public class ServiceContext implements Context {
 
     private Map<Contextual<?>, ServiceContextEntry<?>> serviceBeans = new ConcurrentHashMap<Contextual<?>, ServiceContextEntry<?>>();

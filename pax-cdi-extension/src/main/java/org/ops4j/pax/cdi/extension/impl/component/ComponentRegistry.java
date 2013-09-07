@@ -47,7 +47,7 @@ public class ComponentRegistry {
     private BundleContext bundleContext;
     
     
-    public ComponentRegistry() {
+    public ComponentRegistry(int dummy) {
     }
     
     /**

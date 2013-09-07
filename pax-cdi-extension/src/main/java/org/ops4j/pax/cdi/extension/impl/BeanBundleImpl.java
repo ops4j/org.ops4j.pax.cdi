@@ -70,7 +70,7 @@ public class BeanBundleImpl {
     @PreDestroy
     public void onDestroy() {
         log.debug("onDestroy {}", bundleContext.getBundle());
-        componentLifecycleManager.stop();
         bundleEventBridge.stop();
+        componentLifecycleManager.stop();
     }
 }
