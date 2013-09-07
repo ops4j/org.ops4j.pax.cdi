@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Harald Wellmann.
+ * Copyright 2013 Harald Wellmann.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.sample2.service;
-
-import javax.inject.Inject;
-
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
-import org.ops4j.pax.jpa.sample1.model.Author;
+package org.ops4j.pax.cdi.test;
 
 
-@OsgiServiceProvider
-public class LibraryServiceClient {
+public enum CdiProvider {
     
-    @Inject
-    private LibraryService service;
-    
-    public void createAuthor(String firstName, String lastName) {
-        service.createAuthor(firstName, lastName);
-    }
-
-    public Author findAuthor(String firstName, String lastName) {
-        return service.createAuthor(firstName, lastName);
-    }
+    OWB1,
+    WELD1,
+    WELD2,
 
 }

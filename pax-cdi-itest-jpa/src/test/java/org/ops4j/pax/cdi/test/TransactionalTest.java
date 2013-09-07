@@ -20,100 +20,79 @@ package org.ops4j.pax.cdi.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.cdi.test.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.TestConfiguration.paxCdiProviderAdapter;
 import static org.ops4j.pax.cdi.test.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample2.service.LibraryServiceClient;
-import org.ops4j.pax.cdi.spi.CdiContainer;
-import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.ops4j.pax.swissbox.core.BundleUtils;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
+import org.ops4j.pax.jpa.sample1.model.Author;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class TransactionalTest {
 
     @Inject
-    private CdiContainerFactory containerFactory;
-
-    @Inject
     private LibraryServiceClient libraryService;
     
-    @Inject
-    private BundleContext bc;
-
     @Configuration
     public Option[] config() {
         return options(
             regressionDefaults(),
-
-            workspaceBundle("pax-cdi-extender"),
-            workspaceBundle("pax-cdi-extension"),
-            workspaceBundle("pax-cdi-api"),
-            workspaceBundle("pax-cdi-spi"),
-            workspaceBundle("pax-cdi-openwebbeans"),
-            workspaceBundle("pax-cdi-samples/pax-cdi-sample2-service"),
-            mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1-model", "0.1.0-SNAPSHOT"),
+            paxCdiProviderAdapter(),            
+            cdiProviderBundles(),
             
-            mavenBundle("org.apache.deltaspike.core", "deltaspike-core-api", "0.4-incubating-SNAPSHOT"),
-            mavenBundle("org.apache.deltaspike.core", "deltaspike-core-impl", "0.4-incubating-SNAPSHOT"),
-            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-api", "0.4-incubating-SNAPSHOT"),
-            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl", "0.4-incubating-SNAPSHOT"),
-
-            mavenBundle("org.ops4j.pax.jpa", "pax-jpa", "0.1.0-SNAPSHOT"),
-            mavenBundle( "org.ops4j.base", "ops4j-base-io", "1.3.0" ),
-            mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
-            mavenBundle( "org.apache.openjpa", "openjpa").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-jpa_2.0_spec", "1.1"),
             mavenBundle( "commons-lang", "commons-lang").versionAsInProject(),
             mavenBundle( "commons-collections", "commons-collections").versionAsInProject(),
             mavenBundle( "commons-pool", "commons-pool").versionAsInProject(),
             mavenBundle( "commons-dbcp", "commons-dbcp").versionAsInProject(),
             mavenBundle( "org.apache.servicemix.bundles", "org.apache.servicemix.bundles.serp", "1.13.1_4"),
+            mavenBundle( "org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm", "3.3_2"),
+            mavenBundle( "org.apache.openjpa", "openjpa").versionAsInProject(),
 
-            mavenBundle( "org.apache.derby", "derby").versionAsInProject(),
             
-            mavenBundle( "org.osgi", "org.osgi.enterprise" ).versionAsInProject(),
+            mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc", "0.3.0"),
+            mavenBundle( "org.apache.derby", "derby").versionAsInProject(),            
+            mavenBundle( "org.osgi", "org.osgi.enterprise", "4.2.0" ),
+            
             
 
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker").versionAsInProject(),
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
-            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.javassist").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.bundles", "scannotation").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
-            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm").versionAsInProject(), //
-            mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-jpa_2.0_spec").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-validation_1.0_spec").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-jcdi_1.0_spec").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject());
+            mavenBundle("org.apache.deltaspike.core", "deltaspike-core-api", "0.4"),
+            mavenBundle("org.apache.deltaspike.core", "deltaspike-core-impl", "0.4"),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-api", "0.4"),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl", "0.4"),
+
+            
+            
+            
+            mavenBundle("org.ops4j.pax.jpa", "pax-jpa").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1-model").versionAsInProject(),
+            workspaceBundle("org.ops4j.pax.cdi.samples","pax-cdi-sample2-service")
+        
+            );
+            
+
 
     }
 
     @Test
-    public void checkContainers() throws InterruptedException {
-        Bundle bundle = BundleUtils.getBundle(bc, "org.ops4j.pax.cdi.sample2.service");
-        assertThat(bundle, is(notNullValue()));
-        CdiContainer container = containerFactory.getContainer(bundle);
-        container.startContext(RequestScoped.class);
-        
+    public void createAuthorInTransaction() {
         libraryService.createAuthor("Charles", "Dickens");
+        Author author = libraryService.findAuthor("Charles", "Dickens");
+        assertThat(author, is(notNullValue()));
+        assertThat(author.getFirstName(), is("Charles"));
+        assertThat(author.getLastName(), is("Dickens"));
     }
-
 }

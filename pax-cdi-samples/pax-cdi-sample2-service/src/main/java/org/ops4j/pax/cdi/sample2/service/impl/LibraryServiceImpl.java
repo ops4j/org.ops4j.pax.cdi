@@ -74,6 +74,16 @@ public class LibraryServiceImpl implements LibraryService {
         em.persist(author);
         return author;
     }
+    
+    public Author findAuthor(String firstName, String lastName) {
+        String jpql = "select a from Author a where a.firstName = :firstName and a.lastName = :lastName";
+        TypedQuery<Author> query = em.createQuery(jpql, Author.class);
+        query.setParameter("firstName", firstName);
+        query.setParameter("lastName", lastName);
+        List<Author> authors = query.getResultList();
+        return authors.isEmpty() ? null : authors.get(0);
+    }
+
 
     public Book createBook(String title, Author author) {
         Book book = new Book();
