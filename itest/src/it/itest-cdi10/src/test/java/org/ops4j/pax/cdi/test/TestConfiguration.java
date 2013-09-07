@@ -21,6 +21,7 @@ import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.cleanCaches;
 import static org.ops4j.pax.exam.CoreOptions.composite;
+import static org.ops4j.pax.exam.CoreOptions.frameworkProperty;
 import static org.ops4j.pax.exam.CoreOptions.frameworkStartLevel;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
@@ -29,10 +30,12 @@ import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
 
+import org.ops4j.lang.Ops4jException;
 import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.options.UrlProvisionOption;
 import org.ops4j.pax.exam.util.PathUtils;
 
 /**
@@ -48,6 +51,15 @@ public class TestConfiguration {
     }
 
     public static Option regressionDefaults() {
+        Properties props = new Properties();
+        try {
+            props.load(TestConfiguration.class.getResourceAsStream("/systemPackages.properties"));
+        }
+        catch (IOException exc) {
+            throw new Ops4jException(exc);
+        }
+        
+        
         return composite(
 
             cleanCaches(),
@@ -68,21 +80,11 @@ public class TestConfiguration {
             systemProperty("logback.configurationFile").value(
                 "file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.xml"),
             
-            systemProperty("osgi.console").value("6666"),             
-            systemProperty("eclipse.consoleLog").value("true"),
+            frameworkProperty("osgi.console").value("6666"),             
+            frameworkProperty("eclipse.consoleLog").value("true"),
             
-            systemProperty("osgi.java.profile").value("J2SE-1.5.profile"),
-            systemPackages("javax.activation", 
-            	"javax.annotation.processing",
-            	"javax.lang.model",
-            	"javax.lang.model.element",
-            	"javax.lang.model.type",
-            	"javax.lang.model.util",
-            	"javax.tools",
-            	"javax.xml.bind",
-            	"javax.xml.bind.annotation",
-            	"javax.xml.stream"
-            	),
+            // do not treat javax.annotation as system package
+            frameworkProperty("org.osgi.framework.system.packages").value(props.get("org.osgi.framework.system.packages")), 	
             
             systemTimeout(2000000),
             junitBundles());
@@ -150,7 +152,7 @@ public class TestConfiguration {
     }
 
     public static CdiProvider getCdiProvider() {
-        String provider = System.getProperty("pax.cdi.provider");
+        String provider = System.getProperty("pax.cdi.provider", "owb1");
         if (provider == null) {
             throw new IllegalArgumentException("system property pax.cdi.provider must not be null");
         }
