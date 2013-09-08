@@ -40,6 +40,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.ops4j.pax.cdi</groupId>
+            <artifactId>pax-cdi-test-support</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>org.ops4j.pax.cdi.samples</groupId>

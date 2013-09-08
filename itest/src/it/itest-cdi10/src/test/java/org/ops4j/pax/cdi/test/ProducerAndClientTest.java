@@ -20,10 +20,10 @@ package org.ops4j.pax.cdi.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItems;
-import static org.ops4j.pax.cdi.test.TestConfiguration.cdiProviderBundles;
-import static org.ops4j.pax.cdi.test.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 import java.util.ArrayList;

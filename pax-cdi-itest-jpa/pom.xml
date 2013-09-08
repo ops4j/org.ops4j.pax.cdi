@@ -35,34 +35,13 @@
             <scope>provided</scope>
         </dependency>
 
-
         <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample1</artifactId>
+            <groupId>org.ops4j.pax.cdi</groupId>
+            <artifactId>pax-cdi-test-support</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample1-client</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample3</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample3-client</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
@@ -238,7 +217,6 @@
             <groupId>org.ops4j.pax.cdi.samples</groupId>
             <artifactId>pax-cdi-sample2-service</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.test;
+package org.ops4j.pax.cdi.test.support;
 
 import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
@@ -25,7 +25,6 @@ import static org.ops4j.pax.exam.CoreOptions.frameworkProperty;
 import static org.ops4j.pax.exam.CoreOptions.frameworkStartLevel;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.systemPackages;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
 
@@ -46,6 +45,7 @@ import org.ops4j.pax.exam.util.PathUtils;
 public class TestConfiguration {
     
     private static final String JETTY_VERSION = "8.1.9.v20130131";
+    private static String paxCdiRoot;
 
     private TestConfiguration() {
     }
@@ -200,6 +200,9 @@ public class TestConfiguration {
             mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
             mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec")
+            .versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
             mavenBundle("org.jboss.weld", "weld-osgi-bundle").versionAsInProject());
     }
 
@@ -240,4 +243,24 @@ public class TestConfiguration {
             return mavenBundle(groupId, artifactId, Info.getPaxCdiVersion());
         }
     }
+    
+    public static String getPaxCdiRoot() {
+        if (paxCdiRoot == null) {
+            paxCdiRoot = System.getProperty("pax.cdi.root");
+            if (paxCdiRoot == null) {
+                Properties props = new Properties();
+                try {
+                    props.load(TestConfiguration.class
+                        .getResourceAsStream("/org.ops4j.pax.cdi.properties"));
+                    paxCdiRoot = props.getProperty("pax.cdi.root");
+                }
+                catch (IOException exc) {
+                    throw new Ops4jException(exc);
+                }
+            }
+        }
+        return paxCdiRoot;
+    }
+
+    
 }

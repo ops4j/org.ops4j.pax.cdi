@@ -17,15 +17,16 @@
  */
 package org.ops4j.pax.cdi.arquillian;
 
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderWebAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxWebBundles;
 import static org.ops4j.pax.exam.CoreOptions.bootDelegationPackage;
-import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.cleanCaches;
-import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.frameworkProperty;
 import static org.ops4j.pax.exam.CoreOptions.frameworkStartLevel;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.systemPackages;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.vmOption;
 
@@ -52,12 +53,10 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 import org.ops4j.lang.Ops4jException;
-import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.exam.ExamSystem;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.TestContainer;
 import org.ops4j.pax.exam.TestContainerException;
-import org.ops4j.pax.exam.options.UrlProvisionOption;
 import org.ops4j.pax.exam.spi.PaxExamRuntime;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -68,8 +67,6 @@ import org.slf4j.LoggerFactory;
 
 public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConfiguration> {
     
-    private static final String JETTY_VERSION = "8.1.9.v20130131";
-
     private static Logger log = LoggerFactory.getLogger(PaxCdiArquillianContainer.class);
 
     private static String paxCdiRoot;
@@ -196,35 +193,27 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
     }
 
     private Option[] getConfigurationOptions() {
+        Properties props = new Properties();
+        try {
+            props.load(PaxCdiArquillianContainer.class.getResourceAsStream("/systemPackages.properties"));
+        }
+        catch (IOException exc) {
+            throw new Ops4jException(exc);
+        }
+
+        
         return options(
             bootDelegationPackage("sun.*"),
-            systemProperty("osgi.java.profile").value("J2SE-1.5.profile"),
-            systemPackages("javax.activation", 
-                "javax.annotation.processing",
-                "javax.lang.model",
-                "javax.lang.model.element",
-                "javax.lang.model.type",
-                "javax.lang.model.util",
-                "javax.tools",
-                "javax.xml.bind",
-                "javax.xml.bind.annotation",
-                "javax.xml.stream"
-                ),
                         
             cleanCaches(),
             frameworkStartLevel(20),
             frameworkProperty("osgi.console").value("6666"),
             frameworkProperty("osgi.debug").value("equinox-debug.properties"),
 
-            workspaceBundle("pax-cdi-extender"),
-            workspaceBundle("pax-cdi-extension"),
-            workspaceBundle("pax-cdi-api"),
-            workspaceBundle("pax-cdi-spi"),
-
-            workspaceBundle("pax-cdi-web"),
-            workspaceBundle("pax-cdi-openwebbeans").startLevel(2),
-            workspaceBundle("pax-cdi-web-openwebbeans"),
-
+            // do not treat javax.annotation as system package
+            frameworkProperty("org.osgi.framework.system.packages").value(props.get("org.osgi.framework.system.packages")),     
+            
+            
             mavenBundle("org.ops4j.base", "ops4j-base-lang", "1.4.0"),
             mavenBundle("org.ops4j.base", "ops4j-base-spi", "1.4.0"),
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-core", "1.7.0"),
@@ -233,30 +222,15 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-lifecycle", "1.7.0"),
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker", "1.7.0"),
             mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-atinject_1.0_spec").versionAsInProject(),
 
-            openWebBeansBundles(),
-
-            // Pax Web
-
+            cdiProviderBundles(),
+            paxCdiProviderAdapter(),
+            paxCdiProviderWebAdapter(),
+            
             systemProperty("org.osgi.service.http.port").value("8181"),
-            mavenBundle("org.ops4j.pax.web", "pax-web-spi").version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-api").version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version(
-                Info.getPaxWebVersion()).startLevel(10),
-            mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard").version(
-                Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-jetty").version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-runtime").version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-jsp").version(Info.getPaxWebVersion()),
-            mavenBundle("org.eclipse.jdt.core.compiler", "ecj").version("3.5.1"),
-            mavenBundle("org.eclipse.jetty", "jetty-util").version(JETTY_VERSION),
-            mavenBundle("org.eclipse.jetty", "jetty-io").version(JETTY_VERSION),
-            mavenBundle("org.eclipse.jetty", "jetty-http").version(JETTY_VERSION),
-            mavenBundle("org.eclipse.jetty", "jetty-continuation").version(JETTY_VERSION),
-            mavenBundle("org.eclipse.jetty", "jetty-server").version(JETTY_VERSION),
-            mavenBundle("org.eclipse.jetty", "jetty-security").version(JETTY_VERSION),
-            mavenBundle("org.eclipse.jetty", "jetty-xml").version(JETTY_VERSION),
-            mavenBundle("org.eclipse.jetty", "jetty-servlet").version(JETTY_VERSION),
+            paxWebBundles(),
+
 
             mavenBundle("org.apache.myfaces.core", "myfaces-api", "2.0.9"),
             mavenBundle("org.apache.myfaces.core", "myfaces-impl", "2.0.9"),
@@ -283,12 +257,7 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
             systemProperty("logback.configurationFile").value(getPaxCdiRoot() + "/tck/pax-cdi-arquillian/src/test/resources/logback.xml"));
 
     }
-
-    public static UrlProvisionOption workspaceBundle(String pathFromRoot) {
-        String url = String.format("reference:file:%s/%s/target/classes", getPaxCdiRoot(), pathFromRoot);
-        return bundle(url);
-    }
-
+    
     public static String getPaxCdiRoot() {
         if (paxCdiRoot == null) {
             paxCdiRoot = System.getProperty("pax.cdi.root");
@@ -305,29 +274,5 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
             }
         }
         return paxCdiRoot;
-    }
-
-    public static Option openWebBeansBundles() {
-        return composite(
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject(),
-
-            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-asm-shaded").versionAsInProject(), //
-            mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(), //
-            mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-annotation_1.1_spec").version("1.0.1"),            
-            mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec")
-                .versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-validation_1.0_spec")
-                .versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-atinject_1.0_spec").version("1.0"),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-jcdi_1.0_spec").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec")
-                .versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject());
     }
 }
