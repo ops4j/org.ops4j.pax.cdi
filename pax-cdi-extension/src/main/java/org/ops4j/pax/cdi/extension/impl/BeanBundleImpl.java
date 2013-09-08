@@ -46,7 +46,7 @@ public class BeanBundleImpl {
     @Inject
     private BeanManager beanManager;
     
-    @Inject
+    //@Inject
     private BundleEventBridge bundleEventBridge;
 
     @Inject
