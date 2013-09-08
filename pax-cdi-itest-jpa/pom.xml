@@ -5,6 +5,7 @@
         <groupId>org.ops4j.pax.cdi</groupId>
         <artifactId>pax-cdi-parent</artifactId>
         <version>0.5.0-SNAPSHOT</version>
+        <relativePath>../pax-cdi-parent</relativePath>
     </parent>
     <artifactId>pax-cdi-itest-jpa</artifactId>
     
@@ -13,11 +14,6 @@
     </properties>
     
     <dependencies>
-
-        <dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>jersey-apache-client</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -161,11 +157,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-atinject_1.0_spec</artifactId>
             <scope>provided</scope>
@@ -251,6 +242,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.ops4j.pax.jdbc</groupId>
+            <artifactId>pax-jdbc</artifactId>
+            <version>${pax.jdbc.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.ops4j.pax.jpa</groupId>
             <artifactId>pax-jpa</artifactId>
             <version>${pax.jpa.version}</version>
@@ -263,6 +261,43 @@
             <version>${pax.jpa.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.deltaspike.core</groupId>
+            <artifactId>deltaspike-core-api</artifactId>
+            <version>${deltaspike.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.deltaspike.core</groupId>
+            <artifactId>deltaspike-core-impl</artifactId>
+            <version>${deltaspike.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-jpa-module-api</artifactId>
+            <version>${deltaspike.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-jpa-module-impl</artifactId>
+            <version>${deltaspike.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.enterprise</artifactId>
+            <version>4.2.0</version>
+            <scope>provided</scope>
+        </dependency>
+
 
 
 

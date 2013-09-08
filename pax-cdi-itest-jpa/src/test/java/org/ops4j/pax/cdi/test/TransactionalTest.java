@@ -20,12 +20,9 @@ package org.ops4j.pax.cdi.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.TestConfiguration.cdiProviderBundles;
-import static org.ops4j.pax.cdi.test.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.cdi.test.TestConfiguration.*;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.CoreOptions.*;
 
 import javax.inject.Inject;
 
@@ -53,38 +50,35 @@ public class TransactionalTest {
             paxCdiProviderAdapter(),            
             cdiProviderBundles(),
             
-            mavenBundle("org.apache.geronimo.specs", "geronimo-jpa_2.0_spec", "1.1"),
-            mavenBundle( "commons-lang", "commons-lang").versionAsInProject(),
-            mavenBundle( "commons-collections", "commons-collections").versionAsInProject(),
-            mavenBundle( "commons-pool", "commons-pool").versionAsInProject(),
-            mavenBundle( "commons-dbcp", "commons-dbcp").versionAsInProject(),
-            mavenBundle( "org.apache.servicemix.bundles", "org.apache.servicemix.bundles.serp", "1.13.1_4"),
-            mavenBundle( "org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm", "3.3_2"),
-            mavenBundle( "org.apache.openjpa", "openjpa").versionAsInProject(),
+            // OpenJPA and dependencies
+            mavenBundle("org.apache.geronimo.specs", "geronimo-jpa_2.0_spec").versionAsInProject(),
+            mavenBundle("commons-lang", "commons-lang").versionAsInProject(),
+            mavenBundle("commons-collections", "commons-collections").versionAsInProject(),
+            mavenBundle("commons-pool", "commons-pool").versionAsInProject(),
+            mavenBundle("commons-dbcp", "commons-dbcp").versionAsInProject(),
+            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.serp",
+                "1.13.1_4"),
+            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm",
+                "3.3_2"),
+            mavenBundle("org.apache.openjpa", "openjpa").versionAsInProject(),
 
-            
-            mavenBundle( "org.ops4j.pax.jdbc", "pax-jdbc", "0.3.0"),
-            mavenBundle( "org.apache.derby", "derby").versionAsInProject(),            
-            mavenBundle( "org.osgi", "org.osgi.enterprise", "4.2.0" ),
-            
-            
-
-            mavenBundle("org.apache.deltaspike.core", "deltaspike-core-api", "0.4"),
-            mavenBundle("org.apache.deltaspike.core", "deltaspike-core-impl", "0.4"),
-            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-api", "0.4"),
-            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl", "0.4"),
-
-            
-            
-            
+            // Pax JPA, Pax JDBC and Derby driver
             mavenBundle("org.ops4j.pax.jpa", "pax-jpa").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
+            mavenBundle("org.apache.derby", "derby").versionAsInProject(),
+            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject(),
+
+            // DeltaSpike JPA module and dependencies
+            mavenBundle("org.apache.deltaspike.core", "deltaspike-core-api").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.core", "deltaspike-core-impl").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-api")
+                .versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl")
+                .versionAsInProject(),
+
+            // Sample bundles
             mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1-model").versionAsInProject(),
-            workspaceBundle("org.ops4j.pax.cdi.samples","pax-cdi-sample2-service")
-        
-            );
-            
-
-
+            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample2-service"));
     }
 
     @Test
