@@ -98,18 +98,31 @@ public class OsgiExtension implements Extension {
      */
     public <T> void processInjectionTarget(@Observes ProcessInjectionTarget<T> event) {
         log.debug("processInjectionTarget {}", event.getAnnotatedType().getBaseType());
+        boolean overrideRequired = false;
         for (InjectionPoint ip : event.getInjectionTarget().getInjectionPoints()) {
-            processInjectionPoint(ip);
+            boolean instanceIp = processInjectionPoint(ip);
+            overrideRequired |= instanceIp;
         }
-        event.setInjectionTarget(new OsgiInjectionTarget<T>(event.getInjectionTarget()));
+        if (overrideRequired) {
+            event.setInjectionTarget(new OsgiInjectionTarget<T>(event.getInjectionTarget()));
+        }
     }
 
-    private void processInjectionPoint(InjectionPoint ip) {
+    /**
+     * Returns true if the injection point has type Instance<T> for an OsgiService, so we
+     * need to override the injection target.
+     * 
+     * @param ip
+     * @return
+     */
+    private boolean processInjectionPoint(InjectionPoint ip) {
         OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
         if (qualifier != null) {
             log.debug("service injection point {} with qualifier {}", ip, qualifier);
             storeServiceInjectionPoint(ip);
         }
+        Type instanceType = InjectionPointOsgiUtils.getInstanceType(ip);
+        return instanceType != null;
     }
 
     /**
