@@ -1,0 +1,18 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="JSR-299 TCK" verbose="2">
+
+    <test name="lookup" enabled="true">
+       <classes>     
+
+            <class name="org.jboss.cdi.tck.tests.lookup.binding.members.annotation.BindingAnnotationWithMemberTest"/>
+            <class name="org.jboss.cdi.tck.tests.lookup.binding.members.array.BindingAnnotationWithMemberTest"/>
+            <class name="org.jboss.cdi.tck.tests.lookup.byname.ResolutionByNameTest"/>
+            <class name="org.jboss.cdi.tck.tests.lookup.byname.ambiguous.AmbiguousELNamesTest"/>
+            <class name="org.jboss.cdi.tck.tests.lookup.clientProxy.ClientProxyTest"/>
+            <class name="org.jboss.cdi.tck.tests.lookup.clientProxy.incontainer.ClientProxyTest"/>
+            <class name="org.jboss.cdi.tck.tests.lookup.dependency.resolution.AmbiguousDependencyResolutionTest"/>
+
+        </classes>
+    </test>
+    
+</suite>

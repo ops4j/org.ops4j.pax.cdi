@@ -119,12 +119,12 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
                 <filtering>true</filtering>
-            </resource>
-        </resources>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -184,6 +184,7 @@
 
                     <suiteXmlFiles>
                         <suiteXmlFile>definition.xml</suiteXmlFile>
+                        <suiteXmlFile>lookup.xml</suiteXmlFile>
                     </suiteXmlFiles>
 
                     <systemPropertyVariables>
