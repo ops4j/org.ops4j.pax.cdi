@@ -58,6 +58,12 @@ public class ProxyWeavingHook implements WeavingHook {
             isBeanBundle = true;
         }
         bundleMap.put(bundle, isBeanBundle);
+
+        // pax-cdi-extension fires CDI events and hence needs dynamic imports
+        // for OpenWebBeans proxies
+        if (bundle.getSymbolicName().equals("org.ops4j.pax.cdi.extension")) {
+            wovenClass.getDynamicImports().add("org.apache.webbeans.*");
+        }
     }
     
     /**
@@ -79,6 +85,5 @@ public class ProxyWeavingHook implements WeavingHook {
             }
         }
         return false;
-    }
-    
+    }    
 }
