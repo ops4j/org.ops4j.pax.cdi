@@ -10,7 +10,7 @@
     <artifactId>pax-cdi-itest-jpa</artifactId>
     
     <properties>
-        <pax.jpa.version>0.1.0-SNAPSHOT</pax.jpa.version>
+        <pax.jpa.version>0.1.0</pax.jpa.version>
     </properties>
     
     <dependencies>
@@ -235,7 +235,7 @@
 
         <dependency>
             <groupId>org.ops4j.pax.jpa.samples</groupId>
-            <artifactId>pax-jpa-sample1-model</artifactId>
+            <artifactId>pax-jpa-sample1</artifactId>
             <version>${pax.jpa.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -275,10 +275,6 @@
             <version>4.2.0</version>
             <scope>provided</scope>
         </dependency>
-
-
-
-
 
     </dependencies>
 

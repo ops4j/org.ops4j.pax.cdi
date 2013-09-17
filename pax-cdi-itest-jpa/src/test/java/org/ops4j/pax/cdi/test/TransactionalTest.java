@@ -76,7 +76,7 @@ public class TransactionalTest {
                 .versionAsInProject(),
 
             // Sample bundles
-            mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1-model").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),
             workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample2-service"));
     }
 
