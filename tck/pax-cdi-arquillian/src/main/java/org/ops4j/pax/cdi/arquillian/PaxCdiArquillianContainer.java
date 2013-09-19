@@ -33,9 +33,7 @@ import static org.ops4j.pax.exam.CoreOptions.vmOption;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.Properties;
-import java.util.Stack;
 
 import org.codehaus.plexus.util.IOUtil;
 import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
@@ -58,10 +56,6 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.TestContainer;
 import org.ops4j.pax.exam.TestContainerException;
 import org.ops4j.pax.exam.spi.PaxExamRuntime;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.launch.Framework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,12 +67,6 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
 
     private TestContainer testContainer;
 
-    private BundleContext bundleContext;
-
-    private long probeBundleId;
-
-    private Stack<Long> installed;
-
     public Class<PaxCdiConfiguration> getConfigurationClass() {
         return PaxCdiConfiguration.class;
     }
@@ -86,22 +74,12 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
     public void setup(PaxCdiConfiguration configuration) {
     }
 
-    @SuppressWarnings("unchecked")
     public void start() throws LifecycleException {
         Option[] options = getConfigurationOptions();
         try {
             ExamSystem system = PaxExamRuntime.createServerSystem(options);
             testContainer = PaxExamRuntime.createContainer(system);
             testContainer.start();
-
-            Field field = testContainer.getClass().getDeclaredField("framework");
-            field.setAccessible(true);
-            Framework framework = (Framework) field.get(testContainer);
-            bundleContext = framework.getBundleContext();
-
-            field = testContainer.getClass().getDeclaredField("installed");
-            field.setAccessible(true);
-            installed = (Stack<Long>) field.get(testContainer);
         }
         catch (IOException exc) {
             log.error("error starting Pax Exam container", exc);
@@ -109,16 +87,10 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
         catch (TestContainerException exc) {
             log.error("error starting Pax Exam container", exc);
         }
-        catch (NoSuchFieldException exc) {
-            log.error("error starting Pax Exam container", exc);
-        }
         catch (SecurityException exc) {
             log.error("error starting Pax Exam container", exc);
         }
         catch (IllegalArgumentException exc) {
-            log.error("error starting Pax Exam container", exc);
-        }
-        catch (IllegalAccessException exc) {
             log.error("error starting Pax Exam container", exc);
         }
     }
@@ -141,7 +113,7 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
         war.setWebXML(new File(getPaxCdiRoot(),
             "tck/pax-cdi-arquillian/src/main/resources/probe-web.xml"));
         InputStream is = archive.as(ZipExporter.class).exportAsInputStream();
-        probeBundleId = testContainer.install(is);
+        testContainer.installProbe(is);
 
         ProtocolMetaData metadata = new ProtocolMetaData();
         HTTPContext context = new HTTPContext("localhost", 8181);
@@ -173,15 +145,7 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
     }
 
     public void undeploy(Archive<?> archive) throws DeploymentException {
-        Bundle probe = bundleContext.getBundle(probeBundleId);
-        try {
-            probe.stop();
-            probe.uninstall();
-            installed.pop();
-        }
-        catch (BundleException exc) {
-            throw new DeploymentException("cannot uninstall probe", exc);
-        }
+        testContainer.uninstallProbe();
     }
 
     public void deploy(Descriptor descriptor) throws DeploymentException {
