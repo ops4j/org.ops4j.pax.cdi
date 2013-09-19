@@ -84,7 +84,7 @@ public class TestConfiguration {
             frameworkProperty("eclipse.consoleLog").value("true"),
             
             // do not treat javax.annotation as system package
-            frameworkProperty("org.osgi.framework.system.packages").value(props.get("org.osgi.framework.system.packages")), 	
+            frameworkProperty("org.osgi.framework.system.packages").value(props.get("org.osgi.framework.system.packages")),
             
             systemTimeout(2000000),
             junitBundles());
@@ -112,8 +112,10 @@ public class TestConfiguration {
 
             case WELD2:    
                 return weld2Bundles();
+            
+            default:    
+                throw new IllegalArgumentException("pax.cdi.provider unknown or null");
         }
-        throw new IllegalArgumentException("pax.cdi.provider unknown or null");
     }
 
     public static Option paxCdiProviderAdapter() {
@@ -125,8 +127,10 @@ public class TestConfiguration {
             case WELD1:    
             case WELD2:    
                 return workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-weld");
+                
+            default:     
+                throw new IllegalArgumentException("pax.cdi.provider unknown or null");
         }
-        throw new IllegalArgumentException("pax.cdi.provider unknown or null");
     }
 
     public static Option paxCdiProviderWebAdapter() {
@@ -147,8 +151,10 @@ public class TestConfiguration {
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web-weld"),
                     mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec").versionAsInProject()
                     );
+            
+            default:    
+                throw new IllegalArgumentException("pax.cdi.provider unknown or null");
         }
-        throw new IllegalArgumentException("pax.cdi.provider unknown or null");
     }
 
     public static CdiProvider getCdiProvider() {
