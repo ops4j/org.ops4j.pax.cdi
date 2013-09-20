@@ -15,6 +15,7 @@
         <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-spi/${ops4j.base.version}</bundle>
         <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-lang/${ops4j.base.version}</bundle>
         <bundle dependency="true">mvn:org.apache.felix/org.apache.felix.scr/1.6.2</bundle>
+        <bundle dependency="true">mvn:org.apache.xbean/xbean-bundleutils/3.13</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-api/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-spi/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-extension/${project.version}</bundle>
@@ -24,7 +25,6 @@
     <feature name="pax-cdi-weld" description="Weld CDI support" version="${project.version}" resolver="(obr)">
         <feature version="${project.version}">pax-cdi</feature>
         <bundle dependency="true">mvn:org.jboss.weld/weld-osgi-bundle/${weld.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.xbean/xbean-bundleutils/3.11.1</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-weld/${project.version}</bundle>
     </feature>
 
@@ -33,8 +33,8 @@
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-validation_1.0_spec/1.1</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-servlet_3.0_spec/1.0</bundle>
-        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javassist/3.12.1.GA_3</bundle>
-        <bundle dependency="true">mvn:org.apache.geronimo.bundles/scannotation/1.0.2_1</bundle>
+        <bundle dependency="true">mvn:org.apache.xbean/xbean-asm-shaded/3.13</bundle>
+        <bundle dependency="true">mvn:org.apache.xbean/xbean-finder-shaded/3.13</bundle>
         <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-spi/${openwebbeans.version}</bundle>
         <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-impl/${openwebbeans.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-openwebbeans/${project.version}</bundle>
