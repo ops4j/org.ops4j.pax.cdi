@@ -201,7 +201,9 @@ public class TestConfiguration {
         return composite(
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-weld"),
 
-            mavenBundle("ch.qos.cal10n", "cal10n-api", "0.7.7"),
+            mavenBundle("org.jboss.logging", "jboss-logging", "3.1.3.GA"),
+            mavenBundle("com.google.guava", "guava", "13.0.1"),
+            mavenBundle("javax.enterprise", "cdi-api", "1.1-20130918"),
             mavenBundle("org.jboss.logging", "jboss-logging", "3.1.0.GA"),
             mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
