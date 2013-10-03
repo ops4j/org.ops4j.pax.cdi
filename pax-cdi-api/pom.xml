@@ -57,6 +57,14 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+                        <Export-Package>
+                            org.ops4j.pax.cdi.api.*;version=${project.version},
+                            org.osgi.service.cdi
+                        </Export-Package>
+                        <Import-Package>
+                            org.osgi.service.cdi,
+                            *
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
