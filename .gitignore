@@ -4,8 +4,12 @@ bin
 .project
 .settings
 .checkstyle
+.factorypath
 test-output
 *.log
 *~
 .idea
 *.iml
+
+# settings for running TCK in Eclipse
+org.ops4j.pax.cdi.properties
