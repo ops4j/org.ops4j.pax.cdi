@@ -254,7 +254,8 @@
                     <runOrder>alphabetical</runOrder>
                     <systemPropertyVariables>
                         <java.util.logging.config.file>src/test/resources/logging.properties</java.util.logging.config.file>
-                        <pax.cdi.provider>${pax.cdi.provider}</pax.cdi.provider>
+                        <http.port>${http.port}</http.port>
+                        <pax.cdi.provider>${pax.cdi.provider}</pax.cdi.provider>                        
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

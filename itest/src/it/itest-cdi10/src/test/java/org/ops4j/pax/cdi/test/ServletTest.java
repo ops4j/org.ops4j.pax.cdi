@@ -20,10 +20,11 @@ package org.ops4j.pax.cdi.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.*;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderWebAdapter;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxWebBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
@@ -64,6 +65,8 @@ public class ServletTest {
     
     @Inject
     private ServletContext servletContext;
+    
+    private String httpPort = System.getProperty("http.port", "8181");
 
     @Configuration
     public Option[] config() {
@@ -81,7 +84,7 @@ public class ServletTest {
 
             // Pax Web
 
-            systemProperty("org.osgi.service.http.port").value("8181"),
+            systemProperty("org.osgi.service.http.port").value(httpPort),
             paxWebBundles(),
             
             mavenBundle("org.osgi", "org.osgi.compendium").version("4.3.1"),
@@ -103,14 +106,14 @@ public class ServletTest {
     @Test
     public void servletInjection() {
         Client client = Client.create();
-        WebResource resource = client.resource("http://localhost:8181/sample1/message");
+        WebResource resource = client.resource(String.format("http://localhost:%s/sample1/message", httpPort));
         assertThat(resource.get(String.class), is("Message from managed bean\r\n"));
     }
 
     @Test
     public void servletInjectionWithRequestScope() {
         Client client = Client.create();
-        WebResource resource = client.resource("http://localhost:8181/sample1/random");
+        WebResource resource = client.resource(String.format("http://localhost:%s/sample1/random", httpPort));
         String id1 = resource.get(String.class);
         String id2 = resource.get(String.class);
         assertThat(id1, not(id2));
@@ -119,7 +122,7 @@ public class ServletTest {
     @Test
     public void servletInjectionWithApplicationScope() {
         Client client = Client.create();
-        WebResource resource = client.resource("http://localhost:8181/sample1/applId");
+        WebResource resource = client.resource(String.format("http://localhost:%s/sample1/applId", httpPort));
         String id1 = resource.get(String.class);
         String id2 = resource.get(String.class);
         assertThat(id1, is(id2));
@@ -130,19 +133,19 @@ public class ServletTest {
         DefaultApacheHttpClientConfig config = new DefaultApacheHttpClientConfig();
         config.getProperties().put(ApacheHttpClientConfig.PROPERTY_HANDLE_COOKIES, true);
         Client client = ApacheHttpClient.create(config);
-        WebResource resource = client.resource("http://localhost:8181/sample1/session");
+        WebResource resource = client.resource(String.format("http://localhost:%s/sample1/session", httpPort));
         String text = resource.get(String.class);
         assertThat(text, is("It worked!\n"));
 
-        resource = client.resource("http://localhost:8181/sample1/timestamp");
+        resource = client.resource(String.format("http://localhost:%s/sample1/timestamp", httpPort));
         String timestamp1 = resource.get(String.class);
         Thread.sleep(500);
         
         // force new session
         Client client2 = ApacheHttpClient.create(config);
-        client2.resource("http://localhost:8181/sample1/session").get(String.class);
+        client2.resource(String.format("http://localhost:%s/sample1/session", httpPort)).get(String.class);
         
-        WebResource resource2 = client2.resource("http://localhost:8181/sample1/timestamp");
+        WebResource resource2 = client2.resource(String.format("http://localhost:%s/sample1/timestamp", httpPort));
         String timestamp3 = resource2.get(String.class);
         assertThat(timestamp3, is(not(timestamp1)));
 
@@ -156,16 +159,17 @@ public class ServletTest {
     @Test
     public void checkInvalidateSession() {
         Client client = Client.create();
-        WebResource resource1 = client.resource("http://localhost:8181/sample1/session");
+        WebResource contextRoot = client.resource(String.format("http://localhost:%s/sample1", httpPort));
+        WebResource resource1 = contextRoot.path("session");
         assertThat(resource1.get(String.class), is("It worked!\n"));
         
-        WebResource resource2 = client.resource("http://localhost:8181/sample1/invalidate?isBeanConstructed");
+        WebResource resource2 = contextRoot.path("invalidate").queryParam("isBeanConstructed", "");
         assertThat(resource2.get(String.class), is("true"));
 
-        WebResource resource3 = client.resource("http://localhost:8181/sample1/invalidate");
+        WebResource resource3 = contextRoot.path("invalidate");
         assertThat(resource3.get(String.class), is(""));
 
-        WebResource resource4 = client.resource("http://localhost:8181/sample1/invalidate?isBeanDestroyed");
+        WebResource resource4 = contextRoot.path("invalidate").queryParam("isBeanDestroyed", "");
         assertThat(resource4.get(String.class), is("false"));
     }    
 }
