@@ -28,6 +28,7 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManagerFactory;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +47,9 @@ public class TransactionalTest {
 
     @Inject
     private LibraryServiceClient libraryService;
+    
+    @Inject
+    private EntityManagerFactory emf;
     
     @Configuration
     public Option[] config() {
@@ -80,11 +84,11 @@ public class TransactionalTest {
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl")
                 .versionAsInProject(),
 
-            // Fragment providing the Pax CDI extension capability (currently missing in DeltaSpike JPA    
-            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample2-ds-jpa", Info.getPaxCdiVersion()).noStart(),
 
             // Sample bundles
             mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),
+            // Fragment providing the Pax CDI extension capability (currently missing in DeltaSpike JPA    
+            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample2-ds-jpa", Info.getPaxCdiVersion()).noStart(),
             workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample2-service"));
     }
 

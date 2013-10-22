@@ -38,6 +38,7 @@
         <module>pax-cdi-web-openwebbeans</module>
         <module>pax-cdi-features</module>
         <module>pax-cdi-test-support</module>
+        <module>pax-cdi-itest-jpa</module>
     </modules>
 
     <profiles>
@@ -45,12 +46,6 @@
             <id>itest</id>
             <modules>
                 <module>itest</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>experimental</id>
-            <modules>
-                <module>pax-cdi-itest-jpa</module>
             </modules>
         </profile>
         <profile>

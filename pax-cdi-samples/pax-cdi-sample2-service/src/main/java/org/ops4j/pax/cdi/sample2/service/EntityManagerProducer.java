@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.apache.deltaspike.jpa.api.transaction.TransactionScoped;
 import org.ops4j.pax.cdi.api.OsgiService;
 
 
@@ -31,9 +30,8 @@ public class EntityManagerProducer {
     @Inject @OsgiService
     private EntityManagerFactory emf;
     
-    @Produces @TransactionScoped
+    @Produces
     public EntityManager createEntityManager() {
         return emf.createEntityManager();
     }
-
 }
