@@ -24,6 +24,7 @@
             <id>matrix</id>
             <modules>
                 <module>src/it/itest-cdi10</module>
+                <module>src/it/itest-jpa</module>
             </modules>
         </profile>
 

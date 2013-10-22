@@ -5,13 +5,11 @@
         <groupId>org.ops4j.pax.cdi</groupId>
         <artifactId>pax-cdi-parent</artifactId>
         <version>0.5.0-SNAPSHOT</version>
-        <relativePath>../pax-cdi-parent</relativePath>
+        <relativePath>../../../pax-cdi-parent</relativePath>
     </parent>
-    <artifactId>pax-cdi-itest-jpa</artifactId>
-    
-    <properties>
-        <pax.jpa.version>0.1.0</pax.jpa.version>
-    </properties>
+
+    <groupId>org.ops4j.pax.cdi.itest</groupId>
+    <artifactId>itest-jpa</artifactId>
     
     <dependencies>
 
@@ -338,7 +336,7 @@
         <profile>
             <id>owb1</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <pax.cdi.provider>owb1</pax.cdi.provider>
@@ -395,7 +393,7 @@
         <profile>
             <id>weld2</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
                 <pax.cdi.provider>weld2</pax.cdi.provider>
@@ -418,14 +416,7 @@
                 <dependency>
                     <groupId>org.jboss.weld</groupId>
                     <artifactId>weld-osgi-bundle</artifactId>
-                    <version>2.1.0.Beta1</version>
-                    <scope>provided</scope>
-                </dependency>
-            
-                <dependency>
-                    <groupId>org.jboss.weld</groupId>
-                    <artifactId>weld-core</artifactId>
-                    <version>2.1.0.Beta1</version>
+                    <version>${weld2.version}</version>
                     <scope>provided</scope>
                 </dependency>
             
@@ -433,18 +424,5 @@
         </profile>
     </profiles>
     
-    <repositories>
-        <repository>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/ops4j-snapshots</url>
-        </repository>
-    </repositories>
 
 </project>

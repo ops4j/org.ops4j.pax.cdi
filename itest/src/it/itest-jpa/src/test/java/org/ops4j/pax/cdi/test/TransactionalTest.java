@@ -39,24 +39,23 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.jpa.sample1.model.Author;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class TransactionalTest {
 
-    @Inject
-    private LibraryServiceClient libraryService;
-    
-    @Inject
+    @Inject @Filter(timeout = 2000000)
     private EntityManagerFactory emf;
+    
+    @Inject @Filter(timeout = 2000000)
+    private LibraryServiceClient libraryService;
     
     @Configuration
     public Option[] config() {
         return options(
             regressionDefaults(),
-            paxCdiProviderAdapter(),            
-            cdiProviderBundles(),
             
             // OpenJPA and dependencies
             mavenBundle("org.apache.geronimo.specs", "geronimo-jpa_2.0_spec").versionAsInProject(),
@@ -83,12 +82,20 @@ public class TransactionalTest {
                 .versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl")
                 .versionAsInProject(),
+                
+            mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec")
+                .versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
+                
 
+
+            // Fragment providing the Pax CDI extension capability (currently missing in DeltaSpike JPA    
+            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample2-ds-jpa", Info.getPaxCdiVersion()).noStart(),
 
             // Sample bundles
             mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),
-            // Fragment providing the Pax CDI extension capability (currently missing in DeltaSpike JPA    
-            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample2-ds-jpa", Info.getPaxCdiVersion()).noStart(),
+            paxCdiProviderAdapter(),            
+            cdiProviderBundles(),
             workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample2-service"));
     }
 

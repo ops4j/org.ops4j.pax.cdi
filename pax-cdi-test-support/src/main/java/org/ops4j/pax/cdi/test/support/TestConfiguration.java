@@ -208,9 +208,6 @@ public class TestConfiguration {
             mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
             mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec")
-            .versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
             mavenBundle("org.jboss.weld", "weld-osgi-bundle").versionAsInProject());
     }
 
