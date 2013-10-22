@@ -34,7 +34,7 @@
 
         <dependency>
             <groupId>org.ops4j.pax.jpa.samples</groupId>
-            <artifactId>pax-jpa-sample1-model</artifactId>
+            <artifactId>pax-jpa-sample1</artifactId>
             <version>${pax.jpa.version}</version>
         </dependency>
 
