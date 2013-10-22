@@ -18,6 +18,7 @@
         <module>pax-cdi-jetty-weld-war</module>
         <module>pax-cdi-sample3</module>
         <module>pax-cdi-sample3-client</module>
+        <module>pax-cdi-sample2-deltaspike</module>
     </modules>
 
     <profiles>

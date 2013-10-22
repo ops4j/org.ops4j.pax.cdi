@@ -20,13 +20,18 @@ package org.ops4j.pax.cdi.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.*;
-import static org.ops4j.pax.exam.CoreOptions.*;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.options;
 
 import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.cdi.sample2.service.LibraryServiceClient;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
@@ -74,6 +79,9 @@ public class TransactionalTest {
                 .versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl")
                 .versionAsInProject(),
+
+            // Fragment providing the Pax CDI extension capability (currently missing in DeltaSpike JPA    
+            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample2-ds-jpa", Info.getPaxCdiVersion()).noStart(),
 
             // Sample bundles
             mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),
