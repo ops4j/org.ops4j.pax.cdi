@@ -90,7 +90,7 @@ public class TransactionalTest {
 
 
             // Fragment providing the Pax CDI extension capability (currently missing in DeltaSpike JPA    
-            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample2-ds-jpa", Info.getPaxCdiVersion()).noStart(),
+            mavenBundle("org.ops4j.pax.cdi.fragment", "pax-cdi-fragment-ds-jpa", Info.getPaxCdiVersion()).noStart(),
 
             // Sample bundles
             mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),

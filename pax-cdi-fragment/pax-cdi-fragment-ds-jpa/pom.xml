@@ -1,14 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.ops4j.pax.cdi</groupId>
-        <artifactId>pax-cdi-samples</artifactId>
-        <version>0.5.0-SNAPSHOT</version>
-    </parent>
-
-    <groupId>org.ops4j.pax.cdi.samples</groupId>
-    <artifactId>pax-cdi-sample2-ds-jpa</artifactId>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.ops4j.pax.cdi</groupId>
+    <artifactId>pax-cdi-fragment</artifactId>
+    <version>0.5.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.ops4j.pax.cdi.fragment</groupId>
+  <artifactId>pax-cdi-fragment-ds-jpa</artifactId>
     <packaging>bundle</packaging>
     
     <name>OPS4J Pax CDI DeltaSpike JPA Fragment</name>
@@ -19,8 +17,8 @@
     </description>
 
     <properties>
-        <bundle.symbolicName>org.ops4j.pax.cdi.sample2.deltaspike.jpa</bundle.symbolicName>
-        <bundle.namespace>org.ops4j.pax.cdi.sample2.deltaspike.jpa</bundle.namespace>
+        <bundle.symbolicName>org.ops4j.pax.cdi.fragment.deltaspike.jpa</bundle.symbolicName>
+        <bundle.namespace>org.ops4j.pax.cdi.fragment.deltaspike.jpa</bundle.namespace>
     </properties>
 
 
