@@ -9,6 +9,8 @@
 
     <groupId>org.ops4j.pax.cdi.tck</groupId>
     <artifactId>pax-cdi-tck11-porting</artifactId>
+    
+    <name>OPS4J Pax CDI TCK 1.1 Porting Package</name>
 
     <dependencies>
 

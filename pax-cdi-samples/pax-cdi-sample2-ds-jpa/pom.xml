@@ -10,6 +10,13 @@
     <groupId>org.ops4j.pax.cdi.samples</groupId>
     <artifactId>pax-cdi-sample2-ds-jpa</artifactId>
     <packaging>bundle</packaging>
+    
+    <name>OPS4J Pax CDI DeltaSpike JPA Fragment</name>
+    
+    <description>
+      This fragment add the org.ops4j.pax.cdi.extension capability to the DeltaSpike JPA module.
+      Pax CDI will ignore extension bundles that do not provide this capability.
+    </description>
 
     <properties>
         <bundle.symbolicName>org.ops4j.pax.cdi.sample2.deltaspike.jpa</bundle.symbolicName>

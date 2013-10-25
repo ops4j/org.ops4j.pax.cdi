@@ -9,6 +9,8 @@
 	</parent>
 	<artifactId>tck</artifactId>
 	<packaging>pom</packaging>
+    
+    <name>OPS4J Pax CDI TCK Aggregator</name>
 
 	<properties>
 		<arquillian.version>1.0.3.Final</arquillian.version>

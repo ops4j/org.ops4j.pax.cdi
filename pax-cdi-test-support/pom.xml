@@ -8,6 +8,8 @@
         <relativePath>../pax-cdi-parent</relativePath>
     </parent>
     <artifactId>pax-cdi-test-support</artifactId>
+    
+    <name>OPS4J Pax CDI Test Support</name>
 
     <dependencies>
         <dependency>
