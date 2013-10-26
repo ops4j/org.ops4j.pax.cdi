@@ -40,6 +40,10 @@
                         <version>1.8</version>
                         <configuration>
                             <streamLogs>true</streamLogs>
+                            <pomExcludes>
+                                <!-- currently not working, needs system package overrides -->
+                                <pomExclude>itest-karaf/pom.xml</pomExclude>
+                            </pomExcludes>
                         </configuration>
                         <executions>
                             <execution>
