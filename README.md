@@ -1,4 +1,4 @@
-Pax CDI
+﻿Pax CDI
 =======
 
 Thanks for looking into Pax CDI - Contexts and Dependency Injection for OSGi. 
@@ -27,7 +27,7 @@ Run Build:
 
 Releases go to Maven Central.
 
-The current milestone release is Pax CDI 0.4.0.
+The current milestone release is Pax CDI 0.5.0.
 
 ## Issue Tracking
 
@@ -37,7 +37,7 @@ The current milestone release is Pax CDI 0.4.0.
 
 We have a continuous integration build set up here:
 
-* <http://ci.ops4j.org/hudson/job/org.ops4j.pax.cdi>
+* <http://ci.ops4j.org/jenkins/job/org.ops4j.pax.cdi>
 
 Snapshot artifacts are being published to:
 
