@@ -19,6 +19,7 @@ package org.ops4j.pax.cdi.test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
@@ -32,6 +33,7 @@ import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.api.Info;
@@ -42,7 +44,6 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.osgi.framework.BundleContext;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -54,9 +55,6 @@ import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
 @ExamReactorStrategy(PerClass.class)
 public class ServletTest {
     
-    @Inject
-    private BundleContext bc;
-
     @Inject
     private CdiContainerFactory containerFactory;
 
@@ -96,6 +94,14 @@ public class ServletTest {
             mavenBundle("commons-codec", "commons-codec", "1.6"),
             mavenBundle("org.slf4j", "jcl-over-slf4j", "1.6.0"));
 
+    }
+    
+    @Before
+    public void before() {
+        // injecting container and servletContext guarantees that initialization has completed
+        // before running the tests
+        assertThat(container, is(notNullValue()));
+        assertThat(servletContext, is(notNullValue()));
     }
 
     @Test

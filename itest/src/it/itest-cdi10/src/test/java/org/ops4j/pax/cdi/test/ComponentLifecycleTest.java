@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Harald Wellmann.
+ * Copyright 2013 Harald Wellmann.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,16 +35,13 @@ import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
-import org.ops4j.pax.cdi.sample1.client.IceCreamClient;
 import org.ops4j.pax.cdi.sample1.client.StrawberryClient;
 import org.ops4j.pax.cdi.sample1.client.StrawberryService;
-import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerMethod;
-import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.swissbox.tracker.ServiceLookup;
 import org.ops4j.pax.swissbox.tracker.ServiceLookupException;
 import org.osgi.framework.BundleContext;
@@ -54,13 +51,6 @@ import org.osgi.framework.ServiceRegistration;
 @ExamReactorStrategy(PerMethod.class)
 public class ComponentLifecycleTest {
 
-    @Inject
-    private CdiContainerFactory containerFactory;
-
-    @Inject
-    @Filter(timeout = 1000000)
-    private IceCreamClient client;
-    
     @Inject
     private BundleContext bc;
 

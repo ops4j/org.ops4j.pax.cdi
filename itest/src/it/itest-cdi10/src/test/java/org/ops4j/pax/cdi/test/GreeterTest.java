@@ -19,13 +19,16 @@ package org.ops4j.pax.cdi.test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -74,5 +77,11 @@ public class GreeterTest {
     public void checkMultipleInstances() throws InvalidSyntaxException {
         Collection<ServiceReference<Greeter>> serviceReferences = bc.getServiceReferences(Greeter.class, null);
         assertThat(serviceReferences.size(), is(2));
+        
+        List<Greeter> greeters = new ArrayList<Greeter>();
+        for (ServiceReference<Greeter> ref : serviceReferences) {
+            greeters.add(bc.getService(ref));
+        }
+        assertThat(greeters, hasItem(greeter));
     }
 }
