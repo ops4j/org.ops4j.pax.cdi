@@ -6,7 +6,7 @@
   -->
 
   <feature name="pax-cdi" description="Provide CDI support" version="${project.version}" resolver="(obr)">
-    <feature version="[2.3,3.0)">scr</feature>
+    <feature version="[2.3,3.5)">scr</feature>
     <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jcdi_1.0_spec/1.0</bundle>
     <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0</bundle>
     <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-interceptor_1.1_spec/1.0</bundle>
