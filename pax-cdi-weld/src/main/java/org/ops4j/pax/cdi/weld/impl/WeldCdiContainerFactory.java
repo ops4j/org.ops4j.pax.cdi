@@ -32,6 +32,8 @@ import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link CdiContainerFactory} implementation based on Apache OpenWebBeans.
@@ -40,6 +42,8 @@ import org.osgi.framework.BundleContext;
  * 
  */
 public class WeldCdiContainerFactory implements CdiContainerFactory {
+
+    private Logger log = LoggerFactory.getLogger(WeldCdiContainerFactory.class);
 
     private Map<Long, CdiContainer> containers = new HashMap<Long, CdiContainer>();
     private List<CdiContainerListener> listeners = new CopyOnWriteArrayList<CdiContainerListener>();
@@ -66,6 +70,7 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
         for (CdiContainerListener listener : listeners) {
             listener.postCreate(container);
         }
+        log.debug("Weld Container created");
         return container;
     }
 
