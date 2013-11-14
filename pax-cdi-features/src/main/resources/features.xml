@@ -66,6 +66,7 @@
     <bundle dependency="true">mvn:org.apache.xbean/xbean-finder-shaded/3.13</bundle>
     <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-spi/${openwebbeans.version}</bundle>
     <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-impl/${openwebbeans.version}</bundle>
+    <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-el22/${openwebbeans.version}</bundle>
     <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-openwebbeans/${project.version}</bundle>
   </feature>
 

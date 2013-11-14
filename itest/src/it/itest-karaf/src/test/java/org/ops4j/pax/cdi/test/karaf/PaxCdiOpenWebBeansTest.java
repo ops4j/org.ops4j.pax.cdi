@@ -22,12 +22,14 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.PAX_CDI_FEATURES;
 import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.regressionDefaults;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
 
 import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.ops4j.pax.cdi.sample1.IceCreamService;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
@@ -38,17 +40,22 @@ public class PaxCdiOpenWebBeansTest {
 
     @Inject
     private CdiContainerFactory factory;
+    
+    @Inject
+    private IceCreamService iceCreamService;
 
     @Configuration
     public Option[] config() {
         return new Option[] { 
             regressionDefaults(),
-            features(PAX_CDI_FEATURES, "pax-cdi-openwebbeans")            
+            features(PAX_CDI_FEATURES, "pax-cdi-openwebbeans"),
+            mavenBundle().groupId("org.ops4j.pax.cdi.samples").artifactId("pax-cdi-sample1").versionAsInProject()
         };
     }
 
     @Test
     public void test() throws Exception {
         assertThat(factory, is(notNullValue()));
+        assertThat(iceCreamService, is(notNullValue()));
     }
 }
