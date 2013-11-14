@@ -14,7 +14,7 @@
     <name>OPS4J Pax CDI 1.0 Integration Tests on Karaf</name>
     
     <properties>
-      <karaf.version>3.0.0.RC1</karaf.version>
+      <karaf.version>3.0.0-SNAPSHOT</karaf.version>
     </properties>
 
     <dependencies>

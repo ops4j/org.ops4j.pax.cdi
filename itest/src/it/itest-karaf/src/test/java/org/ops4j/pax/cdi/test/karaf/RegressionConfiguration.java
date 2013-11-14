@@ -28,10 +28,13 @@ import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDist
 
 import java.io.File;
 
+import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.exam.ConfigurationManager;
 import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.karaf.options.KarafDistributionOption;
 import org.ops4j.pax.exam.karaf.options.configs.CustomProperties;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
+import org.ops4j.pax.exam.options.MavenUrlReference;
 
 /**
  * Default configuration for native container regression tests, overriding the default test system
@@ -47,24 +50,31 @@ import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
  * @since Dec 2011
  */
 public class RegressionConfiguration {
+    public static MavenUrlReference PAX_CDI_FEATURES = maven().groupId("org.ops4j.pax.cdi").artifactId("pax-cdi-features")
+        .type("xml").classifier("features").version(Info.getPaxCdiVersion());
 
     public static Option regressionDefaults() {
-        return regressionDefaults(null);        
+        return regressionDefaults("target/exam");        
     }
 
     public static Option regressionDefaults(String unpackDir) {
         return composite(
 
-            karafDistributionConfiguration().frameworkUrl(mvnKarafDist()).karafVersion(karafVersion()).
-                unpackDirectory(unpackDir == null ? null : new File(unpackDir)).useDeployFolder(false),                
-            
-                configureConsole().ignoreLocalConsole(),
-            
+            karafDistributionConfiguration().frameworkUrl(mvnKarafDist()).karafVersion(karafVersion())
+                .unpackDirectory(unpackDirFile(unpackDir)).useDeployFolder(false),                
+ 
+            KarafDistributionOption.keepRuntimeFolder()
+            /*
             when(isEquinox()).useOptions(                
                 editConfigurationFilePut(CustomProperties.KARAF_FRAMEWORK, "equinox"),
                 propagateSystemProperty("pax.exam.framework"),
                 systemProperty("osgi.console").value("6666"),
-                systemProperty("osgi.console.enable.builtin").value("true")));        
+                systemProperty("osgi.console.enable.builtin").value("true"))*/
+            );
+    }
+
+    private static File unpackDirFile(String unpackDir) {
+        return unpackDir == null ? null : new File(unpackDir);
     }
 
     public static boolean isEquinox() {
@@ -77,12 +87,12 @@ public class RegressionConfiguration {
     
     public static MavenArtifactUrlReference mvnKarafDist() {
         return maven().groupId("org.apache.karaf")
-            .artifactId("apache-karaf").type("zip").version(karafVersion());
+            .artifactId("apache-karaf").type("tar.gz").version(karafVersion());
     }
     
     public static String karafVersion() {
         ConfigurationManager cm = new ConfigurationManager();
-        String karafVersion = cm.getProperty("pax.exam.karaf.version", "3.0.0.RC1");
+        String karafVersion = cm.getProperty("pax.exam.karaf.version", "3.0.0-SNAPSHOT");
         return karafVersion;
     }
 }
