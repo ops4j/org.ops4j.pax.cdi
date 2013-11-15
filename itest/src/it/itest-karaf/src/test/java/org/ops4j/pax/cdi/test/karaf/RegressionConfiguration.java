@@ -19,6 +19,7 @@ package org.ops4j.pax.cdi.test.karaf;
 
 import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.maven;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
 
 import java.io.File;
@@ -44,8 +45,14 @@ import org.ops4j.pax.exam.options.MavenUrlReference;
  * @since Dec 2011
  */
 public class RegressionConfiguration {
-    public static MavenUrlReference PAX_CDI_FEATURES = maven().groupId("org.ops4j.pax.cdi").artifactId("pax-cdi-features")
-        .type("xml").classifier("features").version(Info.getPaxCdiVersion());
+    public static final MavenUrlReference PAX_CDI_FEATURES = maven().groupId("org.ops4j.pax.cdi")
+        .artifactId("pax-cdi-features").type("xml").classifier("features").version(Info.getPaxCdiVersion());
+    
+    public static final Option SAMPLE1 = mavenBundle().groupId("org.ops4j.pax.cdi.samples")
+        .artifactId("pax-cdi-sample1").versionAsInProject();
+    
+    public static final Option SAMPLE1_WEB = mavenBundle().groupId("org.ops4j.pax.cdi.samples")
+        .artifactId("pax-cdi-sample1-web").versionAsInProject();
 
     public static Option regressionDefaults() {
         return regressionDefaults("target/exam");        

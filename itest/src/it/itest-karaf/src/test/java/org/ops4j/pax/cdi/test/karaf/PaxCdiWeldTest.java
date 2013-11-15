@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.PAX_CDI_FEATURES;
+import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.SAMPLE1;
 import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.regressionDefaults;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
 
@@ -43,7 +44,8 @@ public class PaxCdiWeldTest {
     public Option[] config() {
         return new Option[] { 
             regressionDefaults(),
-            features(PAX_CDI_FEATURES, "pax-cdi-weld")            
+            features(PAX_CDI_FEATURES, "pax-cdi-weld"),
+            SAMPLE1
         };      
     }
 
