@@ -17,10 +17,6 @@
  */
 package org.ops4j.pax.cdi.spi.scan;
 
-import static org.osgi.framework.Constants.BUNDLE_CLASSPATH;
-import static org.osgi.framework.wiring.BundleRevision.BUNDLE_NAMESPACE;
-import static org.osgi.framework.wiring.BundleRevision.PACKAGE_NAMESPACE;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -40,6 +36,11 @@ import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.osgi.framework.Constants.BUNDLE_CLASSPATH;
+import static org.osgi.framework.wiring.BundleRevision.BUNDLE_NAMESPACE;
+import static org.osgi.framework.wiring.BundleRevision.PACKAGE_NAMESPACE;
+import static org.ops4j.pax.cdi.api.Constants.CDI_EXTENSION_CAPABILITY;
 
 /**
  * Scans a bundle for candidate managed bean classes. The scanner only looks at bundle entries but
@@ -109,7 +110,8 @@ public class BeanScanner {
         scannedPackages = new HashSet<String>();
         scanOwnBundle();
         scanImportedPackages();
-        scanRequiredBundles();
+        scanWiredBundles(BUNDLE_NAMESPACE);
+        scanWiredBundles(CDI_EXTENSION_CAPABILITY);
         logBeanClasses();
     }
 
@@ -279,6 +281,19 @@ public class BeanScanner {
         for (BundleWire wire : wires) {
             BundleWiring providerWiring = wire.getProviderWiring();
             log.debug("scanning required bundle [{}]", providerWiring.getBundle());
+            List<BundleCapability> capabilities = providerWiring.getCapabilities(PACKAGE_NAMESPACE);
+            for (BundleCapability pkgCapability : capabilities) {
+                scanExportedPackage(providerWiring, pkgCapability);
+            }
+        }
+    }
+
+    private void scanWiredBundles(String namespace) {
+        BundleWiring wiring = bundle.adapt(BundleWiring.class);
+        List<BundleWire> wires = wiring.getRequiredWires(namespace);
+        for (BundleWire wire : wires) {
+            BundleWiring providerWiring = wire.getProviderWiring();
+            log.debug("scanning wired bundle [{}]", providerWiring.getBundle());
             List<BundleCapability> capabilities = providerWiring.getCapabilities(PACKAGE_NAMESPACE);
             for (BundleCapability pkgCapability : capabilities) {
                 scanExportedPackage(providerWiring, pkgCapability);
