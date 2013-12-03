@@ -16,21 +16,21 @@
         <deltaspike.version>0.5</deltaspike.version>
         <jersey.version>1.13</jersey.version>
         <logback.version>1.0.0</logback.version>
-        <openwebbeans.version>1.2.0</openwebbeans.version>
+        <openwebbeans.version>1.2.1</openwebbeans.version>
         <ops4j.base.version>1.4.0</ops4j.base.version>
         <pax.exam.version>3.3.0</pax.exam.version>
         <pax.jdbc.version>0.3.0</pax.jdbc.version>
         <pax.jpa.version>0.1.1</pax.jpa.version>
         <pax.swissbox.version>1.7.0</pax.swissbox.version>
         <pax.url.version>1.6.0</pax.url.version>
-        <pax.web.version>3.0.2</pax.web.version>
+        <pax.web.version>3.0.4</pax.web.version>
         <slf4j.version>1.6.4</slf4j.version>
         <spring.version>3.2.2.RELEASE</spring.version>
         <pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
         <weld.api.version>1.2.0.Beta1</weld.api.version>
         <weld.version>1.2.0.Beta1</weld.version>
         <weld2.version>2.1.0.Final</weld2.version>
-        <xbean.version>3.12</xbean.version>
+        <xbean.version>3.16</xbean.version>
     </properties>
 
     <dependencyManagement>
@@ -201,6 +201,18 @@
             <dependency>
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-finder</artifactId>
+                <version>${xbean.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.xbean</groupId>
+                <artifactId>xbean-finder-shaded</artifactId>
+                <version>${xbean.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.xbean</groupId>
+                <artifactId>xbean-asm4-shaded</artifactId>
                 <version>${xbean.version}</version>
             </dependency>
 

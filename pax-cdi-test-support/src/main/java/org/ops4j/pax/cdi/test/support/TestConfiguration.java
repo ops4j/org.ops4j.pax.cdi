@@ -169,7 +169,7 @@ public class TestConfiguration {
         return composite(
             mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-asm-shaded").versionAsInProject(), //
+            mavenBundle("org.apache.xbean", "xbean-asm4-shaded").versionAsInProject(), //
             mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(), //
             mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-annotation_1.1_spec", "1.0.1"),
@@ -213,7 +213,7 @@ public class TestConfiguration {
 
     public static Option paxWebBundles() {
         return composite(
-            mavenBundle("org.apache.xbean", "xbean-asm-shaded").versionAsInProject(), //
+            mavenBundle("org.apache.xbean", "xbean-asm4-shaded").versionAsInProject(), //
             mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(), //
             mavenBundle("org.ops4j.pax.web", "pax-web-spi").version(Info.getPaxWebVersion()),
             mavenBundle("org.ops4j.pax.web", "pax-web-api").version(Info.getPaxWebVersion()),
