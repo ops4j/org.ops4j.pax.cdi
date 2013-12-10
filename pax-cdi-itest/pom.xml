@@ -226,6 +226,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-osgi-bundle</artifactId>
+            <version>${weld.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-asm-shaded</artifactId>
             <version>3.13</version>

@@ -142,12 +142,24 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
     }
 
     @Override
-    protected void doStart(Object environment) {
-        context = createWebBeansContext(getBundle(), environment);
-        if (log.isDebugEnabled()) {
-            for (Bean<?> bean : context.getBeanManagerImpl().getBeans()) {
-                log.debug("  {}", bean);
-            }
+    protected void doStart(final Object environment) {
+        try {
+            doWithClassLoader(getContextClassLoader(), new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    context = createWebBeansContext(getBundle(), environment);
+                    if (log.isDebugEnabled()) {
+                        for (Bean<?> bean : context.getBeanManagerImpl().getBeans()) {
+                            log.debug("  {}", bean);
+                        }
+                    }
+                    return null;
+                }
+            });
+        }
+        // CHECKSTYLE:SKIP
+        catch (Exception exc) {
+            throw new Ops4jException(exc);
         }
     }
 

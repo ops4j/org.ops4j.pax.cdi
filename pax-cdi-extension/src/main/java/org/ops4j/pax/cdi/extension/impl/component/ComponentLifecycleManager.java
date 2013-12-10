@@ -199,10 +199,16 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
         Component comp = type.getAnnotation(Component.class);
         if (comp != null) {
             for (ComponentProperty prop : comp.properties()) {
-                dict.put(prop.key(), prop.value());
+
+                dict.put(prop.key(), convertValue(prop.value(), prop.type()));
             }
         }
         return dict;
+    }
+
+    private Object convertValue(String value, String type) {
+        // TODO: conversion
+        return value;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

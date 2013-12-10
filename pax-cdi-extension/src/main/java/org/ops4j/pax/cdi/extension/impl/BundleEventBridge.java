@@ -67,29 +67,6 @@ public class BundleEventBridge  implements BundleTrackerCustomizer<Void> {
         return null;
     }
 
-    /**
-     * @param bundleEvent
-     * @return
-     */
-    @SuppressWarnings("serial")
-    private Event<BundleCdiEvent> select(BundleEvent bundleEvent) {
-        if (bundleEvent != null) {
-            switch (bundleEvent.getType()) {
-                case BundleEvent.STARTED:
-                    return event.select(new AnnotationLiteral<BundleStarted>() { });
-                
-                case BundleEvent.STOPPED:
-                    return event.select(new AnnotationLiteral<BundleStopped>() { });
-                
-                default:
-                    return event;
-            }
-        }
-        else {
-            return event;
-        }
-    }
-
     @Override
     public void modifiedBundle(Bundle bundle, BundleEvent bundleEvent, Void object) {
         Event<BundleCdiEvent> childEvent = select(bundleEvent);
@@ -101,4 +78,28 @@ public class BundleEventBridge  implements BundleTrackerCustomizer<Void> {
         Event<BundleCdiEvent> childEvent = select(bundleEvent);
         childEvent.fire(new BundleCdiEvent(bundle, bundleEvent));
     }
+
+    /**
+     * @param bundleEvent
+     * @return
+     */
+    @SuppressWarnings("serial")
+    private Event<BundleCdiEvent> select(BundleEvent bundleEvent) {
+        if (bundleEvent != null) {
+            switch (bundleEvent.getType()) {
+                case BundleEvent.STARTED:
+                    return event.select(new AnnotationLiteral<BundleStarted>() { });
+
+                case BundleEvent.STOPPED:
+                    return event.select(new AnnotationLiteral<BundleStopped>() { });
+
+                default:
+                    return event;
+            }
+        }
+        else {
+            return event;
+        }
+    }
+
 }

@@ -19,10 +19,10 @@ package org.ops4j.pax.cdi.sample2.service;
 
 import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.osgi.service.cdi.Component;
 
 
-@OsgiServiceProvider
+@Component
 public class LibraryServiceClient {
     
     @Inject

@@ -28,4 +28,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface ComponentProperty {
     String key();
     String value();
+    String type() default "String";
 }

@@ -23,12 +23,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.apache.deltaspike.jpa.api.transaction.TransactionScoped;
-import org.ops4j.pax.cdi.api.OsgiService;
+import org.osgi.service.cdi.Service;
 
 
 public class EntityManagerProducer {
     
-    @Inject @OsgiService
+    @Inject @Service
     private EntityManagerFactory emf;
     
     @Produces @TransactionScoped

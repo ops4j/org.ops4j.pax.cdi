@@ -78,11 +78,28 @@ public class TestConfiguration {
     }
 
     public static Option cdiProviderBundles() {
-        return openWebBeansBundles();
+//        return openWebBeansBundles();
+        return weldBundles();
     }    
-    
+
+    public static Option weldBundles() {
+        return composite(
+            workspaceBundle("pax-cdi-weld"),
+            mavenBundle("org.jboss.weld", "weld-osgi-bundle").versionAsInProject(),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
+
+            mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-validation_1.0_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-jcdi_1.0_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject()
+        );
+    }
+
     public static Option openWebBeansBundles() {
         return composite(
+            workspaceBundle("pax-cdi-openwebbeans"),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
             mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),

@@ -39,7 +39,7 @@ import javax.inject.Qualifier;
  * a bean bundle.
  * <p>
  * For the complementary action of publishing a CDI bean in the OSGi service registry, use the
- * {@link OsgiServiceProvider} qualifier.
+ * {@link org.osgi.service.cdi.Component} qualifier.
  * 
  * @author Harald Wellmann
  * 

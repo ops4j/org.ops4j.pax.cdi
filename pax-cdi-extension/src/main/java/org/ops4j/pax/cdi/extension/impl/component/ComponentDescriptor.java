@@ -18,6 +18,7 @@
 
 package org.ops4j.pax.cdi.extension.impl.component;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,7 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.cdi.Service;
 
 /**
  * Describes an OSGi service component and its dependencies.
@@ -86,6 +88,14 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
      *            OSGi service injection point of the corresponding bean
      */
     public <T> void addDependency(InjectionPoint ip) {
+        for (Annotation qualifier : ip.getQualifiers()) {
+            if (qualifier instanceof Service) {
+                Service svc = (Service) qualifier;
+                if (!svc.required()) {
+                    return;
+                }
+            }
+        }
         String filterString = InjectionPointOsgiUtils.getFilter(ip);
         try {
             Filter filter = FrameworkUtil.createFilter(filterString);

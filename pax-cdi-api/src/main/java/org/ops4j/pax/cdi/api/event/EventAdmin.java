@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osgi.service.cdi;
+package org.ops4j.pax.cdi.api.event;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.Documented;
@@ -31,7 +31,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * When used to consume events, it can used with
  * the @Filter annotation.
  *
- * @see Filter
+ * @see org.osgi.service.cdi.Filter
  * @see javax.enterprise.event.Event
  * @see javax.enterprise.event.Observes
  */

@@ -61,8 +61,7 @@ public class GreeterTest {
             workspaceBundle("pax-cdi-extension"),
             workspaceBundle("pax-cdi-api"),
             workspaceBundle("pax-cdi-spi"),
-            workspaceBundle("pax-cdi-openwebbeans"),
-            
+
             cdiProviderBundles());
 
     }

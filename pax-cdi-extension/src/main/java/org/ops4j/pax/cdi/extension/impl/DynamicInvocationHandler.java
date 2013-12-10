@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
+import org.ops4j.pax.swissbox.tracker.ServiceLookupException;
 
 /**
  * A dynamic proxy invocation handler which looks up a matching OSGi service for a CDI injection
@@ -44,6 +45,9 @@ public class DynamicInvocationHandler implements InvocationHandler {
     // CHECKSTYLE:SKIP
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Object service = InjectionPointOsgiUtils.lookupService(ip);
+        if (service == null) {
+            return null;
+        }
         return method.invoke(service, args);
     }
 }

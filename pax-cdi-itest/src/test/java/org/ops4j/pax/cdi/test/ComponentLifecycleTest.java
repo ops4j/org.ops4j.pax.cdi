@@ -54,13 +54,6 @@ import org.osgi.framework.ServiceRegistration;
 public class ComponentLifecycleTest {
 
     @Inject
-    private CdiContainerFactory containerFactory;
-
-    @Inject
-    @Filter(timeout = 1000000)
-    private IceCreamClient client;
-    
-    @Inject
     private BundleContext bc;
 
     @Configuration
@@ -74,8 +67,7 @@ public class ComponentLifecycleTest {
             workspaceBundle("pax-cdi-extension"),
             workspaceBundle("pax-cdi-api"),
             workspaceBundle("pax-cdi-spi"),
-            workspaceBundle("pax-cdi-openwebbeans"),
-            
+
             cdiProviderBundles());
 
     }

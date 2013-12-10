@@ -15,7 +15,6 @@
  */
 package org.osgi.service.cdi;
 
-import javax.inject.Qualifier;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -32,7 +31,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * points.
  *
  * @see Service
- * @see EventAdmin
  */
 @Target({FIELD, TYPE, PARAMETER, CONSTRUCTOR})
 @Retention(RUNTIME)

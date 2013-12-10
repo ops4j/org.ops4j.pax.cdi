@@ -78,7 +78,9 @@
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Service-Component>OSGI-INF/*</Service-Component>
                         <Provide-Capability>
-                            osgi.extender; osgi.extender="osgi.cdi"
+                            osgi.extender; osgi.extender="osgi.cdi"; uses:="org.osgi.service.cdi,javax.enterprise.inject.spi"; version:Version="1.0",
+                            osgi.contract; osgi.contract="JavaInject"; version:Version="1.0",
+                            osgi.contract; osgi.contract="JavaCDI"; version:Version="1.0"
                         </Provide-Capability>
                         <Require-Capability>
                             osgi.cdi.extension; filter:="(osgi.cdi.extension=pax-cdi-extension)"

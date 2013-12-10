@@ -17,23 +17,15 @@
  */
 package org.ops4j.pax.cdi.test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.hasItems;
-import static org.ops4j.pax.cdi.test.TestConfiguration.cdiProviderBundles;
-import static org.ops4j.pax.cdi.test.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample1.client.IceCreamClient;
+import org.ops4j.pax.cdi.sample1.client.OptionalClient;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
@@ -43,23 +35,32 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.exam.util.Filter;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItems;
+import static org.ops4j.pax.cdi.test.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.TestConfiguration.regressionDefaults;
+import static org.ops4j.pax.cdi.test.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.exam.CoreOptions.options;
+
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class ProducerAndClientTest {
+public class StoppedProducerAndClientTest {
 
     @Inject
     private CdiContainerFactory containerFactory;
 
     @Inject
     @Filter
-    private IceCreamClient client;
+    private OptionalClient client;
 
     @Configuration
     public Option[] config() {
         return options(
             regressionDefaults(),
 
-            workspaceBundle("pax-cdi-samples/pax-cdi-sample1"),
+            workspaceBundle("pax-cdi-samples/pax-cdi-sample1").noStart(),
             workspaceBundle("pax-cdi-samples/pax-cdi-sample1-client"),
             workspaceBundle("pax-cdi-extender"),
             workspaceBundle("pax-cdi-extension"),
@@ -72,24 +73,19 @@ public class ProducerAndClientTest {
     @Test
     public void checkContainers() throws InterruptedException {
 //        assertThat(containerFactory.getProviderName(), is("org.apache.webbeans.config.WebBeansContext"));
-        assertThat(containerFactory.getContainers().size(), is(2));
+        assertThat(containerFactory.getContainers().size(), is(1));
         List<String> beanBundles = new ArrayList<String>();
         for (CdiContainer container : containerFactory.getContainers()) {
             beanBundles.add(container.getBundle().getSymbolicName());
         }
         assertThat(beanBundles,
-            hasItems("org.ops4j.pax.cdi.sample1", "org.ops4j.pax.cdi.sample1.client"));
-        assertThat(beanBundles.size(), is(2));
+            hasItems("org.ops4j.pax.cdi.sample1.client"));
+        assertThat(beanBundles.size(), is(1));
     }
 
     @Test
     public void checkBeanBundleClient() throws InterruptedException {
-        assertThat(client.getFlavour(), is("Chocolate"));
+        assertThat(client.getFlavour(), is(nullValue()));
     }
 
-    @Test
-    public void checkMultipleInstances() throws InterruptedException {
-        assertThat(client.getAllFlavours().size(), is(2));
-        assertThat(client.getAllFlavours(), hasItems("Vanilla", "Chocolate"));
-    }
 }

@@ -38,7 +38,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 public @interface Service {
 
-    boolean required() default false;
+    boolean required() default true;
 
     ServiceType type() default ServiceType.NullObject;
 

@@ -4,6 +4,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Qualifier;
 
+import org.ops4j.pax.cdi.api.event.EventAdmin;
+
 /**
  */
 public class ServiceTest {

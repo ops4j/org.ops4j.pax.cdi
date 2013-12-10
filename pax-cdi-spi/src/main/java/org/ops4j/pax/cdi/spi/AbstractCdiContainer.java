@@ -51,6 +51,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     private Bundle bundle;
     private CdiContainerType containerType;
     private ServiceRegistration<CdiContainer> registration;
+    private ServiceRegistration<BeanManager> bmRegistration;
     private boolean started;
 
     /**
@@ -107,6 +108,15 @@ public abstract class AbstractCdiContainer implements CdiContainer {
                     // Ignore
                 }
             }
+            if (bmRegistration != null) {
+                try {
+                    bmRegistration.unregister();
+                }
+                // CHECKSTYLE:SKIP
+                catch (Exception e) {
+                    // Ignore
+                }
+            }
             started = false;
         }
     }
@@ -118,8 +128,6 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     /**
      * Builds the composite class loader for the given bundle, also including the bundle containing
      * this class and all extension bundles.
-     * 
-     * @param bundle
      */
     protected void buildContextClassLoader() {
         List<Bundle> delegateBundles = new ArrayList<Bundle>();
@@ -137,11 +145,11 @@ public abstract class AbstractCdiContainer implements CdiContainer {
 
     protected void finishStartup() {
         try {
-            registration = doWithClassLoader(getContextClassLoader(),
-                new Callable<ServiceRegistration<CdiContainer>>() {
+            doWithClassLoader(getContextClassLoader(),
+                new Callable<Object>() {
 
                     @Override
-                    public ServiceRegistration<CdiContainer> call() throws Exception {
+                    public Object call() throws Exception {
                         BundleContext bc = bundle.getBundleContext();
 
                         // fire ContainerInitialized event
@@ -153,13 +161,15 @@ public abstract class AbstractCdiContainer implements CdiContainer {
                         props.put("bundleId", bundle.getBundleId());
                         props.put("symbolicName", bundle.getSymbolicName());
 
-                        ServiceRegistration<CdiContainer> reg = bc.registerService(
+                        registration = bc.registerService(
                             CdiContainer.class, AbstractCdiContainer.this, props);
+                        bmRegistration = bc.registerService(
+                            BeanManager.class, beanManager, props);
 
                         // fire ServicesPublished event
                         beanManager.fireEvent(new ServicesPublished());
 
-                        return reg;
+                        return null;
                     }
                 });
         }

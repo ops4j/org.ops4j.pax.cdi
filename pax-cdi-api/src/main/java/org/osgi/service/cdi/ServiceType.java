@@ -24,6 +24,12 @@ public enum ServiceType {
      * A dummy proxy that simply returns <code>null</code>
      * when a matching OSGi service is not available.
      */
-    NullObject
+    NullObject,
+
+    /**
+     * A proxy which throws a {@link ServiceNotAvailableException}
+     * if no matching OSGi service is available.
+     */
+    ExceptionThrower
 
 }

@@ -69,15 +69,13 @@ public class SingleBundleTest {
             workspaceBundle("pax-cdi-extension"),
             workspaceBundle("pax-cdi-api"),
             workspaceBundle("pax-cdi-spi"),
-            workspaceBundle("pax-cdi-openwebbeans"),
-            
+
             cdiProviderBundles());
     }
 
     @Test
     public void checkContainerFactory() {
-        assertThat(containerFactory.getProviderName(),
-            is("org.apache.webbeans.config.WebBeansContext"));
+//        assertThat(containerFactory.getProviderName(), is("org.apache.webbeans.config.WebBeansContext"));
         assertThat(containerFactory.getContainers().size(), is(1));
 
         CdiContainer cdiContainer = containerFactory.getContainers().iterator().next();

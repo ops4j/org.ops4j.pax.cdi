@@ -19,12 +19,11 @@ package org.ops4j.pax.cdi.extension.impl;
 
 import javax.enterprise.util.AnnotationLiteral;
 
-import org.ops4j.pax.cdi.api.OsgiService;
 import org.osgi.service.cdi.Service;
 import org.osgi.service.cdi.ServiceType;
 
 /**
- * An {@link AnnotationLiteral} for the {@link OsgiService} qualifier.
+ * An {@link AnnotationLiteral} for the {@link Service} qualifier.
  * 
  * @author Harald Wellmann
  */

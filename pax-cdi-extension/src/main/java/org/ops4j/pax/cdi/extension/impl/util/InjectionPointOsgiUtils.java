@@ -21,18 +21,24 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.ops4j.pax.cdi.api.Timeout;
 import org.ops4j.pax.swissbox.tracker.ServiceLookup;
+import org.ops4j.pax.swissbox.tracker.ServiceLookupException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cdi.Filter;
 import org.osgi.service.cdi.Service;
+import org.osgi.service.cdi.ServiceNotAvailableException;
+import org.osgi.service.cdi.ServiceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,8 +80,33 @@ public class InjectionPointOsgiUtils {
         BundleContext bc = getBundleContext(ip);
 
         String filter = getFilter(ip);
-        Object service = ServiceLookup.getService(bc, klass, timeout != null ? timeout.value() : 0, filter);
-        return service;
+        try {
+            // TODO: this is quite bad as we should use a non transient service tracker
+            // TODO: this would also remove the always increasing reference count on the service
+            if (timeout != null) {
+                Object service = ServiceLookup.getService(bc, klass, timeout.value(), filter);
+                return service;
+            } else {
+                try {
+                    List<ServiceReference<?>> refs = new ArrayList<ServiceReference<?>>(bc.getServiceReferences(klass, filter));
+                    Collections.sort(refs);
+                    if (refs.isEmpty()) {
+                        throw new ServiceLookupException("No service available for " + klass.getName());
+                    }
+                    return bc.getService(refs.get(0));
+                }
+                catch (InvalidSyntaxException exc )
+                {
+                    throw new ServiceLookupException( exc );
+                }
+            }
+        } catch (ServiceLookupException e) {
+            if (os.type() == ServiceType.ExceptionThrower) {
+                throw new ServiceNotAvailableException(e.toString());
+            } else {
+                return null;
+            }
+        }
     }
 
     public static String getFilter(InjectionPoint ip) {
