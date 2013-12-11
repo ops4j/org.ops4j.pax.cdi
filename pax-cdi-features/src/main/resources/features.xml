@@ -17,7 +17,7 @@
     <bundle dependency="true">mvn:org.ops4j.pax.swissbox/pax-swissbox-core/${pax.swissbox.version}</bundle>
     <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-spi/${ops4j.base.version}</bundle>
     <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-lang/${ops4j.base.version}</bundle>
-    <bundle dependency="true">mvn:org.apache.xbean/xbean-bundleutils/3.13</bundle>
+    <bundle dependency="true">mvn:org.apache.xbean/xbean-bundleutils/${xbean.version}</bundle>
     <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-api/${project.version}</bundle>
     <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-spi/${project.version}</bundle>
     <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-extension/${project.version}</bundle>
@@ -101,6 +101,39 @@
     <feature version="${project.version}">pax-cdi-openwebbeans</feature>
     <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-web/${openwebbeans.version}</bundle>
     <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-web-openwebbeans/${project.version}</bundle>
+  </feature>
+  
+  <feature name="openjpa" description="Apache Openjpa support" version="${openjpa.version}">
+    <bundle>mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
+    <bundle>mvn:org.apache.geronimo.specs/geronimo-jpa_2.0_spec/</bundle>
+    <bundle>mvn:org.apache.geronimo.specs/geronimo-servlet_3.0_spec/1.0</bundle>
+    <bundle>mvn:commons-lang/commons-lang/2.4</bundle>
+    <bundle>mvn:commons-collections/commons-collections/3.2.1</bundle>
+    <bundle>mvn:commons-pool/commons-pool/1.5.4</bundle>
+    <bundle>mvn:commons-dbcp/commons-dbcp/1.4</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/1.13.1_4</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.asm/3.3_2</bundle>
+    <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
+  </feature>
+  
+  <feature name="deltaspike-core" description="Apache Deltaspike core support" version=">${deltaspike.version}" resolver="(obr)">
+    <feature version="${project.version}">pax-cdi</feature>
+    <bundle>mvn:org.osgi/org.osgi.enterprise/4.2.0</bundle>
+    <bundle>mvn:org.apache.deltaspike.core/deltaspike-core-api/${deltaspike.version}</bundle>
+    <bundle>mvn:org.apache.deltaspike.core/deltaspike-core-impl/${deltaspike.version}</bundle>
+  </feature>
+  
+  <feature name="deltaspike-jpa" description="Apche Deltaspike jpa support" version="${deltaspike.version}" resolver="(obr)">
+    <feature version=">${deltaspike.version}">deltaspike-core</feature>
+    <bundle>mvn:org.ops4j.base/ops4j-base-monitors/1.4.0</bundle>
+    <bundle>mvn:org.ops4j.base/ops4j-base-io/1.4.0</bundle>
+    <bundle>mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
+    <bundle>mvn:org.apache.geronimo.specs/geronimo-jpa_2.0_spec/</bundle>
+    <bundle>mvn:org.ops4j.pax.jpa/pax-jpa/${pax.jpa.version}</bundle>
+    <bundle>mvn:org.ops4j.pax.jdbc/pax-jdbc/${pax.jdbc.version}</bundle>
+    <bundle>mvn:org.apache.deltaspike.modules/deltaspike-jpa-module-api/${deltaspike.version}</bundle>
+    <bundle>mvn:org.apache.deltaspike.modules/deltaspike-jpa-module-impl/${deltaspike.version}</bundle>
+    <bundle>mvn:org.ops4j.pax.cdi.fragment/pax-cdi-fragment-ds-jpa/${project.version}</bundle>
   </feature>
 
 </features>
