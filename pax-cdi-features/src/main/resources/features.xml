@@ -36,7 +36,7 @@
     <bundle dependency="true">mvn:org.ops4j.pax.swissbox/pax-swissbox-core/${pax.swissbox.version}</bundle>
     <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-spi/${ops4j.base.version}</bundle>
     <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-lang/${ops4j.base.version}</bundle>
-    <bundle dependency="true">mvn:org.apache.xbean/xbean-bundleutils/3.13</bundle>
+    <bundle dependency="true">mvn:org.apache.xbean/xbean-bundleutils/${xbean.version}</bundle>
     <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-api/${project.version}</bundle>
     <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-spi/${project.version}</bundle>
     <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-extension/${project.version}</bundle>
@@ -62,8 +62,8 @@
     <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-validation_1.0_spec/1.1</bundle>
     <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
     <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-servlet_3.0_spec/1.0</bundle>
-    <bundle dependency="true">mvn:org.apache.xbean/xbean-asm-shaded/3.13</bundle>
-    <bundle dependency="true">mvn:org.apache.xbean/xbean-finder-shaded/3.13</bundle>
+    <bundle dependency="true">mvn:org.apache.xbean/xbean-asm4-shaded/${xbean.version}</bundle>
+    <bundle dependency="true">mvn:org.apache.xbean/xbean-finder-shaded/${xbean.version}</bundle>
     <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-spi/${openwebbeans.version}</bundle>
     <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-impl/${openwebbeans.version}</bundle>
     <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-el22/${openwebbeans.version}</bundle>
