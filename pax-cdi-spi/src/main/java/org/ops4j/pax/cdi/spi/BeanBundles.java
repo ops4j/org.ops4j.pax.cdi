@@ -46,7 +46,11 @@ public class BeanBundles {
     }
 
     public static boolean isBeanBundle(Bundle candidate) {
-        List<BundleWire> wires = candidate.adapt(BundleWiring.class).getRequiredWires(
+        BundleWiring wiring = candidate.adapt(BundleWiring.class);
+        if (wiring == null) {
+            return false;
+        }
+        List<BundleWire> wires = wiring.getRequiredWires(
             EXTENDER_CAPABILITY);
         for (BundleWire wire : wires) {
             Object object = wire.getCapability().getAttributes().get(EXTENDER_CAPABILITY);
