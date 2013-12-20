@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <features name="org.ops4j.pax.cdi-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
 
-  <!-- Not required when deployed on Karaf 3.x
-  <repository>mvn:org.ops4j.pax.web/pax-web-features/${pax.web.version}/xml/features</repository>
-  -->
-
   <feature name="pax-cdi" description="Provide CDI support" version="${project.version}" resolver="(obr)">
     <feature version="[2.3,3.5)">scr</feature>
     <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jcdi_1.0_spec/1.0</bundle>
@@ -72,14 +68,14 @@
 
   <feature name="pax-cdi-web" description="Web CDI support" version="${project.version}" resolver="(obr)">
     <feature version="${project.version}">pax-cdi</feature>
-    <feature version="[${pax.web.version},3.5)">pax-war</feature>
+    <feature>war</feature>
     <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-servlet_3.0_spec/1.0</bundle>
     <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-web/${project.version}</bundle>
   </feature>
 
   <feature name="pax-cdi-1.1-web" description="Web CDI 1.1 support" version="${project.version}" resolver="(obr)">
     <feature version="${project.version}">pax-cdi-1.1</feature>
-    <feature version="[${pax.web.version},3.5)">pax-war</feature>
+    <feature>war</feature>
     <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-servlet_3.0_spec/1.0</bundle>
     <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-web/${project.version}</bundle>
   </feature>
@@ -101,19 +97,6 @@
     <feature version="${project.version}">pax-cdi-openwebbeans</feature>
     <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-web/${openwebbeans.version}</bundle>
     <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-web-openwebbeans/${project.version}</bundle>
-  </feature>
-  
-  <feature name="pax-cdi-openjpa" description="Apache Openjpa support" version="${openjpa.version}">
-    <bundle>mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
-    <bundle>mvn:org.apache.geronimo.specs/geronimo-jpa_2.0_spec/</bundle>
-    <bundle>mvn:org.apache.geronimo.specs/geronimo-servlet_3.0_spec/1.0</bundle>
-    <bundle>mvn:commons-lang/commons-lang/2.4</bundle>
-    <bundle>mvn:commons-collections/commons-collections/3.2.1</bundle>
-    <bundle>mvn:commons-pool/commons-pool/1.5.4</bundle>
-    <bundle>mvn:commons-dbcp/commons-dbcp/1.4</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/1.13.1_4</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.asm/3.3_2</bundle>
-    <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
   </feature>
   
   <feature name="pax-cdi-deltaspike-core" description="Apache Deltaspike core support" version=">${deltaspike.version}" resolver="(obr)">
