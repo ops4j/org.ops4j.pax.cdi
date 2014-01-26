@@ -20,6 +20,11 @@ package org.ops4j.pax.cdi.test.karaf;
 import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.propagateSystemProperty;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import static org.ops4j.pax.exam.CoreOptions.when;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.configureConsole;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
 
 import java.io.File;
@@ -28,22 +33,10 @@ import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.exam.ConfigurationManager;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.karaf.options.KarafDistributionOption;
+import org.ops4j.pax.exam.karaf.options.configs.CustomProperties;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.options.MavenUrlReference;
 
-/**
- * Default configuration for native container regression tests, overriding the default test system
- * configuration.
- * <p>
- * We do not need the Remote Bundle Context for Native Container, and we prefer unified logging with
- * logback.
- * <p>
- * To override the standard options, you need to set the configuration property
- * {@code pax.exam.system = default}.
- * 
- * @author Harald Wellmann
- * @since Dec 2011
- */
 public class RegressionConfiguration {
     public static final MavenUrlReference PAX_CDI_FEATURES = maven().groupId("org.ops4j.pax.cdi")
         .artifactId("pax-cdi-features").type("xml").classifier("features").version(Info.getPaxCdiVersion());
@@ -64,13 +57,14 @@ public class RegressionConfiguration {
             karafDistributionConfiguration().frameworkUrl(mvnKarafDist()).karafVersion(karafVersion())
                 .unpackDirectory(unpackDirFile(unpackDir)).useDeployFolder(false),                
  
-            KarafDistributionOption.keepRuntimeFolder()
-            /*
+            configureConsole().ignoreLocalConsole(),
+            KarafDistributionOption.keepRuntimeFolder(),
+            
             when(isEquinox()).useOptions(                
                 editConfigurationFilePut(CustomProperties.KARAF_FRAMEWORK, "equinox"),
                 propagateSystemProperty("pax.exam.framework"),
                 systemProperty("osgi.console").value("6666"),
-                systemProperty("osgi.console.enable.builtin").value("true"))*/
+                systemProperty("osgi.console.enable.builtin").value("true"))
             );
     }
 
@@ -93,7 +87,7 @@ public class RegressionConfiguration {
     
     public static String karafVersion() {
         ConfigurationManager cm = new ConfigurationManager();
-        String karafVersion = cm.getProperty("pax.exam.karaf.version", "3.0.0-SNAPSHOT");
+        String karafVersion = cm.getProperty("pax.exam.karaf.version", "3.0.0");
         return karafVersion;
     }
 }
