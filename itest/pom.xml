@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.ops4j.pax.cdi</groupId>
         <artifactId>pax-cdi-parent</artifactId>
-        <version>0.6.0-SNAPSHOT</version>
+        <version>0.7.0-SNAPSHOT</version>
         <relativePath>../pom</relativePath>
     </parent>
 
@@ -24,6 +24,7 @@
             <id>matrix</id>
             <modules>
                 <module>src/it/itest-cdi10</module>
+                <module>src/it/itest-karaf</module>
             </modules>
         </profile>
 
@@ -40,10 +41,6 @@
                         <version>1.8</version>
                         <configuration>
                             <streamLogs>true</streamLogs>
-                            <pomExcludes>
-                                <!-- currently not working, needs system package overrides -->
-                                <pomExclude>itest-karaf/pom.xml</pomExclude>
-                            </pomExcludes>
                         </configuration>
                         <executions>
                             <execution>
@@ -70,6 +67,9 @@
                                         <profile>weld1</profile>
                                     </profiles>
                                     <cloneProjectsTo>${project.build.directory}/equinox-weld1</cloneProjectsTo>
+                                    <pomExcludes>
+                                        <pomExclude>itest-karaf/pom.xml</pomExclude>
+                                    </pomExcludes>
                                 </configuration>
                             </execution>
                             <execution>
@@ -83,6 +83,9 @@
                                         <profile>weld2</profile>
                                     </profiles>
                                     <cloneProjectsTo>${project.build.directory}/equinox-weld2</cloneProjectsTo>
+                                    <pomExcludes>
+                                        <pomExclude>itest-karaf/pom.xml</pomExclude>
+                                    </pomExcludes>
                                 </configuration>
                             </execution>
                             <execution>
@@ -109,6 +112,9 @@
                                         <profile>weld1</profile>
                                     </profiles>
                                     <cloneProjectsTo>${project.build.directory}/felix-weld1</cloneProjectsTo>
+                                    <pomExcludes>
+                                        <pomExclude>itest-karaf/pom.xml</pomExclude>
+                                    </pomExcludes>
                                 </configuration>
                             </execution>
                             <execution>
@@ -122,6 +128,9 @@
                                         <profile>weld2</profile>
                                     </profiles>
                                     <cloneProjectsTo>${project.build.directory}/felix-weld2</cloneProjectsTo>
+                                    <pomExcludes>
+                                        <pomExclude>itest-karaf/pom.xml</pomExclude>
+                                    </pomExcludes>
                                 </configuration>
                             </execution>
                         </executions>
