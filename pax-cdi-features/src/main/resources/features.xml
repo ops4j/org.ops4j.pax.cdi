@@ -2,7 +2,7 @@
 <features name="org.ops4j.pax.cdi-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
 
   <feature name="pax-cdi" description="Provide CDI support" version="${project.version}" resolver="(obr)">
-    <feature version="[2.3,3.5)">scr</feature>
+    <feature>scr</feature>
     <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jcdi_1.0_spec/1.0</bundle>
     <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0</bundle>
     <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-interceptor_1.1_spec/1.0</bundle>
@@ -21,7 +21,7 @@
   </feature>
 
   <feature name="pax-cdi-1.1" description="Provide CDI 1.1 support" version="${project.version}" resolver="(obr)">
-    <feature version="[2.3,3.5)">scr</feature>
+    <feature>scr</feature>
     <bundle dependency="true">mvn:javax.interceptor/javax.interceptor-api/1.2</bundle>
     <bundle dependency="true">mvn:javax.enterprise/cdi-api/1.1-20130918</bundle>
     <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0</bundle>
