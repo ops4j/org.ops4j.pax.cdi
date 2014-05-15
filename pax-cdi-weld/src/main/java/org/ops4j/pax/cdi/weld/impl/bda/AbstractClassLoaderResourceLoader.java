@@ -27,9 +27,9 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.ops4j.pax.cdi.weld.impl.EnumerationList;
 
-
 /**
- * General {@link ResourceLoader} implementation that delegates resource loading to {@link #classLoader()}.
+ * General {@link ResourceLoader} implementation that delegates resource loading to
+ * {@link #classLoader()}.
  *
  * @author Jozef Hartinger
  *
@@ -42,11 +42,14 @@ public abstract class AbstractClassLoaderResourceLoader implements ResourceLoade
     public Class<?> classForName(String name) {
         try {
             return classLoader().loadClass(name);
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             throw new ResourceLoadingException(ERROR_LOADING_CLASS + name, e);
-        } catch (LinkageError e) {
+        }
+        catch (LinkageError e) {
             throw new ResourceLoadingException(ERROR_LOADING_CLASS + name, e);
-        } catch (TypeNotPresentException e) {
+        }
+        catch (TypeNotPresentException e) {
             throw new ResourceLoadingException(ERROR_LOADING_CLASS + name, e);
         }
     }
@@ -60,7 +63,8 @@ public abstract class AbstractClassLoaderResourceLoader implements ResourceLoade
     public Collection<URL> getResources(String name) {
         try {
             return new EnumerationList<URL>(classLoader().getResources(name));
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new ResourceLoadingException("Error loading resource " + name, e);
         }
     }
