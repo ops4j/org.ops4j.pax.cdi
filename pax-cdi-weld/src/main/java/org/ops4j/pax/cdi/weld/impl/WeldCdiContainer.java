@@ -102,7 +102,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
     
     private BeanManager createBeanManager() {
         bootstrap = new WeldBootstrap();
-        BundleDeployment deployment = new BundleDeployment(getBundle(), bootstrap);
+        BundleDeployment deployment = new BundleDeployment(getBundle(), bootstrap, getContextClassLoader());
         BeanDeploymentArchive beanDeploymentArchive = deployment
             .getBeanDeploymentArchive();
 

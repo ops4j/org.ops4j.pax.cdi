@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Harald Wellmann.
+ * Copyright 2014 Harald Wellmann.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  *
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * Copied from Weld, where this class is not exported.
  */
 package org.ops4j.pax.cdi.weld.impl.bda;
 
@@ -24,44 +26,44 @@ import java.util.Collection;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.ops4j.pax.cdi.weld.impl.EnumerationList;
-import org.osgi.framework.Bundle;
 
-public class BundleResourceLoader implements ResourceLoader {
 
-    private Bundle bundle;
+/**
+ * General {@link ResourceLoader} implementation that delegates resource loading to {@link #classLoader()}.
+ *
+ * @author Jozef Hartinger
+ *
+ */
+public abstract class AbstractClassLoaderResourceLoader implements ResourceLoader {
 
-    public BundleResourceLoader(Bundle bundle) {
-        this.bundle = bundle;
-    }
+    private static final String ERROR_LOADING_CLASS = "Error loading class ";
 
     @Override
     public Class<?> classForName(String name) {
         try {
-            Class<?> clazz = bundle.loadClass(name);
-            return clazz;
-        }
-        catch (ClassNotFoundException e) {
-            throw new ResourceLoadingException(e);
+            return classLoader().loadClass(name);
+        } catch (ClassNotFoundException e) {
+            throw new ResourceLoadingException(ERROR_LOADING_CLASS + name, e);
+        } catch (LinkageError e) {
+            throw new ResourceLoadingException(ERROR_LOADING_CLASS + name, e);
+        } catch (TypeNotPresentException e) {
+            throw new ResourceLoadingException(ERROR_LOADING_CLASS + name, e);
         }
     }
 
     @Override
     public URL getResource(String name) {
-        return bundle.getResource(name);
+        return classLoader().getResource(name);
     }
 
     @Override
     public Collection<URL> getResources(String name) {
         try {
-            return new EnumerationList<URL>(bundle.getResources(name));
-        }
-        catch (IOException e) {
-            throw new ResourceLoadingException(e);
+            return new EnumerationList<URL>(classLoader().getResources(name));
+        } catch (IOException e) {
+            throw new ResourceLoadingException("Error loading resource " + name, e);
         }
     }
 
-    @Override
-    public void cleanup() {
-        // empty
-    }
+    protected abstract ClassLoader classLoader();
 }

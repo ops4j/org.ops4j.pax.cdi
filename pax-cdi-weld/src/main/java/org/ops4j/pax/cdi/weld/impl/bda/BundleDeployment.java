@@ -41,23 +41,23 @@ public class BundleDeployment implements Deployment {
     private Iterable<Metadata<Extension>> extensions;
     private BundleBeanDeploymentArchive beanDeploymentArchive;
 
-    public BundleDeployment(Bundle bundle, Bootstrap bootstrap) {
+    public BundleDeployment(Bundle bundle, Bootstrap bootstrap, ClassLoader extensionClassLoader) {
 
         serviceRegistry = new SimpleServiceRegistry();
         serviceRegistry.add(ProxyServices.class, new OsgiProxyService());
-        extensions = bootstrap.loadExtensions(Thread.currentThread().getContextClassLoader());
+        extensions = bootstrap.loadExtensions(extensionClassLoader);
 
-        createBeanDeploymentArchive(bundle, bootstrap);
+        createBeanDeploymentArchive(bundle, bootstrap, extensionClassLoader);
     }
 
-    private void createBeanDeploymentArchive(Bundle bundle, Bootstrap bootstrap) {
+    private void createBeanDeploymentArchive(Bundle bundle, Bootstrap bootstrap, ClassLoader extensionClassLoader) {
         BeanScanner scanner = new BeanScanner(bundle);
         scanner.scan();
         beanDeploymentArchive = new BundleBeanDeploymentArchive("pax-cdi-bda"
             + bundle.getBundleId());
         beanDeploymentArchive.setBeansXml(bootstrap.parse(scanner.getBeanDescriptors()));
         beanDeploymentArchive.setBeanClasses(scanner.getBeanClasses());
-        ResourceLoader loader = new BundleResourceLoader(bundle);
+        ResourceLoader loader = new ClassLoaderResourceLoader(extensionClassLoader);
         beanDeploymentArchive.getServices().add(ResourceLoader.class, loader);
     }
 
