@@ -88,7 +88,7 @@ public interface CdiContainer {
     Instance<Object> getInstance();
 
     /**
-     * Returns the context class loader used by this container. All beans classes are loaded from
+     * Returns the context class loader used by this container. All bean classes are loaded from
      * this class loader. The {@link CdiContainerFactoryClient} must set the thread context class
      * loader to this loader before creating this container.
      * 
