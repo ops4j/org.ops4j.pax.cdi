@@ -26,6 +26,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-data-module-impl</artifactId>
+            <version>${deltaspike.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
             <artifactId>pax-cdi-api</artifactId>
             <version>${project.version}</version>
@@ -74,10 +80,13 @@
                         <Bundle-SymbolicName>org.ops4j.pax.cdi.sample2.service</Bundle-SymbolicName>
                         <Require-Capability>
                             org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=pax-cdi-extension)(version&gt;=${version;==;${pax.cdi.osgi.version.clean}})(!(version&gt;=${version;=+;${pax.cdi.osgi.version.clean}})))",
+                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-partial-bean-extension))",
+                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-data-extension))",
+                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-jpa-impl))",
+                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-core-impl))",
+                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-core-api))",
                             osgi.extender; filter:="(osgi.extender=pax.cdi)"
                         </Require-Capability>
-                        <Require-Bundle>org.apache.deltaspike.modules.deltaspike-jpa-module-impl</Require-Bundle>
-                        <Import-Package>javax.persistence.criteria, javax.persistence.metamodel, *</Import-Package>
                     </instructions>
                 </configuration>
                 <executions>

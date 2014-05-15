@@ -34,6 +34,7 @@ public interface LibraryService {
     List<Book> findBooksByAuthor(String lastName);
     List<Book> findBooksByTitle(String title);
     Author createAuthor(String firstName, String lastName);
+    Author createAuthorViaDao(String firstName, String lastName);
     Author findAuthor(String firstName, String lastName);
     Book createBook(String title, Author author);
     long getNumBooks();

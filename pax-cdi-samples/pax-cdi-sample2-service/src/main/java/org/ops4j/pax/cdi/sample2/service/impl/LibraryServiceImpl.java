@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.ops4j.pax.cdi.sample2.service.AuthorDao;
 import org.ops4j.pax.cdi.sample2.service.LibraryService;
 import org.ops4j.pax.jpa.sample1.model.Author;
 import org.ops4j.pax.jpa.sample1.model.Book;
@@ -39,6 +40,9 @@ import org.slf4j.LoggerFactory;
 public class LibraryServiceImpl implements LibraryService {
 
     private static Logger log = LoggerFactory.getLogger(LibraryServiceImpl.class);
+    
+    @Inject
+    private AuthorDao authorDao;
 
     @Inject
     private EntityManager em;
@@ -75,6 +79,14 @@ public class LibraryServiceImpl implements LibraryService {
         return author;
     }
     
+    public Author createAuthorViaDao(String firstName, String lastName) {
+        Author author = new Author();
+        author.setFirstName(firstName);
+        author.setLastName(lastName);
+        return authorDao.save(author);
+    }
+    
+    
     public Author findAuthor(String firstName, String lastName) {
         String jpql = "select a from Author a where a.firstName = :firstName and a.lastName = :lastName";
         TypedQuery<Author> query = em.createQuery(jpql, Author.class);
@@ -93,7 +105,7 @@ public class LibraryServiceImpl implements LibraryService {
         em.persist(book);
         return book;
     }
-
+    
     public long getNumBooks() {
         String jpql = "select count(b) from Book b";
         Long numBooks = (Long) em.createQuery(jpql).getSingleResult();

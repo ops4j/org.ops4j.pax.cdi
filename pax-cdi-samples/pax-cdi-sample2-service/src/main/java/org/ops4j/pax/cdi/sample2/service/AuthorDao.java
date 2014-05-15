@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Harald Wellmann.
+ * Copyright 2014 Harald Wellmann.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,28 +17,12 @@
  */
 package org.ops4j.pax.cdi.sample2.service;
 
-import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.apache.deltaspike.data.api.EntityRepository;
+import org.apache.deltaspike.data.api.Repository;
 import org.ops4j.pax.jpa.sample1.model.Author;
 
-
-@OsgiServiceProvider
-public class LibraryServiceClient {
-    
-    @Inject
-    private LibraryService service;
-    
-    public void createAuthor(String firstName, String lastName) {
-        service.createAuthor(firstName, lastName);
-    }
-
-    public void createAuthorViaDao(String firstName, String lastName) {
-        service.createAuthorViaDao(firstName, lastName);
-    }
-
-    public Author findAuthor(String firstName, String lastName) {
-        return service.createAuthor(firstName, lastName);
-    }
+@Repository
+public interface AuthorDao extends EntityRepository<Author, Integer> {
 
 }
