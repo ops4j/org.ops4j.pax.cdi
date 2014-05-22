@@ -118,16 +118,12 @@ public class JettyServletTest {
             mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", Info.getPaxCdiVersion()),
 
             
-            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample4-jsf", Info.getPaxCdiVersion()),
-            mavenBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-jsf-boot", Info.getPaxCdiVersion())
-                .noStart(),
-            
-                mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
-                mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
-                mavenBundle("com.sun.jersey.contribs", "jersey-apache-client").version("1.13"),
-                mavenBundle("org.apache.servicemix.bundles",
-                    "org.apache.servicemix.bundles.commons-httpclient", "3.1_7"),
-                mavenBundle("commons-codec", "commons-codec", "1.6")
+            mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
+            mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
+            mavenBundle("com.sun.jersey.contribs", "jersey-apache-client").version("1.13"),
+            mavenBundle("org.apache.servicemix.bundles",
+                "org.apache.servicemix.bundles.commons-httpclient", "3.1_7"),
+            mavenBundle("commons-codec", "commons-codec", "1.6")
                 
             );
 
