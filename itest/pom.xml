@@ -25,6 +25,7 @@
             <modules>
                 <module>src/it/itest-cdi10</module>
                 <module>src/it/itest-karaf</module>
+                <module>src/it/itest-jetty</module>
             </modules>
         </profile>
 
