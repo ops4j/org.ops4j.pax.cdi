@@ -52,6 +52,7 @@
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Web-ContextPath>sample1</Web-ContextPath>
                         <Pax-ManagedBeans>WEB-INF/beans.xml</Pax-ManagedBeans>
+                        <Import-Package>javax.servlet.*;version="[2.6,4)", *</Import-Package>
                         <Require-Capability>
                             org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=pax-cdi-extension)(version&gt;=${version;==;${pax.cdi.osgi.version.clean}})(!(version&gt;=${version;=+;${pax.cdi.osgi.version.clean}})))",
                             osgi.extender; filter:="(osgi.extender=pax.cdi)"

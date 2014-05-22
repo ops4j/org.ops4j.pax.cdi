@@ -6,8 +6,14 @@
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
     
-    <!--listener>
-      <listener-class>org.apache.webbeans.servlet.WebBeansConfigurationListener</listener-class>
-    </listener-->
+    <servlet>
+        <servlet-name>message</servlet-name>
+        <servlet-class>org.ops4j.pax.cdi.sample1.web.MessageServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>message</servlet-name>
+        <url-pattern>/message</url-pattern>
+    </servlet-mapping>
 
 </web-app>
