@@ -179,11 +179,18 @@ public abstract class AbstractContextProvider extends AbstractLifeCycle implemen
                 {                 
                     if (bundleOverrideLocation != null)
                     { 
-                        try(Resource location=Resource.newResource(bundleOverrideLocation))
+                        Resource location = null;
+                        try
                         {
+                            location=Resource.newResource(bundleOverrideLocation);
                             res=location.addPath(_contextFile);
+                            LOG.debug("Bundle override location context file: {}",res);
                         }
-                        LOG.debug("Bundle override location context file: {}",res);
+                        finally {
+                            if (location != null) {
+                                location.close();
+                            }
+                        }                        
                     }
                 }         
 
