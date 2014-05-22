@@ -20,7 +20,7 @@ package org.ops4j.pax.cdi.test.jetty;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.*;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
@@ -71,16 +71,14 @@ public class JettyServletTest {
     @Configuration
     public Option[] config() {
         return options(
+            regressionDefaults(),
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-osgi-boot"),
 
+            mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             provisionCoreJetty(),
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty"),
             paxCdiProviderAdapter(),
             cdiProviderBundles(),
-            junitBundles(),
-            systemTimeout(3600000),
-            systemProperty("osgi.console").value("6666"),
-            systemProperty("osgi.console.enable.builtin").value("true"),
             httpServiceJetty(),
             jspDependencies(),
 
@@ -92,16 +90,7 @@ public class JettyServletTest {
                 "com.sun.org.apache.xpath.internal.objects",
                 "org.eclipse.jetty.webapp"),
                 
-            systemProperty("logback.configurationFile").value(
-                "file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.xml"),
-            mavenBundle("org.slf4j", "slf4j-api").versionAsInProject().startLevel(
-                START_LEVEL_SYSTEM_BUNDLES),
-            mavenBundle("ch.qos.logback", "logback-core").versionAsInProject().startLevel(
-                START_LEVEL_SYSTEM_BUNDLES),
-            mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject().startLevel(
-                START_LEVEL_SYSTEM_BUNDLES),
 
-                mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
                 mavenBundle("org.apache.felix", "org.apache.felix.eventadmin", "1.3.2"),
                 
                 
@@ -109,7 +98,6 @@ public class JettyServletTest {
             mavenBundle("org.glassfish", "javax.faces", "2.2.6"),
             mavenBundle("org.glassfish", "javax.el", "3.0.0"),
             mavenBundle("javax.enterprise", "cdi-api", "1.2"),
-            mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
             mavenBundle("javax.validation", "validation-api", "1.1.0.Final"),
 
