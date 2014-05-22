@@ -37,7 +37,7 @@
         </dependency>
 
 
-        <dependency>
+        <!--dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
             <artifactId>pax-cdi-jetty-jsf-boot</artifactId>
             <version>${project.version}</version>
@@ -48,7 +48,7 @@
                     <artifactId>jetty-osgi-boot</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
