@@ -39,7 +39,6 @@
         <module>pax-cdi-features</module>
         <module>pax-cdi-test-support</module>
         <module>pax-cdi-fragment</module>
-        <module>pax-cdi-jetty-jsf-boot</module>
         <module>pax-cdi-jetty-osgi-boot</module>
         <module>pax-cdi-jetty</module>
     </modules>
