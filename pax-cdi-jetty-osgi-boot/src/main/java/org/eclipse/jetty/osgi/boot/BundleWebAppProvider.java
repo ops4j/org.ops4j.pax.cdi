@@ -23,15 +23,23 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import javax.servlet.ServletContainerInitializer;
+
 import org.eclipse.jetty.deploy.App;
 import org.eclipse.jetty.osgi.boot.internal.serverfactory.ServerInstanceWrapper;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-
-
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * BundleWebAppProvider
@@ -39,17 +47,23 @@ import org.osgi.framework.ServiceRegistration;
  * A Jetty Provider that knows how to deploy a WebApp contained inside a Bundle.
  * 
  */
-public class BundleWebAppProvider extends AbstractWebAppProvider implements BundleProvider
-{     
+public class BundleWebAppProvider extends AbstractWebAppProvider implements BundleProvider,
+    ServiceTrackerCustomizer<ServletContainerInitializer, ServletContainerInitializer> {
+
     private static final Logger LOG = Log.getLogger(AbstractWebAppProvider.class);
     
     /**
      * Map of Bundle to App. Used when a Bundle contains a webapp.
      */
     private Map<Bundle, App> _bundleMap = new HashMap<Bundle, App>();
-    
+
+    private Map<Bundle, ServletContainerInitializer> initializerMap = new HashMap<Bundle, ServletContainerInitializer>();
+
     private ServiceRegistration _serviceRegForBundles;
-    
+
+    private ServiceTracker<ServletContainerInitializer, ServletContainerInitializer> st;
+
+    private BundleContext bundleContext;
 
     /* ------------------------------------------------------------ */
     /**
@@ -73,6 +87,14 @@ public class BundleWebAppProvider extends AbstractWebAppProvider implements Bund
         Dictionary<String,String> properties = new Hashtable<String,String>();
         properties.put(OSGiServerConstants.MANAGED_JETTY_SERVER_NAME, getServerInstanceWrapper().getManagedServerName());
         _serviceRegForBundles = FrameworkUtil.getBundle(this.getClass()).getBundleContext().registerService(BundleProvider.class.getName(), this, properties);
+        bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+        _serviceRegForBundles = bundleContext.registerService(BundleProvider.class.getName(), this,
+            properties);
+        Filter filter = bundleContext
+            .createFilter("(&(objectClass=javax.servlet.ServletContainerInitializer)(org.ops4j.pax.cdi.bundle.id=*))");
+        st = new ServiceTracker<ServletContainerInitializer, ServletContainerInitializer>(
+            bundleContext, filter, this);
+        st.open();
         super.doStart();
     }
 
@@ -83,6 +105,7 @@ public class BundleWebAppProvider extends AbstractWebAppProvider implements Bund
     @Override
     protected void doStop() throws Exception
     {
+        st.close();
         //unregister ourselves
         if (_serviceRegForBundles != null)
         {
@@ -135,7 +158,7 @@ public class BundleWebAppProvider extends AbstractWebAppProvider implements Bund
                 app.setWebAppPath(base);
                 app.setContextPath(contextPath);
                 _bundleMap.put(bundle, app);
-                getDeploymentManager().addApp(app);
+                processDeployment(bundle);
                 return true;
             }
 
@@ -151,7 +174,7 @@ public class BundleWebAppProvider extends AbstractWebAppProvider implements Bund
                 app.setContextPath(contextPath);
                 app.setWebAppPath(base);
                 _bundleMap.put(bundle, app);
-                getDeploymentManager().addApp(app);               
+                processDeployment(bundle);
                 return true;
             }
 
@@ -167,7 +190,7 @@ public class BundleWebAppProvider extends AbstractWebAppProvider implements Bund
                 app.setContextPath(contextPath);
                 app.setWebAppPath(base);
                 _bundleMap.put(bundle, app);
-                getDeploymentManager().addApp(app);                
+                processDeployment(bundle);
                 return true;
             }
 
@@ -232,6 +255,52 @@ public class BundleWebAppProvider extends AbstractWebAppProvider implements Bund
         return contextPath;
     }
     
+    @Override
+    public ServletContainerInitializer addingService(
+        ServiceReference<ServletContainerInitializer> reference) {
+        ServletContainerInitializer initializer = bundleContext.getService(reference);
+        initializerMap.put(reference.getBundle(), initializer);
+        processDeployment(reference.getBundle());
+        return initializer;
+    }
+
+    private void processDeployment(Bundle bundle) {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(
+            getServerInstanceWrapper().getParentClassLoaderForWebapps());
+        try {
+            App app = _bundleMap.get(bundle);
+            ServletContainerInitializer initializer = initializerMap.get(bundle);
+            if (app != null && initializer != null) {
+                try {
+                    app.getContextHandler().setAttribute("org.ops4j.pax.cdi.initializer",
+                        initializer);
+                    getDeploymentManager().addApp(app);
+                }
+                catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+        finally {
+            Thread.currentThread().setContextClassLoader(cl);
+        }
+    }
+
+    @Override
+    public void modifiedService(ServiceReference<ServletContainerInitializer> reference,
+        ServletContainerInitializer service) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void removedService(ServiceReference<ServletContainerInitializer> reference,
+        ServletContainerInitializer service) {
+        // TODO Auto-generated method stub
+
+    }
     
 
 }

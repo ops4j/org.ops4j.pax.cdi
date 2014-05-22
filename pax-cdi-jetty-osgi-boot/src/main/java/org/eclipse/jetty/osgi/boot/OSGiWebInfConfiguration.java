@@ -27,6 +27,8 @@ import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
+import javax.servlet.ServletContainerInitializer;
+
 import org.eclipse.jetty.osgi.boot.utils.BundleFileLocatorHelperFactory;
 import org.eclipse.jetty.osgi.boot.utils.internal.PackageAdminServiceTracker;
 import org.eclipse.jetty.util.log.Log;
@@ -70,6 +72,14 @@ public class OSGiWebInfConfiguration extends WebInfConfiguration
     @Override
     public void preConfigure(final WebAppContext context) throws Exception
     {
+        Object attr = context.getAttribute("org.ops4j.pax.cdi.initializer");
+        if (attr instanceof ServletContainerInitializer) 
+        {
+            //context.getServletContext().setExtendedListenerTypes(true);
+            ServletContainerInitializer initializer = (ServletContainerInitializer) attr;
+            initializer.onStartup(null, context.getServletContext());
+            //context.getServletContext().setExtendedListenerTypes(false);
+        }
         super.preConfigure(context);
         
         //Check to see if there have been any bundle symbolic names added of bundles that should be
