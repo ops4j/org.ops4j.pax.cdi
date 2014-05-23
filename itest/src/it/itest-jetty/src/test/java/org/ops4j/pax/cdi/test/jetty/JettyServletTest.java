@@ -92,14 +92,11 @@ public class JettyServletTest {
                 
                 
 
-            mavenBundle("org.glassfish", "javax.faces", "2.2.6"),
             mavenBundle("org.glassfish", "javax.el", "3.0.0"),
             mavenBundle("javax.enterprise", "cdi-api", "1.2"),
             mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
             mavenBundle("javax.validation", "validation-api", "1.1.0.Final"),
 
-            mavenBundle("org.primefaces", "primefaces", "5.0"),
-            
             mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", Info.getPaxCdiVersion()),
 
             
@@ -163,23 +160,6 @@ public class JettyServletTest {
 //            when(version < 1.8).useOptions(
 //                mavenBundle("org.eclipse.jetty", "jetty-annotations").versionAsInProject().start()),
 
-    }
-
-    public static Option websocketJetty() {
-        return composite(mavenBundle("org.eclipse.jetty.websocket", "websocket-api")
-            .versionAsInProject(),
-            mavenBundle("org.eclipse.jetty.websocket", "websocket-common").versionAsInProject(),
-            mavenBundle("org.eclipse.jetty.websocket", "websocket-servlet").versionAsInProject(),
-
-            // requires Java 1.8
-            mavenBundle("org.eclipse.jetty.websocket", "websocket-server").versionAsInProject(),
-            
-            mavenBundle("org.eclipse.jetty.websocket", "websocket-client").versionAsInProject(), 
-            mavenBundle("javax.websocket", "javax.websocket-api").versionAsInProject(),
-            mavenBundle("org.eclipse.jetty.websocket", "javax-websocket-client-impl")
-                .versionAsInProject(),
-            mavenBundle("org.eclipse.jetty.websocket", "javax-websocket-server-impl")
-                .versionAsInProject());
     }
 
     public static Option httpServiceJetty() {
