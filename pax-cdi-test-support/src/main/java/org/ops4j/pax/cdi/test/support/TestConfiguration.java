@@ -267,5 +267,13 @@ public class TestConfiguration {
         return paxCdiRoot;
     }
 
-    
+    public static boolean isWeld() {
+        switch (getCdiProvider()) {
+            case WELD1:
+            case WELD2:
+                return true;
+            default:
+                return false;
+        }
+    }
 }
