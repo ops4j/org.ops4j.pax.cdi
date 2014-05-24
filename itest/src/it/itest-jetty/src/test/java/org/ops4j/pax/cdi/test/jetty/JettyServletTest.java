@@ -25,12 +25,12 @@ import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAda
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.bootDelegationPackages;
+import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemPackages;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-import static org.ops4j.pax.exam.CoreOptions.when;
 
 import javax.inject.Inject;
 
@@ -38,17 +38,19 @@ import org.eclipse.jetty.server.handler.ContextHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
+import org.ops4j.pax.exam.spi.reactors.PerClass;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
 @RunWith(PaxExam.class)
+@ExamReactorStrategy(PerClass.class)
 public class JettyServletTest {
 
     private static String httpPort = System.getProperty("http.port", "8181");
@@ -97,8 +99,8 @@ public class JettyServletTest {
             mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
             mavenBundle("javax.validation", "validation-api", "1.1.0.Final"),
 
-            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", Info.getPaxCdiVersion()),
-
+            //mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", Info.getPaxCdiVersion()),
+            bundle("file:target/pax-cdi-sample1-web.jar"),
             
             mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
             mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
@@ -120,19 +122,7 @@ public class JettyServletTest {
 
     public static Option coreJettyDependencies() {
 
-        String jdk = System.getProperty("java.version");
-        int firstdot = jdk.indexOf(".");
-        jdk = jdk.substring(0, firstdot + 2);
-        double version = Double.parseDouble(jdk);
-
         return composite(
-            when(version < 1.8).useOptions(
-                mavenBundle("org.ow2.asm", "asm").versionAsInProject(),
-                mavenBundle("org.ow2.asm", "asm-commons").versionAsInProject(),
-                mavenBundle("org.ow2.asm", "asm-tree").versionAsInProject(),
-                mavenBundle("org.apache.aries", "org.apache.aries.util").version("1.0.0"),
-                mavenBundle("org.apache.aries.spifly", "org.apache.aries.spifly.dynamic.bundle")
-                    .version("1.0.0")),
 
             mavenBundle("javax.servlet", "javax.servlet-api").versionAsInProject(),
             mavenBundle("javax.annotation", "javax.annotation-api").versionAsInProject(),
@@ -157,14 +147,14 @@ public class JettyServletTest {
             mavenBundle("org.eclipse.jetty", "jetty-jndi").versionAsInProject(),
             mavenBundle("org.eclipse.jetty", "jetty-plus").versionAsInProject());
             
-//            when(version < 1.8).useOptions(
-//                mavenBundle("org.eclipse.jetty", "jetty-annotations").versionAsInProject().start()),
-
     }
 
     public static Option httpServiceJetty() {
-        return composite(mavenBundle("org.eclipse.jetty.osgi", "jetty-httpservice")
-            .versionAsInProject(), mavenBundle("org.eclipse.equinox.http", "servlet")
+        return composite(
+//            mavenBundle("org.eclipse.jetty.osgi", "jetty-httpservice")
+//            .versionAsInProject(), 
+            bundle("file:target/jetty-httpservice.jar"),
+            mavenBundle("org.eclipse.equinox.http", "servlet")
             .versionAsInProject());
     }
 

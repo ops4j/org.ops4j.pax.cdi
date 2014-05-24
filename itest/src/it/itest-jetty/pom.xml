@@ -36,20 +36,6 @@
             <scope>test</scope>
         </dependency>
 
-
-        <!--dependency>
-            <groupId>org.ops4j.pax.cdi</groupId>
-            <artifactId>pax-cdi-jetty-jsf-boot</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.eclipse.jetty.osgi</groupId>
-                    <artifactId>jetty-osgi-boot</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency-->
-
         <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
             <artifactId>pax-cdi-extender</artifactId>
@@ -191,27 +177,6 @@
         </dependency>
 
 
-        <!-- dependency>
-            <groupId>org.eclipse.jetty.osgi</groupId>
-            <artifactId>jetty-osgi-boot</artifactId>
-            <version>${jetty.version}</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-annotations</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.osgi</groupId>
-                    <artifactId>org.eclipse.osgi</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.osgi</groupId>
-                    <artifactId>org.eclipse.osgi.services</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency-->
-        
         <dependency>
             <groupId>org.eclipse.jetty.osgi</groupId>
             <artifactId>jetty-osgi-boot-jsp</artifactId>
@@ -268,20 +233,9 @@
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
-            <artifactId>asm</artifactId>
-            <version>4.1</version>
+            <artifactId>asm-all</artifactId>
+            <version>5.0.2</version>
         </dependency>
-        <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-commons</artifactId>
-            <version>4.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-tree</artifactId>
-            <version>4.1</version>
-        </dependency>
-
 
         <!-- Jetty Deps -->
 
@@ -423,11 +377,7 @@
             <version>${jetty.version}</version>
             <scope>test</scope>
         </dependency>
-        <!-- <dependency> <groupId>org.mortbay.jetty.alpn</groupId> <artifactId>alpn-boot</artifactId> 
-            <version>${alpn.version}</version> <scope>test</scope> </dependency> <dependency> <groupId>org.eclipse.jetty.osgi</groupId> 
-            <artifactId>jetty-osgi-alpn</artifactId> <version>${jetty.version}</version> <scope>test</scope> </dependency> 
-            <dependency> <groupId>org.eclipse.jetty</groupId> <artifactId>jetty-alpn-server</artifactId> <version>${jetty.version}</version> 
-            <scope>test</scope> </dependency> -->
+
         <dependency>
             <groupId>org.eclipse.jetty.toolchain</groupId>
             <artifactId>jetty-schemas</artifactId>
@@ -496,6 +446,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>5.0</version>
+            <scope>provided</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>org.osgi</groupId>
@@ -518,6 +475,53 @@
                         <goals>
                             <goal>generate-depends-file</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-pde-bundle</id>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.eclipse.jetty.osgi</groupId>
+                                    <artifactId>jetty-httpservice</artifactId>
+                                    <version>${jetty.version}</version>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.ops4j.pax.cdi.samples</groupId>
+                                    <artifactId>pax-cdi-sample1-web</artifactId>
+                                    <version>${project.version}</version>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.ops4j.pax.cdi.samples</groupId>
+                                    <artifactId>pax-cdi-sample4-jsf</artifactId>
+                                    <version>${project.version}</version>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.primefaces</groupId>
+                                    <artifactId>primefaces</artifactId>
+                                    <version>5.0</version>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.glassfish</groupId>
+                                    <artifactId>javax.faces</artifactId>
+                                    <version>2.2.6</version>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                            <stripVersion>true</stripVersion>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
