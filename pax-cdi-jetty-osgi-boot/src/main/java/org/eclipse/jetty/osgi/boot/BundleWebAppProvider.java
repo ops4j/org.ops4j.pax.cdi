@@ -29,15 +29,13 @@ import org.eclipse.jetty.deploy.App;
 import org.eclipse.jetty.osgi.boot.internal.serverfactory.ServerInstanceWrapper;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
+import org.ops4j.pax.cdi.spi.BeanBundles;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventConstants;
-import org.osgi.service.event.EventHandler;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
@@ -270,17 +268,23 @@ public class BundleWebAppProvider extends AbstractWebAppProvider implements Bund
             getServerInstanceWrapper().getParentClassLoaderForWebapps());
         try {
             App app = _bundleMap.get(bundle);
-            ServletContainerInitializer initializer = initializerMap.get(bundle);
-            if (app != null && initializer != null) {
-                try {
-                    app.getContextHandler().setAttribute("org.ops4j.pax.cdi.initializer",
-                        initializer);
+            if (BeanBundles.isBeanBundle(bundle)) {
+                ServletContainerInitializer initializer = initializerMap.get(bundle);
+                if (app != null && initializer != null) {
+                    try {
+                        app.getContextHandler().setAttribute("org.ops4j.pax.cdi.initializer",
+                            initializer);
+                        getDeploymentManager().addApp(app);
+                    }
+                    catch (Exception e) {
+                        LOG.warn(e);
+                    }
+                }
+            }
+            else {
+                if (app != null) {
                     getDeploymentManager().addApp(app);
-                }
-                catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                }                
             }
         }
         finally {
