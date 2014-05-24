@@ -19,6 +19,7 @@
         <module>pax-cdi-sample2-service</module>
         <module>pax-cdi-sample3</module>
         <module>pax-cdi-sample3-client</module>
+        <module>pax-cdi-sample4-jsf</module>
     </modules>
 
 </project>
