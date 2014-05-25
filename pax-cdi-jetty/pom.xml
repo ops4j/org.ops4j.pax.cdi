@@ -42,18 +42,28 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>javax.servlet.jsp-api</artifactId>
             <version>2.3.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>javax.faces-api</artifactId>
+            <version>2.2</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
             <version>3.0.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -65,11 +75,13 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.compendium</artifactId>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
@@ -82,7 +94,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
-                        <Import-Package>org.jboss.weld.bootstrap, javax.servlet.*;version="[2,4)", *</Import-Package>
+                        <Import-Package>org.jboss.weld.bootstrap, javax.servlet.*;version="[2,4)", javax.faces.*;resolution:=optional, *</Import-Package>
                         <Service-Component>OSGI-INF/*</Service-Component>
                     </instructions>
                 </configuration>

@@ -37,6 +37,7 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -60,7 +61,7 @@ public class JsfJettyTest {
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-osgi-boot"),
 
             provisionCoreJetty(),
-            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty"),
+            mavenBundle("org.ops4j.pax.cdi", "pax-cdi-jetty", Info.getPaxCdiVersion()),
             paxCdiProviderAdapter(),
             cdiProviderBundles(),
             httpServiceJetty(),
