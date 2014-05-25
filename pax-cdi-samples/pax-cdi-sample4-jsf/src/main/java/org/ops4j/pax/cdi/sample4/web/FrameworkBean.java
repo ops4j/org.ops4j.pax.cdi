@@ -17,11 +17,13 @@
  */
 package org.ops4j.pax.cdi.sample4.web;
 
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
 
 
-@ManagedBean(name = "framework")
+@RequestScoped
+@Named("framework")
 public class FrameworkBean {
     
     private String name;

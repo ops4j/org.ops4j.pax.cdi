@@ -65,7 +65,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Web-ContextPath>sample4</Web-ContextPath>
-                       <Import-Package>
+                        <Import-Package>
                             javax.annotation,
                             javax.servlet;version="[3.0,4.0)", 
                             *
@@ -73,7 +73,11 @@
                         <Require-Bundle>
                             org.glassfish.javax.faces
                         </Require-Bundle>
-                        <Require-TldBundle>org.primefaces</Require-TldBundle>
+                        <Require-TldBundle>org.primefaces, org.ops4j.pax.cdi.jetty</Require-TldBundle>
+                        <Require-Capability>
+                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=pax-cdi-extension)(version&gt;=${version;==;${pax.cdi.osgi.version.clean}})(!(version&gt;=${version;=+;${pax.cdi.osgi.version.clean}})))",
+                            osgi.extender; filter:="(osgi.extender=pax.cdi)"
+                        </Require-Capability>
                     </instructions>
                 </configuration>
                 <executions>
