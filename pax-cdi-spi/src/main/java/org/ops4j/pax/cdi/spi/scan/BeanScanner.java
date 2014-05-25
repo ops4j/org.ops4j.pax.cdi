@@ -70,7 +70,7 @@ public class BeanScanner {
 
     private Set<URL> beanDescriptors;
     private Set<String> beanClasses;
-    
+
     private Set<String> scannedPackages;
 
     /**
@@ -110,8 +110,8 @@ public class BeanScanner {
         scannedPackages = new HashSet<String>();
         scanOwnBundle();
         scanImportedPackages();
-        scanWiredBundles(BUNDLE_NAMESPACE);
-        scanWiredBundles(CDI_EXTENSION_CAPABILITY);
+        scanWiredBundles(BUNDLE_NAMESPACE, true);
+        scanWiredBundles(CDI_EXTENSION_CAPABILITY, false);
         logBeanClasses();
     }
 
@@ -127,7 +127,7 @@ public class BeanScanner {
 
     private void scanOwnBundle() {
         findBeanDescriptors();
-        
+
         String[] classPathElements;
 
         String bundleClassPath = bundle.getHeaders().get(BUNDLE_CLASSPATH);
@@ -159,7 +159,7 @@ public class BeanScanner {
             if (url != null) {
                 beanDescriptors.add(url);
                 return;
-            }            
+            }
         }
     }
 
@@ -255,48 +255,39 @@ public class BeanScanner {
         }
         scanExportedPackage(wiring, wire.getCapability());
     }
-    
+
     private void scanExportedPackage(BundleWiring wiring, BundleCapability capability) {
         String pkg = (String) capability.getAttributes().get(PACKAGE_NAMESPACE);
         if (scannedPackages.contains(pkg)) {
             return;
         }
-        
+
         log.debug("scanning exported package [{}]", pkg);
         scannedPackages.add(pkg);
         Collection<String> entries = wiring.listResources(toPath(pkg), "*.class",
             BundleWiring.LISTRESOURCES_LOCAL);
         for (String entry : entries) {
             beanClasses.add(toClassName("", entry));
-        }        
+        }
     }
 
     private String toPath(String pkg) {
         return pkg.replaceAll("\\.", "/");
     }
 
-    private void scanRequiredBundles() {
-        BundleWiring wiring = bundle.adapt(BundleWiring.class);
-        List<BundleWire> wires = wiring.getRequiredWires(BUNDLE_NAMESPACE);
-        for (BundleWire wire : wires) {
-            BundleWiring providerWiring = wire.getProviderWiring();
-            log.debug("scanning required bundle [{}]", providerWiring.getBundle());
-            List<BundleCapability> capabilities = providerWiring.getCapabilities(PACKAGE_NAMESPACE);
-            for (BundleCapability pkgCapability : capabilities) {
-                scanExportedPackage(providerWiring, pkgCapability);
-            }
-        }
-    }
-
-    private void scanWiredBundles(String namespace) {
+    private void scanWiredBundles(String namespace, boolean onlyBeanBundles) {
         BundleWiring wiring = bundle.adapt(BundleWiring.class);
         List<BundleWire> wires = wiring.getRequiredWires(namespace);
         for (BundleWire wire : wires) {
             BundleWiring providerWiring = wire.getProviderWiring();
-            log.debug("scanning wired bundle [{}]", providerWiring.getBundle());
-            List<BundleCapability> capabilities = providerWiring.getCapabilities(PACKAGE_NAMESPACE);
-            for (BundleCapability pkgCapability : capabilities) {
-                scanExportedPackage(providerWiring, pkgCapability);
+            Bundle providerBundle = providerWiring.getBundle();
+            if (!onlyBeanBundles || BeanBundles.isBeanBundle(providerBundle)) {
+                log.debug("scanning bundle [{}] wired for namespace [{}]", providerBundle, namespace);
+                List<BundleCapability> capabilities = providerWiring
+                    .getCapabilities(PACKAGE_NAMESPACE);
+                for (BundleCapability pkgCapability : capabilities) {
+                    scanExportedPackage(providerWiring, pkgCapability);
+                }
             }
         }
     }
