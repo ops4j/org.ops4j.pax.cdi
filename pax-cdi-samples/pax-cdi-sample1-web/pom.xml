@@ -50,7 +50,7 @@
                         <_wab>src/main/webapp/</_wab>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Version>${project.version}</Bundle-Version>
-                        <Web-ContextPath>sample1</Web-ContextPath>
+                        <Web-ContextPath>/sample1</Web-ContextPath>
                         <Pax-ManagedBeans>WEB-INF/beans.xml</Pax-ManagedBeans>
                         <Import-Package>javax.servlet.*;version="[2.6,4)", *</Import-Package>
                         <Require-Capability>
