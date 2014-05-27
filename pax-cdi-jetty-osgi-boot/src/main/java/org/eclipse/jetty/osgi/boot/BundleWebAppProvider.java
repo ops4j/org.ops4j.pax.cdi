@@ -53,9 +53,8 @@ public class BundleWebAppProvider extends AbstractWebAppProvider implements Bund
     /**
      * Map of Bundle to App. Used when a Bundle contains a webapp.
      */
-    private Map<Bundle, App> _bundleMap = new HashMap<Bundle, App>();
 
-    private Map<Bundle, ServletContainerInitializer> initializerMap = new HashMap<Bundle, ServletContainerInitializer>();
+    private Map<Bundle, BundleInfo> bundleInfoMap = new HashMap<Bundle, BundleInfo>();
 
     private ServiceRegistration _serviceRegForBundles;
 
@@ -130,79 +129,18 @@ public class BundleWebAppProvider extends AbstractWebAppProvider implements Bund
      * A bundle has been added that could be a webapp 
      * @param bundle
      */
-    public boolean bundleAdded (Bundle bundle) throws Exception
+    public synchronized boolean bundleAdded (Bundle bundle) throws Exception
     {
         if (bundle == null)
             return false;
 
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(getServerInstanceWrapper().getParentClassLoaderForWebapps());
-        String contextPath = null;
-        try 
-        {
-            Dictionary headers = bundle.getHeaders();
-
-            //does the bundle have a OSGiWebappConstants.JETTY_WAR_FOLDER_PATH 
-            if (headers.get(OSGiWebappConstants.JETTY_WAR_FOLDER_PATH) != null)
-            {
-                String base = (String)headers.get(OSGiWebappConstants.JETTY_WAR_FOLDER_PATH);
-                contextPath = getContextPath(bundle);
-                String originId = getOriginId(bundle, base);
- 
-                //TODO : we don't know whether an app is actually deployed, as deploymentManager swallows all
-                //exceptions inside the impl of addApp. Need to send the Event and also register as a service
-                //only if the deployment succeeded
-                OSGiApp app = new OSGiApp(getDeploymentManager(), this, bundle, originId);
-                app.setWebAppPath(base);
-                app.setContextPath(contextPath);
-                _bundleMap.put(bundle, app);
-                processDeployment(bundle);
-                return true;
-            }
-
-
-            //does the bundle have a WEB-INF/web.xml
-            if (bundle.getEntry("/WEB-INF/web.xml") != null)
-            {
-                String base = ".";
-                contextPath = getContextPath(bundle);
-                String originId = getOriginId(bundle, base);
-       
-                OSGiApp app = new OSGiApp(getDeploymentManager(), this, bundle, originId);
-                app.setContextPath(contextPath);
-                app.setWebAppPath(base);
-                _bundleMap.put(bundle, app);
-                processDeployment(bundle);
-                return true;
-            }
-
-            //does the bundle define a OSGiWebappConstants.RFC66_WEB_CONTEXTPATH
-            if (headers.get(OSGiWebappConstants.RFC66_WEB_CONTEXTPATH) != null)
-            {
-                //Could be a static webapp with no web.xml
-                String base = ".";
-                contextPath = (String)headers.get(OSGiWebappConstants.RFC66_WEB_CONTEXTPATH);
-                String originId = getOriginId(bundle,base);
-                
-                OSGiApp app = new OSGiApp(getDeploymentManager(), this, bundle, originId);
-                app.setContextPath(contextPath);
-                app.setWebAppPath(base);
-                _bundleMap.put(bundle, app);
-                processDeployment(bundle);
-                return true;
-            }
-
-            return false;
+        BundleInfo bundleInfo = bundleInfoMap.get(bundle);
+        if (bundleInfo == null) {
+            bundleInfo = new BundleInfo();
+            bundleInfo.setStarted(true);
+            bundleInfoMap.put(bundle, bundleInfo);
         }
-        catch (Exception e)
-        {
-            
-            throw e;
-        }
-        finally
-        {
-            Thread.currentThread().setContextClassLoader(cl);
-        }
+        return processDeployment(bundle, true);        
     }
 
     
@@ -213,9 +151,13 @@ public class BundleWebAppProvider extends AbstractWebAppProvider implements Bund
      * 
      * @return true if this was a webapp we had deployed, false otherwise
      */
-    public boolean bundleRemoved (Bundle bundle) throws Exception
+    public synchronized boolean bundleRemoved (Bundle bundle) throws Exception
     {
-        App app = _bundleMap.remove(bundle);
+        BundleInfo bundleInfo = bundleInfoMap.remove(bundle);
+        if (bundleInfo == null) {
+            return false;
+        }
+        App app = bundleInfo.getApp();
         if (app != null)
         {
             getDeploymentManager().removeApp(app); 
@@ -254,57 +196,160 @@ public class BundleWebAppProvider extends AbstractWebAppProvider implements Bund
     }
     
     @Override
-    public ServletContainerInitializer addingService(
+    public synchronized ServletContainerInitializer addingService(
         ServiceReference<ServletContainerInitializer> reference) {
         ServletContainerInitializer initializer = bundleContext.getService(reference);
-        initializerMap.put(reference.getBundle(), initializer);
-        processDeployment(reference.getBundle());
+        Bundle bundle = reference.getBundle();
+        BundleInfo bundleInfo = bundleInfoMap.get(bundle);
+        if (bundleInfo == null) {
+            bundleInfo = new BundleInfo();
+            bundleInfoMap.put(bundle, bundleInfo);
+        }
+        bundleInfo.setInitializer(initializer);
+        processDeployment(bundle, false);
         return initializer;
     }
 
-    private void processDeployment(Bundle bundle) {
+    private boolean processDeployment(Bundle bundle, boolean bundleAdded) {
+
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(
-            getServerInstanceWrapper().getParentClassLoaderForWebapps());
-        try {
-            App app = _bundleMap.get(bundle);
-            if (BeanBundles.isBeanBundle(bundle)) {
-                ServletContainerInitializer initializer = initializerMap.get(bundle);
-                if (app != null && initializer != null) {
-                    try {
+        Thread.currentThread().setContextClassLoader(getServerInstanceWrapper().getParentClassLoaderForWebapps());
+        BundleInfo bundleInfo = bundleInfoMap.get(bundle);
+        OSGiApp app = null;
+        boolean bundleStarted = bundleAdded;
+        if (bundleInfo != null) {
+            app = (OSGiApp) bundleInfo.getApp();
+            bundleStarted |= bundleInfo.isStarted();
+        }
+
+        
+        try 
+        {
+            if (bundleStarted && app == null) {
+                app = createApp(bundle);
+                if (app == null) 
+                {
+                    return false;
+                }
+                if (bundleInfo == null) 
+                {
+                    bundleInfo = new BundleInfo();
+                    bundleInfoMap.put(bundle, bundleInfo);
+                }
+                bundleInfo.setApp(app);
+                bundleInfo.setStarted(true);
+            }
+
+            if (BeanBundles.isBeanBundle(bundle)) 
+            {
+                ServletContainerInitializer initializer = bundleInfo.getInitializer();
+                if (app != null && initializer != null) 
+                {
+                    try 
+                    {
                         app.getContextHandler().setAttribute("org.ops4j.pax.cdi.initializer",
                             initializer);
                         getDeploymentManager().addApp(app);
                     }
-                    catch (Exception e) {
+                    catch (Exception e) 
+                    {
                         LOG.warn(e);
                     }
                 }
             }
-            else {
-                if (app != null) {
+            else 
+            {
+                if (app != null) 
+                {
                     getDeploymentManager().addApp(app);
                 }                
             }
+            return true;
         }
-        finally {
+        catch (Exception e)
+        {            
+            throw new RuntimeException(e);
+        }
+        finally
+        {
             Thread.currentThread().setContextClassLoader(cl);
         }
     }
 
+
+
+
+    private OSGiApp createApp(Bundle bundle) {
+        OSGiApp app;
+        String base = null;
+        String contextPath = null;
+        String originId = null;
+        Dictionary headers = bundle.getHeaders();
+
+        //does the bundle have a OSGiWebappConstants.JETTY_WAR_FOLDER_PATH 
+        if (headers.get(OSGiWebappConstants.JETTY_WAR_FOLDER_PATH) != null)
+        {
+            base = (String)headers.get(OSGiWebappConstants.JETTY_WAR_FOLDER_PATH);
+            contextPath = getContextPath(bundle);
+            originId = getOriginId(bundle, base);
+        }
+
+        //does the bundle have a WEB-INF/web.xml
+        else if (bundle.getEntry("/WEB-INF/web.xml") != null)
+        {
+            base = ".";
+            contextPath = getContextPath(bundle);
+            originId = getOriginId(bundle, base);
+        }
+
+        //does the bundle define a OSGiWebappConstants.RFC66_WEB_CONTEXTPATH
+        else if (headers.get(OSGiWebappConstants.RFC66_WEB_CONTEXTPATH) != null)
+        {
+            //Could be a static webapp with no web.xml
+            base = ".";
+            contextPath = (String)headers.get(OSGiWebappConstants.RFC66_WEB_CONTEXTPATH);
+            originId = getOriginId(bundle,base);
+        }
+
+        if (contextPath == null) {
+            return null;
+        }
+
+        //TODO : we don't know whether an app is actually deployed, as deploymentManager swallows all
+        //exceptions inside the impl of addApp. Need to send the Event and also register as a service
+        //only if the deployment succeeded
+        app = new OSGiApp(getDeploymentManager(), this, bundle, originId);
+        app.setWebAppPath(base);
+        app.setContextPath(contextPath);
+        return app;
+    }
+
+    
     @Override
     public void modifiedService(ServiceReference<ServletContainerInitializer> reference,
-        ServletContainerInitializer service) {
-        // TODO Auto-generated method stub
-
+        ServletContainerInitializer service) 
+    {
+        // not used
     }
 
     @Override
-    public void removedService(ServiceReference<ServletContainerInitializer> reference,
-        ServletContainerInitializer service) {
-        // TODO Auto-generated method stub
-
+    public synchronized void removedService(ServiceReference<ServletContainerInitializer> reference,
+        ServletContainerInitializer service) 
+    {
+        Bundle bundle = reference.getBundle();
+        BundleInfo bundleInfo = bundleInfoMap.get(bundle);
+        App app = bundleInfo.getApp();
+        if (app != null) 
+        {
+            bundleInfo.setApp(null);
+            try 
+            {
+                getDeploymentManager().removeApp(app); 
+            }
+            catch (Exception e) 
+            {
+                LOG.warn(e);
+            }
+        }        
     }
-    
-
 }
