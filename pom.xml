@@ -41,6 +41,7 @@
         <module>pax-cdi-fragment</module>
         <module>pax-cdi-jetty-osgi-boot</module>
         <module>pax-cdi-jetty</module>
+        <module>pax-cdi-jetty-weld</module>
     </modules>
 
     <profiles>

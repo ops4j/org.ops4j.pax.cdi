@@ -76,6 +76,7 @@ public class JettyServletTest {
             mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             provisionCoreJetty(),
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty"),
+            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-weld"),
             paxCdiProviderAdapter(),
             cdiProviderBundles(),
             httpServiceJetty(),

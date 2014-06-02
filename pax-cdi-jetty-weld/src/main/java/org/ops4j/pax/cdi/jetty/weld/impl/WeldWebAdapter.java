@@ -17,14 +17,17 @@
  */
 package org.ops4j.pax.cdi.jetty.weld.impl;
 
-import javax.servlet.ServletContextListener;
+import javax.servlet.ServletContainerInitializer;
 
-import org.ops4j.pax.cdi.jetty.CdiWebAppDependencyManager;
+import org.ops4j.pax.cdi.jetty.AbstractWebCdiContainerListener;
+import org.ops4j.pax.cdi.spi.CdiContainer;
 
-public class WeldWebAdapter extends CdiWebAppDependencyManager {
+public class WeldWebAdapter extends AbstractWebCdiContainerListener {
 
     @Override
-    protected ServletContextListener getServletContextListener() {
-        return new WeldServletContextListener();
+    protected ServletContainerInitializer getServletContainerInitializer(CdiContainer cdiContainer) {
+        ServletContainerInitializer initializer = new WeldServletContainerInitializer(
+            cdiContainer, new WeldServletContextListener());
+        return initializer;
     }
 }

@@ -15,51 +15,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.jetty.impl;
+package org.ops4j.pax.cdi.jetty.weld.impl;
 
 import java.util.Set;
 
-import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 
 import org.jboss.weld.Container;
+import org.ops4j.pax.cdi.jetty.CdiServletContainerInitializer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.osgi.framework.Bundle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-/**
- * A {@link ServletContainerInitializer} which stores the CDI container in the servlet context
- * and registers a CDI provider dependent {@link ServletContextListener}.
- * <p>
- * This listener is responsible for starting the CDI container.
- * 
- * @author Harald Wellmann
- *
- */
-public class CdiServletContainerInitializer implements ServletContainerInitializer {
 
-    private static Logger log = LoggerFactory.getLogger(CdiServletContainerInitializer.class);
+public class WeldServletContainerInitializer extends CdiServletContainerInitializer {
 
-    private CdiContainer cdiContainer;
-
-    private ServletContextListener servletContextListener;
-
-    public CdiServletContainerInitializer(CdiContainer cdiContainer,
+    public WeldServletContainerInitializer(CdiContainer cdiContainer,
         ServletContextListener servletContextListener) {
-        this.cdiContainer = cdiContainer;
-        this.servletContextListener = servletContextListener;
+        super(cdiContainer, servletContextListener);
     }
-
+    
     @Override
     public void onStartup(Set<Class<?>> classes, ServletContext ctx) throws ServletException {
-        log.info("storing CdiContainer in ServletContext for [{}]", cdiContainer.getBundle());
+        super.onStartup(classes, ctx);
         Bundle bundle = cdiContainer.getBundle();
         String contextId = String.format("%s:%d", bundle.getSymbolicName(), bundle.getBundleId()); 
         ctx.setInitParameter(Container.CONTEXT_ID_KEY, contextId);
-        ctx.setAttribute("org.ops4j.pax.cdi.container", cdiContainer);
-        ctx.addListener(servletContextListener);
     }
+
 }

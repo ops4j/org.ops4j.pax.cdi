@@ -62,6 +62,7 @@ public class JsfJettyTest {
 
             provisionCoreJetty(),
             mavenBundle("org.ops4j.pax.cdi", "pax-cdi-jetty", Info.getPaxCdiVersion()),
+            mavenBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-weld", Info.getPaxCdiVersion()),
             paxCdiProviderAdapter(),
             cdiProviderBundles(),
             httpServiceJetty(),

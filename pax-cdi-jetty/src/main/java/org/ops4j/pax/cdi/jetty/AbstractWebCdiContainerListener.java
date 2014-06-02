@@ -23,9 +23,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContextListener;
 
-import org.ops4j.pax.cdi.jetty.impl.CdiServletContainerInitializer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.osgi.framework.Bundle;
@@ -38,24 +36,23 @@ import org.slf4j.LoggerFactory;
  * @author Harald Wellmann
  * 
  */
-public abstract class CdiWebAppDependencyManager implements CdiContainerListener {
+public abstract class AbstractWebCdiContainerListener implements CdiContainerListener {
 
-    private static Logger log = LoggerFactory.getLogger(CdiWebAppDependencyManager.class);
+    private static Logger log = LoggerFactory.getLogger(AbstractWebCdiContainerListener.class);
 
     private Map<Bundle, ServiceRegistration<ServletContainerInitializer>> registrations 
         = new HashMap<Bundle, ServiceRegistration<ServletContainerInitializer>>();
 
-    protected abstract ServletContextListener getServletContextListener();
+    protected abstract ServletContainerInitializer getServletContainerInitializer(CdiContainer cdiContainer);
 
     private void register(Bundle bundle, CdiContainer cdiContainer) {
-        CdiServletContainerInitializer initializer = new CdiServletContainerInitializer(
-            cdiContainer, getServletContextListener());
+        ServletContainerInitializer initializer = getServletContainerInitializer(cdiContainer);
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("org.ops4j.pax.cdi.bundle.id", bundle.getBundleId());
         ServiceRegistration<ServletContainerInitializer> registration = bundle.getBundleContext()
             .registerService(ServletContainerInitializer.class, initializer, props);
         registrations.put(bundle, registration);
-        log.info("registered WebAppDependencyHolder for bundle [{}]", cdiContainer.getBundle());
+        log.info("registered ServletContainerInitializer for bundle [{}]", cdiContainer.getBundle());
     }
 
     private void unregister(Bundle bundle) {
