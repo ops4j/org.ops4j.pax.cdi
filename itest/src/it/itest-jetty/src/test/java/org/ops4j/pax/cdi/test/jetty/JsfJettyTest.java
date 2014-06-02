@@ -20,10 +20,7 @@ package org.ops4j.pax.cdi.test.jetty;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.*;
 import static org.ops4j.pax.exam.CoreOptions.bootDelegationPackages;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.composite;
@@ -37,7 +34,6 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -61,9 +57,9 @@ public class JsfJettyTest {
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-osgi-boot"),
 
             provisionCoreJetty(),
-            mavenBundle("org.ops4j.pax.cdi", "pax-cdi-jetty", Info.getPaxCdiVersion()),
-            mavenBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-weld", Info.getPaxCdiVersion()),
             paxCdiProviderAdapter(),
+            paxCdiProviderJettyAdapter(),
+            paxCdiJsfAdapter(),
             cdiProviderBundles(),
             httpServiceJetty(),
             websocketJetty(),
@@ -91,8 +87,24 @@ public class JsfJettyTest {
             mavenBundle("javax.validation", "validation-api", "1.1.0.Final"),
 
             bundle("file:target/primefaces.jar"),
-            bundle("file:target/pax-cdi-sample4-jsf.jar"));
+            wrappedBundle(bundle("file:target/pax-cdi-sample4-jsf.jar"))
+                .instructions(
+                    "overwrite=merge",
+                    getTldBundleInstruction()));
 
+    }
+    
+    private static String getTldBundleInstruction() {
+        switch (getCdiProvider()) {
+            case OWB1:
+                return "Require-TldBundle=org.primefaces, openwebbeans-el22, openwebbeans-jsf";
+                
+            case WELD1:
+            case WELD2:
+                return "Require-TldBundle=org.primefaces, org.ops4j.pax.cdi.jetty.weld";
+            default:
+                throw new IllegalStateException();
+        }
     }
 
     public static Option provisionCoreJetty() {

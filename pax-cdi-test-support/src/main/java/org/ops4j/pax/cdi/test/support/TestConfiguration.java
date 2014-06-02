@@ -157,6 +157,47 @@ public class TestConfiguration {
         }
     }
 
+    public static Option paxCdiProviderJettyAdapter() {
+        switch (getCdiProvider()) {
+
+            case OWB1:
+                return composite(
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty"),                    
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-openwebbeans"),
+                    mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
+                    mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject()
+                    );
+            
+            case WELD1:    
+            case WELD2:    
+                return composite(
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty"),                    
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-weld")
+                    );
+            
+            default:    
+                throw new IllegalArgumentException("pax.cdi.provider unknown or null");
+        }
+    }
+
+    public static Option paxCdiJsfAdapter() {
+        switch (getCdiProvider()) {
+
+            case OWB1:
+                return composite(
+                    mavenBundle("org.apache.openwebbeans", "openwebbeans-jsf").versionAsInProject()
+                    );
+            
+            case WELD1:    
+            case WELD2:    
+                return composite(
+                    );
+            
+            default:    
+                throw new IllegalArgumentException("pax.cdi.provider unknown or null");
+        }
+    }
+
     public static CdiProvider getCdiProvider() {
         String provider = System.getProperty("pax.cdi.provider", "owb1");
         if (provider == null) {
@@ -246,6 +287,20 @@ public class TestConfiguration {
         }
         else {
             return mavenBundle(groupId, artifactId, Info.getPaxCdiVersion());
+        }
+    }
+    
+    public static Option workspaceFragment(String groupId, String artifactId) {
+        String samples = groupId.endsWith(".samples") ? "pax-cdi-samples/" : "";
+        String fileName = String.format("%s/../../../../%s%s/target/classes",
+            PathUtils.getBaseDir(), samples, artifactId);
+        
+        if (new File(fileName).exists()) {
+            String url = "reference:file:" + fileName;
+            return bundle(url).noStart();            
+        }
+        else {
+            return mavenBundle(groupId, artifactId, Info.getPaxCdiVersion()).noStart();
         }
     }
     

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Harald Wellmann.
+ * Copyright 2014 Harald Wellmann.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,14 @@
  */
 package org.ops4j.pax.cdi.jetty.openwebbeans.impl;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 import javax.servlet.ServletContext;
 
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,11 +49,44 @@ public class JettyDecorator implements ServletContextHandler.Decorator {
             ContextHandler handler = cc.getContextHandler();
             if (handler instanceof ServletContextHandler) {
                 ServletContextHandler sch = (ServletContextHandler) handler;
-                sch.addDecorator(new JettyDecorator(context));
+                JettyDecorator decorator = new JettyDecorator(context);
+                sch.addDecorator(decorator);
+                decorator.adaptContextClassLoader(context, handler);
                 log.info("registered Jetty decorator for JSR-299 injection");
             }
         }
     }
+    
+    private void adaptContextClassLoader(ServletContext context, ContextHandler handler) {
+        try {
+            if (handler.getClass().getName().equals("org.eclipse.jetty.webapp.WebAppContext")) {
+                Method getClassLoader = handler.getClass().getMethod("getClassLoader");
+                if (getClassLoader == null) {
+                    return;
+                }
+                Object classLoader = getClassLoader.invoke(handler);
+                if (!classLoader.getClass().getName()
+                    .equals("org.eclipse.jetty.osgi.boot.internal.webapp.OSGiWebappClassLoader")) {
+                    return;
+                }
+                Field bundleClassLoader = classLoader.getClass().getDeclaredField(
+                    "_osgiBundleClassLoader");
+                bundleClassLoader.setAccessible(true);
+                CdiContainer cdiContainer = (CdiContainer) context
+                    .getAttribute("org.ops4j.pax.cdi.container");
+
+                bundleClassLoader.set(classLoader, cdiContainer.getContextClassLoader());
+            }
+        }
+        catch (ReflectiveOperationException exc) {
+            log.error("cannot adapt context class loader", exc);
+        }
+        catch (SecurityException exc) {
+            log.error("cannot adapt context class loader", exc);
+        }
+    }
+
+    
 
     protected Injector getInjector() {
         if (injector == null) {

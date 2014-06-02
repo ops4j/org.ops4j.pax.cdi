@@ -22,6 +22,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderJettyAdapter;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.bootDelegationPackages;
@@ -75,9 +76,8 @@ public class JettyServletTest {
 
             mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             provisionCoreJetty(),
-            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty"),
-            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-weld"),
             paxCdiProviderAdapter(),
+            paxCdiProviderJettyAdapter(),
             cdiProviderBundles(),
             httpServiceJetty(),
             jspDependencies(),
