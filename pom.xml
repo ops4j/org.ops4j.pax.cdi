@@ -42,6 +42,7 @@
         <module>pax-cdi-jetty-osgi-boot</module>
         <module>pax-cdi-jetty</module>
         <module>pax-cdi-jetty-weld</module>
+        <module>pax-cdi-jetty-openwebbeans</module>
     </modules>
 
     <profiles>
