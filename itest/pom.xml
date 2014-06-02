@@ -55,9 +55,6 @@
                                         <profile>owb1</profile>
                                     </profiles>
                                     <cloneProjectsTo>${project.build.directory}/equinox-owb1</cloneProjectsTo>
-                                    <pomExcludes>
-                                        <pomExclude>itest-jetty/pom.xml</pomExclude>
-                                    </pomExcludes>
                                 </configuration>
                             </execution>
                             <execution>
@@ -103,9 +100,6 @@
                                         <profile>owb1</profile>
                                     </profiles>
                                     <cloneProjectsTo>${project.build.directory}/felix-owb1</cloneProjectsTo>
-                                    <pomExcludes>
-                                        <pomExclude>itest-jetty/pom.xml</pomExclude>
-                                    </pomExcludes>
                                 </configuration>
                             </execution>
                             <execution>
