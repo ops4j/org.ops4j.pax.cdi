@@ -8,7 +8,8 @@
       <application-factory>org.jboss.weld.environment.servlet.jsf.WeldApplicationFactory</application-factory>
    </factory>
 
-   <!--application>
-      <view-handler>org.jboss.weld.jsf.ConversationAwareViewHandler</view-handler>
-   </application-->
+   <application>
+      <view-handler>org.ops4j.pax.cdi.jetty.weld.impl.ConversationAndContextAwareViewHandler</view-handler>
+   </application>
+   
 </faces-config>
