@@ -34,7 +34,7 @@ import org.ops4j.pax.cdi.api.OsgiService;
 import org.osgi.framework.ServiceException;
 
 /**
- * Represents an OSGi service bean. Instances of a bean are proxied to an OSGi services. The services
+ * Represents an OSGi service bean. Instances of a bean are proxied to an OSGi service. The service
  * is looked up per method invocation (dynamic = true) or once on bean instantiation (dynamic =
  * false)
  * 
