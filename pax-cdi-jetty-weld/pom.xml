@@ -25,7 +25,7 @@
 
         <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
-            <artifactId>pax-cdi-jetty</artifactId>
+            <artifactId>pax-cdi-servlet</artifactId>
             <version>${project.version}</version>
         </dependency>
 

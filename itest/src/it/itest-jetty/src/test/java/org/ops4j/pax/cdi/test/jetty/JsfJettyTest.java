@@ -34,6 +34,7 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -86,8 +87,12 @@ public class JsfJettyTest {
             mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
             mavenBundle("javax.validation", "validation-api", "1.1.0.Final"),
 
-            bundle("file:target/primefaces.jar"),
-            wrappedBundle(bundle("file:target/pax-cdi-sample4-jsf.jar"))
+            //bundle("file:target/primefaces.jar"),
+            mavenBundle("org.primefaces", "primefaces", "5.0"),
+            wrappedBundle(
+                mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample4-jsf", Info.getPaxCdiVersion())
+                //bundle("file:target/pax-cdi-sample4-jsf.jar")
+                )
                 .instructions(
                     "overwrite=merge",
                     getTldBundleInstruction()));
@@ -101,7 +106,7 @@ public class JsfJettyTest {
                 
             case WELD1:
             case WELD2:
-                return "Require-TldBundle=org.primefaces, org.ops4j.pax.cdi.jetty.weld";
+                return "Require-TldBundle=org.primefaces, org.ops4j.pax.cdi.jetty.weld";//"Require-TldBundle=org.primefaces, org.ops4j.pax.cdi.jetty.weld";
             default:
                 throw new IllegalStateException();
         }

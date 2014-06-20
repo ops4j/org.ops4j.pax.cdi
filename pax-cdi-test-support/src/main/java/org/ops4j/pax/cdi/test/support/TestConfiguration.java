@@ -162,7 +162,7 @@ public class TestConfiguration {
 
             case OWB1:
                 return composite(
-                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty"),                    
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-servlet"),                    
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-openwebbeans"),
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject()
@@ -171,7 +171,7 @@ public class TestConfiguration {
             case WELD1:    
             case WELD2:    
                 return composite(
-                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty"),                    
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-servlet"),                    
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-weld")
                     );
             
