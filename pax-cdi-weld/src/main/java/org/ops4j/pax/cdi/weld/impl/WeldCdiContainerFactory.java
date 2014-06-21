@@ -95,9 +95,6 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
     @Override
     public void addListener(CdiContainerListener listener) {
         listeners.add(listener);
-        for (CdiContainer container : containers.values()) {
-            listener.postCreate(container);
-        }
     }
 
     @Override
