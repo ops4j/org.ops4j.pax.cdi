@@ -17,8 +17,8 @@
  */
 package org.ops4j.pax.cdi.extender.impl;
 
-import static org.ops4j.pax.cdi.api.Constants.CDI_EXTENSION_CAPABILITY;
 import static org.ops4j.pax.cdi.api.Constants.EXTENDER_CAPABILITY;
+import static org.ops4j.pax.cdi.spi.BeanBundles.findExtensions;
 
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -137,18 +137,6 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
 
         log.info("creating CDI container for bean bundle {} with extension bundles {}", bundle, extensions);
         return factory.createContainer(bundle, extensions, containerType);
-    }
-
-    private void findExtensions(Bundle bundle, Set<Bundle> extensions) {
-        List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires(
-            CDI_EXTENSION_CAPABILITY);
-        if (wires != null) {
-            for (BundleWire wire : wires) {
-                Bundle b = wire.getProviderWiring().getBundle();
-                extensions.add(b);
-                findExtensions(b, extensions);
-            }
-        }
     }
 
     public void setWebAdapter(CdiContainerListener listener) {

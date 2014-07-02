@@ -19,6 +19,7 @@
 package org.ops4j.pax.cdi.spi;
 
 import static org.ops4j.pax.cdi.api.Constants.CDI_EXTENDER;
+import static org.ops4j.pax.cdi.api.Constants.CDI_EXTENSION_CAPABILITY;
 import static org.ops4j.pax.cdi.api.Constants.EXTENDER_CAPABILITY;
 
 import java.util.HashMap;
@@ -86,4 +87,17 @@ public class BeanBundles {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         return bundleMap.get(cl);
     }
+    
+    public static void findExtensions(Bundle bundle, Set<Bundle> extensions) {
+        List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires(
+            CDI_EXTENSION_CAPABILITY);
+        if (wires != null) {
+            for (BundleWire wire : wires) {
+                Bundle b = wire.getProviderWiring().getBundle();
+                extensions.add(b);
+                findExtensions(b, extensions);
+            }
+        }
+    }
+    
 }

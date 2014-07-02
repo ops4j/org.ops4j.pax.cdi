@@ -43,6 +43,7 @@
         <module>pax-cdi-servlet</module>
         <module>pax-cdi-jetty-weld</module>
         <module>pax-cdi-jetty-openwebbeans</module>
+        <module>pax-cdi-undertow-weld</module>
     </modules>
 
     <profiles>
