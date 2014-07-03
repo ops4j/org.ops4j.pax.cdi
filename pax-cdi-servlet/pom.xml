@@ -10,8 +10,8 @@
   <packaging>bundle</packaging>
 
     <properties>
-        <bundle.symbolicName>org.ops4j.pax.cdi.jetty</bundle.symbolicName>
-        <bundle.namespace>org.ops4j.pax.cdi.jetty</bundle.namespace>
+        <bundle.symbolicName>org.ops4j.pax.cdi.servlet</bundle.symbolicName>
+        <bundle.namespace>org.ops4j.pax.cdi.servlet</bundle.namespace>
     </properties>
 
     <dependencies>
