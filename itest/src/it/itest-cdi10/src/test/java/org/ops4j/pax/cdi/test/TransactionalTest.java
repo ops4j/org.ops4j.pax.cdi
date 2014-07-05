@@ -43,7 +43,6 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.jpa.sample1.model.Author;
-import org.ops4j.pax.swissbox.core.BundleUtils;
 import org.osgi.framework.FrameworkUtil;
 
 @RunWith(PaxExam.class)
