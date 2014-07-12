@@ -20,8 +20,8 @@ package org.ops4j.pax.cdi.jetty.openwebbeans.impl;
 import javax.servlet.ServletContainerInitializer;
 
 import org.apache.webbeans.config.WebBeansFinder;
-import org.ops4j.pax.cdi.jetty.AbstractWebCdiContainerListener;
-import org.ops4j.pax.cdi.jetty.CdiServletContainerInitializer;
+import org.ops4j.pax.cdi.servlet.AbstractWebCdiContainerListener;
+import org.ops4j.pax.cdi.servlet.CdiServletContainerInitializer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.osgi.framework.BundleContext;
 

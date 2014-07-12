@@ -24,7 +24,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 
 import org.jboss.weld.Container;
-import org.ops4j.pax.cdi.jetty.CdiServletContainerInitializer;
+import org.ops4j.pax.cdi.servlet.CdiServletContainerInitializer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.osgi.framework.Bundle;
 

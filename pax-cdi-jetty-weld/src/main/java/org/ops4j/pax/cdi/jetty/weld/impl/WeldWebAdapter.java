@@ -19,7 +19,7 @@ package org.ops4j.pax.cdi.jetty.weld.impl;
 
 import javax.servlet.ServletContainerInitializer;
 
-import org.ops4j.pax.cdi.jetty.AbstractWebCdiContainerListener;
+import org.ops4j.pax.cdi.servlet.AbstractWebCdiContainerListener;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 
 public class WeldWebAdapter extends AbstractWebCdiContainerListener {
