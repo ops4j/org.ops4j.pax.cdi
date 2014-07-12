@@ -41,12 +41,12 @@ import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
+public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper> {
 
     private static Logger log = LoggerFactory.getLogger(CdiExtender.class);
 
     private BundleContext context;
-    private BundleTracker<CdiContainer> bundleWatcher;
+    private BundleTracker<CdiContainerWrapper> bundleWatcher;
     private CdiContainerFactory factory;
 
     private CdiContainerListener webAdapter;
@@ -60,7 +60,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
         }
 
         log.info("starting CDI extender {}", context.getBundle().getSymbolicName());
-        this.bundleWatcher = new BundleTracker<CdiContainer>(context, Bundle.ACTIVE, this);
+        this.bundleWatcher = new BundleTracker<CdiContainerWrapper>(context, Bundle.ACTIVE, this);
         bundleWatcher.open();
     }
 
@@ -70,7 +70,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
     }
 
     @Override
-    public CdiContainer addingBundle(final Bundle bundle, BundleEvent event) {
+    public CdiContainerWrapper addingBundle(final Bundle bundle, BundleEvent event) {
         boolean wired = false;
         List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires(EXTENDER_CAPABILITY);
         if (wires != null) {
@@ -87,30 +87,34 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
         }
         else {
             log.trace("not a bean bundle: {}", bundle.getSymbolicName());
+            return null;
         }
-        return null;
     }
 
     @Override
-    public void modifiedBundle(Bundle bundle, BundleEvent event, CdiContainer object) {
+    public void modifiedBundle(Bundle bundle, BundleEvent event, CdiContainerWrapper object) {
         // We don't care about state changes
     }
 
     @Override
-    public void removedBundle(Bundle bundle, BundleEvent event, CdiContainer container) {
-        synchronized (container) {
-            container.stop();
+    public void removedBundle(Bundle bundle, BundleEvent event, CdiContainerWrapper wrapper) {
+        CdiContainer container = wrapper.getCdiContainer();
+        if (container != null) {
+            synchronized (container) {
+                container.stop();
+            }
         }
         factory.removeContainer(bundle);
     }
 
-    private CdiContainer createContainer(Bundle bundle) {
+    private CdiContainerWrapper createContainer(Bundle bundle) {
         // check if this is a web bundle
         Dictionary<String, String> headers = bundle.getHeaders();
         String contextPath = headers.get("Web-ContextPath");
         CdiContainerType containerType = (contextPath == null) ? CdiContainerType.STANDALONE
             : CdiContainerType.WEB;
 
+        CdiContainerWrapper wrapper = new CdiContainerWrapper(bundle);
         CdiContainer container = null;
         if (containerType == CdiContainerType.WEB) {
             if (webAdapter == null) {
@@ -127,7 +131,8 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
             container = doCreateContainer(bundle, containerType);
             container.start(null);
         }
-        return container;
+        wrapper.setCdiContainer(container);
+        return wrapper;
     }
 
     private CdiContainer doCreateContainer(Bundle bundle, CdiContainerType containerType) {

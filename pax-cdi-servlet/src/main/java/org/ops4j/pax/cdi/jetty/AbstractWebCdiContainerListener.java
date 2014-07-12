@@ -61,6 +61,7 @@ public abstract class AbstractWebCdiContainerListener implements CdiContainerLis
         if (registration != null) {
             try {
                 registration.unregister();
+                log.info("unregistered ServletContainerInitializer for bundle [{}]", bundle);
             }
             catch (IllegalStateException e) {
                 // ignore if already unregistered
