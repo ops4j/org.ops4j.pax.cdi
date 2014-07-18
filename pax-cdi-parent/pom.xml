@@ -24,14 +24,14 @@
         <pax.jpa.version>0.2.0</pax.jpa.version>
         <pax.swissbox.version>1.7.0</pax.swissbox.version>
         <pax.url.version>1.6.0</pax.url.version>
-        <pax.web.version>3.0.4</pax.web.version>
+        <pax.web.version>4.0.0-SNAPSHOT</pax.web.version>
         <slf4j.version>1.6.4</slf4j.version>
         <spring.version>3.2.2.RELEASE</spring.version>
         <pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
         <weld.api.version>1.2.0.Beta1</weld.api.version>
         <weld.version>1.2.0.Beta1</weld.version>
         <weld2.version>2.2.0.SP1</weld2.version>
-        <xbean.version>3.16</xbean.version>
+        <xbean.version>3.18</xbean.version>
     </properties>
 
     <dependencyManagement>

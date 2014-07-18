@@ -15,6 +15,7 @@
     <properties>
         <bundle.symbolicName>org.ops4j.pax.cdi.web.weld</bundle.symbolicName>
         <bundle.namespace>org.ops4j.pax.cdi.web.weld</bundle.namespace>
+        <jetty.version>9.0.7.v20131107</jetty.version>
     </properties>
 
     <dependencies>
@@ -32,12 +33,62 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.eclipse.jetty.aggregate</groupId>
-            <artifactId>jetty-all-server</artifactId>
-            <version>8.1.4.v20120524</version>
-            <scope>provided</scope>
-        </dependency>
+		<!-- Jetty -->
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-util</artifactId>
+            <version>${jetty.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-io</artifactId>
+            <version>${jetty.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-http</artifactId>
+            <version>${jetty.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-continuation</artifactId>
+            <version>${jetty.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+            <version>${jetty.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-security</artifactId>
+            <version>${jetty.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlet</artifactId>
+            <version>${jetty.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-xml</artifactId>
+            <version>${jetty.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+
+<!--         <dependency> -->
+<!--             <groupId>org.eclipse.jetty.aggregate</groupId> -->
+<!--             <artifactId>jetty-all-server</artifactId> -->
+<!--             <scope>provided</scope> -->
+<!--         </dependency> -->
 
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
