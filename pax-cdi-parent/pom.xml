@@ -32,6 +32,7 @@
         <weld.version>1.2.0.Beta1</weld.version>
         <weld2.version>2.2.0.SP1</weld2.version>
         <xbean.version>3.18</xbean.version>
+		<asm.version>5.0.2</asm.version>
     </properties>
 
     <dependencyManagement>
@@ -204,18 +205,30 @@
                 <artifactId>xbean-finder</artifactId>
                 <version>${xbean.version}</version>
             </dependency>
-
+            
             <dependency>
-                <groupId>org.apache.xbean</groupId>
-                <artifactId>xbean-finder-shaded</artifactId>
-                <version>${xbean.version}</version>
+            	<groupId>org.apache.xbean</groupId>
+            	<artifactId>xbean-reflect</artifactId>
+            	<version>${xbean.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.apache.xbean</groupId>
-                <artifactId>xbean-asm4-shaded</artifactId>
-                <version>${xbean.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.ow2.asm</groupId>
+				<artifactId>asm-all</artifactId>
+				<version>${asm.version}</version>
+			</dependency>
+
+<!--             <dependency> -->
+<!--                 <groupId>org.apache.xbean</groupId> -->
+<!--                 <artifactId>xbean-finder-shaded</artifactId> -->
+<!--                 <version>${xbean.version}</version> -->
+<!--             </dependency> -->
+
+<!--             <dependency> -->
+<!--                 <groupId>org.apache.xbean</groupId> -->
+<!--                 <artifactId>xbean-asm4-shaded</artifactId> -->
+<!--                 <version>${xbean.version}</version> -->
+<!--             </dependency> -->
 
             <dependency>
                 <groupId>org.apache.openwebbeans</groupId>
