@@ -63,6 +63,7 @@
     <bundle dependency="true" start-level="20">mvn:org.apache.xbean/xbean-bundleutils/${xbean.version}</bundle>
     <bundle dependency="true" start-level="20">mvn:org.apache.xbean/xbean-reflect/${xbean.version}</bundle>
     <bundle dependency="true" start-level="20">mvn:org.apache.xbean/xbean-finder/${xbean.version}</bundle>
+    <bundle dependency="true">mvn:org.apache.xbean/xbean-asm5-shaded/${xbean.version}</bundle>
 	
 	<bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-spi/${openwebbeans.version}</bundle>
     <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-impl/${openwebbeans.version}</bundle>
