@@ -44,6 +44,7 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.ops4j.pax.exam.util.Filter;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -56,12 +57,15 @@ import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
 public class ServletTest {
     
     @Inject
+    @Filter(timeout = 100000000)
     private CdiContainerFactory containerFactory;
 
     @Inject
+    @Filter(timeout = 100000000)
     private CdiContainer container;
     
-    @Inject
+    @Inject 
+    @Filter(timeout = 100000000)
     private ServletContext servletContext;
     
     private String httpPort = System.getProperty("http.port", "8181");
