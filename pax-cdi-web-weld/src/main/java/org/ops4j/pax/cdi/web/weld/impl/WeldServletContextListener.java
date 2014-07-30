@@ -52,9 +52,6 @@ public class WeldServletContextListener extends ForwardingServletListener {
         ServletContext context = sce.getServletContext();
         cdiContainer = (CdiContainer) context
             .getAttribute("org.ops4j.pax.cdi.container");
-        Bundle bundle = cdiContainer.getBundle();
-        String contextId = String.format("%s:%d", bundle.getSymbolicName(), bundle.getBundleId()); 
-        context.setInitParameter(Container.CONTEXT_ID_KEY, contextId);
         cdiContainer.start(context);
         WeldManager manager = cdiContainer.unwrap(WeldManager.class);
 

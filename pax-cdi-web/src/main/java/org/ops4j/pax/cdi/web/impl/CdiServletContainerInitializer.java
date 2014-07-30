@@ -25,6 +25,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 
 import org.ops4j.pax.cdi.spi.CdiContainer;
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +54,13 @@ public class CdiServletContainerInitializer implements ServletContainerInitializ
 
     @Override
     public void onStartup(Set<Class<?>> classes, ServletContext ctx) throws ServletException {
-        log.info("storing CdiContainer in ServletContext for [{}]", cdiContainer.getBundle());
+        Bundle bundle = cdiContainer.getBundle();
+        log.info("storing CdiContainer in ServletContext for [{}]", bundle);
+        
+        // FIXME refactor and move to Weld adapter bundle
+        String contextId = String.format("%s:%d", bundle.getSymbolicName(), bundle.getBundleId());        
+        ctx.setInitParameter("WELD_CONTEXT_ID_KEY", contextId);
+        
         ctx.setAttribute("org.ops4j.pax.cdi.container", cdiContainer);
         ctx.addListener(servletContextListener);
     }
