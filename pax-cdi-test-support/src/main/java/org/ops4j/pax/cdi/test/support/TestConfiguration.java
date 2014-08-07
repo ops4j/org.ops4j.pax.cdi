@@ -44,7 +44,7 @@ import org.ops4j.pax.exam.util.PathUtils;
  */
 public class TestConfiguration {
     
-    private static final String JETTY_VERSION = "8.1.9.v20130131";
+    private static final String JETTY_VERSION = "8.1.14.v20131031";
     private static String paxCdiRoot;
 
     private TestConfiguration() {
