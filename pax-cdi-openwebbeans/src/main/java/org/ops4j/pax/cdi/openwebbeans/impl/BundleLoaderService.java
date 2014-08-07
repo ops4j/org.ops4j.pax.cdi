@@ -32,6 +32,7 @@ public class BundleLoaderService implements LoaderService {
 
     @Override
     public <T> List<T> load(Class<T> serviceType, ClassLoader classLoader) {
+        System.out.println("serviceType = " + serviceType.getCanonicalName());
         SafeServiceLoader serviceLoader = new SafeServiceLoader(classLoader);
         return serviceLoader.load(serviceType.getName());
     }
