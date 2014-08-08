@@ -22,8 +22,20 @@ import javax.servlet.ServletContainerInitializer;
 import org.ops4j.pax.cdi.servlet.AbstractWebCdiContainerListener;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 
+/**
+ * Pax CDI Adapter for Weld using the Undertow servlet container. This adapter provides
+ * a servlet container initializer to be picked up by Undertow.
+ * 
+ * @author Harald Wellmann
+ *
+ */
 public class WeldUndertowAdapter extends AbstractWebCdiContainerListener {
 
+    /**
+     * Provides a servlet container initializer for the given CDI container.
+     * @param cdiContainer CDI container of bean bundle
+     * @return servlet container initializier
+     */
     @Override
     protected ServletContainerInitializer getServletContainerInitializer(CdiContainer cdiContainer) {
         ServletContainerInitializer initializer = new WeldServletContainerInitializer(

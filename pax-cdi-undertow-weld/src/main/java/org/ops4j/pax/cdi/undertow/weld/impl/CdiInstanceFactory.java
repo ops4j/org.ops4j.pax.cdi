@@ -26,7 +26,14 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
-
+/**
+ * Undertow instance factory for bean classes. This factory produces contextual instances
+ * of beans.
+ * 
+ * @author Harald Wellmann
+ *
+ * @param <T> bean type
+ */
 public class CdiInstanceFactory<T> implements InstanceFactory<T> {
     
     

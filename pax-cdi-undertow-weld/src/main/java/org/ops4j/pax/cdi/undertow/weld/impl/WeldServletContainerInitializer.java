@@ -28,20 +28,24 @@ import org.ops4j.pax.cdi.servlet.CdiServletContainerInitializer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.osgi.framework.Bundle;
 
-
+/**
+ * Servlet container initializer for Undertow, integrating Pax CDI and Weld.
+ * 
+ * @author Harald Wellmann
+ *
+ */
 public class WeldServletContainerInitializer extends CdiServletContainerInitializer {
 
     public WeldServletContainerInitializer(CdiContainer cdiContainer,
         ServletContextListener servletContextListener) {
         super(cdiContainer, servletContextListener);
     }
-    
+
     @Override
     public void onStartup(Set<Class<?>> classes, ServletContext ctx) throws ServletException {
         super.onStartup(classes, ctx);
         Bundle bundle = cdiContainer.getBundle();
-        String contextId = String.format("%s:%d", bundle.getSymbolicName(), bundle.getBundleId()); 
+        String contextId = String.format("%s:%d", bundle.getSymbolicName(), bundle.getBundleId());
         ctx.setInitParameter(Container.CONTEXT_ID_KEY, contextId);
     }
-
 }

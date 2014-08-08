@@ -26,18 +26,30 @@ import io.undertow.servlet.util.ConstructorInstanceFactory;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
-
+/**
+ * Builds an instance factory for a given class. The factory produces contextual instances if the
+ * given class is a bean type.
+ * 
+ * @author Harald Wellmann
+ *
+ */
 public class CdiInstanceFactoryBuilder implements ClassIntrospecter {
-    
-    
+
     private BeanManager beanManager;
 
+    /**
+     * Creates an instance factory builder using the given bean manager.
+     * 
+     * @param beanManager
+     *            CDI bean manager
+     */
     public CdiInstanceFactoryBuilder(BeanManager beanManager) {
         this.beanManager = beanManager;
     }
-    
+
     @Override
-    public <T> InstanceFactory<T> createInstanceFactory(Class<T> klass) throws NoSuchMethodException {
+    public <T> InstanceFactory<T> createInstanceFactory(Class<T> klass)
+        throws NoSuchMethodException {
         Set<Bean<?>> beans = beanManager.getBeans(klass);
         if (beans.isEmpty()) {
             return new ConstructorInstanceFactory<T>(klass.getDeclaredConstructor());
