@@ -55,6 +55,7 @@ public class WeldServletContextListener extends ForwardingServletListener {
         WeldManager manager = cdiContainer.unwrap(WeldManager.class);
 
         CdiInstanceFactoryBuilder builder = new CdiInstanceFactoryBuilder(manager);
+        @SuppressWarnings("unchecked")
         Map<String, Object> attributes = (Map<String, Object>) context.getAttribute("org.ops4j.pax.web.attributes");
         if (attributes != null) {
             attributes.put("org.ops4j.pax.cdi.ClassIntrospecter", builder);

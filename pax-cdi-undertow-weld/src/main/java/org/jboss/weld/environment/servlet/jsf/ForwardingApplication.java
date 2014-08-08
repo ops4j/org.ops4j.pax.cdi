@@ -42,6 +42,7 @@ import javax.faces.event.ActionListener;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.validator.Validator;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
@@ -51,6 +52,7 @@ import java.util.ResourceBundle;
 /**
  * @author pmuir
  */
+@SuppressWarnings("deprecation")
 public abstract class ForwardingApplication extends Application {
 
     protected abstract Application delegate();
@@ -67,7 +69,7 @@ public abstract class ForwardingApplication extends Application {
         delegate().addConverter(converterId, converterClass);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes" })
     @Override
     public void addConverter(Class targetClass, String converterClass) {
         delegate().addConverter(targetClass, converterClass);
@@ -134,13 +136,13 @@ public abstract class ForwardingApplication extends Application {
         return delegate().createConverter(converterId);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes" })
     @Override
     public Converter createConverter(Class targetClass) {
         return delegate().createConverter(targetClass);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     @Deprecated
     @Override
     public MethodBinding createMethodBinding(String ref, Class[] params) throws ReferenceSyntaxException {
@@ -184,7 +186,6 @@ public abstract class ForwardingApplication extends Application {
         return delegate().getConverterIds();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Iterator<Class<?>> getConverterTypes() {
         return delegate().getConverterTypes();
