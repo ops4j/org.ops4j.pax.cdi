@@ -10,6 +10,8 @@
     <artifactId>pax-cdi-jetty-openwebbeans</artifactId>
     <packaging>bundle</packaging>
     
+    <name>OPS4J Pax CDI Jetty OpenWebBeans Adapter</name>
+
     <properties>
         <bundle.symbolicName>org.ops4j.pax.cdi.jetty.openwebbeans</bundle.symbolicName>
         <bundle.namespace>org.ops4j.pax.cdi.jetty.openwebbeans</bundle.namespace>

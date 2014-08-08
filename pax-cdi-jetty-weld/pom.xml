@@ -9,6 +9,8 @@
     </parent>
     <artifactId>pax-cdi-jetty-weld</artifactId>
     <packaging>bundle</packaging>
+    
+    <name>OPS4J Pax CDI Jetty Weld Adapter</name>
 
     <properties>
         <bundle.symbolicName>org.ops4j.pax.cdi.jetty.weld</bundle.symbolicName>

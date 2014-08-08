@@ -8,6 +8,8 @@
   </parent>
   <artifactId>pax-cdi-servlet</artifactId>
   <packaging>bundle</packaging>
+  
+  <name>OPS4J Pax CDI Servlet Container Integration</name>
 
     <properties>
         <bundle.symbolicName>org.ops4j.pax.cdi.servlet</bundle.symbolicName>
