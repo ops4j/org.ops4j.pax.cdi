@@ -339,6 +339,7 @@
                     </executions>
                     <configuration>
                         <configLocation>checkstyle/pax-cdi-checks.xml</configLocation>
+                        <includes>org/ops4j/pax/cdi/**/*.java</includes>
                     </configuration>
                     <dependencies>
                         <dependency>
