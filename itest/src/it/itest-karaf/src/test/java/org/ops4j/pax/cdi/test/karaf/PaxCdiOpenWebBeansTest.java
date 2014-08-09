@@ -23,6 +23,7 @@ import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.PAX_CDI_FEATURES;
 import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.SAMPLE1;
 import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.regressionDefaults;
+import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
 
 import javax.inject.Inject;
@@ -46,11 +47,10 @@ public class PaxCdiOpenWebBeansTest {
 
     @Configuration
     public Option[] config() {
-        return new Option[] { 
+        return options( 
             regressionDefaults(),
             features(PAX_CDI_FEATURES, "pax-cdi-openwebbeans"),
-            SAMPLE1
-        };
+            SAMPLE1);
     }
 
     @Test
