@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="org.ops4j.pax.cdi-samples-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+
+    <repository>mvn:org.ops4j.pax.cdi/pax-cdi-features/${project.version}/xml/features</repository>
+
+    <feature name="pax-cdi-sample1-weld" description="Pax CDI sample1 Weld" version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-cdi-weld</feature>
+        <feature>pax-cdi-web-weld</feature>
+        <feature>pax-cdi-sample1-common</feature>
+    </feature>
+
+    <feature name="pax-cdi-sample1-openwebbeans" description="Pax CDI sample1 OpenWebBeans" version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-cdi-openwebbeans</feature>
+        <feature>pax-cdi-web-openwebbeans</feature>
+        <feature>pax-cdi-sample1-common</feature>
+    </feature>
+
+    <feature name="pax-cdi-sample1-common" description="Common bundles for sample1" version="${project.version}"
+             resolver="(obr)">
+        <feature>pax-cdi</feature>
+        <feature>pax-cdi-web</feature>
+        <bundle>mvn:org.ops4j.pax.cdi.samples/pax-cdi-sample1/${project.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.cdi.samples/pax-cdi-sample1-client/${project.version}</bundle>
+        <bundle>mvn:org.ops4j.pax.cdi.samples/pax-cdi-sample1-web/${project.version}</bundle>
+    </feature>
+
+</features>

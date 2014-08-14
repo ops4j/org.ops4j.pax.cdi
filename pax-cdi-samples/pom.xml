@@ -20,6 +20,7 @@
         <module>pax-cdi-sample3</module>
         <module>pax-cdi-sample3-client</module>
         <module>pax-cdi-sample4-jsf</module>
+        <module>pax-cdi-samples-features</module>
     </modules>
 
 </project>
