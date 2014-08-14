@@ -33,7 +33,6 @@ import org.apache.webbeans.config.WebBeansContext;
 import org.apache.webbeans.el.ELContextStore;
 import org.apache.webbeans.spi.ContainerLifecycle;
 import org.apache.webbeans.spi.ContextsService;
-import org.apache.webbeans.web.context.WebContextsService;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.Injector;
 import org.slf4j.Logger;
@@ -94,7 +93,7 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
 
         lifecycle.getContextService().endContext(RequestScoped.class, event);
 
-        WebContextsService.removeThreadLocals();
+        WabContextsService.removeThreadLocals();
     }
 
     @Override
