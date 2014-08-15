@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.ops4j.pax</groupId>
         <artifactId>cdi</artifactId>
-        <version>0.8.0-SNAPSHOT</version>
+        <version>0.9.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.ops4j.pax.cdi</groupId>
@@ -13,26 +13,25 @@
     <name>OPS4J Pax CDI Parent POM</name>
 
     <properties>
-        <deltaspike.version>1.0.0</deltaspike.version>
+        <deltaspike.version>1.0.1</deltaspike.version>
         <jersey.version>1.13</jersey.version>
         <logback.version>1.0.0</logback.version>
         <openwebbeans.version>1.2.6</openwebbeans.version>
         <openjpa.version>2.2.0</openjpa.version>
         <ops4j.base.version>1.4.0</ops4j.base.version>
-        <pax.exam.version>4.0.0</pax.exam.version>
+        <pax.exam.version>4.1.0</pax.exam.version>
         <pax.jdbc.version>0.3.0</pax.jdbc.version>
         <pax.jpa.version>0.2.0</pax.jpa.version>
-        <pax.swissbox.version>1.7.0</pax.swissbox.version>
-        <pax.url.version>1.6.0</pax.url.version>
+        <pax.swissbox.version>1.7.1</pax.swissbox.version>
+        <pax.url.version>2.1.0</pax.url.version>
         <pax.web.version>4.0.0-SNAPSHOT</pax.web.version>
         <slf4j.version>1.6.4</slf4j.version>
-        <spring.version>3.2.2.RELEASE</spring.version>
-        <pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
         <weld.api.version>1.2.0.Beta1</weld.api.version>
         <weld.version>1.2.0.Beta1</weld.version>
-        <weld2.version>2.2.0.SP1</weld2.version>
+        <weld2.version>2.2.4.Final</weld2.version>
         <xbean.version>3.18</xbean.version>
-		<asm.version>5.0.2</asm.version>
+
+        <pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
     </properties>
 
     <dependencyManagement>
@@ -278,7 +277,7 @@
                 <version>3.12.1.GA_3</version>
                 <scope>provided</scope>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.jboss.weld</groupId>
                 <artifactId>weld-core</artifactId>
@@ -295,6 +294,12 @@
                 <groupId>org.jboss.weld</groupId>
                 <artifactId>weld-api</artifactId>
                 <version>${weld.api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-utils</artifactId>
+                <version>3.0.17</version>
             </dependency>
 
         </dependencies>
@@ -345,6 +350,7 @@
                     </executions>
                     <configuration>
                         <configLocation>checkstyle/pax-cdi-checks.xml</configLocation>
+                        <includes>org/ops4j/pax/cdi/**/*.java</includes>
                     </configuration>
                     <dependencies>
                         <dependency>

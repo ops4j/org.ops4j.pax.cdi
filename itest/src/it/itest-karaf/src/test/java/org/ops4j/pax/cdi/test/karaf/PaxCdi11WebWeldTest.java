@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Harald Wellmann.
+ * Copyright 2014 Harald Wellmann.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 
 @RunWith(PaxExam.class)
-public class PaxCdiWebOpenWebBeansTest {
+public class PaxCdi11WebWeldTest {
 
     @Inject
     private CdiContainerFactory factory;
@@ -44,8 +44,8 @@ public class PaxCdiWebOpenWebBeansTest {
     @Configuration
     public Option[] config() {
         return options( 
-            regressionDefaults(),
-            features(PAX_CDI_FEATURES, "pax-cdi-web-openwebbeans"),
+            regressionDefaults(), 
+            features(PAX_CDI_FEATURES, "pax-cdi-1.1-web-weld"),
             SAMPLE1_WEB);
     }
 

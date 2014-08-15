@@ -30,11 +30,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A {@link ServletContainerInitializer} which stores the CDI container in the servlet context
- * and registers a CDI provider dependent {@link ServletContextListener}.
+ * A {@link ServletContainerInitializer} which stores the CDI container in the servlet context and
+ * registers a CDI provider dependent {@link ServletContextListener}.
  * <p>
  * This listener is responsible for starting the CDI container.
- * 
+ *
  * @author Harald Wellmann
  *
  */
@@ -56,11 +56,11 @@ public class CdiServletContainerInitializer implements ServletContainerInitializ
     public void onStartup(Set<Class<?>> classes, ServletContext ctx) throws ServletException {
         Bundle bundle = cdiContainer.getBundle();
         log.info("storing CdiContainer in ServletContext for [{}]", bundle);
-        
+
         // FIXME refactor and move to Weld adapter bundle
-        String contextId = String.format("%s:%d", bundle.getSymbolicName(), bundle.getBundleId());        
+        String contextId = String.format("%s:%d", bundle.getSymbolicName(), bundle.getBundleId());
         ctx.setInitParameter("WELD_CONTEXT_ID_KEY", contextId);
-        
+
         ctx.setAttribute("org.ops4j.pax.cdi.container", cdiContainer);
         ctx.addListener(servletContextListener);
     }

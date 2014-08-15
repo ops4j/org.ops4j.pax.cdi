@@ -33,6 +33,13 @@ import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Servlet context listener which starts the CDI container based on Weld, once the servlet
+ * context is ready.
+ * 
+ * @author Harald Wellmann
+ *
+ */
 public class WeldServletContextListener extends ForwardingServletListener {
 
     private static Logger log = LoggerFactory.getLogger(WeldServletContextListener.class);
@@ -55,6 +62,7 @@ public class WeldServletContextListener extends ForwardingServletListener {
         WeldManager manager = cdiContainer.unwrap(WeldManager.class);
 
         CdiInstanceFactoryBuilder builder = new CdiInstanceFactoryBuilder(manager);
+        @SuppressWarnings("unchecked")
         Map<String, Object> attributes = (Map<String, Object>) context.getAttribute("org.ops4j.pax.web.attributes");
         if (attributes != null) {
             attributes.put("org.ops4j.pax.cdi.ClassIntrospecter", builder);

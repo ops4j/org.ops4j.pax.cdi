@@ -17,8 +17,14 @@
  */
 package org.ops4j.pax.cdi.tck.porting.owb;
 
-import javax.el.ELContext;
+import java.util.Set;
 
+import javax.el.ELContext;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.spi.Bean;
+
+import org.apache.webbeans.config.WebBeansContext;
+import org.apache.webbeans.container.BeanManagerImpl;
 import org.apache.webbeans.el.ELContextStore;
 import org.apache.webbeans.el22.WebBeansELResolver;
 
@@ -53,6 +59,27 @@ public class OwbTckElResolver extends WebBeansELResolver {
                 return contextualInstance;
             }
 
+            // Manager instance
+            BeanManagerImpl manager = WebBeansContext.getInstance().getBeanManagerImpl();
+
+            // Get beans
+            Set<Bean<?>> beans = manager.getBeans(name);
+
+            // Found?
+            if (beans != null && !beans.isEmpty()) {
+                // Managed bean
+                Bean<Object> bean = (Bean<Object>) beans.iterator().next();
+
+                if (bean.getScope().equals(Dependent.class)) {
+                    contextualInstance = getDependentContextualInstance(manager, elContextStore,
+                        context, bean);
+                }
+                else {
+                    // now we check for NormalScoped beans
+                    contextualInstance = getNormalScopedContextualInstance(manager, elContextStore,
+                        context, bean, name);
+                }
+            }
         }
         return contextualInstance;
     }

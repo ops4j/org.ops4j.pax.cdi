@@ -39,11 +39,11 @@ import org.ops4j.pax.exam.util.PathUtils;
 
 /**
  * Reusable composite options for Pax CDI integration tests with Pax Exam.
- *  
+ *
  * @author Harald Wellmann
  */
 public class TestConfiguration {
-    
+
     private static final String JETTY_VERSION = "9.0.7.v20131107";
     private static String paxCdiRoot;
 
@@ -58,8 +58,8 @@ public class TestConfiguration {
         catch (IOException exc) {
             throw new Ops4jException(exc);
         }
-        
-        
+
+
         return composite(
 
             cleanCaches(),
@@ -79,13 +79,13 @@ public class TestConfiguration {
             // This way, both the driver and the container use the same configuration
             systemProperty("logback.configurationFile").value(
                 "file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.xml"),
-            
-            frameworkProperty("osgi.console").value("6666"),             
+
+            frameworkProperty("osgi.console").value("6666"),
             frameworkProperty("eclipse.consoleLog").value("true"),
-            
+
             // do not treat javax.annotation as system package
             frameworkProperty("org.osgi.framework.system.packages").value(props.get("org.osgi.framework.system.packages")),
-            
+
             systemTimeout(2000000),
             junitBundles());
     }
@@ -106,14 +106,14 @@ public class TestConfiguration {
 
             case OWB1:
                 return openWebBeansBundles();
-            
-            case WELD1:    
+
+            case WELD1:
                 return weldBundles();
 
-            case WELD2:    
+            case WELD2:
                 return weld2Bundles();
-            
-            default:    
+
+            default:
                 throw new IllegalArgumentException("pax.cdi.provider unknown or null");
         }
     }
@@ -123,12 +123,12 @@ public class TestConfiguration {
 
             case OWB1:
                 return workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-openwebbeans");
-            
-            case WELD1:    
-            case WELD2:    
+
+            case WELD1:
+            case WELD2:
                 return workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-weld");
-                
-            default:     
+
+            default:
                 throw new IllegalArgumentException("pax.cdi.provider unknown or null");
         }
     }
@@ -138,21 +138,21 @@ public class TestConfiguration {
 
             case OWB1:
                 return composite(
-                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web"),                    
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web"),
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web-openwebbeans"),
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject()
                     );
-            
-            case WELD1:    
-            case WELD2:    
+
+            case WELD1:
+            case WELD2:
                 return composite(
-                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web"),                    
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web"),
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web-weld"),
                     mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec").versionAsInProject()
                     );
-            
-            default:    
+
+            default:
                 throw new IllegalArgumentException("pax.cdi.provider unknown or null");
         }
     }
@@ -162,20 +162,20 @@ public class TestConfiguration {
 
             case OWB1:
                 return composite(
-                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-servlet"),                    
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-servlet"),
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-openwebbeans"),
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject()
                     );
-            
-            case WELD1:    
-            case WELD2:    
+
+            case WELD1:
+            case WELD2:
                 return composite(
-                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-servlet"),                    
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-servlet"),
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-weld")
                     );
-            
-            default:    
+
+            default:
                 throw new IllegalArgumentException("pax.cdi.provider unknown or null");
         }
     }
@@ -187,13 +187,13 @@ public class TestConfiguration {
                 return composite(
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-jsf").versionAsInProject()
                     );
-            
-            case WELD1:    
-            case WELD2:    
+
+            case WELD1:
+            case WELD2:
                 return composite(
                     );
-            
-            default:    
+
+            default:
                 throw new IllegalArgumentException("pax.cdi.provider unknown or null");
         }
     }
@@ -280,30 +280,30 @@ public class TestConfiguration {
         String samples = groupId.endsWith(".samples") ? "pax-cdi-samples/" : "";
         String fileName = String.format("%s/../../../../%s%s/target/classes",
             PathUtils.getBaseDir(), samples, artifactId);
-        
+
         if (new File(fileName).exists()) {
             String url = "reference:file:" + fileName;
-            return bundle(url);            
+            return bundle(url);
         }
         else {
             return mavenBundle(groupId, artifactId, Info.getPaxCdiVersion());
         }
     }
-    
+
     public static Option workspaceFragment(String groupId, String artifactId) {
         String samples = groupId.endsWith(".samples") ? "pax-cdi-samples/" : "";
         String fileName = String.format("%s/../../../../%s%s/target/classes",
             PathUtils.getBaseDir(), samples, artifactId);
-        
+
         if (new File(fileName).exists()) {
             String url = "reference:file:" + fileName;
-            return bundle(url).noStart();            
+            return bundle(url).noStart();
         }
         else {
             return mavenBundle(groupId, artifactId, Info.getPaxCdiVersion()).noStart();
         }
     }
-    
+
     public static String getPaxCdiRoot() {
         if (paxCdiRoot == null) {
             paxCdiRoot = System.getProperty("pax.cdi.root");

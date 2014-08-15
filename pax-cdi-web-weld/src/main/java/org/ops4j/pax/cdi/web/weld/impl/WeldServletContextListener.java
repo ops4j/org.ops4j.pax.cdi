@@ -22,7 +22,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.el.WeldELContextListener;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.servlet.WeldListener;
@@ -30,7 +29,6 @@ import org.jboss.weld.servlet.api.ServletListener;
 import org.jboss.weld.servlet.api.helpers.ForwardingServletListener;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.Injector;
-import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

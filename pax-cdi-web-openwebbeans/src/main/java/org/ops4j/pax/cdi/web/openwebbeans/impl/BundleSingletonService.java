@@ -20,8 +20,6 @@
 package org.ops4j.pax.cdi.web.openwebbeans.impl;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -32,6 +30,7 @@ import org.apache.webbeans.spi.ContextsService;
 import org.apache.webbeans.spi.SingletonService;
 import org.apache.webbeans.util.Asserts;
 import org.ops4j.lang.Ops4jException;
+import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleReference;
 import org.slf4j.Logger;
@@ -99,44 +98,24 @@ public class BundleSingletonService implements SingletonService<WebBeansContext>
     }
 
     /**
-     * Assumes that the key is a bundle classloader and returns the corresponding bundle. The ugly
-     * reflection hack is due to the fact that Pax Web 3.0.0.M1 embeds pax-swissbox-core instead of
-     * importing it, whereas Pax CDI imports the class, resulting in a mismatch.
+     * Assumes that the key is a bundle classloader and returns the corresponding bundle. 
      * 
      * @param key
      * @return bundle
      */
     private Bundle toBundle(Object key) {
+        // workaround for weird context class loader from Pax Web 3.1.1
+        if (key instanceof BundleClassLoader) {
+            BundleClassLoader bcl = (BundleClassLoader) key;
+            if (bcl.getParent() instanceof BundleReference) {
+                return BundleReference.class.cast(bcl.getParent()).getBundle();                
+            }
+        }
         if (key instanceof BundleReference) {
             return BundleReference.class.cast(key).getBundle();
         }
-        // fallback for Pax Swissbox < 1.6.0 and Pax Web <= 3.0.0.M1
-        log.warn("classloader {} does not implement BundleReference", key);
-        try {
-            Method method = key.getClass().getMethod("getBundle");
-            Bundle bundle = (Bundle) method.invoke(key);
-            return bundle;
-        }
-        catch (SecurityException exc) {
-            wrapException(exc, key);
-        }
-        catch (NoSuchMethodException exc) {
-            wrapException(exc, key);
-        }
-        catch (IllegalArgumentException exc) {
-            wrapException(exc, key);
-        }
-        catch (IllegalAccessException exc) {
-            wrapException(exc, key);
-        }
-        catch (InvocationTargetException exc) {
-            wrapException(exc, key);
-        }
-        return null;
-    }
 
-    private void wrapException(Exception exc, Object key) {
-        throw new IllegalArgumentException("key is " + key.getClass().getName()
-            + " but must be BundleClassLoader for using BundleSingletonService");
+        log.error("classloader {} does not implement BundleReference", key);
+        return null;
     }
 }

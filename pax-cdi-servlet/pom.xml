@@ -3,11 +3,13 @@
   <parent>
     <groupId>org.ops4j.pax.cdi</groupId>
     <artifactId>pax-cdi-parent</artifactId>
-    <version>0.8.0-SNAPSHOT</version>
+    <version>0.9.0-SNAPSHOT</version>
     <relativePath>../pax-cdi-parent</relativePath>
   </parent>
   <artifactId>pax-cdi-servlet</artifactId>
   <packaging>bundle</packaging>
+  
+  <name>OPS4J Pax CDI Servlet Container Integration</name>
 
     <properties>
         <bundle.symbolicName>org.ops4j.pax.cdi.servlet</bundle.symbolicName>
