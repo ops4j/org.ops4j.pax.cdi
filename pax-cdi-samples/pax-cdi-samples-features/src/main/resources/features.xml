@@ -17,6 +17,8 @@
 
     <feature name="pax-cdi-sample1-weld" description="Pax CDI sample1 Weld" version="${project.version}"
              resolver="(obr)">
+        <feature>pax-cdi</feature>
+        <feature>pax-cdi-web</feature>
         <feature>pax-cdi-weld</feature>
         <feature>pax-cdi-web-weld</feature>
         <feature>pax-cdi-sample1-common</feature>
@@ -24,6 +26,8 @@
 
     <feature name="pax-cdi-sample1-openwebbeans" description="Pax CDI sample1 OpenWebBeans" version="${project.version}"
              resolver="(obr)">
+        <feature>pax-cdi</feature>
+        <feature>pax-cdi-web</feature>
         <feature>pax-cdi-openwebbeans</feature>
         <feature>pax-cdi-web-openwebbeans</feature>
         <feature>pax-cdi-sample1-common</feature>
@@ -31,32 +35,45 @@
 
     <feature name="pax-cdi-sample1-common" description="Common bundles for sample1" version="${project.version}"
              resolver="(obr)">
-        <feature>pax-cdi</feature>
-        <feature>pax-cdi-web</feature>
         <bundle>mvn:org.ops4j.pax.cdi.samples/pax-cdi-sample1/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi.samples/pax-cdi-sample1-client/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi.samples/pax-cdi-sample1-web/${project.version}</bundle>
     </feature>
 
-    <feature name="pax-cdi-sample2-weld" description="Pax CDI sample2 Weld" version="${project.version}"
-             resolver="(obr)">
-        <feature>pax-cdi-weld</feature>
-        <feature>pax-cdi-sample2-common</feature>
-    </feature>
-
-    <feature name="pax-cdi-sample2-openwebbeans" description="Pax CDI sample2 OpenWebBeans" version="${project.version}"
-             resolver="(obr)">
-        <feature>pax-cdi-openwebbeans</feature>
-        <feature>pax-cdi-sample2-common</feature>
-    </feature>
-
     <feature name="pax-cdi-sample2-common" description="Common bundles for sample2" version="${project.version}"
              resolver="(obr)">
-        <feature>pax-cdi</feature>
-        <feature>pax-cdi-deltaspike-core</feature>
-        <feature>pax-cdi-deltaspike-jpa</feature>
+        <feature>jdbc</feature>
+        <feature>deltaspike-jpa</feature>
 
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.derby/10.10.2.0_1</bundle>
+        <configfile finalname="deploy/datasource-sample2.xml" override="true">
+            mvn:org.ops4j.pax.cdi.samples/pax-cdi-samples-features/${project.version}/xml/datasource-pax-cdi-sample2
+        </configfile>
+
+        <bundle>mvn:org.apache.deltaspike.modules/deltaspike-partial-bean-module-api/${deltaspike.version}</bundle>
+        <bundle>mvn:org.apache.deltaspike.modules/deltaspike-partial-bean-module-impl/${deltaspike.version}</bundle>
+        <bundle>mvn:org.apache.deltaspike.modules/deltaspike-data-module-api/${deltaspike.version}</bundle>
+        <bundle>mvn:org.apache.deltaspike.modules/deltaspike-data-module-impl/${deltaspike.version}</bundle>
+
+        <bundle>mvn:org.ops4j.pax.jpa.samples/pax-jpa-sample1/${pax.jpa.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi.samples/pax-cdi-sample2-service/${project.version}</bundle>
+
+        <!-- openjpa 2.3.0 -->
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-annotation_1.0_spec/1.1.1</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jpa_2.0_spec/1.1</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-servlet_2.5_spec/1.2</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-el_1.0_spec/1.0.1</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
+        <bundle dependency="true">mvn:commons-lang/commons-lang/2.6</bundle>
+        <bundle dependency="true">mvn:commons-collections/commons-collections/3.2.1</bundle>
+        <bundle dependency="true">mvn:commons-pool/commons-pool/1.6</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/1.4_3
+        </bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.ant/1.7.0_6</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/1.14.1_1</bundle>
+        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jms_1.1_spec/1.1.1</bundle>
+        <bundle dependency="true">mvn:org.apache.xbean/xbean-asm4-shaded/3.16</bundle>
+        <bundle start-level="29">mvn:org.apache.openjpa/openjpa/2.3.0</bundle>
     </feature>
 
 </features>

@@ -78,6 +78,22 @@
                             </artifacts>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>attach-datasource-pax-cdi-sampl2.xml</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>${project.basedir}/src/main/resources/datasource-pax-cdi-sample2.xml</file>
+                                    <type>xml</type>
+                                    <classifier>datasource-pax-cdi-sample2</classifier>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

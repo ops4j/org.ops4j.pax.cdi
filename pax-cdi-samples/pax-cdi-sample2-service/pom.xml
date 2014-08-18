@@ -80,8 +80,9 @@
                         <Bundle-SymbolicName>org.ops4j.pax.cdi.sample2.service</Bundle-SymbolicName>
                         <Require-Capability>
                             org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=pax-cdi-extension)(version&gt;=${version;==;${pax.cdi.osgi.version.clean}})(!(version&gt;=${version;=+;${pax.cdi.osgi.version.clean}})))",
-                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-partial-bean-extension))",
-                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-data-extension))",
+                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-partial-bean-impl))",
+                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-partial-bean-api))",
+                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-data-impl))",
                             org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-jpa-impl))",
                             org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-core-impl))",
                             org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-core-api))",
