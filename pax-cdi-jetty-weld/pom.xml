@@ -96,8 +96,12 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
-                        <Import-Package>org.jboss.weld.bootstrap, javax.servlet.*;version="[2,4)",
-                            javax.faces.*;resolution:=optional, *</Import-Package>
+                        <Import-Package>
+                            org.jboss.weld.*; version="[1,3)",
+                            javax.servlet.*;version="[2,4)",
+                            javax.faces.*;resolution:=optional,
+                            *
+                        </Import-Package>
                         <Service-Component>OSGI-INF/*</Service-Component>
                     </instructions>
                 </configuration>
