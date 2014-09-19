@@ -26,7 +26,7 @@ import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 
 /**
  * A dynamic proxy invocation handler which looks up a matching OSGi service for a CDI injection
- * point on each method invocation, possibly including a wait period as incicated by the
+ * point on each method invocation, possibly including a wait period as indicated by the
  * {@link OsgiService} qualifier.
  * 
  * @author Harald Wellmann
