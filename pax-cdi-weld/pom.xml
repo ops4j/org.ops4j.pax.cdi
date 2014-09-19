@@ -73,7 +73,10 @@
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Service-Component>OSGI-INF/*</Service-Component>
-                        <Import-Package>org.jboss.weld.bootstrap, *</Import-Package>
+                        <Import-Package>
+                           org.jboss.weld.*; version="[1,3)",
+                           *
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
