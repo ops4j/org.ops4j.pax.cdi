@@ -60,20 +60,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConfiguration> {
-    
+
     private static Logger log = LoggerFactory.getLogger(PaxCdiArquillianContainer.class);
 
     private static String paxCdiRoot;
 
     private TestContainer testContainer;
 
+    @Override
     public Class<PaxCdiConfiguration> getConfigurationClass() {
         return PaxCdiConfiguration.class;
     }
 
+    @Override
     public void setup(PaxCdiConfiguration configuration) {
     }
 
+    @Override
     public void start() throws LifecycleException {
         Option[] options = getConfigurationOptions();
         try {
@@ -95,14 +98,17 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
         }
     }
 
+    @Override
     public void stop() throws LifecycleException {
         testContainer.stop();
     }
 
+    @Override
     public ProtocolDescription getDefaultProtocol() {
         return new ProtocolDescription("pax-cdi");
     }
 
+    @Override
     public ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
         archive.delete("WEB-INF/web.xml");
 
@@ -114,6 +120,13 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
             "tck/pax-cdi-arquillian/src/main/resources/probe-web.xml"));
         InputStream is = archive.as(ZipExporter.class).exportAsInputStream();
         testContainer.installProbe(is);
+        // FIXME implement proper synchronization
+        try {
+            Thread.sleep(2000);
+        }
+        catch (InterruptedException exc) {
+            log.error("error starting Pax Exam container", exc);
+        }
 
         ProtocolMetaData metadata = new ProtocolMetaData();
         HTTPContext context = new HTTPContext("localhost", 8181);
@@ -144,14 +157,17 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
         return new StringAsset(buffer.toString());
     }
 
+    @Override
     public void undeploy(Archive<?> archive) throws DeploymentException {
         testContainer.uninstallProbe();
     }
 
+    @Override
     public void deploy(Descriptor descriptor) throws DeploymentException {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void undeploy(Descriptor descriptor) throws DeploymentException {
         throw new UnsupportedOperationException();
     }
@@ -165,19 +181,19 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
             throw new Ops4jException(exc);
         }
 
-        
+
         return options(
             bootDelegationPackage("sun.*"),
-                        
+
             cleanCaches(),
             frameworkStartLevel(20),
             frameworkProperty("osgi.console").value("6666"),
             frameworkProperty("osgi.debug").value("equinox-debug.properties"),
 
             // do not treat javax.annotation as system package
-            frameworkProperty("org.osgi.framework.system.packages").value(props.get("org.osgi.framework.system.packages")),     
-            
-            
+            frameworkProperty("org.osgi.framework.system.packages").value(props.get("org.osgi.framework.system.packages")),
+
+
             mavenBundle("org.ops4j.base", "ops4j-base-lang", "1.4.0"),
             mavenBundle("org.ops4j.base", "ops4j-base-spi", "1.4.0"),
             mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-core", "1.7.0"),
@@ -191,7 +207,7 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
             cdiProviderBundles(),
             paxCdiProviderAdapter(),
             paxCdiProviderWebAdapter(),
-            
+
             systemProperty("org.osgi.service.http.port").value("8181"),
             paxWebBundles(),
 
@@ -217,11 +233,11 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
             mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject(),
 
             // options required for Forked Container, having no effect in Native Container
-            vmOption("-ea"), 
+            vmOption("-ea"),
             systemProperty("logback.configurationFile").value(getPaxCdiRoot() + "/tck/pax-cdi-arquillian/src/test/resources/logback.xml"));
 
     }
-    
+
     public static String getPaxCdiRoot() {
         if (paxCdiRoot == null) {
             paxCdiRoot = System.getProperty("pax.cdi.root");
