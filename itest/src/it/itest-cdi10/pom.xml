@@ -361,6 +361,24 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>download-maven-plugin</artifactId>
+                <version>1.2.0</version>
+                <executions>
+                    <execution>
+                        <id>download-equinox-console</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>http://download.eclipse.org/equinox/drops/R-Luna-201406061215/org.eclipse.equinox.console_1.1.0.v20140131-1639.jar</url>
+                            <outputFileName>org.eclipse.equinox.console.jar</outputFileName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <forkMode>always</forkMode>
@@ -368,7 +386,7 @@
                     <systemPropertyVariables>
                         <java.util.logging.config.file>src/test/resources/logging.properties</java.util.logging.config.file>
                         <http.port>${http.port}</http.port>
-                        <pax.cdi.provider>${pax.cdi.provider}</pax.cdi.provider>                        
+                        <pax.cdi.provider>${pax.cdi.provider}</pax.cdi.provider>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -385,6 +403,7 @@
                 <dependency>
                     <groupId>org.eclipse.tycho</groupId>
                     <artifactId>org.eclipse.osgi</artifactId>
+                    <version>3.10.0.v20140606-1445</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -398,7 +417,7 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.framework</artifactId>
-                    <version>4.0.2</version>
+                    <version>4.5.0-SNAPSHOT</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -488,9 +507,9 @@
                     <version>${weld2.version}</version>
                     <scope>provided</scope>
                 </dependency>
-            
-            </dependencies>            
+
+            </dependencies>
         </profile>
     </profiles>
-    
+
 </project>

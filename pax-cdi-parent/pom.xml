@@ -21,7 +21,7 @@
         <ops4j.base.version>1.4.0</ops4j.base.version>
         <pax.exam.version>4.1.0</pax.exam.version>
         <pax.jdbc.version>0.3.0</pax.jdbc.version>
-        <pax.jpa.version>0.2.0</pax.jpa.version>
+        <pax.jpa.version>0.3.0-SNAPSHOT</pax.jpa.version>
         <pax.swissbox.version>1.7.1</pax.swissbox.version>
         <pax.url.version>2.1.0</pax.url.version>
         <pax.web.version>4.0.0</pax.web.version>
@@ -58,19 +58,19 @@
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.core</artifactId>
-                <version>4.3.1</version>
+                <version>6.0.0</version>
             </dependency>
 
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.compendium</artifactId>
-                <version>4.3.1</version>
+                <version>5.0.0</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>org.eclipse.osgi</artifactId>
-                <version>3.7.0.v20110613</version>
+                <version>3.10.0.v20140606-1445</version>
             </dependency>
 
             <dependency>
@@ -407,5 +407,24 @@
             <timezone>UTC+1</timezone>
         </developer>
     </developers>
+    
+    <profiles>
+        <profile>
+            <id>apache-snapshots</id>
+            <repositories>
+                <repository>
+                    <id>apache-snapshots</id>
+                    <name>Apache Snapshots</name>
+                    <url>https://repository.apache.org/snapshots/</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
 
 </project>

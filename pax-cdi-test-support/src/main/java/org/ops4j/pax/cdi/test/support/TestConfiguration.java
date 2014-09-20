@@ -27,15 +27,19 @@ import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
+import static org.ops4j.pax.exam.CoreOptions.when;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.ServiceLoader;
 
 import org.ops4j.lang.Ops4jException;
 import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.options.ProvisionOption;
 import org.ops4j.pax.exam.util.PathUtils;
+import org.osgi.framework.launch.FrameworkFactory;
 
 /**
  * Reusable composite options for Pax CDI integration tests with Pax Exam.
@@ -46,6 +50,8 @@ public class TestConfiguration {
 
     private static final String JETTY_VERSION = "9.0.7.v20131107";
     private static String paxCdiRoot;
+    
+    private static boolean consoleEnabled = Boolean.getBoolean("org.ops4j.pax.cdi.console");
 
     private TestConfiguration() {
     }
@@ -80,8 +86,19 @@ public class TestConfiguration {
             systemProperty("logback.configurationFile").value(
                 "file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.xml"),
 
-            frameworkProperty("osgi.console").value("6666"),
-            frameworkProperty("eclipse.consoleLog").value("true"),
+            
+            when(consoleEnabled).useOptions(
+                mavenBundle("org.apache.felix", "org.apache.felix.shell.remote", "1.1.2"),
+                mavenBundle("org.apache.felix", "org.apache.felix.gogo.command", "0.14.0"),
+                mavenBundle("org.apache.felix", "org.apache.felix.gogo.runtime", "0.12.1"),
+                mavenBundle("org.apache.felix", "org.apache.felix.gogo.shell", "0.10.0")),
+
+            when(consoleEnabled && isEquinox()).useOptions(
+                //frameworkProperty("osgi.console").value("6666"),
+                frameworkProperty("eclipse.consoleLog").value("true"),
+                frameworkProperty("osgi.console.enable.builtin").value("true"),
+                bundle("file:target/org.eclipse.equinox.console.jar")),
+                
 
             // do not treat javax.annotation as system package
             frameworkProperty("org.osgi.framework.system.packages").value(props.get("org.osgi.framework.system.packages")),
@@ -276,7 +293,7 @@ public class TestConfiguration {
             mavenBundle("org.eclipse.jetty", "jetty-servlet").version(JETTY_VERSION));
     }
 
-    public static Option workspaceBundle(String groupId, String artifactId) {
+    public static ProvisionOption<?> workspaceBundle(String groupId, String artifactId) {
         String samples = groupId.endsWith(".samples") ? "pax-cdi-samples/" : "";
         String fileName = String.format("%s/../../../../%s%s/target/classes",
             PathUtils.getBaseDir(), samples, artifactId);
@@ -331,4 +348,16 @@ public class TestConfiguration {
                 return false;
         }
     }
+    
+    public static boolean isEquinox() {
+        FrameworkFactory factory = ServiceLoader.load(FrameworkFactory.class).iterator().next();
+        return factory.getClass().getSimpleName().contains("Equinox");
+    }
+
+    public static boolean isFelix() {
+        FrameworkFactory factory = ServiceLoader.load(FrameworkFactory.class).iterator().next();
+        return factory.getClass().getCanonicalName().contains("felix");
+    }
+
+    
 }
