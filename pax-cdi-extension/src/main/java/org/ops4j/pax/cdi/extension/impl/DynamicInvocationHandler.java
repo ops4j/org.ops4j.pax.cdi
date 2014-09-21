@@ -23,11 +23,11 @@ import java.util.concurrent.Callable;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
-import org.ops4j.pax.swissbox.tracker.ServiceLookup;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -48,19 +48,14 @@ public class DynamicInvocationHandler implements InvocationHandler {
     public DynamicInvocationHandler(InjectionPoint ip) {
         this.ip = ip;
         this.bc = InjectionPointOsgiUtils.getBundleContext(ip);
-//        ServiceReference<CdiContainerFactory> serviceReference = bc.getServiceReference(CdiContainerFactory.class);
-//        CdiContainerFactory cdiContainerFactory = bc.getService(serviceReference);
-        CdiContainerFactory cdiContainerFactory = ServiceLookup.getService(bc,
-            CdiContainerFactory.class, 10000);
+        ServiceReference<CdiContainerFactory> serviceReference = bc.getServiceReference(CdiContainerFactory.class);
+        CdiContainerFactory cdiContainerFactory = bc.getService(serviceReference);
         this.cdiContainer = cdiContainerFactory.getContainer(bc.getBundle());
-//
     }
 
     @Override
     // CHECKSTYLE:SKIP
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-//        Object service = InjectionPointOsgiUtils.lookupService(ip);
-//        return method.invoke(service, args);
         final Object service = InjectionPointOsgiUtils.lookupService(bc, ip);
         Object result = ContextClassLoaderUtils.doWithClassLoader(
             cdiContainer.getContextClassLoader(), new Callable<Object>() {

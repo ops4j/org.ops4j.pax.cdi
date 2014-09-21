@@ -66,8 +66,8 @@ public class InjectionPointOsgiUtils {
 
         String filter = getFilter(klass, os);
         int timeout = os.timeout() == -1 ? 1 : os.timeout();
-        Object service = ServiceLookup.getService(bc, klass, timeout, filter);
-        return service;
+        ServiceReference<?> serviceRef = ServiceLookup.getServiceReference(bc, klass.getName(), timeout, filter);
+        return bc.getServiceObjects(serviceRef).getService();
     }
     
     public static Object lookupService(InjectionPoint ip) {
@@ -78,8 +78,8 @@ public class InjectionPointOsgiUtils {
 
         String filter = getFilter(klass, os);
         int timeout = os.timeout() == -1 ? 1 : os.timeout();
-        Object service = ServiceLookup.getService(bc, klass, timeout, filter);
-        return service;
+        ServiceReference<?> serviceRef = ServiceLookup.getServiceReference(bc, klass.getName(), timeout, filter);
+        return bc.getServiceObjects(serviceRef).getService();
     }
 
     public static String getFilter(Class<?> serviceType, OsgiService qualifier) {

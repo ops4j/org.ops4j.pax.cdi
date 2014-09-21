@@ -88,16 +88,16 @@ public class TestConfiguration {
 
             
             when(consoleEnabled).useOptions(
-                mavenBundle("org.apache.felix", "org.apache.felix.shell.remote", "1.1.2"),
-                mavenBundle("org.apache.felix", "org.apache.felix.gogo.command", "0.14.0"),
-                mavenBundle("org.apache.felix", "org.apache.felix.gogo.runtime", "0.12.1"),
-                mavenBundle("org.apache.felix", "org.apache.felix.gogo.shell", "0.10.0")),
+                mavenBundle("org.apache.felix", "org.apache.felix.shell.remote", "1.1.2").startLevel(2),
+                mavenBundle("org.apache.felix", "org.apache.felix.gogo.command", "0.14.0").startLevel(2),
+                mavenBundle("org.apache.felix", "org.apache.felix.gogo.runtime", "0.12.1").startLevel(2),
+                mavenBundle("org.apache.felix", "org.apache.felix.gogo.shell", "0.10.0").startLevel(2)),
 
             when(consoleEnabled && isEquinox()).useOptions(
                 //frameworkProperty("osgi.console").value("6666"),
                 frameworkProperty("eclipse.consoleLog").value("true"),
                 frameworkProperty("osgi.console.enable.builtin").value("true"),
-                bundle("file:target/org.eclipse.equinox.console.jar")),
+                bundle("file:target/org.eclipse.equinox.console.jar").startLevel(2)),
                 
 
             // do not treat javax.annotation as system package

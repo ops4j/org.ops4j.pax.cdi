@@ -27,7 +27,7 @@ import org.ops4j.pax.jpa.sample1.model.Author;
 public class LibraryServiceClient {
 
     @Inject
-    @OsgiService
+    @OsgiService(dynamic = true)
     private LibraryService service;
 
     public void createAuthor(String firstName, String lastName) {

@@ -27,7 +27,6 @@ import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
-import org.ops4j.pax.swissbox.tracker.ServiceLookup;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceException;
 import org.osgi.framework.ServiceReference;
@@ -52,10 +51,9 @@ public class StaticInvocationHandler implements InvocationHandler {
         this.ip = ip;
         this.bundleContext = InjectionPointOsgiUtils.getBundleContext(ip);
         this.serviceRef = InjectionPointOsgiUtils.getServiceReference(ip);
-        CdiContainerFactory cdiContainerFactory = ServiceLookup.getService(bundleContext,
-            CdiContainerFactory.class);
+        ServiceReference<CdiContainerFactory> serviceReference = bundleContext.getServiceReference(CdiContainerFactory.class);
+        CdiContainerFactory cdiContainerFactory = bundleContext.getService(serviceReference);
         this.cdiContainer = cdiContainerFactory.getContainer(bundleContext.getBundle());
-
     }
 
     @Override
