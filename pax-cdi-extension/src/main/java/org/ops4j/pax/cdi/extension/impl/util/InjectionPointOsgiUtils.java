@@ -60,6 +60,16 @@ public class InjectionPointOsgiUtils {
         return ServiceLookup.getServiceReference(bc, klass.getName(), qualifier.timeout(), filter);
     }
 
+    public static Object lookupService(BundleContext bc, InjectionPoint ip) {
+        Class<?> klass = (Class<?>) ip.getType();
+        OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
+
+        String filter = getFilter(klass, os);
+        int timeout = os.timeout() == -1 ? 1 : os.timeout();
+        Object service = ServiceLookup.getService(bc, klass, timeout, filter);
+        return service;
+    }
+    
     public static Object lookupService(InjectionPoint ip) {
         Class<?> klass = (Class<?>) ip.getType();
         OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);

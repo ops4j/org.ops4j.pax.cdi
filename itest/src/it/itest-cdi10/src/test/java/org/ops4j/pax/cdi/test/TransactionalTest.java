@@ -78,7 +78,7 @@ public class TransactionalTest {
             mavenBundle("org.apache.openjpa", "openjpa").versionAsInProject(),
 
             // Pax JPA, Pax JDBC and Derby driver
-            mavenBundle("org.ops4j.pax.jpa", "pax-jpa").versionAsInProject(),
+            mavenBundle("org.ops4j.pax.jpa", "pax-jpa").versionAsInProject().startLevel(2),
             mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
             mavenBundle("org.apache.derby", "derby").versionAsInProject(),
             mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject(),
@@ -146,7 +146,7 @@ public class TransactionalTest {
     @Test
     public void createAuthorInTransaction() {
         CdiContainer container = cdiContainerFactory.getContainer(FrameworkUtil.getBundle(libraryService.getClass()));
-        Thread.currentThread().setContextClassLoader(container.getContextClassLoader());
+        //Thread.currentThread().setContextClassLoader(container.getContextClassLoader());
         libraryService.createAuthorViaDao("Charles", "Dickens");
         Author author = libraryService.findAuthor("Charles", "Dickens");
         assertThat(author, is(notNullValue()));

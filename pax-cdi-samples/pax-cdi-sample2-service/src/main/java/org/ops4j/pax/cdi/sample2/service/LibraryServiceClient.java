@@ -19,16 +19,17 @@ package org.ops4j.pax.cdi.sample2.service;
 
 import javax.inject.Inject;
 
+import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.jpa.sample1.model.Author;
 
-
 @OsgiServiceProvider
 public class LibraryServiceClient {
-    
+
     @Inject
+    @OsgiService
     private LibraryService service;
-    
+
     public void createAuthor(String firstName, String lastName) {
         service.createAuthor(firstName, lastName);
     }

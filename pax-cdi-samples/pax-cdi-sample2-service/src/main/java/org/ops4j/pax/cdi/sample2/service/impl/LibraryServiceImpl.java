@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.sample2.service.AuthorDao;
 import org.ops4j.pax.cdi.sample2.service.LibraryService;
 import org.ops4j.pax.jpa.sample1.model.Author;
@@ -37,6 +38,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 @Transactional
+@OsgiServiceProvider
 public class LibraryServiceImpl implements LibraryService {
 
     private static Logger log = LoggerFactory.getLogger(LibraryServiceImpl.class);

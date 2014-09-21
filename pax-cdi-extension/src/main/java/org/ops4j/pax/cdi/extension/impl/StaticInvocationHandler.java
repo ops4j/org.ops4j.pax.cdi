@@ -19,10 +19,15 @@ package org.ops4j.pax.cdi.extension.impl;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.concurrent.Callable;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
+import org.ops4j.pax.cdi.spi.CdiContainer;
+import org.ops4j.pax.cdi.spi.CdiContainerFactory;
+import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
+import org.ops4j.pax.swissbox.tracker.ServiceLookup;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceException;
 import org.osgi.framework.ServiceReference;
@@ -41,22 +46,37 @@ public class StaticInvocationHandler implements InvocationHandler {
     private ServiceReference<?> serviceRef;
     private BundleContext bundleContext;
 
+    private CdiContainer cdiContainer;
+
     public StaticInvocationHandler(InjectionPoint ip) {
         this.ip = ip;
         this.bundleContext = InjectionPointOsgiUtils.getBundleContext(ip);
         this.serviceRef = InjectionPointOsgiUtils.getServiceReference(ip);
+        CdiContainerFactory cdiContainerFactory = ServiceLookup.getService(bundleContext,
+            CdiContainerFactory.class);
+        this.cdiContainer = cdiContainerFactory.getContainer(bundleContext.getBundle());
+
     }
 
     @Override
     // CHECKSTYLE:SKIP
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(final Object proxy, final Method method, final Object[] args)
+        throws Throwable {
         if (serviceRef != null) {
-            Object service = bundleContext.getService(serviceRef);
-            if (service != null) {
-                return method.invoke(service, args);
-            }
-        }
+            Object result = ContextClassLoaderUtils.doWithClassLoader(
+                cdiContainer.getContextClassLoader(), new Callable<Object>() {
 
+                    @Override
+                    public Object call() throws Exception {
+                        Object service = bundleContext.getService(serviceRef);
+                        if (service != null) {
+                            return method.invoke(service, args);
+                        }
+                        return null;
+                    }
+                });
+            return result;
+        }
         throw new ServiceException("no service for injection point " + ip,
             ServiceException.UNREGISTERED);
     }
