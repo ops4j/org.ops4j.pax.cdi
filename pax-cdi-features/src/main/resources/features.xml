@@ -156,7 +156,6 @@
     <feature name="deltaspike-core" description="Apache Deltaspike core support" version="${deltaspike.version}"
         resolver="(obr)">
         <feature version="${project.version}">pax-cdi</feature>
-        <bundle dependency="true">mvn:org.osgi/org.osgi.enterprise/4.2.0</bundle>
         <bundle>mvn:org.apache.deltaspike.core/deltaspike-core-api/${deltaspike.version}</bundle>
         <bundle>mvn:org.apache.deltaspike.core/deltaspike-core-impl/${deltaspike.version}</bundle>
     </feature>
@@ -168,6 +167,7 @@
         <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-io/1.4.0</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jpa_2.0_spec/1.1</bundle>
+        <bundle dependency="true">mvn:org.osgi/org.osgi.enterprise/4.2.0</bundle>
         <bundle dependency="true">mvn:org.ops4j.pax.jpa/pax-jpa/${pax.jpa.version}</bundle>
         <bundle dependency="true">mvn:org.ops4j.pax.jdbc/pax-jdbc/${pax.jdbc.version}</bundle>
         <bundle>mvn:org.apache.deltaspike.modules/deltaspike-jpa-module-api/${deltaspike.version}</bundle>
