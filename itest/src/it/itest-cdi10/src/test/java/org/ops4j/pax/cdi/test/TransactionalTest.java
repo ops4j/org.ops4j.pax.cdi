@@ -29,36 +29,23 @@ import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManagerFactory;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample2.service.LibraryServiceClient;
-import org.ops4j.pax.cdi.spi.CdiContainer;
-import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.jpa.sample1.model.Author;
-import org.osgi.framework.FrameworkUtil;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class TransactionalTest {
 
     @Inject
-    @Filter(timeout = 2000000)
-    private EntityManagerFactory emf;
-
-    @Inject
-    @Filter(timeout = 2000000)
     private LibraryServiceClient libraryService;
-
-    @Inject
-    private CdiContainerFactory cdiContainerFactory;
 
     @Configuration
     public Option[] config() {
@@ -145,8 +132,6 @@ public class TransactionalTest {
 
     @Test
     public void createAuthorInTransaction() {
-        CdiContainer container = cdiContainerFactory.getContainer(FrameworkUtil.getBundle(libraryService.getClass()));
-        //Thread.currentThread().setContextClassLoader(container.getContextClassLoader());
         libraryService.createAuthorViaDao("Charles", "Dickens");
         Author author = libraryService.findAuthor("Charles", "Dickens");
         assertThat(author, is(notNullValue()));
