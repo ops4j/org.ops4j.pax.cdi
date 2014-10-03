@@ -65,15 +65,15 @@ public class NoWabWebContainerTest {
 
             workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
             workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-client"),
-            
+
             paxCdiProviderAdapter(),
             paxCdiProviderWebAdapter(),
             cdiProviderBundles(),
 
-            
+
             systemProperty("org.osgi.service.http.port").value("8181"),
             paxWebBundles(),
-            
+
             mavenBundle("org.osgi", "org.osgi.compendium").version("4.3.1"),
             mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
             mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
@@ -104,7 +104,7 @@ public class NoWabWebContainerTest {
 
     @Test
     public void checkMultipleInstances() throws InterruptedException {
-        assertThat(client.getAllFlavours().size(), is(2));
-        assertThat(client.getAllFlavours(), hasItems("Vanilla", "Chocolate"));
+        assertThat(client.getAllFlavours().size(), is(3));
+        assertThat(client.getAllFlavours(), hasItems("Vanilla", "Chocolate", "Hazelnut"));
     }
 }

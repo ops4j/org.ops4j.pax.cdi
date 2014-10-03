@@ -25,7 +25,6 @@ import java.util.Hashtable;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -35,6 +34,7 @@ import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.Properties;
 import org.ops4j.pax.cdi.api.Property;
 import org.ops4j.pax.cdi.extension.impl.context.ServiceContext;
+import org.ops4j.pax.cdi.extension.impl.context.ServiceFactoryBuilder;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Harald Wellmann
- * 
+ *
  */
 @ApplicationScoped
 public class ComponentLifecycleManager implements ComponentDependencyListener {
@@ -66,15 +66,12 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
     private BundleContext bundleContext;
 
     /**
-     * Creational context for service components contextual instances.
-     */
-    private CreationalContext<Object> cc;
-
-    /**
      * Service context for OSGi component {@code @ServiceScoped} contextual instances.
      */
     @Inject
     private ServiceContext context;
+
+    private ServiceFactoryBuilder serviceFactoryBuilder;
 
     /**
      * Starts the component lifecycle for this bean bundle.
@@ -83,18 +80,17 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void start() {
-        cc = beanManager.createCreationalContext(null);
         componentRegistry.setBundleContext(bundleContext);
+        this.serviceFactoryBuilder = new ServiceFactoryBuilder(beanManager);
 
         // register services for all components that are satisfied already
         for (Bean bean : componentRegistry.getComponents()) {
             if (isBeanFromCurrentBundle(bean)) {
                 ComponentDescriptor descriptor = componentRegistry.getDescriptor(bean);
-                descriptor.setBundleContext(bundleContext);
                 descriptor.setListener(this);
                 if (descriptor.isSatisfied()) {
                     log.info("component {} is available", bean);
-                    Object service = context.get(bean, cc);
+                    Object service = serviceFactoryBuilder.buildServiceFactory(descriptor);
                     registerService(bean, service, descriptor);
                 }
                 descriptor.start();
@@ -126,7 +122,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
 
     /**
      * Registers the OSGi service for the given OSGi component bean
-     * 
+     *
      * @param bean
      *            OSGi component bean
      * @param service
@@ -212,8 +208,8 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
     public <S> void onComponentSatisfied(ComponentDescriptor<S> descriptor) {
         Bean bean = descriptor.getBean();
         log.info("component {} is available", bean);
-        Object service = context.get(bean, cc);
-        registerService(bean, service, descriptor);
+        Object sf = serviceFactoryBuilder.buildServiceFactory(descriptor);
+        registerService(bean, sf, descriptor);
     }
 
     @Override

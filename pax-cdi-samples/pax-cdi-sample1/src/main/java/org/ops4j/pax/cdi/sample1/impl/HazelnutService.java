@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Harald Wellmann.
+ * Copyright 2014 Harald Wellmann.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,23 +17,24 @@
  */
 package org.ops4j.pax.cdi.sample1.impl;
 
+import org.ops4j.pax.cdi.api.BundleScoped;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.Properties;
 import org.ops4j.pax.cdi.api.Property;
-import org.ops4j.pax.cdi.sample1.Chocolate;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
 
-@Chocolate
+@BundleScoped
 @OsgiServiceProvider
-@Properties(@Property(name = "flavour", value = "chocolate"))
-public class ChocolateService implements IceCreamService {
+@Properties(@Property(name = "flavour", value = "hazelnut"))
+public class HazelnutService implements IceCreamService {
 
-    public ChocolateService() {
-        System.out.println("constructing ChocolateService");
+
+    public HazelnutService() {
+        System.out.println("constructing HazelnutService");
     }
 
     @Override
     public String getFlavour() {
-        return "Chocolate";
+        return "Hazelnut";
     }
 }

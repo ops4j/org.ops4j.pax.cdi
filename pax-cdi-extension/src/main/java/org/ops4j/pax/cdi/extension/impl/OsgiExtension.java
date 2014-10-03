@@ -43,6 +43,7 @@ import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.ServiceScoped;
 import org.ops4j.pax.cdi.extension.impl.component.ComponentLifecycleManager;
 import org.ops4j.pax.cdi.extension.impl.component.ComponentRegistry;
+import org.ops4j.pax.cdi.extension.impl.context.BundleScopeContext;
 import org.ops4j.pax.cdi.extension.impl.context.ServiceContext;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.osgi.framework.ServiceException;
@@ -52,9 +53,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Entry point of Pax CDI OSGi extension which injects OSGi services into CDI injection points and
  * publishes CDI beans as OSGi services.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 @ApplicationScoped
 public class OsgiExtension implements Extension {
@@ -63,22 +64,22 @@ public class OsgiExtension implements Extension {
 
     /** Maps service types to injection points. */
     private Map<Type, Set<InjectionPoint>> typeToIpMap = new HashMap<Type, Set<InjectionPoint>>();
-    
+
     /**
      * Registry for service components and their dependencies.
      */
     private ComponentRegistry componentRegistry = new ComponentRegistry(0);
-    
+
     private ServiceContext serviceContext;
 
     public OsgiExtension() {
         log.debug("constructing OsgiExtension");
     }
-    
+
     /**
      * BeforeBeanDiscovery observer which creates some additional beans and the Service Scope
      * for OSGi components.
-     * 
+     *
      * @param event
      * @param manager
      */
@@ -93,7 +94,7 @@ public class OsgiExtension implements Extension {
 
     /**
      * ProcessInjectionTarget observer which scans for OSGi service injection points.
-     * 
+     *
      * @param event
      */
     public <T> void processInjectionTarget(@Observes ProcessInjectionTarget<T> event) {
@@ -111,7 +112,7 @@ public class OsgiExtension implements Extension {
     /**
      * Returns true if the injection point has type Instance<T> for an OsgiService, so we
      * need to override the injection target.
-     * 
+     *
      * @param ip
      * @return
      */
@@ -127,7 +128,7 @@ public class OsgiExtension implements Extension {
 
     /**
      * Stores the given injection point in the {@code typeToIpMap}.
-     * 
+     *
      * @param injectionPoint
      */
     private void storeServiceInjectionPoint(InjectionPoint injectionPoint) {
@@ -137,7 +138,7 @@ public class OsgiExtension implements Extension {
         }
         typeToIpMap.get(key).add(injectionPoint);
     }
-    
+
     /**
      * ProcessBean observer which registers OSGi components and their service dependencies
      * in the {@link ComponentRegistry}.
@@ -146,7 +147,7 @@ public class OsgiExtension implements Extension {
     public <T> void processBean(@Observes ProcessBean<T> event) {
         Bean<T> bean = event.getBean();
         log.debug("processBean {}", bean);
-        
+
         OsgiServiceProvider qualifier = event.getAnnotated().getAnnotation(OsgiServiceProvider.class);
         if (qualifier != null) {
             componentRegistry.addComponent(bean);
@@ -162,13 +163,15 @@ public class OsgiExtension implements Extension {
     /**
      * AfterBeanDiscovery observer which registers {@code OsgiServiceBean}s for all types required
      * by OSGi service injection points.
-     * 
+     *
      * @param event
      */
-    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event) {       
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
         log.debug("afterBeanDiscovery");
-        serviceContext = new ServiceContext();
+        serviceContext = new ServiceContext(beanManager);
         event.addContext(serviceContext);
+        BundleScopeContext bundleScopeContext = new BundleScopeContext(beanManager);
+        event.addContext(bundleScopeContext);
         for (Type type : typeToIpMap.keySet()) {
             if (isInstance(type)) {
                 // handled by OsgiInjectionTarget
@@ -215,7 +218,7 @@ public class OsgiExtension implements Extension {
         }
         return false;
     }
-    
+
     public ComponentRegistry getComponentRegistry() {
         return componentRegistry;
     }

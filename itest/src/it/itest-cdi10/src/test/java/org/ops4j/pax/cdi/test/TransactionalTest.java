@@ -56,7 +56,7 @@ public class TransactionalTest {
     @Inject
     @Filter(timeout = 2000000)
     private LibraryServiceClient libraryService;
-    
+
     @Inject
     private CdiContainerFactory cdiContainerFactory;
 

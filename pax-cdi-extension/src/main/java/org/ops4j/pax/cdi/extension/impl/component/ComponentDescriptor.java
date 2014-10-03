@@ -27,7 +27,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import org.ops4j.lang.Ops4jException;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.ops4j.pax.swissbox.lifecycle.AbstractLifecycle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -35,9 +34,9 @@ import org.osgi.framework.ServiceRegistration;
 
 /**
  * Describes an OSGi service component and its dependencies.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public class ComponentDescriptor<S> extends AbstractLifecycle {
 
@@ -52,27 +51,24 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
      * dependencies.
      */
     private int numUnsatisfiedDependencies;
-    
+
     private ServiceRegistration<S> serviceRegistration;
 
-    private BundleContext bundleContext;
-    
     private ComponentDependencyListener listener;
 
     private Bean<S> bean;
-    
-    
+
+
     /**
-     * 
+     *
      */
-    public ComponentDescriptor(Bean<S> bean, BundleContext bundleContext) {
+    public ComponentDescriptor(Bean<S> bean) {
         this.bean = bean;
-        this.bundleContext = bundleContext;
     }
 
     /**
      * Checks if the component is satisfied.
-     * 
+     *
      * @return
      */
     public boolean isSatisfied() {
@@ -81,7 +77,7 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
 
     /**
      * Adds a service dependency to the given component.
-     * 
+     *
      * @param ip
      *            OSGi service injection point of the corresponding bean
      */
@@ -97,23 +93,23 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
             throw new Ops4jException(exc);
         }
     }
-    
+
     public void onDependencySatisfied() {
         numUnsatisfiedDependencies--;
         if (isSatisfied()) {
             listener.onComponentSatisfied(this);
         }
     }
-    
+
     public void onDependencyUnsatisfied() {
         boolean notifyListener = isSatisfied();
         numUnsatisfiedDependencies++;
         if (notifyListener && !isSatisfied()) {
-            listener.onComponentUnsatisfied(this);            
-        }        
+            listener.onComponentUnsatisfied(this);
+        }
     }
 
-    
+
     /**
      * @return the serviceRegistration
      */
@@ -121,7 +117,7 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
         return serviceRegistration;
     }
 
-    
+
     /**
      * @param serviceRegistration the serviceRegistration to set
      */
@@ -129,22 +125,6 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
         this.serviceRegistration = serviceRegistration;
     }
 
-    
-    /**
-     * @return the bundleContext
-     */
-    public BundleContext getBundleContext() {
-        return bundleContext;
-    }
-
-    
-    
-    /**
-     * @param bundleContext the bundleContext to set
-     */
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
-    }
 
     /**
      * @return the listener
@@ -153,7 +133,7 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
         return listener;
     }
 
-    
+
     /**
      * @param listener the listener to set
      */
@@ -161,7 +141,7 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
         this.listener = listener;
     }
 
-    
+
     /**
      * @return the bean
      */
@@ -181,6 +161,6 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
         listener.onComponentUnsatisfied(this);
         for (ComponentDependency<S, ?> dependency : dependencies) {
             dependency.stop();
-        }        
+        }
     }
 }

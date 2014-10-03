@@ -46,7 +46,8 @@ public class IceCreamClient {
     public List<String> getAllFlavours() {
         List<String> flavours = new ArrayList<String>();
         for (IceCreamService service : iceCreamServices) {
-            flavours.add(service.getFlavour());
+            String flavour = service.getFlavour();
+            flavours.add(flavour);
         }
         return flavours;
     }

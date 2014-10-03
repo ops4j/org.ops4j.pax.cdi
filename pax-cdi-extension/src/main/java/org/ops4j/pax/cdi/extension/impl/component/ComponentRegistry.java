@@ -34,32 +34,32 @@ import org.slf4j.LoggerFactory;
  * A registry for all service components, i.e. managed beans qualified as {@code @OsgiServiceProvider}.
  * The registry maps each such bean type to a component descriptor which tracks the service
  * dependencies of the given component.
- * 
+ *
  * @author Harald Wellmann
  *
  */
 public class ComponentRegistry {
-    
+
     private static Logger log = LoggerFactory.getLogger(ComponentRegistry.class);
-    
+
     private Map<Bean<?>, ComponentDescriptor<?>> descriptors = new HashMap<Bean<?>, ComponentDescriptor<?>>();
-    
+
     private BundleContext bundleContext;
-    
-    
+
+
     public ComponentRegistry(int dummy) {
     }
-    
+
     /**
      * Adds a component bean type to the registry, creating an empty descriptor for it.
      * @param component
      */
     public <S> void addComponent(Bean<S> component) {
-        descriptors.put(component, new ComponentDescriptor<S>(component, bundleContext));
+        descriptors.put(component, new ComponentDescriptor<S>(component));
     }
-    
+
     /**
-     * Adds a service dependency for a bean type. 
+     * Adds a service dependency for a bean type.
      * <p>
      * Precondition: The bean type was added to the registry by {@link #addComponent(Bean)}.
      * @param component component bean
@@ -68,9 +68,9 @@ public class ComponentRegistry {
     public <S> void addDependency(Bean<S> component, InjectionPoint ip) {
         log.debug("adding dependency {} -> {}", component, ip);
         ComponentDescriptor<?> descriptor = descriptors.get(component);
-        descriptor.addDependency(ip);        
+        descriptor.addDependency(ip);
     }
-    
+
     /**
      * Returns all component beans.
      * @return set of beans
@@ -78,7 +78,7 @@ public class ComponentRegistry {
     public Set<Bean<?>> getComponents() {
         return descriptors.keySet();
     }
-    
+
     /**
      * Returns the component descriptor for the given bean type.
      * @param component service component bean
@@ -88,7 +88,7 @@ public class ComponentRegistry {
         return descriptors.get(component);
     }
 
-    
+
     /**
      * @return the bundleContext
      */
@@ -96,7 +96,7 @@ public class ComponentRegistry {
         return bundleContext;
     }
 
-    
+
     /**
      * @param bundleContext the bundleContext to set
      */

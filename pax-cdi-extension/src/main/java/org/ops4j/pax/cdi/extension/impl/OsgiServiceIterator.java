@@ -26,17 +26,18 @@ import org.osgi.framework.ServiceReference;
 
 /**
  * Iterates over all services for a given collection of service references.
- * 
+ *
  * @author Harald Wellmann
  *
  * @param <T>
  */
 public class OsgiServiceIterator<T> implements Iterator<T> {
-    
-    
+
+    private BundleContext bc;
     private Iterator<ServiceReference<T>> refIt;
 
-    public OsgiServiceIterator(Collection<ServiceReference<T>> references) {
+    public OsgiServiceIterator(BundleContext bc, Collection<ServiceReference<T>> references) {
+        this.bc = bc;
         this.refIt = references.iterator();
     }
 
@@ -48,8 +49,7 @@ public class OsgiServiceIterator<T> implements Iterator<T> {
     @Override
     public T next() {
         ServiceReference<T> ref = refIt.next();
-        BundleContext bc = ref.getBundle().getBundleContext();
-        return bc.getService(ref);
+        return bc.getServiceObjects(ref).getService();
     }
 
     @Override

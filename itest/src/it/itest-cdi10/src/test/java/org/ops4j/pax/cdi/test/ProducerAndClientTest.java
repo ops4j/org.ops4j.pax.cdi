@@ -33,6 +33,7 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.ops4j.pax.cdi.sample1.IceCreamService;
 import org.ops4j.pax.cdi.sample1.client.IceCreamClient;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
@@ -54,6 +55,11 @@ public class ProducerAndClientTest {
     @Filter
     private IceCreamClient client;
 
+    @Inject
+    @Filter("(flavour=hazelnut)")
+    private IceCreamService iceCreamService;
+
+
     @Configuration
     public Option[] config() {
         return options(
@@ -61,8 +67,8 @@ public class ProducerAndClientTest {
 
             workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
             workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-client"),
-            
-            paxCdiProviderAdapter(),            
+
+            paxCdiProviderAdapter(),
             cdiProviderBundles());
     }
 
@@ -86,7 +92,7 @@ public class ProducerAndClientTest {
 
     @Test
     public void checkMultipleInstances() throws InterruptedException {
-        assertThat(client.getAllFlavours().size(), is(2));
-        assertThat(client.getAllFlavours(), hasItems("Vanilla", "Chocolate"));
+        assertThat(client.getAllFlavours().size(), is(3));
+        assertThat(client.getAllFlavours(), hasItems("Vanilla", "Chocolate", "Hazelnut"));
     }
 }

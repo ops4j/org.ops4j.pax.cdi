@@ -20,7 +20,9 @@ package org.ops4j.pax.cdi.extension.impl.component;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.ops4j.pax.swissbox.lifecycle.AbstractLifecycle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -28,12 +30,12 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * An OSGi service dependency of a given service component.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public class ComponentDependency<S, T> extends AbstractLifecycle implements ServiceTrackerCustomizer<T, T> {
-    
+
     /**
      * Injection point of this dependency. Must be qualified with {@code @OsgiService).
      */
@@ -53,8 +55,10 @@ public class ComponentDependency<S, T> extends AbstractLifecycle implements Serv
 
     private ComponentDescriptor<S> parent;
 
+    private BundleContext bc;
+
     /**
-     * 
+     *
      */
     public ComponentDependency(ComponentDescriptor<S> parent, InjectionPoint ip, Filter filter) {
         this.parent = parent;
@@ -109,7 +113,8 @@ public class ComponentDependency<S, T> extends AbstractLifecycle implements Serv
 
     @Override
     protected void onStart() {
-        tracker = new ServiceTracker<T, T>(parent.getBundleContext(), filter, this);
+        bc = InjectionPointOsgiUtils.getBundleContext(injectionPoint);
+        tracker = new ServiceTracker<T, T>(bc, filter, this);
         tracker.open();
     }
 
@@ -123,7 +128,7 @@ public class ComponentDependency<S, T> extends AbstractLifecycle implements Serv
         if (!satisfied) {
             satisfied = true;
             parent.onDependencySatisfied();
-            return parent.getBundleContext().getService(reference);
+            return bc.getService(reference);
         }
         return null;
     }
@@ -137,7 +142,7 @@ public class ComponentDependency<S, T> extends AbstractLifecycle implements Serv
     public void removedService(ServiceReference<T> reference, T service) {
         if (satisfied) {
             satisfied = false;
-            parent.onDependencyUnsatisfied();            
+            parent.onDependencyUnsatisfied();
         }
     }
 }

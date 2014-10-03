@@ -33,7 +33,7 @@ import org.osgi.framework.ServiceReference;
 
 /**
  * A specialized {@link Instance} which looks up matching OSGi services from the service registry.
- * 
+ *
  * @author Harald Wellmann
  *
  * @param <T>
@@ -52,7 +52,7 @@ public class OsgiServiceInstance<T> implements Instance<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new OsgiServiceIterator<T>(getServiceReferences());
+        return new OsgiServiceIterator<T>(bc, getServiceReferences());
     }
 
     @Override

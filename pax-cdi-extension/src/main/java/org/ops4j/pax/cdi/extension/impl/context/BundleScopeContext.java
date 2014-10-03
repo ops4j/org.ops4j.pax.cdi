@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Harald Wellmann
+ * Copyright 2014 Harald Wellmann
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,19 @@
 package org.ops4j.pax.cdi.extension.impl.context;
 
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.ops4j.pax.cdi.api.ServiceScoped;
+import org.ops4j.pax.cdi.api.BundleScoped;
+import org.osgi.framework.Bundle;
 
 /**
  * Custom CDI context for OSGi service components.
@@ -37,41 +40,75 @@ import org.ops4j.pax.cdi.api.ServiceScoped;
  *
  */
 @Typed()
-public class ServiceContext implements Context {
+public class BundleScopeContext implements Context {
 
     private Map<Contextual<?>, ServiceContextEntry<?>> serviceBeans = new ConcurrentHashMap<Contextual<?>, ServiceContextEntry<?>>();
     private BeanManager beanManager;
-    private CreationalContext<Object> cc;
 
-    public ServiceContext(BeanManager beanManager) {
+    private ThreadLocal<Bundle> clientBundle;
+    private Map<Bundle, BeanMap> beanMaps;
+
+
+    public BundleScopeContext(BeanManager beanManager) {
         this.beanManager = beanManager;
-        this.cc = this.beanManager.createCreationalContext(null);
+        this.clientBundle = new ThreadLocal<Bundle>();
+        this.beanMaps = new HashMap<Bundle, BeanMap>();
     }
 
     @Override
     public Class<? extends Annotation> getScope() {
-        return ServiceScoped.class;
+        return BundleScoped.class;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <T> T get(Contextual<T> component, CreationalContext<T> creationalContext) {
-        ServiceContextEntry serviceBean = serviceBeans.get(component);
+        BeanMap beanMap = getBeanMap(creationalContext);
+
+
+        ServiceContextEntry serviceBean = beanMap.get(component);
         if (serviceBean != null) {
             return (T) serviceBean.getContextualInstance();
         }
 
         T instance = component.create(creationalContext);
-        serviceBean = new ServiceContextEntry(component, instance, creationalContext);
+        serviceBean = new ServiceContextEntry(component, instance, beanMap.getCreationalContext());
         serviceBeans.put(component, serviceBean);
 
         return instance;
     }
 
+    private <T> BeanMap getBeanMap(CreationalContext<T> creationalContext) {
+        Bundle bundle = getClientBundle();
+        if (bundle == null) {
+            throw new ContextNotActiveException();
+        }
+        BeanMap beanMap = beanMaps.get(bundle);
+        if (beanMap == null) {
+            beanMap = new BeanMap();
+            if (creationalContext == null) {
+                beanMap.setCreationalContext(beanManager.createCreationalContext(null));
+            }
+            else {
+                beanMap.setCreationalContext((CreationalContext<Object>) creationalContext);
+            }
+            beanMaps.put(bundle, beanMap);
+        }
+        return beanMap;
+    }
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <T> T get(Contextual<T> component) {
-        ServiceContextEntry serviceBean = serviceBeans.get(component);
+        Bundle bundle = getClientBundle();
+        if (bundle == null) {
+            throw new ContextNotActiveException();
+        }
+        BeanMap beanMap = beanMaps.get(bundle);
+        if (beanMap == null) {
+            throw new ContextNotActiveException();
+        }
+        ServiceContextEntry serviceBean = beanMap.get(component);
         if (serviceBean != null) {
             return (T) serviceBean.getContextualInstance();
         }
@@ -93,7 +130,31 @@ public class ServiceContext implements Context {
         return true;
     }
 
-    public <S> CreationalContext<S> getCreationalContext() {
-        return (CreationalContext<S>) cc;
+    /**
+     * @return the clientBundle
+     */
+    public Bundle getClientBundle() {
+        return clientBundle.get();
+    }
+
+
+    /**
+     * @param clientBundle the clientBundle to set
+     */
+    public void setClientBundle(Bundle clientBundle) {
+        if (clientBundle == null) {
+            this.clientBundle.remove();
+        }
+        else {
+            this.clientBundle.set(clientBundle);
+        }
+    }
+
+    public CreationalContext<?> getCreationalContext() {
+        BeanMap beanMap = getBeanMap(null);
+        if (beanMap == null) {
+            return null;
+        }
+        return beanMap.getCreationalContext();
     }
 }
