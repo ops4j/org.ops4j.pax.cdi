@@ -78,7 +78,7 @@
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Service-Component>OSGI-INF/*</Service-Component>
                         <Provide-Capability>
-                            osgi.extender; osgi.extender="pax.cdi"
+                            osgi.extender; osgi.extender="pax.cdi"; version:Version=${version;====;${replace;${project.version};-;.}}
                         </Provide-Capability>
                     </instructions>
                 </configuration>
