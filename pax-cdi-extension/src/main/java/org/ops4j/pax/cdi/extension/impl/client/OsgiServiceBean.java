@@ -18,7 +18,9 @@
 package org.ops4j.pax.cdi.extension.impl.client;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
@@ -37,9 +39,9 @@ import org.osgi.framework.ServiceException;
  * Represents an OSGi service bean. Instances of a bean are proxied to an OSGi service. The service
  * is looked up per method invocation (dynamic = true) or once on bean instantiation (dynamic =
  * false)
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  * @param <T>
  */
 public class OsgiServiceBean<T> implements Bean<T> {
@@ -67,6 +69,11 @@ public class OsgiServiceBean<T> implements Bean<T> {
 
     @Override
     public void destroy(T instance, CreationalContext<T> creationalContext) {
+        InvocationHandler handler = Proxy.getInvocationHandler(instance);
+        if (handler instanceof AbstractServiceInvocationHandler) {
+            AbstractServiceInvocationHandler<?> serviceHandler = (AbstractServiceInvocationHandler<?>) handler;
+            serviceHandler.release();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -123,15 +130,15 @@ public class OsgiServiceBean<T> implements Bean<T> {
     public boolean isNullable() {
         return true;
     }
-    
+
     protected Type getType() {
         return type;
     }
-    
+
     protected OsgiService getQualifier() {
         return qualifier;
     }
-    
+
     protected InjectionPoint getInjectionPoint() {
         return ip;
     }
