@@ -34,9 +34,9 @@ import org.osgi.framework.ServiceReference;
 /**
  * A static proxy invocation handler which always uses the same service reference obtained on
  * construction.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public class StaticInvocationHandler implements InvocationHandler {
 
@@ -51,15 +51,17 @@ public class StaticInvocationHandler implements InvocationHandler {
         this.ip = ip;
         this.bundleContext = InjectionPointOsgiUtils.getBundleContext(ip);
         this.serviceRef = InjectionPointOsgiUtils.getServiceReference(ip);
-        ServiceReference<CdiContainerFactory> serviceReference = bundleContext.getServiceReference(CdiContainerFactory.class);
+        ServiceReference<CdiContainerFactory> serviceReference = bundleContext
+            .getServiceReference(CdiContainerFactory.class);
         CdiContainerFactory cdiContainerFactory = bundleContext.getService(serviceReference);
         this.cdiContainer = cdiContainerFactory.getContainer(bundleContext.getBundle());
     }
 
     @Override
-    // CHECKSTYLE:SKIP
     public Object invoke(final Object proxy, final Method method, final Object[] args)
+    // CHECKSTYLE:SKIP
         throws Throwable {
+
         if (serviceRef != null) {
             Object result = ContextClassLoaderUtils.doWithClassLoader(
                 cdiContainer.getContextClassLoader(), new Callable<Object>() {

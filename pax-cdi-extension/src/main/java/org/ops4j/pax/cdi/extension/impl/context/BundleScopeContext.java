@@ -78,6 +78,7 @@ public class BundleScopeContext implements Context {
         return instance;
     }
 
+    @SuppressWarnings({ "unchecked" })
     private <T> BeanMap getBeanMap(CreationalContext<T> creationalContext) {
         Bundle bundle = getClientBundle();
         if (bundle == null) {

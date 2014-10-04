@@ -20,7 +20,6 @@ package org.ops4j.pax.cdi.extension.impl;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
 import org.ops4j.pax.cdi.api.ContainerInitialized;
@@ -34,24 +33,18 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Not intended to be used by application code. This bean is used internally to observe the
  * ContainerInitialized event and then to publish CDI beans as OSGi services.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 @ApplicationScoped
 public class BeanBundleImpl {
-    
+
     private static Logger log = LoggerFactory.getLogger(BeanBundleImpl.class);
 
     @Inject
-    private BeanManager beanManager;
-    
-    //@Inject
-    private BundleEventBridge bundleEventBridge;
-
-    @Inject
     private BundleContext bundleContext;
-    
+
     @Inject
     private ComponentLifecycleManager componentLifecycleManager;
 
@@ -60,8 +53,7 @@ public class BeanBundleImpl {
      */
     public void onInitialized(@Observes ContainerInitialized event) {
         log.debug("onInitialized {}", bundleContext.getBundle());
-        //bundleEventBridge.start();
-        componentLifecycleManager.start();        
+        componentLifecycleManager.start();
     }
 
     /**
@@ -70,7 +62,6 @@ public class BeanBundleImpl {
     @PreDestroy
     public void onDestroy() {
         log.debug("onDestroy {}", bundleContext.getBundle());
-        //bundleEventBridge.stop();
         componentLifecycleManager.stop();
     }
 }

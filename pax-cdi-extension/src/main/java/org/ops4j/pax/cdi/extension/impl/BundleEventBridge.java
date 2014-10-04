@@ -29,7 +29,6 @@ import org.ops4j.pax.cdi.spi.BeanBundles;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
-import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.util.tracker.BundleTracker;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
@@ -37,9 +36,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Wraps OSGi bundle events in as {@link BundleCdiEvent} and fires them as CDI events.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public class BundleEventBridge implements BundleTrackerCustomizer<Void> {
 
@@ -68,7 +67,6 @@ public class BundleEventBridge implements BundleTrackerCustomizer<Void> {
 
     @Override
     public Void addingBundle(Bundle bundle, BundleEvent bundleEvent) {
-        ClassLoader cl = bundleContext.getBundle().adapt(BundleWiring.class).getClassLoader();
         if (!BeanBundles.isActiveBeanBundle(bundle)) {
             return null;
         }

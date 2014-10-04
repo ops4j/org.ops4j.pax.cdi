@@ -83,8 +83,7 @@ public class ServiceContext implements Context {
         ServiceContextEntry serviceBean = serviceBeans.get(component);
         if (serviceBean != null) {
             Object instance = serviceBean.getContextualInstance();
-            CreationalContext cc = serviceBean.getCreationalContext();
-            serviceBean.getBean().destroy(instance, cc);
+            serviceBean.getBean().destroy(instance, serviceBean.getCreationalContext());
         }
     }
 
@@ -93,6 +92,7 @@ public class ServiceContext implements Context {
         return true;
     }
 
+    @SuppressWarnings({ "unchecked" })
     public <S> CreationalContext<S> getCreationalContext() {
         return (CreationalContext<S>) cc;
     }

@@ -26,6 +26,8 @@ import javax.enterprise.context.spi.CreationalContext;
 
 public class BeanMap extends HashMap<Contextual<?>, ServiceContextEntry<?>> {
 
+    private static final long serialVersionUID = 1L;
+
     private CreationalContext<Object> creationalContext;
 
 
@@ -43,9 +45,4 @@ public class BeanMap extends HashMap<Contextual<?>, ServiceContextEntry<?>> {
     public void setCreationalContext(CreationalContext<Object> creationalContext) {
         this.creationalContext = creationalContext;
     }
-
-
-
-
-
 }

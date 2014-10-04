@@ -38,6 +38,7 @@ public class BundleScopeServiceFactory<S> implements ServiceFactory<S> {
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public S getService(Bundle bundle, ServiceRegistration<S> registration) {
         context.setClientBundle(bundle);
         CreationalContext<S> cc = (CreationalContext<S>) context.getCreationalContext();
@@ -52,5 +53,4 @@ public class BundleScopeServiceFactory<S> implements ServiceFactory<S> {
         context.destroy(bean);
         context.setClientBundle(null);
     }
-
 }
