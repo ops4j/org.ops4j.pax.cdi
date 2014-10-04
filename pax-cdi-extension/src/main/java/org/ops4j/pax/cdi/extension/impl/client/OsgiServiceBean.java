@@ -130,16 +130,4 @@ public class OsgiServiceBean<T> implements Bean<T> {
     public boolean isNullable() {
         return true;
     }
-
-    protected Type getType() {
-        return type;
-    }
-
-    protected OsgiService getQualifier() {
-        return qualifier;
-    }
-
-    protected InjectionPoint getInjectionPoint() {
-        return ip;
-    }
 }
