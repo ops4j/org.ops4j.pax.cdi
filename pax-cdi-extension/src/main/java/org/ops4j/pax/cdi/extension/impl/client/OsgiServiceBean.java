@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.extension.impl;
+package org.ops4j.pax.cdi.extension.impl.client;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;

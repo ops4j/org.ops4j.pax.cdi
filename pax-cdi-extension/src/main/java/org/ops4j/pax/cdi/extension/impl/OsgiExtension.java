@@ -41,6 +41,8 @@ import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.ServiceScoped;
+import org.ops4j.pax.cdi.extension.impl.client.OsgiInjectionTarget;
+import org.ops4j.pax.cdi.extension.impl.client.OsgiServiceBean;
 import org.ops4j.pax.cdi.extension.impl.component.ComponentLifecycleManager;
 import org.ops4j.pax.cdi.extension.impl.component.ComponentRegistry;
 import org.ops4j.pax.cdi.extension.impl.context.BundleScopeContext;
