@@ -17,19 +17,13 @@
  */
 package org.ops4j.pax.cdi.extension.impl.client;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
-import org.ops4j.pax.cdi.spi.CdiContainer;
-import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceException;
-import org.osgi.framework.ServiceReference;
 
 /**
  * A static proxy invocation handler which always uses the same service reference obtained on
@@ -38,23 +32,11 @@ import org.osgi.framework.ServiceReference;
  * @author Harald Wellmann
  *
  */
-public class StaticInvocationHandler implements InvocationHandler {
-
-    private InjectionPoint ip;
-
-    private ServiceReference<?> serviceRef;
-    private BundleContext bundleContext;
-
-    private CdiContainer cdiContainer;
+public class StaticInvocationHandler<S> extends AbstractServiceInvocationHandler<S> {
 
     public StaticInvocationHandler(InjectionPoint ip) {
-        this.ip = ip;
-        this.bundleContext = InjectionPointOsgiUtils.getBundleContext(ip);
-        this.serviceRef = InjectionPointOsgiUtils.getServiceReference(ip);
-        ServiceReference<CdiContainerFactory> serviceReference = bundleContext
-            .getServiceReference(CdiContainerFactory.class);
-        CdiContainerFactory cdiContainerFactory = bundleContext.getService(serviceReference);
-        this.cdiContainer = cdiContainerFactory.getContainer(bundleContext.getBundle());
+        super(ip);
+        service = serviceObjects.getService();
     }
 
     @Override
@@ -68,7 +50,6 @@ public class StaticInvocationHandler implements InvocationHandler {
 
                     @Override
                     public Object call() throws Exception {
-                        Object service = bundleContext.getService(serviceRef);
                         if (service != null) {
                             return method.invoke(service, args);
                         }
@@ -79,5 +60,10 @@ public class StaticInvocationHandler implements InvocationHandler {
         }
         throw new ServiceException("no service for injection point " + ip,
             ServiceException.UNREGISTERED);
+    }
+
+    @Override
+    public void release() {
+        serviceObjects.ungetService(service);
     }
 }

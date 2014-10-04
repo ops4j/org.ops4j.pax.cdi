@@ -17,46 +17,32 @@
  */
 package org.ops4j.pax.cdi.extension.impl.client;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
-import org.ops4j.pax.cdi.spi.CdiContainer;
-import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
 /**
  * A dynamic proxy invocation handler which looks up a matching OSGi service for a CDI injection
  * point on each method invocation, possibly including a wait period as indicated by the
  * {@link OsgiService} qualifier.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
-public class DynamicInvocationHandler implements InvocationHandler {
-
-    private InjectionPoint ip;
-    private BundleContext bc;
-    private CdiContainer cdiContainer;
+public class DynamicInvocationHandler<S> extends AbstractServiceInvocationHandler<S> {
 
     public DynamicInvocationHandler(InjectionPoint ip) {
-        this.ip = ip;
-        this.bc = InjectionPointOsgiUtils.getBundleContext(ip);
-        ServiceReference<CdiContainerFactory> serviceReference = bc.getServiceReference(CdiContainerFactory.class);
-        CdiContainerFactory cdiContainerFactory = bc.getService(serviceReference);
-        this.cdiContainer = cdiContainerFactory.getContainer(bc.getBundle());
+        super(ip);
     }
 
     @Override
     // CHECKSTYLE:SKIP
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-        final Object service = InjectionPointOsgiUtils.lookupService(bc, ip);
+        final S service = serviceObjects.getService();
         Object result = ContextClassLoaderUtils.doWithClassLoader(
             cdiContainer.getContextClassLoader(), new Callable<Object>() {
 
@@ -68,6 +54,12 @@ public class DynamicInvocationHandler implements InvocationHandler {
                     return null;
                 }
             });
+        serviceObjects.ungetService(service);
         return result;
+    }
+
+    @Override
+    public void release() {
+        // nothing
     }
 }
