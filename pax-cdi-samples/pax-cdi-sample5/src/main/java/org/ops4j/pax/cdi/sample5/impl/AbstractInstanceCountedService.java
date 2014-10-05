@@ -23,6 +23,10 @@ public abstract class AbstractInstanceCountedService implements InstanceCountedS
 
     protected int number;
 
+    public AbstractInstanceCountedService() {
+
+    }
+
     protected AbstractInstanceCountedService(int number) {
         this.number = number;
     }
