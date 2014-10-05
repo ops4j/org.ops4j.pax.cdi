@@ -40,6 +40,6 @@ import javax.enterprise.context.NormalScope;
 @Documented
 @NormalScope
 @Inherited
-public @interface ServiceScoped {
+public @interface SingletonScoped {
 
 }

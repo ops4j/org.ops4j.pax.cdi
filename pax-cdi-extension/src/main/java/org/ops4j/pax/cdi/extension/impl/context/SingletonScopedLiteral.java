@@ -19,10 +19,10 @@ package org.ops4j.pax.cdi.extension.impl.context;
 
 import javax.enterprise.util.AnnotationLiteral;
 
-import org.ops4j.pax.cdi.api.ServiceScoped;
+import org.ops4j.pax.cdi.api.SingletonScoped;
 
 
-public class ServiceScopedLiteral extends AnnotationLiteral<ServiceScoped> implements ServiceScoped {
+public class SingletonScopedLiteral extends AnnotationLiteral<SingletonScoped> implements SingletonScoped {
 
     /**
      *

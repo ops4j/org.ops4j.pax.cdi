@@ -23,7 +23,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.ops4j.pax.cdi.extension.impl.component.ComponentRegistry;
-import org.ops4j.pax.cdi.extension.impl.context.ServiceContext;
+import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
 import org.ops4j.pax.cdi.spi.BeanBundles;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -57,7 +57,7 @@ public class BundleContextProducer {
     }
 
     @Produces 
-    public ServiceContext serviceContext() {
+    public SingletonScopeContext serviceContext() {
         return extension.getServiceContext();
     }
 }

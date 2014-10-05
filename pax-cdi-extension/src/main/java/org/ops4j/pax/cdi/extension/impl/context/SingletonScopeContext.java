@@ -28,7 +28,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.ops4j.pax.cdi.api.ServiceScoped;
+import org.ops4j.pax.cdi.api.SingletonScoped;
 
 /**
  * Custom CDI context for OSGi service components.
@@ -37,32 +37,32 @@ import org.ops4j.pax.cdi.api.ServiceScoped;
  *
  */
 @Typed()
-public class ServiceContext implements Context {
+public class SingletonScopeContext implements Context {
 
-    private Map<Contextual<?>, ServiceContextEntry<?>> serviceBeans = new ConcurrentHashMap<Contextual<?>, ServiceContextEntry<?>>();
+    private Map<Contextual<?>, SingletonScopeContextEntry<?>> serviceBeans = new ConcurrentHashMap<Contextual<?>, SingletonScopeContextEntry<?>>();
     private BeanManager beanManager;
     private CreationalContext<Object> cc;
 
-    public ServiceContext(BeanManager beanManager) {
+    public SingletonScopeContext(BeanManager beanManager) {
         this.beanManager = beanManager;
         this.cc = this.beanManager.createCreationalContext(null);
     }
 
     @Override
     public Class<? extends Annotation> getScope() {
-        return ServiceScoped.class;
+        return SingletonScoped.class;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <T> T get(Contextual<T> component, CreationalContext<T> creationalContext) {
-        ServiceContextEntry serviceBean = serviceBeans.get(component);
+        SingletonScopeContextEntry serviceBean = serviceBeans.get(component);
         if (serviceBean != null) {
             return (T) serviceBean.getContextualInstance();
         }
 
         T instance = component.create(creationalContext);
-        serviceBean = new ServiceContextEntry(component, instance, creationalContext);
+        serviceBean = new SingletonScopeContextEntry(component, instance, creationalContext);
         serviceBeans.put(component, serviceBean);
 
         return instance;
@@ -71,7 +71,7 @@ public class ServiceContext implements Context {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <T> T get(Contextual<T> component) {
-        ServiceContextEntry serviceBean = serviceBeans.get(component);
+        SingletonScopeContextEntry serviceBean = serviceBeans.get(component);
         if (serviceBean != null) {
             return (T) serviceBean.getContextualInstance();
         }
@@ -80,7 +80,7 @@ public class ServiceContext implements Context {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void destroy(Contextual<?> component) {
-        ServiceContextEntry serviceBean = serviceBeans.get(component);
+        SingletonScopeContextEntry serviceBean = serviceBeans.get(component);
         if (serviceBean != null) {
             Object instance = serviceBean.getContextualInstance();
             serviceBean.getBean().destroy(instance, serviceBean.getCreationalContext());

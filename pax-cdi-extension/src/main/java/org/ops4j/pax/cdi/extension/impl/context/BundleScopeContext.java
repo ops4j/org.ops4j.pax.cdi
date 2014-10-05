@@ -42,7 +42,7 @@ import org.osgi.framework.Bundle;
 @Typed()
 public class BundleScopeContext implements Context {
 
-    private Map<Contextual<?>, ServiceContextEntry<?>> serviceBeans = new ConcurrentHashMap<Contextual<?>, ServiceContextEntry<?>>();
+    private Map<Contextual<?>, SingletonScopeContextEntry<?>> serviceBeans = new ConcurrentHashMap<Contextual<?>, SingletonScopeContextEntry<?>>();
     private BeanManager beanManager;
 
     private ThreadLocal<Bundle> clientBundle;
@@ -66,13 +66,13 @@ public class BundleScopeContext implements Context {
         BeanMap beanMap = getBeanMap(creationalContext);
 
 
-        ServiceContextEntry serviceBean = beanMap.get(component);
+        SingletonScopeContextEntry serviceBean = beanMap.get(component);
         if (serviceBean != null) {
             return (T) serviceBean.getContextualInstance();
         }
 
         T instance = component.create(creationalContext);
-        serviceBean = new ServiceContextEntry(component, instance, beanMap.getCreationalContext());
+        serviceBean = new SingletonScopeContextEntry(component, instance, beanMap.getCreationalContext());
         serviceBeans.put(component, serviceBean);
 
         return instance;
@@ -109,7 +109,7 @@ public class BundleScopeContext implements Context {
         if (beanMap == null) {
             throw new ContextNotActiveException();
         }
-        ServiceContextEntry serviceBean = beanMap.get(component);
+        SingletonScopeContextEntry serviceBean = beanMap.get(component);
         if (serviceBean != null) {
             return (T) serviceBean.getContextualInstance();
         }
@@ -118,7 +118,7 @@ public class BundleScopeContext implements Context {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void destroy(Contextual<?> component) {
-        ServiceContextEntry serviceBean = serviceBeans.get(component);
+        SingletonScopeContextEntry serviceBean = serviceBeans.get(component);
         if (serviceBean != null) {
             Object instance = serviceBean.getContextualInstance();
             CreationalContext cc = serviceBean.getCreationalContext();

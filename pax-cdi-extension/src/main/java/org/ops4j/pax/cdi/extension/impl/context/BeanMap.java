@@ -24,7 +24,7 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 
-public class BeanMap extends HashMap<Contextual<?>, ServiceContextEntry<?>> {
+public class BeanMap extends HashMap<Contextual<?>, SingletonScopeContextEntry<?>> {
 
     private static final long serialVersionUID = 1L;
 

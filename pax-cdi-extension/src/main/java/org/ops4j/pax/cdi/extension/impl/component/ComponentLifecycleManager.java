@@ -33,7 +33,7 @@ import javax.inject.Inject;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.Properties;
 import org.ops4j.pax.cdi.api.Property;
-import org.ops4j.pax.cdi.extension.impl.context.ServiceContext;
+import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
 import org.ops4j.pax.cdi.extension.impl.context.ServiceFactoryBuilder;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -69,7 +69,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
      * Service context for OSGi component {@code @ServiceScoped} contextual instances.
      */
     @Inject
-    private ServiceContext context;
+    private SingletonScopeContext context;
 
     private ServiceFactoryBuilder serviceFactoryBuilder;
 

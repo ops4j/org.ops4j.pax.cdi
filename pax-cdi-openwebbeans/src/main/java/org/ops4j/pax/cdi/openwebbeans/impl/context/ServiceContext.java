@@ -24,7 +24,7 @@ import javax.enterprise.context.spi.Contextual;
 
 import org.apache.webbeans.context.AbstractContext;
 import org.apache.webbeans.context.creational.BeanInstanceBag;
-import org.ops4j.pax.cdi.api.ServiceScoped;
+import org.ops4j.pax.cdi.api.SingletonScoped;
 
 /**
  * @author Harald Wellmann
@@ -35,7 +35,7 @@ public class ServiceContext extends AbstractContext {
     private static final long serialVersionUID = 1L;
 
     public ServiceContext() {
-        super(ServiceScoped.class);
+        super(SingletonScoped.class);
     }
 
     @Override

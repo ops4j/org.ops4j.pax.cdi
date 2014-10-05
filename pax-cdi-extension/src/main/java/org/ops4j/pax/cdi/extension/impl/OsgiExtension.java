@@ -44,15 +44,15 @@ import org.ops4j.pax.cdi.api.BundleScoped;
 import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.PrototypeScoped;
-import org.ops4j.pax.cdi.api.ServiceScoped;
+import org.ops4j.pax.cdi.api.SingletonScoped;
 import org.ops4j.pax.cdi.extension.impl.client.OsgiInjectionTarget;
 import org.ops4j.pax.cdi.extension.impl.client.OsgiServiceBean;
 import org.ops4j.pax.cdi.extension.impl.component.ComponentLifecycleManager;
 import org.ops4j.pax.cdi.extension.impl.component.ComponentRegistry;
 import org.ops4j.pax.cdi.extension.impl.context.BundleScopeContext;
 import org.ops4j.pax.cdi.extension.impl.context.PrototypeScopeContext;
-import org.ops4j.pax.cdi.extension.impl.context.ServiceContext;
-import org.ops4j.pax.cdi.extension.impl.context.ServiceScopedLiteral;
+import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
+import org.ops4j.pax.cdi.extension.impl.context.SingletonScopedLiteral;
 import org.ops4j.pax.cdi.extension.impl.util.AnnotatedTypeWrapper;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.osgi.framework.ServiceException;
@@ -79,7 +79,7 @@ public class OsgiExtension implements Extension {
      */
     private ComponentRegistry componentRegistry = new ComponentRegistry(0);
 
-    private ServiceContext serviceContext;
+    private SingletonScopeContext serviceContext;
 
     public OsgiExtension() {
         log.debug("constructing OsgiExtension");
@@ -98,7 +98,7 @@ public class OsgiExtension implements Extension {
         event.addAnnotatedType(manager.createAnnotatedType(BundleEventBridge.class));
         event.addAnnotatedType(manager.createAnnotatedType(BundleContextProducer.class));
         event.addAnnotatedType(manager.createAnnotatedType(ComponentLifecycleManager.class));
-        event.addScope(ServiceScoped.class, false, false);
+        event.addScope(SingletonScoped.class, false, false);
     }
 
     public <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> event) {
@@ -118,13 +118,13 @@ public class OsgiExtension implements Extension {
             return;
         }
 
-        if (type.getAnnotation(ServiceScoped.class) != null) {
+        if (type.getAnnotation(SingletonScoped.class) != null) {
             return;
         }
 
 
-        // add @ServiceScoped annotation
-        AnnotatedTypeWrapper<T> wrappedType = new AnnotatedTypeWrapper<T>(type, new ServiceScopedLiteral());
+        // add @SingletonScoped annotation
+        AnnotatedTypeWrapper<T> wrappedType = new AnnotatedTypeWrapper<T>(type, new SingletonScopedLiteral());
         event.setAnnotatedType(wrappedType);
     }
 
@@ -204,7 +204,7 @@ public class OsgiExtension implements Extension {
      */
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
         log.debug("afterBeanDiscovery");
-        serviceContext = new ServiceContext(beanManager);
+        serviceContext = new SingletonScopeContext(beanManager);
         event.addContext(serviceContext);
         BundleScopeContext bundleScopeContext = new BundleScopeContext(beanManager);
         event.addContext(bundleScopeContext);
@@ -261,7 +261,7 @@ public class OsgiExtension implements Extension {
         return componentRegistry;
     }
 
-    public ServiceContext getServiceContext() {
+    public SingletonScopeContext getServiceContext() {
         return serviceContext;
     }
 }

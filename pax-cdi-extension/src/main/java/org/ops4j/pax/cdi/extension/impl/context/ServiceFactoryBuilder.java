@@ -49,8 +49,8 @@ public class ServiceFactoryBuilder {
             BundleScopeContext bundleScopeContext = (BundleScopeContext) context;
             return new BundleScopeServiceFactory<S>(bundleScopeContext, bean);
         }
-        if (context instanceof ServiceContext) {
-            ServiceContext singletonContext = (ServiceContext) context;
+        if (context instanceof SingletonScopeContext) {
+            SingletonScopeContext singletonContext = (SingletonScopeContext) context;
             CreationalContext<S> cc = singletonContext.getCreationalContext();
             return singletonContext.get(bean, cc);
         }
