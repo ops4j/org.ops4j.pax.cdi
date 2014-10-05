@@ -25,7 +25,6 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.ops4j.pax.cdi.api.ServiceScoped;
 import org.ops4j.pax.cdi.extension.impl.component.ComponentDescriptor;
 
 
@@ -42,6 +41,10 @@ public class ServiceFactoryBuilder {
         Bean<S> bean = descriptor.getBean();
         Class<? extends Annotation> scope = bean.getScope();
         Context context = beanManager.getContext(scope);
+        if (context instanceof PrototypeScopeContext) {
+            PrototypeScopeContext prototypeScopeContext = (PrototypeScopeContext) context;
+            return new PrototypeScopeServiceFactory<S>(prototypeScopeContext, bean);
+        }
         if (context instanceof BundleScopeContext) {
             BundleScopeContext bundleScopeContext = (BundleScopeContext) context;
             return new BundleScopeServiceFactory<S>(bundleScopeContext, bean);
@@ -51,14 +54,6 @@ public class ServiceFactoryBuilder {
             CreationalContext<S> cc = singletonContext.getCreationalContext();
             return singletonContext.get(bean, cc);
         }
-        // FIXME this should not be needed
-        else {
-            context = beanManager.getContext(ServiceScoped.class);
-            ServiceContext singletonContext = (ServiceContext) context;
-            CreationalContext<S> cc = singletonContext.getCreationalContext();
-            return singletonContext.get(bean, cc);
-        }
-
+        throw new IllegalStateException(bean.getBeanClass() + " does not have an OSGi compatible scope");
     }
-
 }

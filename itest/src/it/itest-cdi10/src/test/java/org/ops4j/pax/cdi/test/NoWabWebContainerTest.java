@@ -70,7 +70,6 @@ public class NoWabWebContainerTest {
             paxCdiProviderWebAdapter(),
             cdiProviderBundles(),
 
-
             systemProperty("org.osgi.service.http.port").value("8181"),
             paxWebBundles(),
 
@@ -78,15 +77,14 @@ public class NoWabWebContainerTest {
             mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
             mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
             mavenBundle("com.sun.jersey.contribs", "jersey-apache-client").version("1.13"),
-            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.commons-httpclient", "3.1_7"),
+            mavenBundle("org.apache.servicemix.bundles",
+                "org.apache.servicemix.bundles.commons-httpclient", "3.1_7"),
             mavenBundle("commons-codec", "commons-codec", "1.6"),
-            mavenBundle("org.slf4j", "jcl-over-slf4j", "1.6.0")
-            );
+            mavenBundle("org.slf4j", "jcl-over-slf4j", "1.6.0"));
     }
 
     @Test
     public void checkContainers() throws InterruptedException {
-        // assertThat(containerFactory.getProviderName(), is("org.apache.webbeans.config.WebBeansContext"));
         assertThat(containerFactory.getContainers().size(), is(2));
         List<String> beanBundles = new ArrayList<String>();
         for (CdiContainer container : containerFactory.getContainers()) {
@@ -104,7 +102,8 @@ public class NoWabWebContainerTest {
 
     @Test
     public void checkMultipleInstances() throws InterruptedException {
-        assertThat(client.getAllFlavours().size(), is(3));
-        assertThat(client.getAllFlavours(), hasItems("Vanilla", "Chocolate", "Hazelnut"));
+        assertThat(client.getAllFlavours().size(), is(4));
+        assertThat(client.getAllFlavours(),
+            hasItems("Vanilla", "Chocolate", "Hazelnut", "Cappuccino"));
     }
 }

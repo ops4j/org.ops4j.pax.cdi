@@ -152,10 +152,6 @@ public class BundleScopeContext implements Context {
     }
 
     public CreationalContext<?> getCreationalContext() {
-        BeanMap beanMap = getBeanMap(null);
-        if (beanMap == null) {
-            return null;
-        }
-        return beanMap.getCreationalContext();
+        return beanManager.createCreationalContext(null);
     }
 }

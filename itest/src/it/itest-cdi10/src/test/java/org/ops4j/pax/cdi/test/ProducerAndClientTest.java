@@ -92,7 +92,7 @@ public class ProducerAndClientTest {
 
     @Test
     public void checkMultipleInstances() throws InterruptedException {
-        assertThat(client.getAllFlavours().size(), is(3));
-        assertThat(client.getAllFlavours(), hasItems("Vanilla", "Chocolate", "Hazelnut"));
+        assertThat(client.getAllFlavours().size(), is(4));
+        assertThat(client.getAllFlavours(), hasItems("Vanilla", "Chocolate", "Hazelnut", "Cappuccino"));
     }
 }

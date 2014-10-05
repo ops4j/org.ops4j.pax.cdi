@@ -30,23 +30,30 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 
+import org.ops4j.pax.cdi.api.BundleScoped;
 import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.PrototypeScoped;
 import org.ops4j.pax.cdi.api.ServiceScoped;
 import org.ops4j.pax.cdi.extension.impl.client.OsgiInjectionTarget;
 import org.ops4j.pax.cdi.extension.impl.client.OsgiServiceBean;
 import org.ops4j.pax.cdi.extension.impl.component.ComponentLifecycleManager;
 import org.ops4j.pax.cdi.extension.impl.component.ComponentRegistry;
 import org.ops4j.pax.cdi.extension.impl.context.BundleScopeContext;
+import org.ops4j.pax.cdi.extension.impl.context.PrototypeScopeContext;
 import org.ops4j.pax.cdi.extension.impl.context.ServiceContext;
+import org.ops4j.pax.cdi.extension.impl.context.ServiceScopedLiteral;
+import org.ops4j.pax.cdi.extension.impl.util.AnnotatedTypeWrapper;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.osgi.framework.ServiceException;
 import org.slf4j.Logger;
@@ -92,6 +99,33 @@ public class OsgiExtension implements Extension {
         event.addAnnotatedType(manager.createAnnotatedType(BundleContextProducer.class));
         event.addAnnotatedType(manager.createAnnotatedType(ComponentLifecycleManager.class));
         event.addScope(ServiceScoped.class, false, false);
+    }
+
+    public <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> event) {
+        final AnnotatedType<T> type = event.getAnnotatedType();
+
+        // do nothing if type is not an OSGi service
+        if (type.getAnnotation(OsgiServiceProvider.class) == null) {
+            return;
+        }
+
+        // do nothing if type has one of the three OSGi scopes
+        if (type.getAnnotation(PrototypeScoped.class) != null) {
+            return;
+        }
+
+        if (type.getAnnotation(BundleScoped.class) != null) {
+            return;
+        }
+
+        if (type.getAnnotation(ServiceScoped.class) != null) {
+            return;
+        }
+
+
+        // add @ServiceScoped annotation
+        AnnotatedTypeWrapper<T> wrappedType = new AnnotatedTypeWrapper<T>(type, new ServiceScopedLiteral());
+        event.setAnnotatedType(wrappedType);
     }
 
     /**
@@ -174,6 +208,8 @@ public class OsgiExtension implements Extension {
         event.addContext(serviceContext);
         BundleScopeContext bundleScopeContext = new BundleScopeContext(beanManager);
         event.addContext(bundleScopeContext);
+        PrototypeScopeContext prototypeScopeContext = new PrototypeScopeContext(beanManager);
+        event.addContext(prototypeScopeContext);
         for (Type type : typeToIpMap.keySet()) {
             if (isInstance(type)) {
                 // handled by OsgiInjectionTarget
