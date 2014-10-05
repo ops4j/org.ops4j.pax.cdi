@@ -77,6 +77,27 @@
         </dependency>
 
         <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample5</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample5-client1</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample5-client2</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
             <artifactId>pax-cdi-extension</artifactId>
             <version>${project.version}</version>
