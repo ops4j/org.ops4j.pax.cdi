@@ -55,7 +55,6 @@ import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
 import org.ops4j.pax.cdi.extension.impl.context.SingletonScopedLiteral;
 import org.ops4j.pax.cdi.extension.impl.util.AnnotatedTypeWrapper;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
-import org.osgi.framework.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -234,15 +233,13 @@ public class OsgiExtension implements Extension {
             if (!registeredBeans.contains(qualifier)) {
                 log.debug("adding an OSGi service bean {} for {}", type, ip);
 
-                if (qualifier.dynamic() || InjectionPointOsgiUtils.isServiceAvailable(ip)) {
-                    event.addBean(new OsgiServiceBean(ip));
-                    registeredBeans.add(qualifier);
-                }
-                else {
-                    String msg = "no matching service reference for injection point " + ip;
-                    event.addDefinitionError(new ServiceException(msg,
-                        ServiceException.UNREGISTERED));
-                    continue;
+                event.addBean(new OsgiServiceBean(ip));
+                registeredBeans.add(qualifier);
+
+                if (!qualifier.dynamic()) {
+                    if (!componentRegistry.isComponent(ip.getBean())) {
+                        componentRegistry.addNonComponentDependency(ip);
+                    }
                 }
             }
         }

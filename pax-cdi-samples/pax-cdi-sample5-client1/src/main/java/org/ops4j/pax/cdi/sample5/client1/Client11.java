@@ -33,27 +33,27 @@ import org.ops4j.pax.cdi.sample5.SingletonScopedService;
 public class Client11 implements Client {
 
     @Inject
-    @OsgiService(dynamic = true)
+    @OsgiService
     private SingletonScopedService singletonScopedService1;
 
     @Inject
-    @OsgiService(dynamic = true)
+    @OsgiService
     private SingletonScopedService singletonScopedService2;
 
     @Inject
-    @OsgiService(dynamic = true)
+    @OsgiService
     private BundleScopedService bundleScopedService1;
 
     @Inject
-    @OsgiService(dynamic = true)
+    @OsgiService
     private BundleScopedService bundleScopedService2;
 
     @Inject
-    @OsgiService(dynamic = true)
+    @OsgiService
     private PrototypeScopedService prototypeScopedService1;
 
     @Inject
-    @OsgiService(dynamic = true)
+    @OsgiService
     private PrototypeScopedService prototypeScopedService2;
 
     @Override

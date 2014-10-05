@@ -20,6 +20,7 @@ package org.ops4j.pax.cdi.extension.impl.component;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Set;
@@ -28,15 +29,20 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
+import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.Properties;
 import org.ops4j.pax.cdi.api.Property;
-import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
 import org.ops4j.pax.cdi.extension.impl.context.ServiceFactoryBuilder;
+import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
+import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceException;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,6 +101,33 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
                 }
                 descriptor.start();
             }
+        }
+
+        verifyRequiredNonComponentDependencies();
+    }
+
+    private void verifyRequiredNonComponentDependencies() {
+        for (InjectionPoint ip : componentRegistry.getNonComponentDependencies()) {
+            verifyRequiredDependency(ip);
+        }
+    }
+
+    private void verifyRequiredDependency(InjectionPoint ip) {
+        BundleContext bc = InjectionPointOsgiUtils.getBundleContext(ip);
+        OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
+        Type serviceType = ip.getType();
+        Class<?> klass = (Class<?>) serviceType;
+        String filter = InjectionPointOsgiUtils.getFilter(klass, qualifier);
+        try {
+            Collection<?> serviceReferences = bc.getServiceReferences(klass, filter);
+            if (serviceReferences.isEmpty()) {
+                String msg = "no matching service reference for injection point " + ip;
+                throw new ServiceException(msg,ServiceException.UNREGISTERED);
+            }
+        }
+        catch (InvalidSyntaxException e) {
+            String msg = "invalid filter syntax: " + filter;
+            throw new ServiceException(msg,ServiceException.UNSPECIFIED);
         }
     }
 

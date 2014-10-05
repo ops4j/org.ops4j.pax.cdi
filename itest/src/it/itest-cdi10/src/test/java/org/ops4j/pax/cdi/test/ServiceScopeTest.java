@@ -1,6 +1,7 @@
 package org.ops4j.pax.cdi.test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
@@ -69,14 +70,15 @@ public class ServiceScopeTest {
 
     @Test
     public void checkBundleScope() {
-        assertThat(client11.getBundleScoped1().getNumber(), is(1));
-        assertThat(client11.getBundleScoped2().getNumber(), is(1));
-        assertThat(client12.getBundleScoped1().getNumber(), is(1));
-        assertThat(client12.getBundleScoped2().getNumber(), is(1));
-        assertThat(client21.getBundleScoped1().getNumber(), is(2));
-        assertThat(client21.getBundleScoped2().getNumber(), is(2));
-        assertThat(client22.getBundleScoped1().getNumber(), is(2));
-        assertThat(client22.getBundleScoped2().getNumber(), is(2));
+        assertThat(client11.getBundleScoped1().getNumber(), is(client11.getBundleScoped2().getNumber()));
+        assertThat(client12.getBundleScoped1().getNumber(), is(client12.getBundleScoped2().getNumber()));
+        assertThat(client11.getBundleScoped1().getNumber(), is(client12.getBundleScoped1().getNumber()));
+
+        assertThat(client11.getBundleScoped1().getNumber(), is(not(client21.getBundleScoped1().getNumber())));
+
+        assertThat(client21.getBundleScoped1().getNumber(), is(client21.getBundleScoped2().getNumber()));
+        assertThat(client22.getBundleScoped1().getNumber(), is(client22.getBundleScoped2().getNumber()));
+        assertThat(client21.getBundleScoped1().getNumber(), is(client22.getBundleScoped1().getNumber()));
     }
 
     @Test
@@ -92,5 +94,4 @@ public class ServiceScopeTest {
         numbers.add(client22.getPrototypeScoped2().getNumber());
         assertThat(numbers.size(), is(8));
     }
-
 }

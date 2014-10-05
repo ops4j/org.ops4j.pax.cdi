@@ -19,6 +19,7 @@
 package org.ops4j.pax.cdi.extension.impl.component;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,6 +46,8 @@ public class ComponentRegistry {
     private Map<Bean<?>, ComponentDescriptor<?>> descriptors = new HashMap<Bean<?>, ComponentDescriptor<?>>();
 
     private BundleContext bundleContext;
+
+    private Set<InjectionPoint> nonComponentDependencies = new HashSet<InjectionPoint>();
 
 
     public ComponentRegistry(int dummy) {
@@ -102,5 +105,21 @@ public class ComponentRegistry {
      */
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
+    }
+
+    public void addNonComponentDependency(InjectionPoint ip) {
+        nonComponentDependencies.add(ip);
+    }
+
+
+    /**
+     * @return the nonComponentDependencies
+     */
+    public Set<InjectionPoint> getNonComponentDependencies() {
+        return nonComponentDependencies;
+    }
+
+    public boolean isComponent(Bean<?> bean) {
+        return descriptors.containsKey(bean);
     }
 }
