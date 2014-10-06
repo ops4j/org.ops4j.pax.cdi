@@ -48,11 +48,15 @@ public class BeanBundleImpl {
     @Inject
     private ComponentLifecycleManager componentLifecycleManager;
 
+    @Inject
+    private ServiceEventBridge serviceEventBridge;
+
     /**
      * Register OSGi services when the bean is initialized
      */
     public void onInitialized(@Observes ContainerInitialized event) {
         log.debug("onInitialized {}", bundleContext.getBundle());
+        serviceEventBridge.start();
         componentLifecycleManager.start();
     }
 
@@ -63,5 +67,6 @@ public class BeanBundleImpl {
     public void onDestroy() {
         log.debug("onDestroy {}", bundleContext.getBundle());
         componentLifecycleManager.stop();
+        serviceEventBridge.stop();
     }
 }

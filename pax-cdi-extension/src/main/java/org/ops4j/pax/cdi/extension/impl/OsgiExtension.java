@@ -95,6 +95,7 @@ public class OsgiExtension implements Extension {
         log.debug("beforeBeanDiscovery");
         event.addAnnotatedType(manager.createAnnotatedType(BeanBundleImpl.class));
         event.addAnnotatedType(manager.createAnnotatedType(BundleEventBridge.class));
+        event.addAnnotatedType(manager.createAnnotatedType(ServiceEventBridge.class));
         event.addAnnotatedType(manager.createAnnotatedType(BundleContextProducer.class));
         event.addAnnotatedType(manager.createAnnotatedType(ComponentLifecycleManager.class));
         event.addScope(SingletonScoped.class, false, false);
