@@ -23,6 +23,7 @@ import java.lang.reflect.Type;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.ops4j.pax.cdi.api.OsgiService;
+import org.ops4j.pax.cdi.extension.impl.compat.PrototypeScopeUtils;
 import org.ops4j.pax.swissbox.tracker.ServiceLookup;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
@@ -33,14 +34,14 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utilities for finding OSGi objects for a given CDI injection point.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public class InjectionPointOsgiUtils {
 
     private static Logger log = LoggerFactory.getLogger(InjectionPointOsgiUtils.class);
-    
+
 
     /** Hidden constructor of utility class. */
     private InjectionPointOsgiUtils() {
@@ -67,9 +68,9 @@ public class InjectionPointOsgiUtils {
         String filter = getFilter(klass, os);
         int timeout = os.timeout() == -1 ? 1 : os.timeout();
         ServiceReference<?> serviceRef = ServiceLookup.getServiceReference(bc, klass.getName(), timeout, filter);
-        return bc.getServiceObjects(serviceRef).getService();
+        return PrototypeScopeUtils.createServiceObjectsWrapper(bc, serviceRef).getService();
     }
-    
+
     public static Object lookupService(InjectionPoint ip) {
         Class<?> klass = (Class<?>) ip.getType();
         OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
@@ -88,13 +89,13 @@ public class InjectionPointOsgiUtils {
         log.debug("filter = " + filter);
         return filter;
     }
-    
+
     public static String getFilter(InjectionPoint ip) {
         Class<?> klass = getServiceType(ip);
         OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
         return getFilter(klass, os);
     }
-    
+
     public static Type getInstanceType(InjectionPoint ip) {
         if (ip.getType() instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) ip.getType();
@@ -106,15 +107,15 @@ public class InjectionPointOsgiUtils {
         }
         return null;
     }
-    
+
     public static Class<?> getServiceType(InjectionPoint ip) {
         Type serviceType = getInstanceType(ip);
         if (serviceType == null) {
             serviceType = ip.getType();
         }
-        return (Class<?>) serviceType;        
+        return (Class<?>) serviceType;
     }
-    
+
 
     public static BundleContext getBundleContext(InjectionPoint ip) {
         return getBundleContext(ip.getMember().getDeclaringClass());

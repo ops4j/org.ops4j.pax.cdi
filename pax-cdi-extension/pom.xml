@@ -43,11 +43,7 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.compendium</artifactId>
+            <version>6.0.0</version>
         </dependency>
         
         <dependency>
@@ -78,6 +74,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+                        <Import-Package>org.osgi.framework;version="[1.7,2)", *</Import-Package>
                         <Provide-Capability>
                             org.ops4j.pax.cdi.extension; extension=pax-cdi-extension; version:Version=${version;====;${replace;${project.version};-;.}}
                         </Provide-Capability>

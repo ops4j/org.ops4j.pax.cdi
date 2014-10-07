@@ -20,13 +20,13 @@ package org.ops4j.pax.cdi.sample1.impl;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.ops4j.pax.cdi.api.BundleScoped;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.Properties;
 import org.ops4j.pax.cdi.api.Property;
-import org.ops4j.pax.cdi.api.PrototypeScoped;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
 
-@PrototypeScoped
+@BundleScoped
 @OsgiServiceProvider
 @Properties(@Property(name = "flavour", value = "cappuccino"))
 public class CappuccinoService implements IceCreamService {

@@ -43,7 +43,7 @@ public class ServiceFactoryBuilder {
         Context context = beanManager.getContext(scope);
         if (context instanceof PrototypeScopeContext) {
             PrototypeScopeContext prototypeScopeContext = (PrototypeScopeContext) context;
-            return new PrototypeScopeServiceFactory<S>(prototypeScopeContext, bean);
+            return buildPrototypeScopeServiceFactory(prototypeScopeContext, bean);
         }
         if (context instanceof BundleScopeContext) {
             BundleScopeContext bundleScopeContext = (BundleScopeContext) context;
@@ -55,5 +55,9 @@ public class ServiceFactoryBuilder {
             return singletonContext.get(bean, cc);
         }
         throw new IllegalStateException(bean.getBeanClass() + " does not have an OSGi compatible scope");
+    }
+    
+    protected <S> Object buildPrototypeScopeServiceFactory(PrototypeScopeContext context, Bean<S> bean) {
+        throw new IllegalStateException("prototype scope not supported");
     }
 }

@@ -20,6 +20,7 @@ package org.ops4j.pax.cdi.extension.impl.client;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.ops4j.pax.cdi.extension.impl.compat.PrototypeScopeUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -49,7 +50,7 @@ public class OsgiServiceIterator<T> implements Iterator<T> {
     @Override
     public T next() {
         ServiceReference<T> ref = refIt.next();
-        return bc.getServiceObjects(ref).getService();
+        return PrototypeScopeUtils.createServiceObjectsWrapper(bc, ref).getService();
     }
 
     @Override

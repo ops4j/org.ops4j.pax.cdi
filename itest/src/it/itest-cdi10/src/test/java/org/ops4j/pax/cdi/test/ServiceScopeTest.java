@@ -30,6 +30,7 @@ import java.util.HashSet;
 
 import javax.inject.Inject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample5.Client;
@@ -43,6 +44,7 @@ import org.ops4j.pax.exam.util.Filter;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
+@Ignore
 public class ServiceScopeTest {
 
     @Inject
