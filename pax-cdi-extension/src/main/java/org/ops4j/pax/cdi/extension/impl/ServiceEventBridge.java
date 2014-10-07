@@ -62,8 +62,10 @@ public class ServiceEventBridge implements ServiceListener {
 
             case ServiceEvent.UNREGISTERING:
                 return new ServiceRemovedLiteral();
+
+            default:
+                return null;
         }
-        return null;
     }
 
     public void start() {
