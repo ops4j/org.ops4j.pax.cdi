@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.test;
+package org.ops4j.pax.cdi.test.osgi6;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -30,7 +30,6 @@ import java.util.HashSet;
 
 import javax.inject.Inject;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample5.Client;
@@ -44,7 +43,6 @@ import org.ops4j.pax.exam.util.Filter;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-@Ignore
 public class ServiceScopeTest {
 
     @Inject

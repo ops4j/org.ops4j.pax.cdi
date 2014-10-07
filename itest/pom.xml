@@ -26,6 +26,7 @@
                 <module>src/it/itest-cdi10</module>
                 <module>src/it/itest-karaf</module>
                 <module>src/it/itest-jetty</module>
+                <module>src/it/itest-osgi6</module>
             </modules>
         </profile>
 
@@ -100,6 +101,9 @@
                                         <profile>owb1</profile>
                                     </profiles>
                                     <cloneProjectsTo>${project.build.directory}/felix-owb1</cloneProjectsTo>
+                                    <pomExcludes>
+                                        <pomExclude>itest-osgi6/pom.xml</pomExclude>
+                                    </pomExcludes>
                                 </configuration>
                             </execution>
                             <execution>
@@ -115,6 +119,7 @@
                                     <cloneProjectsTo>${project.build.directory}/felix-weld1</cloneProjectsTo>
                                     <pomExcludes>
                                         <pomExclude>itest-karaf/pom.xml</pomExclude>
+                                        <pomExclude>itest-osgi6/pom.xml</pomExclude>
                                     </pomExcludes>
                                 </configuration>
                             </execution>
@@ -131,6 +136,7 @@
                                     <cloneProjectsTo>${project.build.directory}/felix-weld2</cloneProjectsTo>
                                     <pomExcludes>
                                         <pomExclude>itest-karaf/pom.xml</pomExclude>
+                                        <pomExclude>itest-osgi6/pom.xml</pomExclude>
                                     </pomExcludes>
                                 </configuration>
                             </execution>
