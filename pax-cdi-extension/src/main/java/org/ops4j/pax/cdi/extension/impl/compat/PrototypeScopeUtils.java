@@ -29,6 +29,11 @@ public class PrototypeScopeUtils {
 
     private static Class<?> wrapperClass;
 
+
+    private PrototypeScopeUtils() {
+        // Hidden utility class constructor
+    }
+
     @SuppressWarnings("unchecked")
     public static <S> ServiceObjectsWrapper<S> createServiceObjectsWrapper(BundleContext bc,
         ServiceReference<S> serviceReference) {

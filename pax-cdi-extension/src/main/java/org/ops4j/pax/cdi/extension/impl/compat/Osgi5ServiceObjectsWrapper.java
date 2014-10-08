@@ -42,8 +42,8 @@ public class Osgi5ServiceObjectsWrapper<S> implements ServiceObjectsWrapper<S> {
     }
 
     @Override
-    public void init(BundleContext bc, ServiceReference<S> serviceReference) {
+    public void init(BundleContext bc, ServiceReference<S> serviceRef) {
         this.bundleContext = bc;
-        this.serviceReference = serviceReference;
+        this.serviceReference = serviceRef;
     }
 }
