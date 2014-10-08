@@ -1,5 +1,3 @@
-package org.ops4j.pax.cdi.sample6.impl;
-
 /*
  * Copyright 2014 Harald Wellmann.
  *
@@ -17,6 +15,8 @@ package org.ops4j.pax.cdi.sample6.impl;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.ops4j.pax.cdi.sample6.impl;
+
 import javax.inject.Inject;
 
 import org.ops4j.pax.cdi.api.OsgiService;
