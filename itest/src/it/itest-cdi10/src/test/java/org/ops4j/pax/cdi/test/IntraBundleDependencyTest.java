@@ -22,7 +22,7 @@ import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 import javax.inject.Inject;
@@ -49,8 +49,7 @@ public class IntraBundleDependencyTest {
         return options(
             regressionDefaults(),
 
-            //workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample6"),
-            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample6", "0.8.0-SNAPSHOT"),
+            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample6"),
 
             paxCdiProviderAdapter(),
             cdiProviderBundles());
