@@ -26,7 +26,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.util.TypeLiteral;
 
-import org.ops4j.lang.Ops4jException;
+import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -96,7 +96,7 @@ public class OsgiServiceInstance<T> implements Instance<T> {
             return refs;
         }
         catch (InvalidSyntaxException exc) {
-            throw new Ops4jException(exc);
+            throw Exceptions.unchecked(exc);
         }
     }
 

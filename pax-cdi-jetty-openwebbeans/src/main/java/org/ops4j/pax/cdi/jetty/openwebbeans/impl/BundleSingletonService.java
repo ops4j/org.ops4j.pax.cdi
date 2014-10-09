@@ -14,7 +14,7 @@
  *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * Derived from org.apache.webbeans.corespi.DefaultSingletonService.
  */
 package org.ops4j.pax.cdi.jetty.openwebbeans.impl;
@@ -31,14 +31,14 @@ import org.apache.webbeans.spi.ContainerLifecycle;
 import org.apache.webbeans.spi.ContextsService;
 import org.apache.webbeans.spi.SingletonService;
 import org.apache.webbeans.util.Asserts;
-import org.ops4j.lang.Ops4jException;
+import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BundleSingletonService implements SingletonService<WebBeansContext> {
-    
+
     private static Logger log = LoggerFactory.getLogger(BundleSingletonService.class);
 
     /**
@@ -46,6 +46,7 @@ public class BundleSingletonService implements SingletonService<WebBeansContext>
      */
     private final Map<Long, WebBeansContext> singletonMap = new HashMap<Long, WebBeansContext>();
 
+    @Override
     public WebBeansContext get(Object key) {
         Bundle bundle = toBundle(key);
         long bundleId = bundle.getBundleId();
@@ -67,21 +68,19 @@ public class BundleSingletonService implements SingletonService<WebBeansContext>
                     props.load(getClass().getResourceAsStream(resource));
                 }
                 catch (IOException exc) {
-                    throw new Ops4jException(exc);
+                    throw Exceptions.unchecked(exc);
                 }
 
                 webBeansContext = new WebBeansContext(initialServices, props);
                 singletonMap.put(bundleId, webBeansContext);
             }
-
             return webBeansContext;
-
         }
     }
 
     /**
      * Clear all deployment instances when the application is undeployed.
-     * 
+     *
      * @param classLoader
      *            of the deployment
      */
@@ -102,7 +101,7 @@ public class BundleSingletonService implements SingletonService<WebBeansContext>
      * Assumes that the key is a bundle classloader and returns the corresponding bundle. The ugly
      * reflection hack is due to the fact that Pax Web 3.0.0.M1 embeds pax-swissbox-core instead of
      * importing it, whereas Pax CDI imports the class, resulting in a mismatch.
-     * 
+     *
      * @param key
      * @return bundle
      */

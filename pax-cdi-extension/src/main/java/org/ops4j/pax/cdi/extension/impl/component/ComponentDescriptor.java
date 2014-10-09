@@ -24,8 +24,8 @@ import java.util.List;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.ops4j.lang.Ops4jException;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
+import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.ops4j.pax.swissbox.lifecycle.AbstractLifecycle;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
@@ -90,7 +90,7 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
             numUnsatisfiedDependencies++;
         }
         catch (InvalidSyntaxException exc) {
-            throw new Ops4jException(exc);
+            throw Exceptions.unchecked(exc);
         }
     }
 

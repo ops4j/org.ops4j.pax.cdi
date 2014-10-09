@@ -40,10 +40,10 @@ import javax.inject.Singleton;
 import org.apache.webbeans.config.WebBeansContext;
 import org.apache.webbeans.spi.ContainerLifecycle;
 import org.apache.webbeans.spi.ContextsService;
-import org.ops4j.lang.Ops4jException;
 import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
+import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,9 +51,9 @@ import org.slf4j.LoggerFactory;
 /**
  * {@link CdiContainer} implementation wrapping an Apache OpenWebBeans container, represented by a
  * {@link WebBeansContext}.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
 
@@ -73,7 +73,7 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
 
     /**
      * Construct a CDI container for the given extended bundle.
-     * 
+     *
      * @param ownBundle
      *            bundle containing this class
      * @param extendedBundle
@@ -90,7 +90,7 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
     /**
      * Creates and starts a WebBeansContext for the given bundle using an appropriate class loader
      * as TCCL.
-     * 
+     *
      * @param bundle
      * @return
      */
@@ -111,13 +111,13 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
         }
         // CHECKSTYLE:SKIP
         catch (Exception exc) {
-            throw new Ops4jException(exc);
+            throw Exceptions.unchecked(exc);
         }
     }
 
     /**
      * Starts all CDI contexts.
-     * 
+     *
      * @param webBeansContext
      */
     private void startContexts(WebBeansContext webBeansContext) {
@@ -167,7 +167,7 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
         }
         // CHECKSTYLE:SKIP
         catch (Exception exc) {
-            throw new Ops4jException(exc);
+            throw Exceptions.unchecked(exc);
         }
     }
 
