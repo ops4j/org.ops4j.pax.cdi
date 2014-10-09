@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
@@ -30,6 +31,7 @@ import static org.ops4j.pax.exam.CoreOptions.options;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
@@ -58,6 +60,9 @@ public class SingleBundleTest {
     private CdiContainer container;
 
     @Inject
+    private BeanManager beanManager;
+
+    @Inject
     private BundleContext bc;
 
     @Configuration
@@ -66,14 +71,12 @@ public class SingleBundleTest {
             regressionDefaults(),
 
             workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
-            paxCdiProviderAdapter(),            
+            paxCdiProviderAdapter(),
             cdiProviderBundles());
     }
 
     @Test
     public void checkContainerFactory() {
-//        assertThat(containerFactory.getProviderName(),
-//            is("org.apache.webbeans.config.WebBeansContext"));
         assertThat(containerFactory.getContainers().size(), is(1));
 
         CdiContainer cdiContainer = containerFactory.getContainers().iterator().next();
@@ -104,6 +107,8 @@ public class SingleBundleTest {
     @Test
     public void checkBeanManager() {
         assertNotNull(container.getBeanManager());
+        assertNotNull(beanManager);
+        assertSame(beanManager, container.getBeanManager());
     }
 
     @Test

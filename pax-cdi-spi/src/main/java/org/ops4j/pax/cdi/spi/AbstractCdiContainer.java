@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract base class for {@link CdiContainer} implementations.
- * 
+ *
  * @author Harald Wellmann
  */
 public abstract class AbstractCdiContainer implements CdiContainer {
@@ -50,7 +50,8 @@ public abstract class AbstractCdiContainer implements CdiContainer {
 
     private Bundle bundle;
     private CdiContainerType containerType;
-    private ServiceRegistration<CdiContainer> registration;
+    private ServiceRegistration<CdiContainer> cdiContainerReg;
+    private ServiceRegistration<BeanManager> beanManagerReg;
     private boolean started;
 
     /**
@@ -98,16 +99,21 @@ public abstract class AbstractCdiContainer implements CdiContainer {
             log.info("Stopping CDI container for bundle {}", getBundle());
             BeanBundles.removeBundle(getContextClassLoader(), getBundle());
             doStop();
-            if (registration != null) {
-                try {
-                    registration.unregister();
-                }
-                // CHECKSTYLE:SKIP
-                catch (Exception e) {
-                    // Ignore
-                }
-            }
+            unregister(cdiContainerReg);
+            unregister(beanManagerReg);
             started = false;
+        }
+    }
+
+    private <S> void unregister(ServiceRegistration<S> registration) {
+        if (registration != null) {
+            try {
+                registration.unregister();
+            }
+            // CHECKSTYLE:SKIP
+            catch (Exception e) {
+                // Ignore
+            }
         }
     }
 
@@ -118,7 +124,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     /**
      * Builds the composite class loader for the given bundle, also including the bundle containing
      * this class and all extension bundles.
-     * 
+     *
      * @param bundle
      */
     protected void buildContextClassLoader() {
@@ -137,7 +143,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
 
     protected void finishStartup() {
         try {
-            registration = doWithClassLoader(getContextClassLoader(),
+            cdiContainerReg = doWithClassLoader(getContextClassLoader(),
                 new Callable<ServiceRegistration<CdiContainer>>() {
 
                     @Override
@@ -156,6 +162,9 @@ public abstract class AbstractCdiContainer implements CdiContainer {
                         ServiceRegistration<CdiContainer> reg = bc.registerService(
                             CdiContainer.class, AbstractCdiContainer.this, props);
 
+                        beanManagerReg = bc.registerService(
+                            BeanManager.class, AbstractCdiContainer.this.getBeanManager(), props);
+
                         // fire ServicesPublished event
                         beanManager.fireEvent(new ServicesPublished());
 
@@ -170,10 +179,12 @@ public abstract class AbstractCdiContainer implements CdiContainer {
         }
     }
 
+    @Override
     public Bundle getBundle() {
         return bundle;
     }
 
+    @Override
     public CdiContainerType getContainerType() {
         return containerType;
     }

@@ -36,10 +36,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link CdiContainerFactory} implementation based on Apache OpenWebBeans.
- * 
+ * {@link CdiContainerFactory} implementation based on Weld.
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public class WeldCdiContainerFactory implements CdiContainerFactory {
 
@@ -51,11 +51,11 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
 
     public void activate(BundleContext bc) {
         this.bundleContext = bc;
-        SingletonProvider.initialize(new RegistrySingletonProvider());        
+        SingletonProvider.initialize(new RegistrySingletonProvider());
     }
 
     public void deactivate() {
-        SingletonProvider.reset();        
+        SingletonProvider.reset();
     }
 
     @Override
