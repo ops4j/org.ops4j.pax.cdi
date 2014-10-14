@@ -23,7 +23,7 @@
         <pax.exam.version>4.2.0</pax.exam.version>
         <pax.jdbc.version>0.3.0</pax.jdbc.version>
         <pax.jpa.version>0.3.0</pax.jpa.version>
-        <pax.swissbox.version>1.7.1</pax.swissbox.version>
+        <pax.swissbox.version>1.8.0</pax.swissbox.version>
         <pax.url.version>2.1.0</pax.url.version>
         <pax.web.version>4.0.0</pax.web.version>
         <slf4j.version>1.6.4</slf4j.version>
