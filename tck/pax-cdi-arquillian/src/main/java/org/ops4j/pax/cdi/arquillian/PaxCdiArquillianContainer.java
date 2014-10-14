@@ -194,13 +194,12 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
             frameworkProperty("org.osgi.framework.system.packages").value(props.get("org.osgi.framework.system.packages")),
 
 
-            mavenBundle("org.ops4j.base", "ops4j-base-lang", "1.4.0"),
-            mavenBundle("org.ops4j.base", "ops4j-base-spi", "1.4.0"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-core", "1.7.0"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-extender", "1.7.0"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-framework", "1.7.0"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-lifecycle", "1.7.0"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker", "1.7.0"),
+            mavenBundle("org.ops4j.base", "ops4j-base", "1.5.0"),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-core", "1.8.0"),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-extender", "1.8.0"),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-framework", "1.8.0"),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-lifecycle", "1.8.0"),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker", "1.8.0"),
             mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
             mavenBundle("org.apache.geronimo.specs", "geronimo-atinject_1.0_spec").versionAsInProject(),
 
