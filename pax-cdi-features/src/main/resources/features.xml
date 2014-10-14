@@ -163,8 +163,8 @@
     <feature name="deltaspike-jpa" description="Apache Deltaspike jpa support" version="${deltaspike.version}"
         resolver="(obr)">
         <feature version="${deltaspike.version}">deltaspike-core</feature>
-        <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-monitors/1.4.0</bundle>
-        <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-io/1.4.0</bundle>
+        <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-monitors/${ops4j.base.version}</bundle>
+        <bundle dependency="true">mvn:org.ops4j.base/ops4j-base-io/${ops4j.base.version}</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jpa_2.0_spec/1.1</bundle>
         <bundle dependency="true">mvn:org.osgi/org.osgi.enterprise/4.2.0</bundle>
