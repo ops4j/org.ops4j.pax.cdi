@@ -137,7 +137,7 @@
 
     <feature name="pax-cdi-1.2-web-weld" description="Weld Web CDI 1.2 support" version="${project.version}"
         resolver="(obr)">
-        <feature version="${project.version}">pax-cdi-1.1-web</feature>
+        <feature version="${project.version}">pax-cdi-1.2-web</feature>
         <feature version="${project.version}">pax-cdi-1.2-weld</feature>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-web-weld/${project.version}</bundle>
     </feature>
