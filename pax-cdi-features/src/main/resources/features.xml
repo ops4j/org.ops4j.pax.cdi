@@ -2,7 +2,7 @@
 <features name="org.ops4j.pax.cdi-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
 
     <feature name="pax-cdi" description="Provide CDI support" version="${project.version}"
-        resolver="(obr)">
+             resolver="(obr)">
         <feature>scr</feature>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jcdi_1.0_spec/1.0</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0</bundle>
@@ -21,7 +21,7 @@
     </feature>
 
     <feature name="pax-cdi-1.1" description="Provide CDI 1.1 support" version="${project.version}"
-        resolver="(obr)">
+             resolver="(obr)">
         <feature>scr</feature>
         <bundle dependency="true">mvn:javax.interceptor/javax.interceptor-api/1.2</bundle>
         <bundle dependency="true">mvn:javax.enterprise/cdi-api/1.1-20130918</bundle>
@@ -40,7 +40,7 @@
     </feature>
 
     <feature name="pax-cdi-1.2" description="Provide CDI 1.2 support" version="${project.version}"
-        resolver="(obr)">
+             resolver="(obr)">
         <feature>scr</feature>
         <bundle dependency="true">mvn:javax.interceptor/javax.interceptor-api/1.2</bundle>
         <bundle dependency="true">mvn:javax.enterprise/cdi-api/1.2</bundle>
@@ -59,14 +59,14 @@
     </feature>
 
     <feature name="pax-cdi-weld" description="Weld CDI support" version="${project.version}"
-        resolver="(obr)">
+             resolver="(obr)">
         <feature version="${project.version}">pax-cdi</feature>
         <bundle dependency="true">mvn:org.jboss.weld/weld-osgi-bundle/${weld.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-weld/${project.version}</bundle>
     </feature>
 
     <feature name="pax-cdi-1.1-weld" description="Weld CDI 1.1 support" version="${project.version}"
-        resolver="(obr)">
+             resolver="(obr)">
         <feature version="${project.version}">pax-cdi-1.1</feature>
         <bundle dependency="true">mvn:org.jboss.weld/weld-osgi-bundle/2.1.2.Final</bundle>
         <bundle>mvn:org.jboss.logging/jboss-logging/3.1.3.GA</bundle>
@@ -75,7 +75,7 @@
     </feature>
 
     <feature name="pax-cdi-1.2-weld" description="Weld CDI 1.2 support" version="${project.version}"
-        resolver="(obr)">
+             resolver="(obr)">
         <feature version="${project.version}">pax-cdi-1.2</feature>
         <bundle dependency="true">mvn:org.jboss.weld/weld-osgi-bundle/2.2.4.Final</bundle>
         <bundle>mvn:org.jboss.logging/jboss-logging/3.1.3.GA</bundle>
@@ -84,7 +84,7 @@
     </feature>
 
     <feature name="pax-cdi-openwebbeans" description="OpenWebBeans CDI support" version="${project.version}"
-        resolver="(obr)">
+             resolver="(obr)">
         <feature version="${project.version}">pax-cdi</feature>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-validation_1.0_spec/1.1</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
@@ -98,7 +98,7 @@
     </feature>
 
     <feature name="pax-cdi-web" description="Web CDI support" version="${project.version}"
-        resolver="(obr)">
+             resolver="(obr)">
         <feature version="${project.version}">pax-cdi</feature>
         <feature>war</feature>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-servlet_3.0_spec/1.0</bundle>
@@ -106,7 +106,7 @@
     </feature>
 
     <feature name="pax-cdi-1.1-web" description="Web CDI 1.1 support" version="${project.version}"
-        resolver="(obr)">
+             resolver="(obr)">
         <feature version="${project.version}">pax-cdi-1.1</feature>
         <feature>war</feature>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-servlet_3.0_spec/1.0</bundle>
@@ -114,7 +114,7 @@
     </feature>
 
     <feature name="pax-cdi-1.2-web" description="Web CDI 1.2 support" version="${project.version}"
-        resolver="(obr)">
+             resolver="(obr)">
         <feature version="${project.version}">pax-cdi-1.2</feature>
         <feature>war</feature>
         <bundle dependency="true">mvn:javax.servlet/javax.servlet-api/3.1.0</bundle>
@@ -122,28 +122,28 @@
     </feature>
 
     <feature name="pax-cdi-web-weld" description="Weld Web CDI support" version="${project.version}"
-        resolver="(obr)">
+             resolver="(obr)">
         <feature version="${project.version}">pax-cdi-web</feature>
         <feature version="${project.version}">pax-cdi-weld</feature>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-web-weld/${project.version}</bundle>
     </feature>
 
     <feature name="pax-cdi-1.1-web-weld" description="Weld Web CDI 1.1 support" version="${project.version}"
-        resolver="(obr)">
+             resolver="(obr)">
         <feature version="${project.version}">pax-cdi-1.1-web</feature>
         <feature version="${project.version}">pax-cdi-1.1-weld</feature>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-web-weld/${project.version}</bundle>
     </feature>
 
     <feature name="pax-cdi-1.2-web-weld" description="Weld Web CDI 1.2 support" version="${project.version}"
-        resolver="(obr)">
+             resolver="(obr)">
         <feature version="${project.version}">pax-cdi-1.2-web</feature>
         <feature version="${project.version}">pax-cdi-1.2-weld</feature>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-web-weld/${project.version}</bundle>
     </feature>
 
     <feature name="pax-cdi-web-openwebbeans" description="OpenWebBeans Web CDI support"
-        version="${project.version}" resolver="(obr)">
+             version="${project.version}" resolver="(obr)">
         <feature version="${project.version}">pax-cdi-web</feature>
         <feature version="${project.version}">pax-cdi-openwebbeans</feature>
         <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-web/${openwebbeans.version}</bundle>
@@ -151,14 +151,14 @@
     </feature>
 
     <feature name="deltaspike-core" description="Apache Deltaspike core support" version="${deltaspike.version}"
-        resolver="(obr)">
+             resolver="(obr)">
         <feature version="${project.version}">pax-cdi</feature>
         <bundle>mvn:org.apache.deltaspike.core/deltaspike-core-api/${deltaspike.version}</bundle>
         <bundle>mvn:org.apache.deltaspike.core/deltaspike-core-impl/${deltaspike.version}</bundle>
     </feature>
 
     <feature name="deltaspike-jpa" description="Apache Deltaspike jpa support" version="${deltaspike.version}"
-        resolver="(obr)">
+             resolver="(obr)">
         <feature version="${deltaspike.version}">deltaspike-core</feature>
         <bundle dependency="true">mvn:org.ops4j.base/ops4j-base/${ops4j.base.version}</bundle>
         <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
@@ -169,6 +169,19 @@
         <bundle>mvn:org.apache.deltaspike.modules/deltaspike-jpa-module-api/${deltaspike.version}</bundle>
         <bundle>mvn:org.apache.deltaspike.modules/deltaspike-jpa-module-impl/${deltaspike.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi.fragment/pax-cdi-fragment-ds-jpa/${project.version}</bundle>
+    </feature>
+
+    <feature name="picketlink" description="JBoss PicketLink suport" version="${picketlink.version}" resolver="(obr)">
+        <bundle>mvn:org.jboss.logging/jboss-logging/3.1.1.GA</bundle>
+        <bundle>mvn:org.apache.geronimo.specs/geronimo-jpa_2.0_spec/1.1</bundle>
+
+        <bundle>mvn:org.picketlink/picketlink-common/2.7.0-SNAPSHOT</bundle>
+
+        <bundle>mvn:org.picketlink/picketlink-idm-impl/2.7.0-SNAPSHOT</bundle>
+        <bundle>mvn:org.picketlink/picketlink-idm-api/2.7.0-SNAPSHOT</bundle>
+
+        <bundle>mvn:org.picketlink/picketlink-impl/2.7.0-SNAPSHOT</bundle>
+        <bundle>mvn:org.picketlink/picketlink-api/2.7.0-SNAPSHOT</bundle>
     </feature>
 
 </features>
