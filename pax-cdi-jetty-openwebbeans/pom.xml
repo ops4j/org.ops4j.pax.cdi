@@ -114,8 +114,12 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
-                        <Import-Package>javax.servlet.*;version="[2,4)",
-                            javax.faces.*;resolution:=optional, *</Import-Package>
+                        <Import-Package>
+                            org.apache.webbeans.xml, 
+                            javax.servlet.*;version="[2,4)",
+                            javax.faces.*;resolution:=optional, 
+                            *
+                        </Import-Package>
                         <Service-Component>OSGI-INF/*</Service-Component>
                     </instructions>
                 </configuration>
