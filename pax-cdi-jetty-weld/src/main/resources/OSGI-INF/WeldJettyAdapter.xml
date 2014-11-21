@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="WeldJettyAdapter">
-   <implementation class="org.ops4j.pax.cdi.jetty.weld.impl.WeldWebAdapter"/>
-   <service>
-      <provide interface="org.ops4j.pax.cdi.spi.CdiContainerListener"/>
-   </service>
-   <property name="type" type="String" value="web"/>
-</scr:component>
