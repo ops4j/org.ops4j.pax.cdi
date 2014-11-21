@@ -17,6 +17,7 @@
         <jersey.version>1.13</jersey.version>
         <logback.version>1.0.0</logback.version>
         <openwebbeans.version>1.2.6</openwebbeans.version>
+        <openwebbeans15.version>1.5.0-SNAPSHOT</openwebbeans15.version>
         <openjpa.version>2.2.0</openjpa.version>
         <ops4j.base.version>1.5.0</ops4j.base.version>
         <pax.exam.version>4.3.0</pax.exam.version>
@@ -29,7 +30,7 @@
         <weld.api.version>1.2.0.Beta1</weld.api.version>
         <weld.version>1.2.0.Beta1</weld.version>
         <weld2.version>2.2.5.Final</weld2.version>
-        <xbean.version>3.18</xbean.version>
+        <xbean.version>4.1</xbean.version>
 
         <pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
     </properties>
@@ -141,6 +142,12 @@
 
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-jcdi_1.1_spec</artifactId>
+                <version>1.0-alpha-1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-servlet_3.0_spec</artifactId>
                 <version>1.0</version>
             </dependency>
@@ -161,6 +168,12 @@
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-interceptor_1.1_spec</artifactId>
                 <version>1.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-interceptor_1.2_spec</artifactId>
+                <version>1.0-alpha-1</version>
             </dependency>
 
             <dependency>

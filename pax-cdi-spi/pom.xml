@@ -68,6 +68,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+                        <Import-Package>org.apache.xbean*;version="[3.18,5)", *</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

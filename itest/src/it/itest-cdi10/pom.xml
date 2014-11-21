@@ -12,7 +12,7 @@
     <artifactId>itest-cdi10</artifactId>
 
     <name>OPS4J Pax CDI 1.0 Integration Tests</name>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -220,6 +220,12 @@
 
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jcdi_1.1_spec</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jcdi_1.0_spec</artifactId>
             <scope>test</scope>
         </dependency>
@@ -239,6 +245,12 @@
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-validation_1.0_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-interceptor_1.2_spec</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -469,6 +481,55 @@
             </properties>
             <dependencies>
 
+                <dependency>
+                    <groupId>org.ops4j.pax.cdi</groupId>
+                    <artifactId>pax-cdi-web-openwebbeans</artifactId>
+                    <version>${project.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.openwebbeans</groupId>
+                    <artifactId>openwebbeans-web</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                
+                <dependency>
+                    <groupId>org.apache.xbean</groupId>
+                    <artifactId>xbean-asm5-shaded</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+            </dependencies>
+        </profile>
+        <profile>
+            <id>owb15</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <pax.cdi.provider>owb15</pax.cdi.provider>
+            </properties>
+            <dependencies>
+
+                <dependency>
+                    <groupId>org.apache.openwebbeans</groupId>
+                    <artifactId>openwebbeans-web</artifactId>
+                    <version>${openwebbeans15.version}</version>
+                </dependency>
+                
+                <dependency>
+                    <groupId>org.apache.openwebbeans</groupId>
+                    <artifactId>openwebbeans-impl</artifactId>
+                    <version>${openwebbeans15.version}</version>
+                </dependency>
+                
+                <dependency>
+                    <groupId>org.apache.openwebbeans</groupId>
+                    <artifactId>openwebbeans-spi</artifactId>
+                    <version>${openwebbeans15.version}</version>
+                </dependency>
+                
                 <dependency>
                     <groupId>org.ops4j.pax.cdi</groupId>
                     <artifactId>pax-cdi-web-openwebbeans</artifactId>

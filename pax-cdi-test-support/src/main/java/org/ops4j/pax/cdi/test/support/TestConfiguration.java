@@ -50,7 +50,7 @@ public class TestConfiguration {
 
     private static final String JETTY_VERSION = "9.0.7.v20131107";
     private static String paxCdiRoot;
-    
+
     private static boolean consoleEnabled = Boolean.getBoolean("org.ops4j.pax.cdi.console");
 
     private TestConfiguration() {
@@ -86,7 +86,7 @@ public class TestConfiguration {
             systemProperty("logback.configurationFile").value(
                 "file:" + PathUtils.getBaseDir() + "/src/test/resources/logback.xml"),
 
-            
+
             when(consoleEnabled).useOptions(
                 mavenBundle("org.apache.felix", "org.apache.felix.shell.remote", "1.1.2").startLevel(2),
                 mavenBundle("org.apache.felix", "org.apache.felix.gogo.command", "0.14.0").startLevel(2),
@@ -98,7 +98,7 @@ public class TestConfiguration {
                 frameworkProperty("eclipse.consoleLog").value("true"),
                 frameworkProperty("osgi.console.enable.builtin").value("true"),
                 bundle("file:target/org.eclipse.equinox.console.jar").startLevel(2)),
-                
+
 
             // do not treat javax.annotation as system package
             frameworkProperty("org.osgi.framework.system.packages").value(props.get("org.osgi.framework.system.packages")),
@@ -114,8 +114,7 @@ public class TestConfiguration {
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-extender"),
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-extension"),
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-api"),
-            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-spi"),
-            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject());
+            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-spi"));
     }
 
     public static Option cdiProviderSpecificBundles() {
@@ -123,6 +122,9 @@ public class TestConfiguration {
 
             case OWB1:
                 return openWebBeansBundles();
+
+            case OWB15:
+                return openWebBeans15Bundles();
 
             case WELD1:
                 return weldBundles();
@@ -139,6 +141,7 @@ public class TestConfiguration {
         switch (getCdiProvider()) {
 
             case OWB1:
+            case OWB15:
                 return workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-openwebbeans");
 
             case WELD1:
@@ -154,6 +157,7 @@ public class TestConfiguration {
         switch (getCdiProvider()) {
 
             case OWB1:
+            case OWB15:
                 return composite(
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web"),
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web-openwebbeans"),
@@ -178,6 +182,7 @@ public class TestConfiguration {
         switch (getCdiProvider()) {
 
             case OWB1:
+            case OWB15:
                 return composite(
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-servlet"),
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-openwebbeans"),
@@ -201,6 +206,7 @@ public class TestConfiguration {
         switch (getCdiProvider()) {
 
             case OWB1:
+            case OWB15:
                 return composite(
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-jsf").versionAsInProject()
                     );
@@ -225,10 +231,11 @@ public class TestConfiguration {
 
     public static Option openWebBeansBundles() {
         return composite(
+            mavenBundle("org.apache.xbean", "xbean-bundleutils", "3.18"),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-asm5-shaded").versionAsInProject(), //
-            mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(), //
+            mavenBundle("org.apache.xbean", "xbean-asm5-shaded", "3.18"), //
+            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "3.18"), //
             mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-annotation_1.1_spec", "1.0.1"),
             mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec")
@@ -242,10 +249,29 @@ public class TestConfiguration {
             mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject());
     }
 
+    public static Option openWebBeans15Bundles() {
+        return composite(
+            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.1"),
+            mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
+            mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
+            mavenBundle("org.apache.xbean", "xbean-asm5-shaded", "4.1"), //
+            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.1"), //
+            mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),
+            mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec")
+            .versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-validation_1.0_spec")
+                .versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-jcdi_1.1_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.2_spec").versionAsInProject(),
+            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject());
+    }
+
     public static Option weldBundles() {
         return composite(
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-weld"),
-
+            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.1"),
             mavenBundle("ch.qos.cal10n", "cal10n-api", "0.7.4"),
             mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-annotation_1.1_spec", "1.0.1"),
@@ -258,7 +284,7 @@ public class TestConfiguration {
     public static Option weld2Bundles() {
         return composite(
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-weld"),
-
+            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.1"),
             mavenBundle("org.jboss.logging", "jboss-logging", "3.1.3.GA"),
             mavenBundle("com.google.guava", "guava", "13.0.1"),
             mavenBundle("javax.enterprise", "cdi-api", "1.1-20130918"),
@@ -271,8 +297,9 @@ public class TestConfiguration {
 
     public static Option paxWebBundles() {
         return composite(
-            mavenBundle("org.apache.xbean", "xbean-asm5-shaded").versionAsInProject(), //
-            mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(), //
+            mavenBundle("org.apache.xbean", "xbean-asm5-shaded", "3.18"), //
+            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "3.18"), //
+            mavenBundle("org.apache.xbean", "xbean-bundleutils", "3.18"),
             mavenBundle("org.ops4j.pax.web", "pax-web-spi").version(Info.getPaxWebVersion()),
             mavenBundle("org.ops4j.pax.web", "pax-web-api").version(Info.getPaxWebVersion()),
             mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version(Info.getPaxWebVersion())
@@ -348,7 +375,7 @@ public class TestConfiguration {
                 return false;
         }
     }
-    
+
     public static boolean isEquinox() {
         FrameworkFactory factory = ServiceLoader.load(FrameworkFactory.class).iterator().next();
         return factory.getClass().getSimpleName().contains("Equinox");
@@ -359,5 +386,5 @@ public class TestConfiguration {
         return factory.getClass().getCanonicalName().contains("felix");
     }
 
-    
+
 }

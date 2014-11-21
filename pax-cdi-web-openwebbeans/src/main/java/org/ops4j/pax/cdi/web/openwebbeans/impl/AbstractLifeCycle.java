@@ -14,11 +14,13 @@
  *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * Derived from org.apache.webbeans.lifecycle.AbstractLifeCycle.
  */
 package org.ops4j.pax.cdi.web.openwebbeans.impl;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -35,7 +37,7 @@ import org.apache.webbeans.spi.ContextsService;
 import org.apache.webbeans.spi.JNDIService;
 import org.apache.webbeans.spi.ScannerService;
 import org.apache.webbeans.util.WebBeansConstants;
-import org.apache.webbeans.xml.WebBeansXMLConfigurator;
+import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,10 +55,6 @@ public abstract class AbstractLifeCycle implements ContainerLifecycle {
 
     /** Deploy discovered beans */
     private BeansDeployer deployer;
-
-    /** XML discovery. */
-    // XML discovery is removed from the specification. It is here for next revisions of spec.
-    private WebBeansXMLConfigurator xmlDeployer;
 
     /** Using for lookup operations */
     private JNDIService jndiService;
@@ -76,13 +74,70 @@ public abstract class AbstractLifeCycle implements ContainerLifecycle {
         initApplication(properties);
     }
 
+    protected void createDeployer() {
+        try {
+            Class<?> configuratorClass = getClass().getClassLoader().loadClass("org.apache.webbeans.xml.WebBeansXMLConfigurator");
+            Object configurator = configuratorClass.newInstance();
+            Constructor<BeansDeployer> constructor = BeansDeployer.class.getConstructor(configuratorClass, WebBeansContext.class);
+            deployer = constructor.newInstance(configurator, this.webBeansContext);
+        }
+        catch (ClassNotFoundException e) {
+            createDeployer15();
+        }
+        catch (InstantiationException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+        catch (IllegalAccessException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+        catch (NoSuchMethodException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+        catch (SecurityException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+        catch (IllegalArgumentException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+        catch (InvocationTargetException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+    }
+
+    private void createDeployer15() {
+        Constructor<BeansDeployer> constructor;
+        try {
+            constructor = BeansDeployer.class.getConstructor(WebBeansContext.class);
+            deployer = constructor.newInstance(this.webBeansContext);
+        }
+        catch (NoSuchMethodException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+        catch (SecurityException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+        catch (InstantiationException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+        catch (IllegalAccessException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+        catch (IllegalArgumentException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+        catch (InvocationTargetException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+    }
+
     protected void setWebBeansContext(WebBeansContext webBeansContext) {
         this.webBeansContext = webBeansContext;
         beanManager = this.webBeansContext.getBeanManagerImpl();
-        xmlDeployer = new WebBeansXMLConfigurator();
-        deployer = new BeansDeployer(xmlDeployer, this.webBeansContext);
+
+        // use reflection to handle different method signatures for OWB 1.2.6 and OWB 1.5.0
+        createDeployer();
+
         jndiService = this.webBeansContext.getService(JNDIService.class);
-        beanManager.setXMLConfigurator(xmlDeployer);
         scannerService = this.webBeansContext.getScannerService();
         contextsService = this.webBeansContext.getService(ContextsService.class);
     }
@@ -91,10 +146,12 @@ public abstract class AbstractLifeCycle implements ContainerLifecycle {
         return webBeansContext;
     }
 
+    @Override
     public BeanManager getBeanManager() {
         return beanManager;
     }
 
+    @Override
     public void startApplication(Object startupObject) {
         // Initalize Application Context
         log.debug("OpenWebBeans Container is starting.");
@@ -128,6 +185,7 @@ public abstract class AbstractLifeCycle implements ContainerLifecycle {
         log.debug("startup took {} ms", System.currentTimeMillis() - begin);
     }
 
+    @Override
     public void stopApplication(Object endObject) {
         log.debug("OpenWebBeans Container is stopping.");
 
@@ -182,10 +240,12 @@ public abstract class AbstractLifeCycle implements ContainerLifecycle {
     /**
      * @return the contextsService
      */
+    @Override
     public ContextsService getContextService() {
         return contextsService;
     }
 
+    @Override
     public void initApplication(Properties properties) {
         afterInitApplication(properties);
     }
