@@ -291,7 +291,7 @@ public class TestConfiguration {
             mavenBundle("org.jboss.logging", "jboss-logging", "3.1.0.GA"),
             mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
+            mavenBundle("javax.el", "javax.el-api", "3.0.0"),
             mavenBundle("org.jboss.weld", "weld-osgi-bundle").versionAsInProject());
     }
 

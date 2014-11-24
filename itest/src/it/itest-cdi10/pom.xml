@@ -130,7 +130,7 @@
         <dependency>
             <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-finder-shaded</artifactId>
-            <version>3.18</version>
+            <version>${xbean.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -474,7 +474,7 @@
         <profile>
             <id>owb1</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
                 <pax.cdi.provider>owb1</pax.cdi.provider>
@@ -579,7 +579,7 @@
         <profile>
             <id>weld2</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <pax.cdi.provider>weld2</pax.cdi.provider>
