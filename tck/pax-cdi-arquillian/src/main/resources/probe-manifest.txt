@@ -5,6 +5,5 @@ DynamicImport-Package: *
 Web-ContextPath: /probe
 Pax-ManagedBeans: WEB-INF/beans.xml
 Require-Capability: org.ops4j.pax.cdi.extension; filter:="(&(extension=p
- ax-cdi-extension)(version>=0.6)(!(version>=1.0)))",osgi.extender; filte
- r:="(osgi.extender=pax.cdi)"
+ ax-cdi-extension))",osgi.extender; filter:="(osgi.extender=pax.cdi)"
 Provide-Capability: org.ops4j.pax.cdi.extension; extension=tck

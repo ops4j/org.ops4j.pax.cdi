@@ -222,7 +222,7 @@ public class TestConfiguration {
     }
 
     public static CdiProvider getCdiProvider() {
-        String provider = System.getProperty("pax.cdi.provider", "owb1");
+        String provider = System.getProperty("pax.cdi.provider", "owb15");
         if (provider == null) {
             throw new IllegalArgumentException("system property pax.cdi.provider must not be null");
         }
