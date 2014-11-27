@@ -40,27 +40,30 @@ import org.ops4j.pax.exam.options.MavenUrlReference;
 public class RegressionConfiguration {
     public static final MavenUrlReference PAX_CDI_FEATURES = maven().groupId("org.ops4j.pax.cdi")
         .artifactId("pax-cdi-features").type("xml").classifier("features").version(Info.getPaxCdiVersion());
-    
+
+    public static final MavenUrlReference PAX_WEB_FEATURES = maven().groupId("org.ops4j.pax.web")
+        .artifactId("pax-web-features").type("xml").classifier("features").version("4.0.0");
+
     public static final Option SAMPLE1 = mavenBundle().groupId("org.ops4j.pax.cdi.samples")
         .artifactId("pax-cdi-sample1").versionAsInProject();
-    
+
     public static final Option SAMPLE1_WEB = mavenBundle().groupId("org.ops4j.pax.cdi.samples")
         .artifactId("pax-cdi-sample1-web").versionAsInProject();
 
     public static Option regressionDefaults() {
-        return regressionDefaults("target/exam");        
+        return regressionDefaults("target/exam");
     }
 
     public static Option regressionDefaults(String unpackDir) {
         return composite(
 
             karafDistributionConfiguration().frameworkUrl(mvnKarafDist()).karafVersion(karafVersion())
-                .unpackDirectory(unpackDirFile(unpackDir)).useDeployFolder(false),                
- 
+                .unpackDirectory(unpackDirFile(unpackDir)).useDeployFolder(false),
+
             configureConsole().ignoreLocalConsole(),
             KarafDistributionOption.keepRuntimeFolder(),
-            
-            when(isEquinox()).useOptions(                
+
+            when(isEquinox()).useOptions(
                 editConfigurationFilePut(CustomProperties.KARAF_FRAMEWORK, "equinox"),
                 propagateSystemProperty("pax.exam.framework"),
                 systemProperty("osgi.console").value("6666"),
@@ -79,15 +82,15 @@ public class RegressionConfiguration {
     public static boolean isFelix() {
         return "felix".equals(System.getProperty("pax.exam.framework"));
     }
-    
+
     public static MavenArtifactUrlReference mvnKarafDist() {
         return maven().groupId("org.apache.karaf")
             .artifactId("apache-karaf").type("tar.gz").version(karafVersion());
     }
-    
+
     public static String karafVersion() {
         ConfigurationManager cm = new ConfigurationManager();
-        String karafVersion = cm.getProperty("pax.exam.karaf.version", "3.0.1");
+        String karafVersion = cm.getProperty("pax.exam.karaf.version", "3.0.2");
         return karafVersion;
     }
 }
