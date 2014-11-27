@@ -123,7 +123,7 @@
         <dependency>
             <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-finder-shaded</artifactId>
-            <version>3.18</version>
+            <version>${xbean.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -213,7 +213,7 @@
 
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jcdi_1.0_spec</artifactId>
+            <artifactId>geronimo-jcdi_1.1_spec</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -237,7 +237,7 @@
 
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-interceptor_1.1_spec</artifactId>
+            <artifactId>geronimo-interceptor_1.2_spec</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -464,12 +464,12 @@
             </build>
         </profile>
         <profile>
-            <id>owb1</id>
+            <id>owb15</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <pax.cdi.provider>owb1</pax.cdi.provider>
+                <pax.cdi.provider>owb15</pax.cdi.provider>
             </properties>
             <dependencies>
 
@@ -488,37 +488,6 @@
 
             </dependencies>
         </profile>
-        <profile>
-            <id>weld1</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <pax.cdi.provider>weld1</pax.cdi.provider>
-            </properties>
-            <dependencies>
-
-                <dependency>
-                    <groupId>org.ops4j.pax.cdi</groupId>
-                    <artifactId>pax-cdi-web-weld</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.servicemix.bundles</groupId>
-                    <artifactId>org.apache.servicemix.bundles.asm</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.weld</groupId>
-                    <artifactId>weld-osgi-bundle</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
         <profile>
             <id>weld2</id>
             <activation>
