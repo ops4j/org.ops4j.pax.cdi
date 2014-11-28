@@ -22,7 +22,7 @@ import java.lang.annotation.Annotation;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import javax.enterprise.context.spi.Context;
+import javax.enterprise.context.spi.AlterableContext;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Typed;
@@ -37,7 +37,7 @@ import org.ops4j.pax.cdi.api.PrototypeScoped;
  *
  */
 @Typed()
-public class PrototypeScopeContext implements Context {
+public class PrototypeScopeContext implements AlterableContext {
 
     private Map<Object, CreationalContext<?>> instanceMap = new IdentityHashMap<Object, CreationalContext<?>>();
     private BeanManager beanManager;
@@ -67,7 +67,8 @@ public class PrototypeScopeContext implements Context {
     }
 
     @SuppressWarnings({ "unchecked" })
-    public <T> void destroy(Contextual<?> component) {
+    @Override
+    public void destroy(Contextual<?> component) {
         Object instance = getService();
         CreationalContext<Object> cc = (CreationalContext<Object>) instanceMap.get(instance);
         if (cc != null) {

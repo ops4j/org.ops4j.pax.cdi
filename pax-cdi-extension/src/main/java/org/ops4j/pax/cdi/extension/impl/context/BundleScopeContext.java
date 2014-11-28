@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.context.spi.Context;
+import javax.enterprise.context.spi.AlterableContext;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Typed;
@@ -40,7 +40,7 @@ import org.osgi.framework.Bundle;
  *
  */
 @Typed()
-public class BundleScopeContext implements Context {
+public class BundleScopeContext implements AlterableContext {
 
     private Map<Contextual<?>, SingletonScopeContextEntry<?>> serviceBeans = new ConcurrentHashMap<Contextual<?>, SingletonScopeContextEntry<?>>();
     private BeanManager beanManager;
@@ -117,6 +117,7 @@ public class BundleScopeContext implements Context {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
     public void destroy(Contextual<?> component) {
         SingletonScopeContextEntry serviceBean = serviceBeans.get(component);
         if (serviceBean != null) {

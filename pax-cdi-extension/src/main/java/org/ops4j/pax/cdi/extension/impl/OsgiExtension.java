@@ -39,6 +39,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
+import javax.enterprise.inject.spi.WithAnnotations;
 
 import org.ops4j.pax.cdi.api.BundleScoped;
 import org.ops4j.pax.cdi.api.OsgiService;
@@ -101,13 +102,8 @@ public class OsgiExtension implements Extension {
         event.addScope(SingletonScoped.class, false, false);
     }
 
-    public <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> event) {
+    public <T> void processAnnotatedType(@Observes @WithAnnotations(OsgiServiceProvider.class) ProcessAnnotatedType<T> event) {
         final AnnotatedType<T> type = event.getAnnotatedType();
-
-        // do nothing if type is not an OSGi service
-        if (type.getAnnotation(OsgiServiceProvider.class) == null) {
-            return;
-        }
 
         // do nothing if type has one of the three OSGi scopes
         if (type.getAnnotation(PrototypeScoped.class) != null) {
