@@ -104,4 +104,9 @@ public class OsgiServiceInstance<T> implements Instance<T> {
     public boolean isAmbiguous() {
         return getServiceReferences().size() > 1;
     }
+
+    @Override
+    public void destroy(T instance) {
+        // empty
+    }
 }

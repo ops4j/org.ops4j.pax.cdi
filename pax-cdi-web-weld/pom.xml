@@ -84,15 +84,9 @@
 		</dependency>
 
 
-<!--         <dependency> -->
-<!--             <groupId>org.eclipse.jetty.aggregate</groupId> -->
-<!--             <artifactId>jetty-all-server</artifactId> -->
-<!--             <scope>provided</scope> -->
-<!--         </dependency> -->
-
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-servlet_3.0_spec</artifactId>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -104,8 +98,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-el_2.2_spec</artifactId>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
             <scope>provided</scope>
         </dependency>
 
