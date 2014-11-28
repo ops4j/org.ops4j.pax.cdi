@@ -70,19 +70,14 @@ public class TransactionalTest {
             mavenBundle("org.apache.derby", "derby").versionAsInProject(),
             mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject(),
 
-            // DeltaSpike JPA module and dependencies
-            wrappedBundle(mavenBundle("org.apache.deltaspike.core", "deltaspike-core-api").versionAsInProject())
-                .instructions(
-                    "overwrite=merge",
-                    "Require-Capability=org.ops4j.pax.cdi.extension; filter:=\"(extension=pax-cdi-extension)\", "
-                    + "osgi.extender; filter:=\"(osgi.extender=pax.cdi)\""),
+
+            mavenBundle("org.apache.deltaspike.core", "deltaspike-core-api").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-api").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-api").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-api").versionAsInProject(),
+
+
             wrappedBundle(mavenBundle("org.apache.deltaspike.core", "deltaspike-core-impl").versionAsInProject())
-                .instructions(
-                    "overwrite=merge",
-                    "Require-Capability=org.ops4j.pax.cdi.extension; filter:=\"(extension=pax-cdi-extension)\", "
-                    + "osgi.extender; filter:=\"(osgi.extender=pax.cdi)\""),
-            wrappedBundle(mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-api")
-                .versionAsInProject())
                 .instructions(
                     "overwrite=merge",
                     "Require-Capability=org.ops4j.pax.cdi.extension; filter:=\"(extension=pax-cdi-extension)\", "
@@ -94,8 +89,6 @@ public class TransactionalTest {
                     "Provide-Capability=org.ops4j.pax.cdi.extension;extension=\"deltaspike-jpa-impl\"",
                     "Require-Capability=org.ops4j.pax.cdi.extension; filter:=\"(extension=pax-cdi-extension)\", "
                     + "osgi.extender; filter:=\"(osgi.extender=pax.cdi)\""),
-            mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-api")
-                .versionAsInProject(),
             wrappedBundle(mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-impl")
                 .versionAsInProject())
                 .instructions(
@@ -104,14 +97,6 @@ public class TransactionalTest {
                     "Require-Capability=org.ops4j.pax.cdi.extension; filter:=\"(extension=pax-cdi-extension)\", org.ops4j.pax.cdi.extension; filter:=\"(extension=deltaspike-jpa-impl)\","
                     + "osgi.extender; filter:=\"(osgi.extender=pax.cdi)\""),
 
-            wrappedBundle(mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-api")
-                .versionAsInProject())
-                .instructions(
-                    "overwrite=merge",
-                    "Bundle-SymbolicName=org.apache.deltaspike.modules.partial-bean-api",
-                    "Provide-Capability=org.ops4j.pax.cdi.extension;extension=\"deltaspike-pb-api\"",
-                    "Require-Capability=org.ops4j.pax.cdi.extension; filter:=\"(extension=pax-cdi-extension)\", "
-                    + "osgi.extender; filter:=\"(osgi.extender=pax.cdi)\""),
             wrappedBundle(mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-impl").versionAsInProject())
                 .instructions(
                     "overwrite=merge",
