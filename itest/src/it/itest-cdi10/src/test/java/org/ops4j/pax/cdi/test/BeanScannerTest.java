@@ -57,14 +57,13 @@ public class BeanScannerTest {
             // This is a bundle with embedded JARs on the bundle classpath
             mavenBundle("org.ops4j.pax.tinybundles", "tinybundles", "1.0.0"),
 
-            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-api"), 
+            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-api"),
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-spi"),
 
             mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec")
-                .versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-jcdi_1.0_spec").versionAsInProject());
+            mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
+            mavenBundle("javax.el", "javax.el-api", "3.0.0"),
+            mavenBundle("javax.enterprise", "cdi-api").versionAsInProject());
     }
 
     @Test
@@ -73,7 +72,7 @@ public class BeanScannerTest {
         assertThat(bundle, is(notNullValue()));
 
         BeanScanner scanner = new BeanScanner(bundle);
-        scanner.scan();        
+        scanner.scan();
         Set<String> beanClasses = scanner.getBeanClasses();
 
         // check we can see a class from an embedded JAR

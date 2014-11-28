@@ -120,14 +120,8 @@ public class TestConfiguration {
     public static Option cdiProviderSpecificBundles() {
         switch (getCdiProvider()) {
 
-            case OWB1:
-                return openWebBeansBundles();
-
             case OWB15:
                 return openWebBeans15Bundles();
-
-            case WELD1:
-                return weldBundles();
 
             case WELD2:
                 return weld2Bundles();
@@ -140,11 +134,9 @@ public class TestConfiguration {
     public static Option paxCdiProviderAdapter() {
         switch (getCdiProvider()) {
 
-            case OWB1:
             case OWB15:
                 return workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-openwebbeans");
 
-            case WELD1:
             case WELD2:
                 return workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-weld");
 
@@ -156,7 +148,6 @@ public class TestConfiguration {
     public static Option paxCdiProviderWebAdapter() {
         switch (getCdiProvider()) {
 
-            case OWB1:
             case OWB15:
                 return composite(
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web"),
@@ -165,7 +156,6 @@ public class TestConfiguration {
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject()
                     );
 
-            case WELD1:
             case WELD2:
                 return composite(
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web"),
@@ -181,7 +171,6 @@ public class TestConfiguration {
     public static Option paxCdiProviderJettyAdapter() {
         switch (getCdiProvider()) {
 
-            case OWB1:
             case OWB15:
                 return composite(
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-servlet"),
@@ -190,7 +179,6 @@ public class TestConfiguration {
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject()
                     );
 
-            case WELD1:
             case WELD2:
                 return composite(
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-servlet"),
@@ -205,13 +193,11 @@ public class TestConfiguration {
     public static Option paxCdiJsfAdapter() {
         switch (getCdiProvider()) {
 
-            case OWB1:
             case OWB15:
                 return composite(
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-jsf").versionAsInProject()
                     );
 
-            case WELD1:
             case WELD2:
                 return composite(
                     );
@@ -229,26 +215,6 @@ public class TestConfiguration {
         return CdiProvider.valueOf(provider.toUpperCase());
     }
 
-    public static Option openWebBeansBundles() {
-        return composite(
-            mavenBundle("org.apache.xbean", "xbean-bundleutils", "3.18"),
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
-            mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-asm5-shaded", "3.18"), //
-            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "3.18"), //
-            mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-annotation_1.1_spec", "1.0.1"),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec")
-            .versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-validation_1.0_spec")
-                .versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-jcdi_1.0_spec").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec")
-                .versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject());
-    }
-
     public static Option openWebBeans15Bundles() {
         return composite(
             mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.1"),
@@ -263,22 +229,9 @@ public class TestConfiguration {
             mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-validation_1.0_spec")
                 .versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-jcdi_1.1_spec").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.2_spec").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject());
-    }
-
-    public static Option weldBundles() {
-        return composite(
-            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-weld"),
-            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.1"),
-            mavenBundle("ch.qos.cal10n", "cal10n-api", "0.7.4"),
-            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-annotation_1.1_spec", "1.0.1"),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-interceptor_1.1_spec").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
-            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm").versionAsInProject(), //
-            mavenBundle("org.jboss.weld", "weld-osgi-bundle").versionAsInProject().startLevel(3));
+            mavenBundle("javax.enterprise", "cdi-api").versionAsInProject(),
+            mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
+            mavenBundle("javax.el", "javax.el-api", "3.0.0"));
     }
 
     public static Option weld2Bundles() {
@@ -287,8 +240,7 @@ public class TestConfiguration {
             mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.1"),
             mavenBundle("org.jboss.logging", "jboss-logging", "3.1.3.GA"),
             mavenBundle("com.google.guava", "guava", "13.0.1"),
-            mavenBundle("javax.enterprise", "cdi-api", "1.1-20130918"),
-            mavenBundle("org.jboss.logging", "jboss-logging", "3.1.0.GA"),
+            mavenBundle("javax.enterprise", "cdi-api").versionAsInProject(),
             mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
             mavenBundle("javax.el", "javax.el-api", "3.0.0"),
@@ -368,7 +320,6 @@ public class TestConfiguration {
 
     public static boolean isWeld() {
         switch (getCdiProvider()) {
-            case WELD1:
             case WELD2:
                 return true;
             default:
