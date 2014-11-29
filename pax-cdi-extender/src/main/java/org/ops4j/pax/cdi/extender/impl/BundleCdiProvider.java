@@ -20,7 +20,6 @@ package org.ops4j.pax.cdi.extender.impl;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.CDIProvider;
 
-import org.ops4j.pax.cdi.extender.impl.BundleCdi;
 import org.ops4j.pax.cdi.spi.BeanBundles;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
