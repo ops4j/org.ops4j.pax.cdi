@@ -21,6 +21,7 @@ import javax.servlet.ServletContainerInitializer;
 
 import org.ops4j.pax.cdi.servlet.AbstractWebCdiContainerListener;
 import org.ops4j.pax.cdi.spi.CdiContainer;
+import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -30,7 +31,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Harald Wellmann
  *
  */
-@Component(property = "type=web")
+@Component(property = "type=web", service = CdiContainerListener.class)
 public class WeldUndertowAdapter extends AbstractWebCdiContainerListener {
 
     /**

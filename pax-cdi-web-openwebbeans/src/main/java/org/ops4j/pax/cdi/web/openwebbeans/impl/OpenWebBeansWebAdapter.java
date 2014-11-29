@@ -20,13 +20,14 @@ package org.ops4j.pax.cdi.web.openwebbeans.impl;
 import javax.servlet.ServletContextListener;
 
 import org.apache.webbeans.config.WebBeansFinder;
+import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.ops4j.pax.cdi.web.CdiWebAppDependencyManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
-@Component(property = "type=web")
+@Component(property = "type=web", service = CdiContainerListener.class)
 public class OpenWebBeansWebAdapter extends CdiWebAppDependencyManager {
 
     @Activate

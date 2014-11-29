@@ -135,7 +135,6 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
-                        <Service-Component>OSGI-INF/*</Service-Component>
                         <Import-Package>
                             javax.servlet.*;version="[2,4)",
                             org.apache.webbeans.xml, *
