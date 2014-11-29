@@ -50,7 +50,7 @@ import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, service = {})
+@Component(immediate = true, service = { })
 public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper> {
 
     private static Logger log = LoggerFactory.getLogger(CdiExtender.class);
@@ -165,8 +165,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
         return factory.createContainer(bundle, extensions, containerType);
     }
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, 
-        target = "(type=web)")
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, target = "(type=web)")
     public void setWebAdapter(CdiContainerListener listener) {
         this.webAdapter = listener;
         if (context != null) {
