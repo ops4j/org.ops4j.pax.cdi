@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.inject.spi.CDIProvider;
+
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.cdi.spi.CdiContainerListener;
@@ -51,6 +54,8 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
 
     private CdiContainerListener webAdapter;
 
+    private CDIProvider cdiProvider;
+
     private Map<Long, Bundle> webBundles = new HashMap<Long, Bundle>();
 
     public void activate(BundleContext ctx) {
@@ -62,6 +67,13 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
         log.info("starting CDI extender {}", context.getBundle().getSymbolicName());
         this.bundleWatcher = new BundleTracker<CdiContainerWrapper>(context, Bundle.ACTIVE, this);
         bundleWatcher.open();
+
+        try {
+            CDI.setCDIProvider(cdiProvider);
+        }
+        catch (IllegalStateException exc) {
+            log.debug("CDIProvider already set", exc);
+        }
     }
 
     public void deactivate(BundleContext ctx) {
@@ -72,7 +84,8 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
     @Override
     public CdiContainerWrapper addingBundle(final Bundle bundle, BundleEvent event) {
         boolean wired = false;
-        List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires(EXTENDER_CAPABILITY);
+        List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires(
+            EXTENDER_CAPABILITY);
         if (wires != null) {
             for (BundleWire wire : wires) {
                 if (wire.getProviderWiring().getBundle() == context.getBundle()) {
@@ -140,7 +153,8 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
         Set<Bundle> extensions = new HashSet<Bundle>();
         findExtensions(bundle, extensions);
 
-        log.info("creating CDI container for bean bundle {} with extension bundles {}", bundle, extensions);
+        log.info("creating CDI container for bean bundle {} with extension bundles {}", bundle,
+            extensions);
         return factory.createContainer(bundle, extensions, containerType);
     }
 
@@ -169,4 +183,13 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
     public void setCdiContainerFactory(CdiContainerFactory cdiContainerFactory) {
         this.factory = cdiContainerFactory;
     }
+
+    /**
+     * @param cdiProvider
+     *            the cdiProvider to set
+     */
+    public void setCdiProvider(CDIProvider cdiProvider) {
+        this.cdiProvider = cdiProvider;
+    }
+
 }
