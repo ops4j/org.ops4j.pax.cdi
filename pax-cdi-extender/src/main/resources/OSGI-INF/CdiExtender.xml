@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="CdiExtender">
-   <implementation class="org.ops4j.pax.cdi.extender.impl.CdiExtender"/>
-   <reference bind="setWebAdapter" cardinality="0..1" interface="org.ops4j.pax.cdi.spi.CdiContainerListener" name="CdiContainerListener" policy="dynamic" target="(type=web)" unbind="unsetWebAdapter"/>
-   <reference bind="setCdiContainerFactory" cardinality="1..1" interface="org.ops4j.pax.cdi.spi.CdiContainerFactory" name="CdiContainerFactory" policy="static" />
-   <reference bind="setCdiProvider" cardinality="1..1" interface="javax.enterprise.inject.spi.CDIProvider" name="CDIProvider" policy="static"/>
-</scr:component>

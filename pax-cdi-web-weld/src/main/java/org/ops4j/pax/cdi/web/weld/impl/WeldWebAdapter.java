@@ -20,7 +20,9 @@ package org.ops4j.pax.cdi.web.weld.impl;
 import javax.servlet.ServletContextListener;
 
 import org.ops4j.pax.cdi.web.CdiWebAppDependencyManager;
+import org.osgi.service.component.annotations.Component;
 
+@Component(property = "type=web")
 public class WeldWebAdapter extends CdiWebAppDependencyManager {
 
     @Override

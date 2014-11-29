@@ -83,6 +83,11 @@
             <artifactId>org.osgi.compendium</artifactId>
             <scope>provided</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.ds-annotations</artifactId>
+        </dependency>
 
     </dependencies>
 
@@ -100,8 +105,8 @@
                             javax.faces.*;resolution:=optional,
                             *
                         </Import-Package>
-                        <Service-Component>OSGI-INF/*</Service-Component>
                         <Export-Package />
+                        <_dsannotations>*</_dsannotations>
                     </instructions>
                 </configuration>
             </plugin>

@@ -22,13 +22,19 @@ import javax.servlet.ServletContextListener;
 import org.apache.webbeans.config.WebBeansFinder;
 import org.ops4j.pax.cdi.web.CdiWebAppDependencyManager;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 
+@Component(property = "type=web")
 public class OpenWebBeansWebAdapter extends CdiWebAppDependencyManager {
 
+    @Activate
     public void activate(BundleContext context) {
         WebBeansFinder.setSingletonService(new BundleSingletonService());
     }
 
+    @Deactivate
     public void deactivate(BundleContext context) {
         // TODO the following causes an exception:
         // org.apache.webbeans.exception.WebBeansConfigurationException: 

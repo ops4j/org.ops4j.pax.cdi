@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="BundleCdiProvider">
-   <implementation class="org.ops4j.pax.cdi.extender.impl.BundleCdiProvider"/>
-   <reference bind="setCdiContainerFactory" cardinality="1..1" interface="org.ops4j.pax.cdi.spi.CdiContainerFactory" name="CdiContainerFactory" policy="static" />
-   <service>
-      <provide interface="javax.enterprise.inject.spi.CDIProvider"/>
-   </service>
-</scr:component>

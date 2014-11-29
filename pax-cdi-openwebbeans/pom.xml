@@ -67,6 +67,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.ds-annotations</artifactId>
+        </dependency>
+
+
     </dependencies>
     <build>
         <plugins>
@@ -78,7 +84,7 @@
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Bundle-Activator>${bundle.namespace}.impl.Activator</Bundle-Activator>
                         <Import-Package>org.apache.xbean*;version="[3.18,5)", *</Import-Package>
-                        <Service-Component>OSGI-INF/*</Service-Component>
+                        <_dsannotations>*</_dsannotations>
                     </instructions>
                 </configuration>
             </plugin>

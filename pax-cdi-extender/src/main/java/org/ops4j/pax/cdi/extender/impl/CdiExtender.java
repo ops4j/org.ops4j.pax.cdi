@@ -39,11 +39,18 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.util.tracker.BundleTracker;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, service = {})
 public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper> {
 
     private static Logger log = LoggerFactory.getLogger(CdiExtender.class);
@@ -58,6 +65,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
 
     private Map<Long, Bundle> webBundles = new HashMap<Long, Bundle>();
 
+    @Activate
     public void activate(BundleContext ctx) {
         this.context = ctx;
         if (webAdapter != null) {
@@ -72,6 +80,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
 
     }
 
+    @Deactivate
     public void deactivate(BundleContext ctx) {
         BundleCdi.dispose();
 
@@ -156,6 +165,8 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
         return factory.createContainer(bundle, extensions, containerType);
     }
 
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, 
+        target = "(type=web)")
     public void setWebAdapter(CdiContainerListener listener) {
         this.webAdapter = listener;
         if (context != null) {
@@ -178,6 +189,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
         this.webAdapter = null;
     }
 
+    @Reference
     public void setCdiContainerFactory(CdiContainerFactory cdiContainerFactory) {
         this.factory = cdiContainerFactory;
     }
@@ -186,6 +198,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
      * @param cdiProvider
      *            the cdiProvider to set
      */
+    @Reference
     public void setCdiProvider(CDIProvider cdiProvider) {
         this.cdiProvider = cdiProvider;
     }

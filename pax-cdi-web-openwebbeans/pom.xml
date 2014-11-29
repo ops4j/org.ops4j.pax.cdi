@@ -120,6 +120,11 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.ds-annotations</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -134,7 +139,8 @@
                         <Import-Package>
                             javax.servlet.*;version="[2,4)",
                             org.apache.webbeans.xml, *
-                        </Import-Package>                        
+                        </Import-Package>
+                        <_dsannotations>*</_dsannotations>                        
                     </instructions>
                 </configuration>
             </plugin>

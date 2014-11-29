@@ -32,6 +32,9 @@ import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +44,7 @@ import org.slf4j.LoggerFactory;
  * @author Harald Wellmann
  *
  */
+@Component
 public class WeldCdiContainerFactory implements CdiContainerFactory {
 
     private Logger log = LoggerFactory.getLogger(WeldCdiContainerFactory.class);
@@ -49,11 +53,13 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
     private List<CdiContainerListener> listeners = new CopyOnWriteArrayList<CdiContainerListener>();
     private BundleContext bundleContext;
 
+    @Activate    
     public void activate(BundleContext bc) {
         this.bundleContext = bc;
         SingletonProvider.initialize(new RegistrySingletonProvider());
     }
 
+    @Deactivate
     public void deactivate() {
         SingletonProvider.reset();
     }

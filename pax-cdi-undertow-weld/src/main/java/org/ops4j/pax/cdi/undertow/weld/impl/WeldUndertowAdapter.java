@@ -21,6 +21,7 @@ import javax.servlet.ServletContainerInitializer;
 
 import org.ops4j.pax.cdi.servlet.AbstractWebCdiContainerListener;
 import org.ops4j.pax.cdi.spi.CdiContainer;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Pax CDI Adapter for Weld using the Undertow servlet container. This adapter provides
@@ -29,6 +30,7 @@ import org.ops4j.pax.cdi.spi.CdiContainer;
  * @author Harald Wellmann
  *
  */
+@Component(property = "type=web")
 public class WeldUndertowAdapter extends AbstractWebCdiContainerListener {
 
     /**

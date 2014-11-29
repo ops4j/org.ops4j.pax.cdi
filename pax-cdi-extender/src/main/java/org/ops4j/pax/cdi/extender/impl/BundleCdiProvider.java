@@ -24,6 +24,8 @@ import org.ops4j.pax.cdi.spi.BeanBundles;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.osgi.framework.Bundle;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * Implements a {@link CDIProvider} which returns the CDI container of the current bundle,
@@ -32,6 +34,7 @@ import org.osgi.framework.Bundle;
  * @author Harald Wellmann
  *
  */
+@Component
 public class BundleCdiProvider implements CDIProvider {
     
     
@@ -55,6 +58,7 @@ public class BundleCdiProvider implements CDIProvider {
     /**
      * @param cdiContainerFactory the cdiContainerFactory to set
      */
+    @Reference
     public void setCdiContainerFactory(CdiContainerFactory cdiContainerFactory) {
         this.cdiContainerFactory = cdiContainerFactory;
     }

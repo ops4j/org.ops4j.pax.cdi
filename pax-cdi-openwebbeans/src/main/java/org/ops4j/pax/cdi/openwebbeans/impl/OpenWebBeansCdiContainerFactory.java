@@ -31,6 +31,8 @@ import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.osgi.framework.Bundle;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * {@link CdiContainerFactory} implementation based on Apache OpenWebBeans.
@@ -38,6 +40,7 @@ import org.osgi.service.component.ComponentContext;
  * @author Harald Wellmann
  * 
  */
+@Component
 public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
 
     private Map<Long, CdiContainer> containers = new HashMap<Long, CdiContainer>();
@@ -47,6 +50,7 @@ public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
     public OpenWebBeansCdiContainerFactory() {
     }
     
+    @Activate
     protected void activate(ComponentContext cc) {
         this.componentContext = cc;
     }
