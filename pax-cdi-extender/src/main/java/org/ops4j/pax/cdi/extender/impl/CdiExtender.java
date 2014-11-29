@@ -64,19 +64,17 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
             handleWebBundles();
         }
 
+        CDI.setCDIProvider(cdiProvider);
+
         log.info("starting CDI extender {}", context.getBundle().getSymbolicName());
         this.bundleWatcher = new BundleTracker<CdiContainerWrapper>(context, Bundle.ACTIVE, this);
         bundleWatcher.open();
 
-        try {
-            CDI.setCDIProvider(cdiProvider);
-        }
-        catch (IllegalStateException exc) {
-            log.debug("CDIProvider already set", exc);
-        }
     }
 
     public void deactivate(BundleContext ctx) {
+        BundleCdi.dispose();
+
         log.info("stopping CDI extender {}", context.getBundle().getSymbolicName());
         bundleWatcher.close();
     }

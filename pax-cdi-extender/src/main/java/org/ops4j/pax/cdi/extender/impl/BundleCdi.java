@@ -96,5 +96,10 @@ public class BundleCdi<T> extends CDI<T> {
     @Override
     public String toString() {
         return String.format("[CDI container %s]", container.getBundle());
+ 
+    }
+    
+    public static void dispose() {
+        configuredProvider = null;
     }
 }
