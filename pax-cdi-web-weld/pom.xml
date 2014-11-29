@@ -104,12 +104,8 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.scr.ds-annotations</artifactId>
-        </dependency>
-
     </dependencies>
+
     <build>
         <plugins>
             <plugin>

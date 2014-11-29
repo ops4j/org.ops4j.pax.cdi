@@ -288,12 +288,6 @@
                 <version>3.0.17</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>org.apache.felix.scr.ds-annotations</artifactId>
-                <version>1.2.4</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
