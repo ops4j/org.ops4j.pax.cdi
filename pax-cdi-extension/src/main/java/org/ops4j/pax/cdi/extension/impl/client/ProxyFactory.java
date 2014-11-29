@@ -53,8 +53,8 @@ public class ProxyFactory {
         Class<?> klass = (Class<?>) ip.getType();
         OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
 
-        InvocationHandler handler = os.dynamic() ? new DynamicInvocationHandler(ip)
-            : new StaticInvocationHandler(ip);
+        InvocationHandler handler = os.dynamic() ? new DynamicInvocationHandler<T>(ip)
+            : new StaticInvocationHandler<T>(ip);
 
         ClassLoader classLoader = ip.getMember().getDeclaringClass().getClassLoader();
         @SuppressWarnings("unchecked")
