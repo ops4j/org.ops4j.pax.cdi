@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.webbeans.spi.BDABeansXmlScanner;
 import org.apache.webbeans.spi.ScannerService;
 import org.apache.xbean.osgi.bundle.util.BundleUtils;
 import org.ops4j.pax.cdi.spi.scan.BeanScanner;
@@ -91,8 +90,9 @@ public class BundleScannerService implements ScannerService {
         return false;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public BDABeansXmlScanner getBDABeansXmlScanner() {
+    public org.apache.webbeans.spi.BDABeansXmlScanner getBDABeansXmlScanner() {
         return null;
     }
 }

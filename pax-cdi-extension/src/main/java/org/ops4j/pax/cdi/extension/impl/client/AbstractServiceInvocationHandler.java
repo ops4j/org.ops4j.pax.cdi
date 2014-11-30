@@ -23,6 +23,7 @@ public abstract class AbstractServiceInvocationHandler<S> implements InvocationH
     protected ServiceObjectsWrapper<S> serviceObjects;
     protected S service;
 
+    @SuppressWarnings("unchecked")
     protected AbstractServiceInvocationHandler(InjectionPoint ip) {
         this.ip = ip;
         this.bundleContext = InjectionPointOsgiUtils.getBundleContext(ip);
