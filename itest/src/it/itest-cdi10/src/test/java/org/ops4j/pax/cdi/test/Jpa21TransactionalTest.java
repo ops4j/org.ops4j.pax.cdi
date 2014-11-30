@@ -91,10 +91,10 @@ public class Jpa21TransactionalTest {
             // DeltaSpike
             mavenBundle("org.apache.deltaspike.core", "deltaspike-core-api").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.core", "deltaspike-core-impl").versionAsInProject(),
-            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-api").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-api").versionAsInProject(),
-            mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-api").versionAsInProject(),
 
+//            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-api").versionAsInProject(),
+//            mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-api").versionAsInProject(),
 //            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl").versionAsInProject(),
 //            mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-impl").versionAsInProject(),
 //            mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-impl").versionAsInProject(),
@@ -102,6 +102,8 @@ public class Jpa21TransactionalTest {
             // DeltaSpike bundles with missing requirements and capabilities
             wrappedDeltaSpikeBundle("deltaspike-jpa-module-impl"),
             wrappedDeltaSpikeBundle("deltaspike-data-module-impl"),
+            wrappedDeltaSpikeBundle("deltaspike-jpa-module-api"),
+            wrappedDeltaSpikeBundle("deltaspike-data-module-api"),
             wrappedDeltaSpikeBundle("deltaspike-partial-bean-module-impl"),
 
             mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
