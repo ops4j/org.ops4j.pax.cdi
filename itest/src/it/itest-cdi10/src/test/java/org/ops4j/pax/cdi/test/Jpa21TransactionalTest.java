@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Harald Wellmann.
+ * Copyright 2014 Harald Wellmann.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@ import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.CoreOptions.systemPackages;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
 import javax.inject.Inject;
 
@@ -43,7 +45,9 @@ import org.ops4j.pax.jpa.sample1.model.Author;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class TransactionalTest {
+public class Jpa21TransactionalTest {
+
+    private static final String HIBERNATE_VERSION = "4.3.5.Final";
 
     @Inject
     private LibraryServiceClient libraryService;
@@ -55,17 +59,27 @@ public class TransactionalTest {
             paxCdiProviderAdapter(),
             cdiProviderBundles(),
 
-            // OpenJPA and dependencies
-            mavenBundle("org.apache.geronimo.specs", "geronimo-jpa_2.0_spec").versionAsInProject(),
-            mavenBundle("commons-lang", "commons-lang").versionAsInProject(),
-            mavenBundle("commons-collections", "commons-collections").versionAsInProject(),
-            mavenBundle("commons-pool", "commons-pool").versionAsInProject(),
-            mavenBundle("commons-dbcp", "commons-dbcp").versionAsInProject(),
-            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.serp",
-                "1.13.1_4"),
-            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.asm",
-                "3.3_2"),
-            mavenBundle("org.apache.openjpa", "openjpa").versionAsInProject(),
+            // Hibernate and dependencies
+            systemProperty("org.jboss.logging.provider").value("slf4j"),
+            systemPackages("javax.xml.stream; version=\"1.0.0\"",
+                "javax.xml.stream.events; version=\"1.0.0\"",
+                "javax.xml.stream.util; version=\"1.0.0\""),
+            mavenBundle("org.hibernate.javax.persistence", "hibernate-jpa-2.1-api", "1.0.0.Final"),
+            mavenBundle("javax.validation", "validation-api", "1.1.0.Final"),
+
+            mavenBundle("org.hibernate.common", "hibernate-commons-annotations", "4.0.4.Final"),
+            mavenBundle("org.hibernate", "hibernate-core", HIBERNATE_VERSION),
+            mavenBundle("org.hibernate", "hibernate-osgi", HIBERNATE_VERSION),
+            mavenBundle("org.hibernate", "hibernate-entitymanager", HIBERNATE_VERSION),
+
+            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.antlr",
+                "2.7.7_5"),
+            mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.dom4j",
+                "1.6.1_5"), //
+            mavenBundle("org.javassist", "javassist", "3.18.1-GA"),
+            mavenBundle("com.fasterxml", "classmate", "0.5.4"),            
+            mavenBundle("org.jboss", "jandex", "1.2.0.Final"),            
+            mavenBundle("org.jboss.logging", "jboss-logging", "3.1.0.GA"),
 
             // Pax JPA, Pax JDBC and Derby driver
             mavenBundle("org.ops4j.pax.jpa", "pax-jpa").versionAsInProject().startLevel(2),
@@ -73,23 +87,23 @@ public class TransactionalTest {
             mavenBundle("org.apache.derby", "derby").versionAsInProject(),
             mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject(),
 
-            // unchanged DeltaSpike bundles
+
+            // DeltaSpike
             mavenBundle("org.apache.deltaspike.core", "deltaspike-core-api").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.core", "deltaspike-core-impl").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-api").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-api").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-api").versionAsInProject(),
 
+//            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl").versionAsInProject(),
+//            mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-impl").versionAsInProject(),
+//            mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-impl").versionAsInProject(),
+
             // DeltaSpike bundles with missing requirements and capabilities
             wrappedDeltaSpikeBundle("deltaspike-jpa-module-impl"),
             wrappedDeltaSpikeBundle("deltaspike-data-module-impl"),
             wrappedDeltaSpikeBundle("deltaspike-partial-bean-module-impl"),
 
-//            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl").versionAsInProject(),
-//            mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-impl").versionAsInProject(),
-//            mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-impl").versionAsInProject(),
-
-            mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec", "1.0"),
             mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
 
             // Sample bundles
