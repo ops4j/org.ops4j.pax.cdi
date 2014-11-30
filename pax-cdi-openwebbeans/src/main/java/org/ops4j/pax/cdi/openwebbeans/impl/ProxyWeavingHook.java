@@ -53,8 +53,7 @@ public class ProxyWeavingHook implements WeavingHook {
         boolean requiresWeaving = false;
         if (isBeanBundle(bundle) || isExtension(bundle)) {
             log.debug("weaving {}", wovenClass.getClassName());
-            wovenClass.getDynamicImports().add("org.apache.webbeans.proxy");
-            wovenClass.getDynamicImports().add("org.apache.webbeans.intercept");
+            wovenClass.getDynamicImports().add("org.apache.webbeans.*");
             requiresWeaving = true;
         }
         bundleMap.put(bundle, requiresWeaving);
