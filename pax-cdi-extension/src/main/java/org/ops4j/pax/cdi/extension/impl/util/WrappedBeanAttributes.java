@@ -17,54 +17,53 @@
  */
 package org.ops4j.pax.cdi.extension.impl.util;
 
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.BeanAttributes;
 
-public abstract class WrappedAnnotated implements Annotated {
+public abstract class WrappedBeanAttributes<T> implements BeanAttributes<T> {
 
-    protected abstract Annotated delegate();
+    protected abstract BeanAttributes<T> attributes();
 
     @Override
-    public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
-        return delegate().getAnnotation(annotationType);
+    public Set<Type> getTypes() {
+        return attributes().getTypes();
     }
 
     @Override
-    public Set<Annotation> getAnnotations() {
-        return delegate().getAnnotations();
+    public Set<Annotation> getQualifiers() {
+        return attributes().getQualifiers();
     }
 
     @Override
-    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-        return delegate().isAnnotationPresent(annotationType);
+    public Class<? extends Annotation> getScope() {
+        return attributes().getScope();
     }
 
     @Override
-    public Type getBaseType() {
-        return delegate().getBaseType();
+    public String getName() {
+        return attributes().getName();
     }
 
     @Override
-    public Set<Type> getTypeClosure() {
-        return delegate().getTypeClosure();
+    public Set<Class<? extends Annotation>> getStereotypes() {
+        return attributes().getStereotypes();
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return delegate().equals(obj);
+    public boolean isAlternative() {
+        return attributes().isAlternative();
     }
 
     @Override
     public int hashCode() {
-        return delegate().hashCode();
+        return attributes().hashCode();
     }
 
     @Override
-    public String toString() {
-        return delegate().toString();
+    public boolean equals(Object obj) {
+        return attributes().equals(obj);
     }
 }

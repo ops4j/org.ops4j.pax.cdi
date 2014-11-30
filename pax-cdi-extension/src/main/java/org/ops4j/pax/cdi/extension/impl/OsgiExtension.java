@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.cdi.extension.impl;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -27,24 +28,22 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
+import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
-import javax.enterprise.inject.spi.WithAnnotations;
 
-import org.ops4j.pax.cdi.api.BundleScoped;
 import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
-import org.ops4j.pax.cdi.api.PrototypeScoped;
 import org.ops4j.pax.cdi.api.SingletonScoped;
 import org.ops4j.pax.cdi.extension.impl.client.OsgiInjectionTarget;
 import org.ops4j.pax.cdi.extension.impl.client.OsgiServiceBean;
@@ -53,9 +52,8 @@ import org.ops4j.pax.cdi.extension.impl.component.ComponentRegistry;
 import org.ops4j.pax.cdi.extension.impl.context.BundleScopeContext;
 import org.ops4j.pax.cdi.extension.impl.context.PrototypeScopeContext;
 import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
-import org.ops4j.pax.cdi.extension.impl.context.SingletonScopedLiteral;
-import org.ops4j.pax.cdi.extension.impl.util.AnnotatedTypeWrapper;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
+import org.ops4j.pax.cdi.extension.impl.util.WrappedBeanAttributes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,8 +84,8 @@ public class OsgiExtension implements Extension {
     }
 
     /**
-     * BeforeBeanDiscovery observer which creates some additional beans and the Service Scope
-     * for OSGi components.
+     * BeforeBeanDiscovery observer which creates some additional beans and the Service Scope for
+     * OSGi components.
      *
      * @param event
      * @param manager
@@ -102,26 +100,37 @@ public class OsgiExtension implements Extension {
         event.addScope(SingletonScoped.class, false, false);
     }
 
-    public <T> void processAnnotatedType(@Observes @WithAnnotations(OsgiServiceProvider.class) ProcessAnnotatedType<T> event) {
-        final AnnotatedType<T> type = event.getAnnotatedType();
-
-        // do nothing if type has one of the three OSGi scopes
-        if (type.getAnnotation(PrototypeScoped.class) != null) {
+    /**
+     * ProcessBeanAttributes observer for {@code OsgiServiceProvider} beans. If the bean does not
+     * have an explicit OSGi scope, the scope is set to {@code SingletonScoped}.
+     *
+     * @param event
+     *            bean attributes event
+     */
+    public <T> void processBeanAttributes(@Observes ProcessBeanAttributes<T> event) {
+        if (event.getAnnotated().getAnnotation(OsgiServiceProvider.class) == null) {
             return;
         }
 
-        if (type.getAnnotation(BundleScoped.class) != null) {
+        final BeanAttributes<T> attributes = event.getBeanAttributes();
+        if (!attributes.getScope().equals(Dependent.class)) {
             return;
         }
 
-        if (type.getAnnotation(SingletonScoped.class) != null) {
-            return;
-        }
+        BeanAttributes<T> wrappedAttributes = new WrappedBeanAttributes<T>() {
 
+            @Override
+            protected BeanAttributes<T> attributes() {
+                return attributes;
+            }
 
-        // add @SingletonScoped annotation
-        AnnotatedTypeWrapper<T> wrappedType = new AnnotatedTypeWrapper<T>(type, new SingletonScopedLiteral());
-        event.setAnnotatedType(wrappedType);
+            @Override
+            public Class<? extends Annotation> getScope() {
+                return SingletonScoped.class;
+            }
+        };
+
+        event.setBeanAttributes(wrappedAttributes);
     }
 
     /**
@@ -142,8 +151,8 @@ public class OsgiExtension implements Extension {
     }
 
     /**
-     * Returns true if the injection point has type Instance<T> for an OsgiService, so we
-     * need to override the injection target.
+     * Returns true if the injection point has type Instance<T> for an OsgiService, so we need to
+     * override the injection target.
      *
      * @param ip
      * @return
@@ -172,15 +181,17 @@ public class OsgiExtension implements Extension {
     }
 
     /**
-     * ProcessBean observer which registers OSGi components and their service dependencies
-     * in the {@link ComponentRegistry}.
+     * ProcessBean observer which registers OSGi components and their service dependencies in the
+     * {@link ComponentRegistry}.
+     *
      * @param event
      */
     public <T> void processBean(@Observes ProcessBean<T> event) {
         Bean<T> bean = event.getBean();
         log.debug("processBean {}", bean);
 
-        OsgiServiceProvider qualifier = event.getAnnotated().getAnnotation(OsgiServiceProvider.class);
+        OsgiServiceProvider qualifier = event.getAnnotated().getAnnotation(
+            OsgiServiceProvider.class);
         if (qualifier != null) {
             componentRegistry.addComponent(bean);
             for (InjectionPoint ip : bean.getInjectionPoints()) {
@@ -215,7 +226,8 @@ public class OsgiExtension implements Extension {
             }
             else {
                 InjectionPoint ip = typeToIpMap.get(type).iterator().next();
-                String msg = "The type of an @OSGi service injection point must not be parameterized. Injection point = " + ip;
+                String msg = "The type of an @OSGi service injection point must not be parameterized. Injection point = "
+                    + ip;
                 event.addDefinitionError(new UnsupportedOperationException(msg));
                 continue;
             }
