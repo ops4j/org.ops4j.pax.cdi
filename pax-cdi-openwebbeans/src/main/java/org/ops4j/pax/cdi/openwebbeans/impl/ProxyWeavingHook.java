@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.ops4j.pax.cdi.api.Constants;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 import org.osgi.framework.hooks.weaving.WovenClass;
@@ -49,20 +50,14 @@ public class ProxyWeavingHook implements WeavingHook {
         if (seen != null) {
             return;
         }
-        boolean isBeanBundle = false;
-        if (isBeanBundle(bundle)) {
+        boolean requiresWeaving = false;
+        if (isBeanBundle(bundle) || isExtension(bundle)) {
             log.debug("weaving {}", wovenClass.getClassName());
             wovenClass.getDynamicImports().add("org.apache.webbeans.proxy");
             wovenClass.getDynamicImports().add("org.apache.webbeans.intercept");
-            isBeanBundle = true;
+            requiresWeaving = true;
         }
-        bundleMap.put(bundle, isBeanBundle);
-
-        // pax-cdi-extension fires CDI events and hence needs dynamic imports
-        // for OpenWebBeans proxies
-        if (bundle.getSymbolicName().equals("org.ops4j.pax.cdi.extension")) {
-            wovenClass.getDynamicImports().add("org.apache.webbeans.*");
-        }
+        bundleMap.put(bundle, requiresWeaving);
     }
 
     /**
@@ -73,16 +68,25 @@ public class ProxyWeavingHook implements WeavingHook {
      */
     private static boolean isBeanBundle(Bundle candidate) {
         List<BundleWire> wires = candidate.adapt(BundleWiring.class).getRequiredWires(
-            "osgi.extender");
+            Constants.EXTENDER_CAPABILITY);
         for (BundleWire wire : wires) {
-            Object object = wire.getCapability().getAttributes().get("osgi.extender");
+            Object object = wire.getCapability().getAttributes().get(Constants.EXTENDER_CAPABILITY);
             if (object instanceof String) {
                 String extender = (String) object;
-                if (extender.equals("pax.cdi")) {
+                if (extender.equals(Constants.CDI_EXTENDER)) {
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    private static boolean isExtension(Bundle candidate) {
+        if (candidate.getSymbolicName().equals(Constants.CDI_EXTENSION_CAPABILITY)) {
+            return true;
+        }
+        List<BundleWire> wires = candidate.adapt(BundleWiring.class).getRequiredWires(
+            Constants.CDI_EXTENSION_CAPABILITY);
+        return !wires.isEmpty();
     }
 }

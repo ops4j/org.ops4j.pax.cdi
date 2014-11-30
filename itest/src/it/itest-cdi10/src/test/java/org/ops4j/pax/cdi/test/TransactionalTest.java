@@ -51,6 +51,8 @@ public class TransactionalTest {
     public Option[] config() {
         return options(
             regressionDefaults(),
+            paxCdiProviderAdapter(),
+            cdiProviderBundles(),
 
             // OpenJPA and dependencies
             mavenBundle("org.apache.geronimo.specs", "geronimo-jpa_2.0_spec").versionAsInProject(),
@@ -71,46 +73,41 @@ public class TransactionalTest {
             mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject(),
 
 
+            // DeltaSpike
             mavenBundle("org.apache.deltaspike.core", "deltaspike-core-api").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.core", "deltaspike-core-impl").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-api").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-api").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-api").versionAsInProject(),
 
 
-            wrappedBundle(mavenBundle("org.apache.deltaspike.core", "deltaspike-core-impl").versionAsInProject())
-                .instructions(
-                    "overwrite=merge",
-                    "Require-Capability=org.ops4j.pax.cdi.extension; filter:=\"(extension=pax-cdi-extension)\", "
-                    + "osgi.extender; filter:=\"(osgi.extender=pax.cdi)\""),
+            // DeltaSpike bundles with missing requirements and capabilities
             wrappedBundle(mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl")
                 .versionAsInProject())
                 .instructions(
                     "overwrite=merge",
-                    "Provide-Capability=org.ops4j.pax.cdi.extension;extension=\"deltaspike-jpa-impl\"",
-                    "Require-Capability=org.ops4j.pax.cdi.extension; filter:=\"(extension=pax-cdi-extension)\", "
-                    + "osgi.extender; filter:=\"(osgi.extender=pax.cdi)\""),
+                    "Provide-Capability=org.ops4j.pax.cdi.extension; extension=\"deltaspike-jpa-impl\"",
+                    "Require-Capability=org.ops4j.pax.cdi.extension; filter:=\"(extension=pax-cdi-extension)\""),
+
             wrappedBundle(mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-impl")
                 .versionAsInProject())
                 .instructions(
                     "overwrite=merge",
-                    "Provide-Capability=org.ops4j.pax.cdi.extension;extension=\"deltaspike-data-extension\"",
-                    "Require-Capability=org.ops4j.pax.cdi.extension; filter:=\"(extension=pax-cdi-extension)\", org.ops4j.pax.cdi.extension; filter:=\"(extension=deltaspike-jpa-impl)\","
-                    + "osgi.extender; filter:=\"(osgi.extender=pax.cdi)\""),
+                    "Provide-Capability=org.ops4j.pax.cdi.extension; extension=\"deltaspike-data-extension\"",
+                    "Require-Capability=org.ops4j.pax.cdi.extension; filter:=\"(extension=pax-cdi-extension)\""),
 
-            wrappedBundle(mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-impl").versionAsInProject())
+            wrappedBundle(mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-impl")
+                .versionAsInProject())
                 .instructions(
                     "overwrite=merge",
-                    "Bundle-SymbolicName=org.apache.deltaspike.modules.deltaspike-partial-bean-module-impl",
-                    "Provide-Capability=org.ops4j.pax.cdi.extension;extension=\"deltaspike-partial-bean-extension\"",
-                    "Require-Capability=org.ops4j.pax.cdi.extension; filter:=\"(extension=pax-cdi-extension)\", "
-                    + "osgi.extender; filter:=\"(osgi.extender=pax.cdi)\""),
+                    "Provide-Capability=org.ops4j.pax.cdi.extension; extension=\"deltaspike-partial-bean-extension\"",
+                    "Require-Capability=org.ops4j.pax.cdi.extension; filter:=\"(extension=pax-cdi-extension)\""),
 
             mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec", "1.0"),
             mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
 
             // Sample bundles
             mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),
-            paxCdiProviderAdapter(), cdiProviderBundles(),
             workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample2-service"));
     }
 
