@@ -1,0 +1,3 @@
+overwrite = merge
+Provide-Capability: org.ops4j.pax.cdi.extension; extension="deltaspike-jpa-impl"
+Require-Capability: org.ops4j.pax.cdi.extension; filter:="(extension=pax-cdi-extension)"
