@@ -119,7 +119,20 @@ public class WeldCdiContainer extends AbstractCdiContainer {
 
     @Override
     public void doStop() {
-        bootstrap.shutdown();
+        try {
+            doWithClassLoader(getContextClassLoader(), new Callable<Object>() {
+
+                @Override
+                public Object call() throws Exception {
+                    bootstrap.shutdown();
+                    return null;
+                }
+            });
+        }
+        // CHECKSTYLE:SKIP
+        catch (Exception exc) {
+            throw new Ops4jException(exc);
+        }
     }
 
     @Override
