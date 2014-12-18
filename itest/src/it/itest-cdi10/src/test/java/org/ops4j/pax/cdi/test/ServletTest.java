@@ -55,7 +55,7 @@ import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class ServletTest {
-    
+
     @Inject
     @Filter(timeout = 100000000)
     private CdiContainerFactory containerFactory;
@@ -63,12 +63,12 @@ public class ServletTest {
     @Inject
     @Filter(timeout = 100000000)
     private CdiContainer container;
-    
-    @Inject 
+
+    @Inject
     @Filter(timeout = 100000000)
     private ServletContext servletContext;
-    
-    private String httpPort = System.getProperty("http.port", "8181");
+
+    private String httpPort = System.getProperty("org.osgi.service.http.port", "8181");
 
     @Configuration
     public Option[] config() {
@@ -88,7 +88,7 @@ public class ServletTest {
 
             systemProperty("org.osgi.service.http.port").value(httpPort),
             paxWebBundles(),
-            
+
             mavenBundle("org.osgi", "org.osgi.compendium").version("4.3.1"),
             mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
             mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
@@ -99,7 +99,7 @@ public class ServletTest {
             mavenBundle("org.slf4j", "jcl-over-slf4j", "1.6.0"));
 
     }
-    
+
     @Before
     public void before() {
         // injecting container and servletContext guarantees that initialization has completed
@@ -150,11 +150,11 @@ public class ServletTest {
         resource = client.resource(String.format("http://localhost:%s/sample1/timestamp", httpPort));
         String timestamp1 = resource.get(String.class);
         Thread.sleep(500);
-        
+
         // force new session
         Client client2 = ApacheHttpClient.create(config);
         client2.resource(String.format("http://localhost:%s/sample1/session", httpPort)).get(String.class);
-        
+
         WebResource resource2 = client2.resource(String.format("http://localhost:%s/sample1/timestamp", httpPort));
         String timestamp3 = resource2.get(String.class);
         assertThat(timestamp3, is(not(timestamp1)));
@@ -165,14 +165,14 @@ public class ServletTest {
         String timestamp4 = resource2.get(String.class);
         assertThat(timestamp4, is(timestamp3));
     }
-    
+
     @Test
     public void checkInvalidateSession() {
         Client client = Client.create();
         WebResource contextRoot = client.resource(String.format("http://localhost:%s/sample1", httpPort));
         WebResource resource1 = contextRoot.path("session");
         assertThat(resource1.get(String.class), is("It worked!\n"));
-        
+
         WebResource resource2 = contextRoot.path("invalidate").queryParam("isBeanConstructed", "");
         assertThat(resource2.get(String.class), is("true"));
 
@@ -181,5 +181,5 @@ public class ServletTest {
 
         WebResource resource4 = contextRoot.path("invalidate").queryParam("isBeanDestroyed", "");
         assertThat(resource4.get(String.class), is("false"));
-    }    
+    }
 }

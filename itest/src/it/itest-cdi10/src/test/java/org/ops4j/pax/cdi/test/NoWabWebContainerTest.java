@@ -17,9 +17,9 @@
  */
 package org.ops4j.pax.cdi.test;
 
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderWebAdapter;
@@ -28,7 +28,7 @@ import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefault
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import static org.ops4j.pax.exam.CoreOptions.propagateSystemProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,7 @@ public class NoWabWebContainerTest {
             paxCdiProviderWebAdapter(),
             cdiProviderBundles(),
 
-            systemProperty("org.osgi.service.http.port").value("8181"),
+            propagateSystemProperty("org.osgi.service.http.port"),
             paxWebBundles(),
 
             mavenBundle("org.osgi", "org.osgi.compendium").version("4.3.1"),
