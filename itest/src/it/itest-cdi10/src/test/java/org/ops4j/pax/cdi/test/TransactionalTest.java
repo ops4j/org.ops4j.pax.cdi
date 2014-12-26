@@ -24,7 +24,6 @@ import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundle
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
-import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
@@ -36,7 +35,6 @@ import org.ops4j.pax.cdi.sample2.service.LibraryServiceClient;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.options.UrlProvisionOption;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.jpa.sample1.model.Author;
@@ -80,14 +78,9 @@ public class TransactionalTest {
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-api").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-api").versionAsInProject(),
 
-            // DeltaSpike bundles with missing requirements and capabilities
-            wrappedDeltaSpikeBundle("deltaspike-jpa-module-impl"),
-            wrappedDeltaSpikeBundle("deltaspike-data-module-impl"),
-            wrappedDeltaSpikeBundle("deltaspike-partial-bean-module-impl"),
-
-//            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl").versionAsInProject(),
-//            mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-impl").versionAsInProject(),
-//            mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-impl").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-impl").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-impl").versionAsInProject(),
 
             mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec", "1.0"),
             mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
@@ -95,11 +88,6 @@ public class TransactionalTest {
             // Sample bundles
             mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),
             workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample2-service"));
-    }
-
-    private static UrlProvisionOption wrappedDeltaSpikeBundle(String artifactId) {
-        String url = mavenBundle("org.apache.deltaspike.modules", artifactId).versionAsInProject().getURL();
-        return bundle(String.format("wrap:%s,file:src/test/resources/%s.bnd", url, artifactId));
     }
 
     @Test
