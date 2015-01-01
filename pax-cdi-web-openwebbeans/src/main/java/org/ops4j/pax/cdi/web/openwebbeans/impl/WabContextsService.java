@@ -395,8 +395,8 @@ public class WabContextsService extends AbstractContextsService {
             // Conversation must be used by one thread at a time
             ConversationImpl owbConversation = (ConversationImpl) conversation;
             owbConversation.updateTimeOut();
-            // Other threads can now access propogated conversation.
-            owbConversation.setInUsed(false);
+            // Other threads can now access propagated conversation.
+            owbConversation.iDontUseItAnymore();
         }
     }
 
