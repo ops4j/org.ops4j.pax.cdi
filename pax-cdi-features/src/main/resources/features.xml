@@ -97,4 +97,19 @@
         <bundle>mvn:org.ops4j.pax.cdi.fragment/pax-cdi-fragment-ds-jpa/${project.version}</bundle>
     </feature>
 
+    <feature name="deltaspike-partial-bean" description="Apache Deltaspike partial bean support" version="${deltaspike.version}"
+             resolver="(obr)">
+        <feature version="${deltaspike.version}">deltaspike-core</feature>
+        <bundle>mvn:org.apache.deltaspike.modules/deltaspike-partial-bean-module-api/${deltaspike.version}</bundle>
+        <bundle>mvn:org.apache.deltaspike.modules/deltaspike-partial-bean-module-impl/${deltaspike.version}</bundle>
+    </feature>
+
+    <feature name="deltaspike-data" description="Apache Deltaspike data support" version="${deltaspike.version}"
+             resolver="(obr)">
+        <feature version="${deltaspike.version}">deltaspike-jpa</feature>
+        <feature version="${deltaspike.version}">deltaspike-partial-bean</feature>
+        <bundle>mvn:org.apache.deltaspike.modules/deltaspike-data-module-api/${deltaspike.version}</bundle>
+        <bundle>mvn:org.apache.deltaspike.modules/deltaspike-data-module-impl/${deltaspike.version}</bundle>
+    </feature>
+
 </features>
