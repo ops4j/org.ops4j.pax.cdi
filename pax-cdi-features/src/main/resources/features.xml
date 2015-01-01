@@ -41,6 +41,7 @@
         <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-spi/${openwebbeans15.version}</bundle>
         <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-impl/${openwebbeans15.version}</bundle>
         <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-el22/${openwebbeans15.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-osgi/${openwebbeans15.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-openwebbeans/${project.version}</bundle>
     </feature>
 
