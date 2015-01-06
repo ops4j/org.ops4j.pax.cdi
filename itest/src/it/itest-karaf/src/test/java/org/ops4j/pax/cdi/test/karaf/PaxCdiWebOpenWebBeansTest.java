@@ -29,6 +29,7 @@ import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
 import javax.inject.Inject;
 
 import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
@@ -50,6 +51,7 @@ public class PaxCdiWebOpenWebBeansTest {
     }
 
     @Test
+    @Ignore("Requires Karaf 4 with Jetty 9 support")
     public void test() throws Exception {
         assertThat(factory, is(notNullValue()));
     }
