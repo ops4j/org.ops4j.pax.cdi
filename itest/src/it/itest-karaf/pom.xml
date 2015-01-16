@@ -267,6 +267,9 @@
                         <pax.cdi.provider>${pax.cdi.provider}</pax.cdi.provider>
                         <pax.exam.karaf.version>${karaf.version}</pax.exam.karaf.version>
                     </systemPropertyVariables>
+                    <includes>
+                        <include>**/${pax.cdi.provider.name}/**</include>
+                    </includes>
                 </configuration>
             </plugin>
         </plugins>
@@ -307,6 +310,7 @@
             </activation>
             <properties>
                 <pax.cdi.provider>owb1</pax.cdi.provider>
+                <pax.cdi.provider.name>owb</pax.cdi.provider.name>
             </properties>
             <dependencies>
 
@@ -333,6 +337,7 @@
             </activation>
             <properties>
                 <pax.cdi.provider>weld1</pax.cdi.provider>
+                <pax.cdi.provider.name>weld</pax.cdi.provider.name>
             </properties>
             <dependencies>
 
@@ -364,6 +369,7 @@
             </activation>
             <properties>
                 <pax.cdi.provider>weld2</pax.cdi.provider>
+                <pax.cdi.provider.name>weld</pax.cdi.provider.name>
             </properties>
             <dependencies>
 
