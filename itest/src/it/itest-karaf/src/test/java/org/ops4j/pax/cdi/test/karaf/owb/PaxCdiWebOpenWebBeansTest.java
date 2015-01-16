@@ -15,13 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.test.karaf;
+package org.ops4j.pax.cdi.test.karaf.owb;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.PAX_CDI_FEATURES;
-import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.SAMPLE1;
+import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.PAX_WEB_FEATURES;
+import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.SAMPLE1_WEB;
 import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.regressionDefaults;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
@@ -30,32 +31,28 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.cdi.sample1.IceCreamService;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 
 @RunWith(PaxExam.class)
-public class PaxCdiOpenWebBeansTest {
+public class PaxCdiWebOpenWebBeansTest {
 
     @Inject
     private CdiContainerFactory factory;
-    
-    @Inject
-    private IceCreamService iceCreamService;
 
     @Configuration
     public Option[] config() {
-        return options( 
+        return options(
             regressionDefaults(),
-            features(PAX_CDI_FEATURES, "pax-cdi-openwebbeans"),
-            SAMPLE1);
+            features(PAX_WEB_FEATURES, "war"),
+            features(PAX_CDI_FEATURES, "pax-cdi-web-openwebbeans"),
+            SAMPLE1_WEB);
     }
 
     @Test
     public void test() throws Exception {
         assertThat(factory, is(notNullValue()));
-        assertThat(iceCreamService, is(notNullValue()));
     }
 }
