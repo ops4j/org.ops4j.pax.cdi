@@ -129,7 +129,12 @@
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Service-Component>OSGI-INF/*</Service-Component>
-                        <Import-Package>org.apache.webbeans.xml, *</Import-Package>
+                        <Import-Package>
+                            org.apache.webbeans.xml,
+                            org.eclipse.jetty*;version="[8,10)",
+                            org.slf4j;version="[1.6,2)";resolution:=optional,
+                            *
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
