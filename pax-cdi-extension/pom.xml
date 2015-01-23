@@ -74,7 +74,11 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
-                        <Import-Package>org.osgi.framework;version="[1.7,2)", *</Import-Package>
+                        <Import-Package>
+                            org.osgi.framework;version="[1.7,2)",
+                            org.slf4j;version="[1.6,2)";resolution:=optional,
+                            *
+                        </Import-Package>
                         <Provide-Capability>
                             org.ops4j.pax.cdi.extension; extension=pax-cdi-extension; version:Version=${version;====;${replace;${project.version};-;.}}
                         </Provide-Capability>

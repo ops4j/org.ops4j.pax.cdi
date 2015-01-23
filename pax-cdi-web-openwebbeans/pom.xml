@@ -132,7 +132,10 @@
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Import-Package>
                             javax.servlet.*;version="[2,4)",
-                            org.apache.webbeans.xml, *
+                            org.eclipse.jetty*;version="[8,10)",
+                            org.apache.webbeans.xml,
+                            org.slf4j;version="[1.6,2)";resolution:=optional,
+                            *
                         </Import-Package>
                         <_dsannotations>*</_dsannotations>                        
                     </instructions>

@@ -77,6 +77,10 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+                        <Import-Package>
+                            org.slf4j;version="[1.6,2)";resolution:=optional,
+                            *
+                        </Import-Package>
                         <Provide-Capability>
                             osgi.extender; osgi.extender="pax.cdi";
                             version:Version=${version;====;${replace;${project.version};-;.}}
