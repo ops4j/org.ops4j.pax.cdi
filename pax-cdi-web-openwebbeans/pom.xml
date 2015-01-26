@@ -133,6 +133,8 @@
                             org.apache.webbeans.xml,
                             org.eclipse.jetty*;version="[8,10)",
                             org.slf4j;version="[1.6,2)";resolution:=optional,
+						    javax.servlet;version="[2.6,4)",
+						    javax.servlet.http;version="[2.6,4)",
                             *
                         </Import-Package>
                     </instructions>

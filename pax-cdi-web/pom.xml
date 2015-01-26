@@ -67,6 +67,7 @@
                         <Import-Package>
                             org.ops4j.pax.web.*;version="[3.0,5.0)",
                             org.slf4j;version="[1.6,2)";resolution:=optional,
+                            javax.servlet;version="[2.6,4)",
                             *
                         </Import-Package>
                     </instructions>
