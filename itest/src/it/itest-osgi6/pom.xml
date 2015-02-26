@@ -5,7 +5,7 @@
         <groupId>org.ops4j.pax.cdi</groupId>
         <version>1.0.0-SNAPSHOT</version>
         <artifactId>pax-cdi-parent</artifactId>
-        <relativePath>../../../pax-cdi-parent</relativePath>
+        <relativePath>../../../../pax-cdi-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>org.ops4j.pax.cdi.itest</groupId>
@@ -447,7 +447,7 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.framework</artifactId>
-                    <version>4.5.0-SNAPSHOT</version>
+                    <version>4.6.0</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -465,7 +465,7 @@
         <profile>
             <id>owb15</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
                 <pax.cdi.provider>owb15</pax.cdi.provider>
@@ -490,7 +490,7 @@
         <profile>
             <id>weld2</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <pax.cdi.provider>weld2</pax.cdi.provider>
@@ -522,3 +522,4 @@
     </profiles>
 
 </project>
+

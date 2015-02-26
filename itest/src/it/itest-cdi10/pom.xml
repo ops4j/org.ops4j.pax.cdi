@@ -11,7 +11,7 @@
     <groupId>org.ops4j.pax.cdi.itest</groupId>
     <artifactId>itest-cdi10</artifactId>
 
-    <name>OPS4J Pax CDI 1.0 Integration Tests</name>
+    <name>OPS4J Pax CDI 1.2 Integration Tests</name>
 
     <dependencyManagement>
         <dependencies>
@@ -465,40 +465,9 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.framework</artifactId>
-                    <version>4.5.0-SNAPSHOT</version>
+                    <version>4.6.0</version>
                     <scope>test</scope>
                 </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>owb1</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <pax.cdi.provider>owb1</pax.cdi.provider>
-            </properties>
-            <dependencies>
-
-                <dependency>
-                    <groupId>org.ops4j.pax.cdi</groupId>
-                    <artifactId>pax-cdi-web-openwebbeans</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.openwebbeans</groupId>
-                    <artifactId>openwebbeans-web</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-                
-                <dependency>
-                    <groupId>org.apache.xbean</groupId>
-                    <artifactId>xbean-asm5-shaded</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-
             </dependencies>
         </profile>
         <profile>
@@ -544,37 +513,6 @@
 
             </dependencies>
         </profile>
-        <profile>
-            <id>weld1</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <pax.cdi.provider>weld1</pax.cdi.provider>
-            </properties>
-            <dependencies>
-
-                <dependency>
-                    <groupId>org.ops4j.pax.cdi</groupId>
-                    <artifactId>pax-cdi-web-weld</artifactId>
-                    <version>${project.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.servicemix.bundles</groupId>
-                    <artifactId>org.apache.servicemix.bundles.asm</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.weld</groupId>
-                    <artifactId>weld-osgi-bundle</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
         <profile>
             <id>weld2</id>
             <activation>

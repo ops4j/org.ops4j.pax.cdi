@@ -153,14 +153,18 @@ public class TestConfiguration {
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web"),
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web-openwebbeans"),
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
-                    mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject()
+                    mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject(),
+                    // needed by pax-cdi-web-openwebean
+                    mavenBundle("org.apache.geronimo.specs", "geronimo-jsp_2.2_spec", "1.2")
                     );
 
             case WELD2:
                 return composite(
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web"),
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web-weld"),
-                    mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec", "1.0")
+                    mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec", "1.0"),
+                    // needed by pax-cdi-web-weld
+                    mavenBundle("org.apache.geronimo.specs", "geronimo-jsp_2.2_spec", "1.2")
                     );
 
             default:

@@ -9,7 +9,7 @@
         <groupId>org.ops4j.pax.cdi</groupId>
         <artifactId>pax-cdi-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../pom</relativePath>
+        <relativePath>../pax-cdi-parent</relativePath>
     </parent>
 
     <groupId>org.ops4j.pax.cdi</groupId>
@@ -45,32 +45,16 @@
                         </configuration>
                         <executions>
                             <execution>
-                                <id>equinox-owb1</id>
+                                <id>equinox-owb15</id>
                                 <goals>
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
                                     <profiles>
                                         <profile>equinox</profile>
-                                        <profile>owb1</profile>
+                                        <profile>owb15</profile>
                                     </profiles>
-                                    <cloneProjectsTo>${project.build.directory}/equinox-owb1</cloneProjectsTo>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>equinox-weld1</id>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <profiles>
-                                        <profile>equinox</profile>
-                                        <profile>weld1</profile>
-                                    </profiles>
-                                    <cloneProjectsTo>${project.build.directory}/equinox-weld1</cloneProjectsTo>
-                                    <pomExcludes>
-                                        <pomExclude>itest-karaf/pom.xml</pomExclude>
-                                    </pomExcludes>
+                                    <cloneProjectsTo>${project.build.directory}/equinox-owb15</cloneProjectsTo>
                                 </configuration>
                             </execution>
                             <execution>
@@ -84,42 +68,25 @@
                                         <profile>weld2</profile>
                                     </profiles>
                                     <cloneProjectsTo>${project.build.directory}/equinox-weld2</cloneProjectsTo>
-                                    <pomExcludes>
-                                        <pomExclude>itest-karaf/pom.xml</pomExclude>
-                                    </pomExcludes>
+                                    <!--<pomExcludes>-->
+                                        <!--<pomExclude>itest-karaf/pom.xml</pomExclude>-->
+                                    <!--</pomExcludes>-->
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>felix-owb1</id>
+                                <id>felix-owb15</id>
                                 <goals>
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
                                     <profiles>
                                         <profile>felix</profile>
-                                        <profile>owb1</profile>
+                                        <profile>owb15</profile>
                                     </profiles>
-                                    <cloneProjectsTo>${project.build.directory}/felix-owb1</cloneProjectsTo>
-                                    <pomExcludes>
-                                        <pomExclude>itest-osgi6/pom.xml</pomExclude>
-                                    </pomExcludes>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>felix-weld1</id>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <profiles>
-                                        <profile>felix</profile>
-                                        <profile>weld1</profile>
-                                    </profiles>
-                                    <cloneProjectsTo>${project.build.directory}/felix-weld1</cloneProjectsTo>
-                                    <pomExcludes>
-                                        <pomExclude>itest-karaf/pom.xml</pomExclude>
-                                        <pomExclude>itest-osgi6/pom.xml</pomExclude>
-                                    </pomExcludes>
+                                    <cloneProjectsTo>${project.build.directory}/felix-owb15</cloneProjectsTo>
+                                    <!--<pomExcludes>-->
+                                        <!--<pomExclude>itest-osgi6/pom.xml</pomExclude>-->
+                                    <!--</pomExcludes>-->
                                 </configuration>
                             </execution>
                             <execution>
@@ -133,10 +100,10 @@
                                         <profile>weld2</profile>
                                     </profiles>
                                     <cloneProjectsTo>${project.build.directory}/felix-weld2</cloneProjectsTo>
-                                    <pomExcludes>
-                                        <pomExclude>itest-karaf/pom.xml</pomExclude>
-                                        <pomExclude>itest-osgi6/pom.xml</pomExclude>
-                                    </pomExcludes>
+                                    <!--<pomExcludes>-->
+                                        <!--<pomExclude>itest-karaf/pom.xml</pomExclude>-->
+                                        <!--<pomExclude>itest-osgi6/pom.xml</pomExclude>-->
+                                    <!--</pomExcludes>-->
                                 </configuration>
                             </execution>
                         </executions>

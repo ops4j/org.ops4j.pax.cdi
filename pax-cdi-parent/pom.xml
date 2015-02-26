@@ -14,6 +14,7 @@
 
     <properties>
         <deltaspike.version>1.2.1</deltaspike.version>
+        <guava.version>13.0.1</guava.version>
         <jersey.version>1.13</jersey.version>
         <logback.version>1.0.0</logback.version>
         <openwebbeans15.version>1.5.0-SNAPSHOT</openwebbeans15.version>
@@ -286,6 +287,12 @@
                 <groupId>org.codehaus.plexus</groupId>
                 <artifactId>plexus-utils</artifactId>
                 <version>3.0.17</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
 
         </dependencies>
