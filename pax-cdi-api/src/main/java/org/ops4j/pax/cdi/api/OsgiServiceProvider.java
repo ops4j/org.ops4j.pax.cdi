@@ -1,17 +1,17 @@
 /*
  * Copyright 2012 Harald Wellmann.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
  * implied.
- *
+ * 
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -42,24 +42,26 @@ import javax.inject.Qualifier;
  * registered, defaulting to the interfaces the service class is assignable to, or to the service
  * class itself, if it is not assignable to any interface.
  * <p>
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 @Qualifier
 @Target({ TYPE, METHOD, PARAMETER, FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface OsgiServiceProvider {
-
-    /**
-     * The list of classes or interfaces under which the service is registered. The class annotated
-     * by this qualifier must be assignable to each class in this list.
-     * <p>
-     * If this list is empty, the service will be registered for each interface it is assignable
-     * to, or for the service class itself, if the service is not assignable to any interface.
-     * @return
-     */
-    @Nonbinding
-    Class<?>[] classes() default { };
+	
+	/**
+	 * The list of classes or interfaces under which the service is registered. The class annotated
+	 * by this qualifier must be assignable to each class in this list.
+	 * <p>
+	 * If this list is empty, the service will be registered for each interface it is assignable
+	 * to, or for the service class itself, if the service is not assignable to any interface.
+	 * @return
+	 */
+	@Nonbinding
+	Class<?>[] classes() default {};
+	
+	int ranking() default 0;
 }

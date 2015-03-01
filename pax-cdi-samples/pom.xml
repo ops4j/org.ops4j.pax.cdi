@@ -24,6 +24,8 @@
         <module>pax-cdi-sample5-client1</module>
         <module>pax-cdi-sample5-client2</module>
         <module>pax-cdi-sample6</module>
+        <module>pax-cdi-sample7-api</module>
+        <module>pax-cdi-sample7-service-impl100</module>
     </modules>
 
 </project>

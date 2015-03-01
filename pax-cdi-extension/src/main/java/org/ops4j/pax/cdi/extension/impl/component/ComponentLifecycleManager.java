@@ -42,6 +42,7 @@ import org.ops4j.pax.cdi.extension.impl.context.ServiceFactoryBuilder;
 import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceException;
@@ -56,209 +57,212 @@ import org.slf4j.LoggerFactory;
 @ApplicationScoped
 public class ComponentLifecycleManager implements ComponentDependencyListener {
 
-    private static Logger log = LoggerFactory.getLogger(ComponentLifecycleManager.class);
+	private static Logger			log	= LoggerFactory.getLogger(ComponentLifecycleManager.class);
 
-    @Inject
-    private BeanManager beanManager;
+	@Inject
+	private BeanManager				beanManager;
 
-    /**
-     * Registry for all service components of the current bean bundle.
-     */
-    @Inject
-    private ComponentRegistry componentRegistry;
+	/**
+	 * Registry for all service components of the current bean bundle.
+	 */
+	@Inject
+	private ComponentRegistry		componentRegistry;
 
-    /**
-     * Bundle context of the current bean bundle.
-     */
-    @Inject
-    private BundleContext bundleContext;
+	/**
+	 * Bundle context of the current bean bundle.
+	 */
+	@Inject
+	private BundleContext			bundleContext;
 
-    /**
-     * Service context for OSGi component {@code @ServiceScoped} contextual instances.
-     */
-    @Inject
-    private SingletonScopeContext context;
+	/**
+	 * Service context for OSGi component {@code @ServiceScoped} contextual instances.
+	 */
+	@Inject
+	private SingletonScopeContext	context;
 
-    private ServiceFactoryBuilder serviceFactoryBuilder;
+	private ServiceFactoryBuilder	serviceFactoryBuilder;
 
-    /**
-     * Starts the component lifecycle for this bean bundle.
-     * <p>
-     * Registers all satisfied components and starts a service tracker for unsatisfied dependencies.
-     */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void start() {
-        componentRegistry.setBundleContext(bundleContext);
-        if (PrototypeScopeUtils.hasPrototypeScope(bundleContext)) {
-            this.serviceFactoryBuilder = new Osgi6ServiceFactoryBuilder(beanManager);
-        }
-        else {
-            this.serviceFactoryBuilder = new ServiceFactoryBuilder(beanManager);
-        }
+	/**
+	 * Starts the component lifecycle for this bean bundle.
+	 * <p>
+	 * Registers all satisfied components and starts a service tracker for unsatisfied dependencies.
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void start() {
+		this.componentRegistry.setBundleContext(this.bundleContext);
+		if (PrototypeScopeUtils.hasPrototypeScope(this.bundleContext)) {
+			this.serviceFactoryBuilder = new Osgi6ServiceFactoryBuilder(this.beanManager);
+		}
+		else {
+			this.serviceFactoryBuilder = new ServiceFactoryBuilder(this.beanManager);
+		}
 
-        // register services for all components that are satisfied already
-        for (Bean bean : componentRegistry.getComponents()) {
-            if (isBeanFromCurrentBundle(bean)) {
-                ComponentDescriptor descriptor = componentRegistry.getDescriptor(bean);
-                descriptor.setListener(this);
-                if (descriptor.isSatisfied()) {
-                    log.info("component {} is available", bean);
-                    Object service = serviceFactoryBuilder.buildServiceFactory(descriptor);
-                    registerService(bean, service, descriptor);
-                }
-                descriptor.start();
-            }
-        }
+		// register services for all components that are satisfied already
+		for (Bean bean : this.componentRegistry.getComponents()) {
+			if (isBeanFromCurrentBundle(bean)) {
+				ComponentDescriptor descriptor = this.componentRegistry.getDescriptor(bean);
+				descriptor.setListener(this);
+				if (descriptor.isSatisfied()) {
+					log.info("component {} is available", bean);
+					Object service = this.serviceFactoryBuilder.buildServiceFactory(descriptor);
+					registerService(bean, service, descriptor);
+				}
+				descriptor.start();
+			}
+		}
 
-        verifyRequiredNonComponentDependencies();
-    }
+		verifyRequiredNonComponentDependencies();
+	}
 
-    private void verifyRequiredNonComponentDependencies() {
-        for (InjectionPoint ip : componentRegistry.getNonComponentDependencies()) {
-            verifyRequiredDependency(ip);
-        }
-    }
+	private void verifyRequiredNonComponentDependencies() {
+		for (InjectionPoint ip : this.componentRegistry.getNonComponentDependencies()) {
+			verifyRequiredDependency(ip);
+		}
+	}
 
-    private void verifyRequiredDependency(InjectionPoint ip) {
-        BundleContext bc = InjectionPointOsgiUtils.getBundleContext(ip);
-        OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
-        Type serviceType = ip.getType();
-        Class<?> klass = (Class<?>) serviceType;
-        String filter = InjectionPointOsgiUtils.getFilter(klass, qualifier);
-        try {
-            Collection<?> serviceReferences = bc.getServiceReferences(klass, filter);
-            if (serviceReferences.isEmpty()) {
-                String msg = "no matching service reference for injection point " + ip;
-                throw new ServiceException(msg,ServiceException.UNREGISTERED);
-            }
-        }
-        catch (InvalidSyntaxException e) {
-            String msg = "invalid filter syntax: " + filter;
-            throw new ServiceException(msg,ServiceException.UNSPECIFIED);
-        }
-    }
+	private void verifyRequiredDependency(InjectionPoint ip) {
+		BundleContext bc = InjectionPointOsgiUtils.getBundleContext(ip);
+		OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
+		Type serviceType = ip.getType();
+		Class<?> klass = (Class<?>) serviceType;
+		String filter = InjectionPointOsgiUtils.getFilter(klass, qualifier);
+		try {
+			Collection<?> serviceReferences = bc.getServiceReferences(klass, filter);
+			if (serviceReferences.isEmpty()) {
+				String msg = "no matching service reference for injection point " + ip;
+				throw new ServiceException(msg, ServiceException.UNREGISTERED);
+			}
+		} catch (InvalidSyntaxException e) {
+			String msg = "invalid filter syntax: " + filter;
+			throw new ServiceException(msg, ServiceException.UNSPECIFIED);
+		}
+	}
 
-    /**
-     * Stops the component lifecycle for the current bean bundle.
-     * <p>
-     * Closes the service tracker and unregisters all services for OSGi components.
-     */
-    @SuppressWarnings("rawtypes")
-    public void stop() {
-        ComponentDependencyListener noop = new DefaultComponentDependencyListener();
-        for (Bean bean : componentRegistry.getComponents()) {
-            ComponentDescriptor descriptor = componentRegistry.getDescriptor(bean);
-            descriptor.setListener(noop);
-            descriptor.stop();
-        }
-    }
+	/**
+	 * Stops the component lifecycle for the current bean bundle.
+	 * <p>
+	 * Closes the service tracker and unregisters all services for OSGi components.
+	 */
+	@SuppressWarnings("rawtypes")
+	public void stop() {
+		ComponentDependencyListener noop = new DefaultComponentDependencyListener();
+		for (Bean bean : this.componentRegistry.getComponents()) {
+			ComponentDescriptor descriptor = this.componentRegistry.getDescriptor(bean);
+			descriptor.setListener(noop);
+			descriptor.stop();
+		}
+	}
 
-    private boolean isBeanFromCurrentBundle(Bean<?> bean) {
-        long extendedBundleId = bundleContext.getBundle().getBundleId();
-        Class<?> klass = bean.getBeanClass();
-        long serviceBundleId = FrameworkUtil.getBundle(klass).getBundleId();
-        return serviceBundleId == extendedBundleId;
-    }
+	private boolean isBeanFromCurrentBundle(Bean<?> bean) {
+		long extendedBundleId = this.bundleContext.getBundle().getBundleId();
+		Class<?> klass = bean.getBeanClass();
+		long serviceBundleId = FrameworkUtil.getBundle(klass).getBundleId();
+		return serviceBundleId == extendedBundleId;
+	}
 
-    /**
-     * Registers the OSGi service for the given OSGi component bean
-     *
-     * @param bean
-     *            OSGi component bean
-     * @param service
-     *            contextual instance of the given bean type
-     */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private <S> void registerService(Bean<S> bean, S service, ComponentDescriptor descriptor) {
-        // only register services for classes located in the extended bundle
-        if (!isBeanFromCurrentBundle(bean)) {
-            return;
-        }
+	/**
+	 * Registers the OSGi service for the given OSGi component bean
+	 *
+	 * @param bean
+	 *            OSGi component bean
+	 * @param service
+	 *            contextual instance of the given bean type
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private <S> void registerService(Bean<S> bean, S service, ComponentDescriptor descriptor) {
+		// only register services for classes located in the extended bundle
+		if (!isBeanFromCurrentBundle(bean)) {
+			return;
+		}
 
-        Class<?> klass = bean.getBeanClass();
-        AnnotatedType<?> annotatedType = beanManager.createAnnotatedType(klass);
-        OsgiServiceProvider provider = annotatedType.getAnnotation(OsgiServiceProvider.class);
+		Class<?> klass = bean.getBeanClass();
+		AnnotatedType<?> annotatedType = this.beanManager.createAnnotatedType(klass);
+		OsgiServiceProvider provider = annotatedType.getAnnotation(OsgiServiceProvider.class);
 
-        String[] typeNames;
-        if (provider.classes().length == 0) {
-            typeNames = getTypeNamesForBeanTypes(bean);
-        }
-        else {
-            typeNames = getTypeNamesForClasses(provider.classes());
-        }
+		String[] typeNames;
+		if (provider.classes().length == 0) {
+			typeNames = getTypeNamesForBeanTypes(bean);
+		}
+		else {
+			typeNames = getTypeNamesForClasses(provider.classes());
+		}
 
-        Dictionary<String, Object> props = createProperties(klass, service);
-        log.debug("publishing service {}, props = {}", typeNames[0], props);
-        ServiceRegistration<?> reg = bundleContext.registerService(typeNames, service, props);
-        descriptor.setServiceRegistration(reg);
-    }
+		Dictionary<String, Object> props = createProperties(klass, provider.ranking());
+		log.debug("publishing service {}, props = {}", typeNames[0], props);
+		ServiceRegistration<?> reg = this.bundleContext.registerService(typeNames, service, props);
+		descriptor.setServiceRegistration(reg);
+	}
 
-    private <S> void unregisterService(Bean<S> bean, Object service,
-        ComponentDescriptor<S> descriptor) {
-        ServiceRegistration<S> reg = descriptor.getServiceRegistration();
-        if (reg != null) {
-            log.debug("removing service {}", reg);
-            try {
-                reg.unregister();
-            }
-            catch (IllegalStateException exc) {
-                // Ignore if the service has already been unregistered
-            }
-        }
-    }
+	private <S> void unregisterService(Bean<S> bean, Object service,
+			ComponentDescriptor<S> descriptor) {
+		ServiceRegistration<S> reg = descriptor.getServiceRegistration();
+		if (reg != null) {
+			log.debug("removing service {}", reg);
+			try {
+				reg.unregister();
+			} catch (IllegalStateException exc) {
+				// Ignore if the service has already been unregistered
+			}
+		}
+	}
 
-    private String[] getTypeNamesForBeanTypes(Bean<?> bean) {
-        Set<Type> closure = bean.getTypes();
-        String[] typeNames = new String[closure.size()];
-        int i = 0;
-        for (Type type : closure) {
-            Class<?> c = (Class<?>) type;
-            if (c.isInterface()) {
-                typeNames[i++] = c.getName();
-            }
-        }
-        if (i == 0) {
-            typeNames[i++] = bean.getBeanClass().getName();
-        }
-        return Arrays.copyOf(typeNames, i);
-    }
+	private String[] getTypeNamesForBeanTypes(Bean<?> bean) {
+		Set<Type> closure = bean.getTypes();
+		String[] typeNames = new String[closure.size()];
+		int i = 0;
+		for (Type type : closure) {
+			Class<?> c = (Class<?>) type;
+			if (c.isInterface()) {
+				typeNames[i++] = c.getName();
+			}
+		}
+		if (i == 0) {
+			typeNames[i++] = bean.getBeanClass().getName();
+		}
+		return Arrays.copyOf(typeNames, i);
+	}
 
-    private String[] getTypeNamesForClasses(Class<?>[] classes) {
-        String[] typeNames = new String[classes.length];
-        for (int i = 0; i < classes.length; i++) {
-            typeNames[i] = classes[i].getName();
-        }
-        return typeNames;
-    }
+	private String[] getTypeNamesForClasses(Class<?>[] classes) {
+		String[] typeNames = new String[classes.length];
+		for (int i = 0; i < classes.length; i++) {
+			typeNames[i] = classes[i].getName();
+		}
+		return typeNames;
+	}
 
-    private Dictionary<String, Object> createProperties(Class<?> klass, Object service) {
-        Properties props = klass.getAnnotation(Properties.class);
-        if (props == null) {
-            return null;
-        }
-        Hashtable<String, Object> dict = new Hashtable<String, Object>();
-        for (Property property : props.value()) {
-            dict.put(property.name(), property.value());
-        }
-        return dict;
-    }
+	private Dictionary<String, Object> createProperties(Class<?> klass, int ranking) {
+		Properties props = klass.getAnnotation(Properties.class);
+		if (props == null && ranking == 0) {
+			return null;
+		}
+		Hashtable<String, Object> dict = new Hashtable<String, Object>();
+		if (props != null) {
+			for (Property property : props.value()) {
+				dict.put(property.name(), property.value());
+			}
+		}
+		if (ranking != 0) {
+			dict.put(Constants.SERVICE_RANKING, ranking);
+		}
+		return dict;
+	}
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    @Override
-    public <S> void onComponentSatisfied(ComponentDescriptor<S> descriptor) {
-        Bean bean = descriptor.getBean();
-        log.info("component {} is available", bean);
-        Object sf = serviceFactoryBuilder.buildServiceFactory(descriptor);
-        registerService(bean, sf, descriptor);
-    }
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public <S> void onComponentSatisfied(ComponentDescriptor<S> descriptor) {
+		Bean bean = descriptor.getBean();
+		log.info("component {} is available", bean);
+		Object sf = this.serviceFactoryBuilder.buildServiceFactory(descriptor);
+		registerService(bean, sf, descriptor);
+	}
 
-    @Override
-    public <S> void onComponentUnsatisfied(ComponentDescriptor<S> descriptor) {
-        Bean<S> bean = descriptor.getBean();
-        S service = context.get(bean);
-        if (service != null) {
-            unregisterService(bean, service, descriptor);
-            context.destroy(bean);
-        }
-    }
+	@Override
+	public <S> void onComponentUnsatisfied(ComponentDescriptor<S> descriptor) {
+		Bean<S> bean = descriptor.getBean();
+		S service = this.context.get(bean);
+		if (service != null) {
+			unregisterService(bean, service, descriptor);
+			this.context.destroy(bean);
+		}
+	}
 }
