@@ -26,6 +26,9 @@
         <module>pax-cdi-sample6</module>
         <module>pax-cdi-sample7-api</module>
         <module>pax-cdi-sample7-service-impl100</module>
+        <module>pax-cdi-sample7-service-impl101</module>
+        <module>pax-cdi-sample7-service-impl102</module>
+        <module>pax-cdi-sample7-client-dynamic</module>
     </modules>
 
 </project>
