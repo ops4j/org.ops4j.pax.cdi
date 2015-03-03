@@ -23,7 +23,9 @@ import java.util.concurrent.Callable;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.ops4j.pax.cdi.api.OsgiService;
+import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * A dynamic proxy invocation handler which looks up a matching OSGi service for a CDI injection
@@ -35,31 +37,35 @@ import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
  */
 public class DynamicInvocationHandler<S> extends AbstractServiceInvocationHandler<S> {
 
-    public DynamicInvocationHandler(InjectionPoint ip) {
-        super(ip);
-    }
+	private ServiceTracker<S, S>	serviceTracker;
+	
+	@SuppressWarnings("unchecked")
+	public DynamicInvocationHandler(InjectionPoint ip) {
+		super(ip);
+		this.serviceTracker = InjectionPointOsgiUtils.getServiceTracker(ip);
+		this.serviceTracker.open();
+	}
 
-    @Override
-    // CHECKSTYLE:SKIP
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-        final S service = serviceObjects.getService();
-        Object result = ContextClassLoaderUtils.doWithClassLoader(
-            cdiContainer.getContextClassLoader(), new Callable<Object>() {
+	@Override
+	// CHECKSTYLE:SKIP
+	public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+		final S service = this.serviceTracker.waitForService(1000);
+		Object result = ContextClassLoaderUtils.doWithClassLoader(
+				this.cdiContainer.getContextClassLoader(), new Callable<Object>() {
+					@Override
+					public Object call() throws Exception {
+						if (service != null) {
+							return method.invoke(service, args);
+						}
+						return null;
+					}
+				});
+		this.serviceObjects.ungetService(service);
+		return result;
+	}
 
-                @Override
-                public Object call() throws Exception {
-                    if (service != null) {
-                        return method.invoke(service, args);
-                    }
-                    return null;
-                }
-            });
-        serviceObjects.ungetService(service);
-        return result;
-    }
-
-    @Override
-    public void release() {
-        // nothing
-    }
+	@Override
+	public void release() {
+		// Do nothing
+	}
 }
