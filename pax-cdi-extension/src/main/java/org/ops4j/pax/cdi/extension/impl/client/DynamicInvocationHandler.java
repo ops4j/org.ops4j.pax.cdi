@@ -46,7 +46,7 @@ public class DynamicInvocationHandler<S> extends AbstractServiceInvocationHandle
 		super(ip);
 		this.timeout = InjectionPointOsgiUtils.getTimeout(ip);
 		this.serviceTracker = InjectionPointOsgiUtils.getServiceTracker(ip);
-		this.serviceTracker.open();
+		this.serviceTracker.open(); // martin.schaefer: where to close it?
 	}
 	
 	@Override

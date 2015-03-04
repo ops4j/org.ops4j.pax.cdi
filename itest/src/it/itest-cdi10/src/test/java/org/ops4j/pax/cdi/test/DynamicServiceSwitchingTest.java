@@ -2,14 +2,14 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
  * implied.
- * 
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -43,16 +43,16 @@ import org.osgi.framework.InvalidSyntaxException;
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerMethod.class)
 public class DynamicServiceSwitchingTest {
-	
+
 	@Inject
 	private CdiContainerFactory	containerFactory;
-	
+
 	@Inject
 	private BundleContext		bc;
-	
+
 	@Inject
 	private RankedServiceClient	sut;				// System under test
-													
+
 	@Configuration
 	public Option[] config() {
 		return options(
@@ -65,56 +65,52 @@ public class DynamicServiceSwitchingTest {
 				paxCdiProviderAdapter(),
 				cdiProviderBundles());
 	}
-	
+
 	@Test
 	public void checkContainerFactory() {
-		System.out.println("Containers: " + this.containerFactory.getContainers().size());
 		assertThat(this.containerFactory.getContainers().size(), is(4));
 	}
-	
+
 	@Test
 	public void checkInitialServiceSelection() {
-		System.out.println("sut.getServiceRanking(): " + this.sut.getServiceRanking());
+		assertThat(this.sut.getServiceRanking(), is(102));
+	}
+	
+	@Test
+	public void checkServiceSwitchingAfterShutdownAndRestart1() throws InvalidSyntaxException, BundleException, InterruptedException {
+		assertThat(this.sut.getServiceRanking(), is(102));
+		stopRankedService(102);
+		assertThat(this.sut.getServiceRanking(), is(101));
+		stopRankedService(101);
+		assertThat(this.sut.getServiceRanking(), is(100));
+		startRankedService(102);
+		assertThat(this.sut.getServiceRanking(), is(102));
+		startRankedService(101);
+		assertThat(this.sut.getServiceRanking(), is(102));
+		stopRankedService(100);
 		assertThat(this.sut.getServiceRanking(), is(102));
 	}
 
 	@Test
-	public void checkServiceSwitchingAfterShutdownOneByOne() throws InvalidSyntaxException, BundleException, InterruptedException {
-		System.out.println("sut.getServiceRanking(): " + this.sut.getServiceRanking());
+	public void checkServiceSwitchingAfterShutdownAndRestart2() throws InvalidSyntaxException, BundleException, InterruptedException {
 		assertThat(this.sut.getServiceRanking(), is(102));
-
-		stopRankedService(102);
-		System.out.println("sut.getServiceRanking(): " + this.sut.getServiceRanking());
-		assertThat(this.sut.getServiceRanking(), is(101));
-
 		stopRankedService(101);
-		System.out.println("sut.getServiceRanking(): " + this.sut.getServiceRanking());
+		assertThat(this.sut.getServiceRanking(), is(102));
+		stopRankedService(102);
 		assertThat(this.sut.getServiceRanking(), is(100));
-
-		startRankedService(102);
-		System.out.println("sut.getServiceRanking(): " + this.sut.getServiceRanking());
-		assertThat(this.sut.getServiceRanking(), is(102));
-		
 		startRankedService(101);
-		System.out.println("sut.getServiceRanking(): " + this.sut.getServiceRanking());
-		assertThat(this.sut.getServiceRanking(), is(102));
-
-		stopRankedService(100);
-		System.out.println("sut.getServiceRanking(): " + this.sut.getServiceRanking());
-		assertThat(this.sut.getServiceRanking(), is(102));
-		
+		assertThat(this.sut.getServiceRanking(), is(101));
 	}
-	
+
 	@Test(expected = ServiceUnavailableException.class)
 	public void checkServiceUnavailableAfterShutdownAll() throws InvalidSyntaxException, BundleException, InterruptedException {
 		assertThat(this.sut.getServiceRanking(), is(102));
-
 		stopRankedService(100);
 		stopRankedService(101);
 		stopRankedService(102);
-		System.out.println("sut.getServiceRanking(): " + this.sut.getServiceRanking());
+		this.sut.getServiceRanking();
 	}
-
+	
 	private void stopRankedService(int rank) throws InvalidSyntaxException, BundleException, InterruptedException {
 		Bundle serviceBundle = getBundle(rank);
 		serviceBundle.stop();
@@ -122,7 +118,7 @@ public class DynamicServiceSwitchingTest {
 			Thread.sleep(100);
 		}
 	}
-
+	
 	private void startRankedService(int rank) throws InvalidSyntaxException, BundleException, InterruptedException {
 		Bundle serviceBundle = getBundle(rank);
 		serviceBundle.start();
@@ -130,7 +126,7 @@ public class DynamicServiceSwitchingTest {
 			Thread.sleep(100);
 		}
 	}
-
+	
 	private Bundle getBundle(int rank) {
 		String sn = "org.ops4j.pax.cdi.sample7.service.impl" + rank;
 		for (Bundle bundle : this.bc.getBundles()) {
