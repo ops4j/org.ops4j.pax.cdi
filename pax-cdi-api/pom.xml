@@ -4,7 +4,7 @@
         <groupId>org.ops4j.pax.cdi</groupId>
         <version>1.0.0-SNAPSHOT</version>
         <artifactId>pax-cdi-parent</artifactId>
-        <relativePath>../pax-cdi-parent/pom.xml</relativePath>
+        <relativePath>../pax-cdi-parent</relativePath>
     </parent>
     
     <artifactId>pax-cdi-api</artifactId>
