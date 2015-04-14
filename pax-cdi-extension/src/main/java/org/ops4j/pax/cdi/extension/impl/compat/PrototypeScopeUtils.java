@@ -88,6 +88,11 @@ public class PrototypeScopeUtils {
     }
 
     public static boolean hasPrototypeScope(BundleContext bc) {
+        // TODO workaround for FELIX-4850
+        String felixVersion = bc.getProperty("felix.version");
+        if (felixVersion != null && felixVersion.startsWith("4.6.")) {
+            return true;
+        }
         Version actualVersion = Version.parseVersion(bc.getProperty("org.osgi.framework.version"));
         return actualVersion.compareTo(new Version(1, 8, 0)) >= 0;
     }
