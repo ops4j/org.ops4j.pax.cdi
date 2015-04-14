@@ -4,7 +4,7 @@
         <groupId>org.ops4j.pax.cdi</groupId>
         <artifactId>pax-cdi-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../pax-cdi-parent</relativePath>
+        <relativePath>../pax-cdi-parent/pom.xml</relativePath>
     </parent>
     <artifactId>pax-cdi-test-support</artifactId>
     
@@ -19,6 +19,12 @@
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
