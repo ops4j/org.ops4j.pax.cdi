@@ -190,6 +190,8 @@ public class ServletTest {
         Client client = Client.create();
         WebResource contextRoot = client.resource(String.format("http://localhost:%s/sample1", httpPort));
         WebResource resource1 = contextRoot.path("ice");
-        assertThat(resource1.get(String.class), containsString("Chocolate"));
+        String output = resource1.get(String.class);
+        assertThat(output, containsString("Chocolate by filter"));
+        assertThat(output, containsString("++++ Hazelnut"));
     }
 }
