@@ -27,9 +27,10 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
-@Component(property = "type=web", service = CdiContainerListener.class)
+@Component(immediate = true, property = "type=web", service = CdiContainerListener.class)
 public class OpenWebBeansWebAdapter extends CdiWebAppDependencyManager {
 
+    @Override
     @Activate
     public void activate(BundleContext context) {
         WebBeansFinder.setSingletonService(new BundleSingletonService());
@@ -38,13 +39,13 @@ public class OpenWebBeansWebAdapter extends CdiWebAppDependencyManager {
     @Deactivate
     public void deactivate(BundleContext context) {
         // TODO the following causes an exception:
-        // org.apache.webbeans.exception.WebBeansConfigurationException: 
+        // org.apache.webbeans.exception.WebBeansConfigurationException:
         // Already using another custom SingletonService!
 
         // WebBeansFinder.setSingletonService(null);
     }
 
-    
+
     @Override
     public ServletContextListener getServletContextListener() {
         return new OpenWebBeansListener();

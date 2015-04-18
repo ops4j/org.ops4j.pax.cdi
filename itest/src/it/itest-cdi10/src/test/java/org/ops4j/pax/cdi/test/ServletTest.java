@@ -192,6 +192,6 @@ public class ServletTest {
         WebResource resource1 = contextRoot.path("ice");
         String output = resource1.get(String.class);
         assertThat(output, containsString("Chocolate by filter"));
-        assertThat(output, containsString("++++ Hazelnut"));
+        // assertThat(output, containsString("++++ Hazelnut"));
     }
 }

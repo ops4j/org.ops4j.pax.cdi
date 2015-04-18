@@ -23,7 +23,7 @@ import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.ops4j.pax.cdi.web.CdiWebAppDependencyManager;
 import org.osgi.service.component.annotations.Component;
 
-@Component(property = "type=web", service = CdiContainerListener.class)
+@Component(immediate = true, property = "type=web", service = CdiContainerListener.class)
 public class WeldWebAdapter extends CdiWebAppDependencyManager {
 
     @Override

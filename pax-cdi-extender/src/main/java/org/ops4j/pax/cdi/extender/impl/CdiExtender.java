@@ -66,7 +66,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
     private Map<Long, Bundle> webBundles = new HashMap<Long, Bundle>();
 
     @Activate
-    public void activate(BundleContext ctx) {
+    public synchronized void activate(BundleContext ctx) {
         this.context = ctx;
         if (webAdapter != null) {
             handleWebBundles();
@@ -81,7 +81,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
     }
 
     @Deactivate
-    public void deactivate(BundleContext ctx) {
+    public synchronized void deactivate(BundleContext ctx) {
         BundleCdi.dispose();
 
         log.info("stopping CDI extender {}", context.getBundle().getSymbolicName());
@@ -89,7 +89,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
     }
 
     @Override
-    public CdiContainerWrapper addingBundle(final Bundle bundle, BundleEvent event) {
+    public synchronized CdiContainerWrapper addingBundle(final Bundle bundle, BundleEvent event) {
         boolean wired = false;
         List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires(
             EXTENDER_CAPABILITY);
@@ -117,7 +117,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
     }
 
     @Override
-    public void removedBundle(Bundle bundle, BundleEvent event, CdiContainerWrapper wrapper) {
+    public synchronized void removedBundle(Bundle bundle, BundleEvent event, CdiContainerWrapper wrapper) {
         CdiContainer container = wrapper.getCdiContainer();
         if (container != null) {
             synchronized (container) {
@@ -138,6 +138,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
         CdiContainer container = null;
         if (containerType == CdiContainerType.WEB) {
             if (webAdapter == null) {
+                log.debug("waiting for web adapter for {}", bundle);
                 webBundles.put(bundle.getBundleId(), bundle);
             }
             else {
@@ -166,7 +167,8 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
     }
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, target = "(type=web)")
-    public void setWebAdapter(CdiContainerListener listener) {
+    public synchronized void setWebAdapter(CdiContainerListener listener) {
+        log.debug("adding web adapter");
         this.webAdapter = listener;
         if (context != null) {
             handleWebBundles();
@@ -181,7 +183,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
         webBundles.clear();
     }
 
-    public void unsetWebAdapter(CdiContainerListener listener) {
+    public synchronized void unsetWebAdapter(CdiContainerListener listener) {
         if (factory != null) {
             factory.removeListener(listener);
         }

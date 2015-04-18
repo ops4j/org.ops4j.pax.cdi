@@ -17,6 +17,13 @@
  */
 package org.ops4j.pax.cdi.web;
 
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+
+import javax.servlet.ServletContextListener;
+
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.ops4j.pax.cdi.web.impl.CdiServletContainerInitializer;
@@ -24,23 +31,19 @@ import org.ops4j.pax.cdi.web.impl.CdiWebAppDependencyHolder;
 import org.ops4j.pax.web.service.WebAppDependencyHolder;
 import org.ops4j.pax.web.service.WebContainerConstants;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletContextListener;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
 
 /**
  * Keeps track of runtime dependencies of web bean bundles and registers a
  * {@link WebAppDependencyHolder} for each web bean bundle as soon as all dependencies are
  * available.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public abstract class CdiWebAppDependencyManager implements CdiContainerListener {
 
@@ -50,8 +53,12 @@ public abstract class CdiWebAppDependencyManager implements CdiContainerListener
 
     protected abstract ServletContextListener getServletContextListener();
 
-    
-    
+    @Activate
+    public void activate(BundleContext bc) {
+        log.debug("activating {}", getClass());
+    }
+
+
     private void register(Bundle bundle, CdiContainer cdiContainer) {
         CdiServletContainerInitializer initializer = new CdiServletContainerInitializer(
             cdiContainer, getServletContextListener());
