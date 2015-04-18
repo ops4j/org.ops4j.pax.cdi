@@ -89,7 +89,6 @@ public class ServletTest {
             systemProperty("org.osgi.service.http.port").value(httpPort),
             paxWebBundles(),
 
-            mavenBundle("org.osgi", "org.osgi.compendium").version("4.3.1"),
             mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
             mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
             mavenBundle("com.sun.jersey.contribs", "jersey-apache-client").version("1.13"),
