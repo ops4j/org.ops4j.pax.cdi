@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.cdi.test;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -26,6 +27,7 @@ import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAda
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderWebAdapter;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxWebBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
@@ -78,6 +80,7 @@ public class ServletTest {
             // doesn't work for WABs
             // workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-samples/pax-cdi-sample1-web"),
 
+            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
             mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", Info.getPaxCdiVersion()),
 
             cdiProviderBundles(),
@@ -109,7 +112,7 @@ public class ServletTest {
 
     @Test
     public void checkContainers() {
-        assertThat(containerFactory.getContainers().size(), is(1));
+        assertThat(containerFactory.getContainers().size(), is(2));
     }
 
     @Test
@@ -180,5 +183,13 @@ public class ServletTest {
 
         WebResource resource4 = contextRoot.path("invalidate").queryParam("isBeanDestroyed", "");
         assertThat(resource4.get(String.class), is("false"));
+    }
+
+    @Test
+    public void checkOsgiServiceInjection() {
+        Client client = Client.create();
+        WebResource contextRoot = client.resource(String.format("http://localhost:%s/sample1", httpPort));
+        WebResource resource1 = contextRoot.path("ice");
+        assertThat(resource1.get(String.class), containsString("Chocolate"));
     }
 }
