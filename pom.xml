@@ -38,7 +38,6 @@
         <module>pax-cdi-web-openwebbeans</module>
         <module>pax-cdi-features</module>
         <module>pax-cdi-test-support</module>
-        <module>pax-cdi-fragment</module>
         <module>pax-cdi-servlet</module>
         <module>pax-cdi-undertow-weld</module>
     </modules>
