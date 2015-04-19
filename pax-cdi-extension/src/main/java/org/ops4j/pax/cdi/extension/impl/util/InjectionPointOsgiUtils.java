@@ -57,12 +57,12 @@ public class InjectionPointOsgiUtils {
 
     @SuppressWarnings("rawtypes")
     public static ServiceReference getServiceReference(InjectionPoint ip) {
-        OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
+        OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
         Type serviceType = ip.getType();
         Class<?> klass = (Class<?>) serviceType;
-        String filter = getFilter(klass, qualifier);
+        String filter = getFilter(klass, os);
         BundleContext bc = getBundleContext(ip);
-        return ServiceLookup.getServiceReference(bc, klass.getName(), qualifier.timeout(), filter);
+        return ServiceLookup.getServiceReference(bc, klass.getName(), getTimeout(os), filter);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -85,8 +85,7 @@ public class InjectionPointOsgiUtils {
         }
     }
 
-    public static int getTimeout(InjectionPoint ip) {
-        OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
+    private static int getTimeout(OsgiService os) {
         int timeout = os.timeout() == -1 ? 1 : os.timeout();
         return timeout;
     }
