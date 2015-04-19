@@ -2,14 +2,14 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
  * implied.
- * 
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -43,35 +43,35 @@ import org.osgi.framework.ServiceReference;
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class RankingPropertyTest {
-	
-	@Inject
-	private CdiContainerFactory	containerFactory;
-	
-	@Inject
-	private BundleContext		bc;
-	
-	@Configuration
-	public Option[] config() {
-		return options(
-				regressionDefaults(),
-				workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-api"),
-				workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-service-impl100"),
-				paxCdiProviderAdapter(),
-				cdiProviderBundles());
-	}
-	
-	@Test
-	public void checkContainerFactory() {
-		assertThat(this.containerFactory.getContainers().size(), is(1));
-		CdiContainer cdiContainer = this.containerFactory.getContainers().iterator().next();
-		assertThat(cdiContainer.getBundle().getSymbolicName(), is("org.ops4j.pax.cdi.sample7.service.impl100"));
-	}
-	
-	@Test
-	public void checkRankingProperty() {
-		ServiceReference<RankedService> rankedServiceReference = this.bc.getServiceReference(RankedService.class);
-		assertThat(rankedServiceReference, is(notNullValue()));
-		assertThat((Integer) rankedServiceReference.getProperty(Constants.SERVICE_RANKING), is(100));
-	}
-	
+
+    @Inject
+    private CdiContainerFactory containerFactory;
+
+    @Inject
+    private BundleContext bc;
+
+    @Configuration
+    public Option[] config() {
+        return options(regressionDefaults(),
+            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-api"),
+            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-service-impl100"),
+            paxCdiProviderAdapter(), cdiProviderBundles());
+    }
+
+    @Test
+    public void checkContainerFactory() {
+        assertThat(containerFactory.getContainers().size(), is(1));
+        CdiContainer cdiContainer = containerFactory.getContainers().iterator().next();
+        assertThat(cdiContainer.getBundle().getSymbolicName(),
+            is("org.ops4j.pax.cdi.sample7.service.impl100"));
+    }
+
+    @Test
+    public void checkRankingProperty() {
+        ServiceReference<RankedService> rankedServiceReference = bc
+            .getServiceReference(RankedService.class);
+        assertThat(rankedServiceReference, is(notNullValue()));
+        assertThat((Integer) rankedServiceReference.getProperty(Constants.SERVICE_RANKING), is(100));
+    }
+
 }

@@ -91,10 +91,10 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
     public void start() {
         componentRegistry.setBundleContext(bundleContext);
         if (PrototypeScopeUtils.hasPrototypeScope(bundleContext)) {
-            this.serviceFactoryBuilder = new Osgi6ServiceFactoryBuilder(beanManager);
+            serviceFactoryBuilder = new Osgi6ServiceFactoryBuilder(beanManager);
         }
         else {
-            this.serviceFactoryBuilder = new ServiceFactoryBuilder(beanManager);
+            serviceFactoryBuilder = new ServiceFactoryBuilder(beanManager);
         }
 
         // register services for all components that are satisfied already
@@ -147,15 +147,15 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
     @SuppressWarnings("rawtypes")
     public void stop() {
         ComponentDependencyListener noop = new DefaultComponentDependencyListener();
-        for (Bean bean : this.componentRegistry.getComponents()) {
-            ComponentDescriptor descriptor = this.componentRegistry.getDescriptor(bean);
+        for (Bean bean : componentRegistry.getComponents()) {
+            ComponentDescriptor descriptor = componentRegistry.getDescriptor(bean);
             descriptor.setListener(noop);
             descriptor.stop();
         }
     }
 
     private boolean isBeanFromCurrentBundle(Bean<?> bean) {
-        long extendedBundleId = this.bundleContext.getBundle().getBundleId();
+        long extendedBundleId = bundleContext.getBundle().getBundleId();
         Class<?> klass = bean.getBeanClass();
         long serviceBundleId = FrameworkUtil.getBundle(klass).getBundleId();
         return serviceBundleId == extendedBundleId;
@@ -177,7 +177,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
         }
 
         Class<?> klass = bean.getBeanClass();
-        AnnotatedType<?> annotatedType = this.beanManager.createAnnotatedType(klass);
+        AnnotatedType<?> annotatedType = beanManager.createAnnotatedType(klass);
         OsgiServiceProvider provider = annotatedType.getAnnotation(OsgiServiceProvider.class);
 
         String[] typeNames;

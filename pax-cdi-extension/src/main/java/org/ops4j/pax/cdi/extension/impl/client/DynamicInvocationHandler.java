@@ -46,13 +46,12 @@ public class DynamicInvocationHandler<S> extends AbstractServiceInvocationHandle
         super(ip);
         this.timeout = InjectionPointOsgiUtils.getTimeout(ip);
         this.serviceTracker = InjectionPointOsgiUtils.getServiceTracker(ip);
-        serviceTracker.open(); // martin.schaefer: where to close it?
+        serviceTracker.open();
     }
 
     @Override
     // CHECKSTYLE:SKIP
-    public Object invoke(final Object proxy, final Method method, final Object[] args)
-        throws Throwable {
+    public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
         final S service = serviceTracker.waitForService(timeout);
         if (service == null) {
             throw new ServiceUnavailableException("Service was not available after waiting "
@@ -72,6 +71,7 @@ public class DynamicInvocationHandler<S> extends AbstractServiceInvocationHandle
 
     @Override
     public void release() {
-        // Do nothing
+        // FIXME breaks DynamicServiceSwitchingTest
+        // serviceTracker.close();
     }
 }
