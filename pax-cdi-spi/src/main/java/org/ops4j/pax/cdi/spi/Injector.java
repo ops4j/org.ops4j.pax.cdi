@@ -18,38 +18,70 @@
 package org.ops4j.pax.cdi.spi;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.InjectionTargetFactory;
 
 public class Injector {
     private BeanManager beanManager;
     private Map<Class<?>, InjectionTarget<?>> injectionTargets = new WeakHashMap<Class<?>, InjectionTarget<?>>();
+    private CdiContainer cdiContainer;
 
-    public Injector(BeanManager beanManager) {
+    public Injector(CdiContainer cdiContainer) {
         assert beanManager != null;
-        this.beanManager = beanManager;
+        this.cdiContainer = cdiContainer;
+        this.beanManager = cdiContainer.getBeanManager();
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void inject(Object target) {
-        Class<?> klass = target.getClass();
-        InjectionTarget it = injectionTargets.get(klass);
-        if (it == null) {
-            it = beanManager.createInjectionTarget(beanManager.createAnnotatedType(klass));
-            injectionTargets.put(klass, it);
-        }
-        CreationalContext<Object> context = beanManager.createCreationalContext(null);
+    @SuppressWarnings({ "unchecked" })
+    public <T> void inject(T target) {
+        Class<T> klass = (Class<T>) target.getClass();
+        InjectionTarget<T> it = getInjectionTarget(klass);
+        CreationalContext<T> context = beanManager.createCreationalContext(null);
         it.inject(target, context);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void destroy(Object instance) {
+    private <T> InjectionTarget<T> getInjectionTarget(Class<T> klass) {
+
+        @SuppressWarnings("unchecked")
+        InjectionTarget<T> it = (InjectionTarget<T>) injectionTargets.get(klass);
+
+        if (it == null) {
+            it = createInjectionTarget(klass);
+            injectionTargets.put(klass, it);
+        }
+        return it;
+    }
+
+    private <T> InjectionTarget<T> createInjectionTarget(Class<T> klass) {
+        Set<Bean<?>> beans = beanManager.getBeans(klass);
+
+        @SuppressWarnings("unchecked")
+        Bean<T> bean = (Bean<T>) beanManager.resolve(beans);
+
+        AnnotatedType<T> type = beanManager.createAnnotatedType(klass);
+        InjectionTargetFactory<T> itFactory = beanManager.getInjectionTargetFactory(type);
+        InjectionTarget<T> it = itFactory.createInjectionTarget(bean);
+        return getWrapper(klass).wrap(it);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> InjectionTargetWrapper<T> getWrapper(Class<T> klass) {
+        return cdiContainer.getInstance().select(InjectionTargetWrapper.class).get();
+
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    public <T> void destroy(T instance) {
         if (instance != null) {
-            Class<?> klass = instance.getClass();
-            InjectionTarget it = beanManager.createInjectionTarget(beanManager.createAnnotatedType(klass));
+            Class<T> klass = (Class<T>) instance.getClass();
+            InjectionTarget<T> it = getInjectionTarget(klass);
             it.dispose(instance);
         }
     }

@@ -35,7 +35,7 @@ import org.osgi.framework.BundleContext;
 /**
  * Wrapped {@link InjectionTarget} for OSGi services. Overrides injection into
  * Instance<T> when qualified as {@link OsgiService}.
- * 
+ *
  * @author Harald Wellmann
  *
  * @param <T>

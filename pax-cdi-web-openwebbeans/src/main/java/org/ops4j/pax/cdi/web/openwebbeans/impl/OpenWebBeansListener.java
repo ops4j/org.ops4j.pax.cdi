@@ -56,7 +56,7 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
         lifecycle = cdiContainer.unwrap(ContainerLifecycle.class);
         BeanManager manager = webBeansContext.getBeanManagerImpl();
 
-        Injector injector = new Injector(manager);
+        Injector injector = new Injector(cdiContainer);
         context.setAttribute(JettyDecorator.INJECTOR_KEY, injector);
         JettyDecorator.register(context);
 

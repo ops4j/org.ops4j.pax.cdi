@@ -53,7 +53,7 @@ public class WeldServletContextListener extends ForwardingServletListener {
         cdiContainer.start(context);
         WeldManager manager = cdiContainer.unwrap(WeldManager.class);
 
-        Injector injector = new Injector(manager);
+        Injector injector = new Injector(cdiContainer);
         context.setAttribute(JettyDecorator.INJECTOR_KEY, injector);
         JettyDecorator.process(context);
         log.info("registered Jetty decorator for JSR-299 injection");

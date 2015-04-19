@@ -46,6 +46,7 @@ import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.SingletonScoped;
 import org.ops4j.pax.cdi.extension.impl.client.OsgiInjectionTarget;
+import org.ops4j.pax.cdi.extension.impl.client.OsgiInjectionTargetWrapper;
 import org.ops4j.pax.cdi.extension.impl.client.OsgiServiceBean;
 import org.ops4j.pax.cdi.extension.impl.component.ComponentLifecycleManager;
 import org.ops4j.pax.cdi.extension.impl.component.ComponentRegistry;
@@ -97,6 +98,7 @@ public class OsgiExtension implements Extension {
         event.addAnnotatedType(manager.createAnnotatedType(ServiceEventBridge.class));
         event.addAnnotatedType(manager.createAnnotatedType(BundleContextProducer.class));
         event.addAnnotatedType(manager.createAnnotatedType(ComponentLifecycleManager.class));
+        event.addAnnotatedType(manager.createAnnotatedType(OsgiInjectionTargetWrapper.class));
         event.addScope(SingletonScoped.class, false, false);
     }
 
