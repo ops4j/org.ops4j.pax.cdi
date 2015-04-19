@@ -23,10 +23,11 @@ import java.util.concurrent.Callable;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.cdi.api.ServiceUnavailableException;
+import org.ops4j.pax.cdi.extension.impl.compat.PrototypeScopeUtils;
+import org.ops4j.pax.cdi.extension.impl.compat.ServiceObjectsWrapper;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
-import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.framework.ServiceReference;
 
 /**
  * A dynamic proxy invocation handler which looks up a matching OSGi service for a CDI injection
@@ -38,25 +39,19 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class DynamicInvocationHandler<S> extends AbstractServiceInvocationHandler<S> {
 
-    private ServiceTracker<S, S> serviceTracker;
-    private int timeout;
 
-    @SuppressWarnings("unchecked")
     public DynamicInvocationHandler(InjectionPoint ip) {
         super(ip);
-        this.timeout = InjectionPointOsgiUtils.getTimeout(ip);
-        this.serviceTracker = InjectionPointOsgiUtils.getServiceTracker(ip);
-        serviceTracker.open();
     }
 
     @Override
     // CHECKSTYLE:SKIP
     public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
-        final S service = serviceTracker.waitForService(timeout);
-        if (service == null) {
-            throw new ServiceUnavailableException("Service was not available after waiting "
-                + timeout + " milliseconds");
-        }
+        @SuppressWarnings("unchecked")
+        ServiceReference<S> serviceRef = InjectionPointOsgiUtils.getServiceReference(ip);
+        ServiceObjectsWrapper<S> serviceObjects = PrototypeScopeUtils.createServiceObjectsWrapper(
+            bundleContext, serviceRef);
+        final S service = serviceObjects.getService();
         Object result = ContextClassLoaderUtils.doWithClassLoader(
             cdiContainer.getContextClassLoader(), new Callable<Object>() {
 
@@ -71,7 +66,6 @@ public class DynamicInvocationHandler<S> extends AbstractServiceInvocationHandle
 
     @Override
     public void release() {
-        // FIXME breaks DynamicServiceSwitchingTest
-        // serviceTracker.close();
+        // not used
     }
 }
