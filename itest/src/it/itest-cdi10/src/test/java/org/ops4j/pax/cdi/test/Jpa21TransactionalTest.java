@@ -24,7 +24,6 @@ import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundle
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
-import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemPackages;
@@ -38,7 +37,6 @@ import org.ops4j.pax.cdi.sample2.service.LibraryServiceClient;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.options.UrlProvisionOption;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.jpa.sample1.model.Author;
@@ -77,8 +75,8 @@ public class Jpa21TransactionalTest {
             mavenBundle("org.apache.servicemix.bundles", "org.apache.servicemix.bundles.dom4j",
                 "1.6.1_5"), //
             mavenBundle("org.javassist", "javassist", "3.18.1-GA"),
-            mavenBundle("com.fasterxml", "classmate", "0.5.4"),            
-            mavenBundle("org.jboss", "jandex", "1.2.0.Final"),            
+            mavenBundle("com.fasterxml", "classmate", "0.5.4"),
+            mavenBundle("org.jboss", "jandex", "1.2.0.Final"),
             mavenBundle("org.jboss.logging", "jboss-logging", "3.1.0.GA"),
 
             // Pax JPA, Pax JDBC and Derby driver
@@ -91,31 +89,19 @@ public class Jpa21TransactionalTest {
             // DeltaSpike
             mavenBundle("org.apache.deltaspike.core", "deltaspike-core-api").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.core", "deltaspike-core-impl").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-api").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-api").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-api").versionAsInProject(),
 
-//            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-api").versionAsInProject(),
-//            mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-api").versionAsInProject(),
-//            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl").versionAsInProject(),
-//            mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-impl").versionAsInProject(),
-//            mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-impl").versionAsInProject(),
-
-            // DeltaSpike bundles with missing requirements and capabilities
-            wrappedDeltaSpikeBundle("deltaspike-jpa-module-impl"),
-            wrappedDeltaSpikeBundle("deltaspike-data-module-impl"),
-            wrappedDeltaSpikeBundle("deltaspike-jpa-module-api"),
-            wrappedDeltaSpikeBundle("deltaspike-data-module-api"),
-            wrappedDeltaSpikeBundle("deltaspike-partial-bean-module-impl"),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-impl").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-impl").versionAsInProject(),
 
             mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
 
             // Sample bundles
             mavenBundle("org.ops4j.pax.jpa.samples", "pax-jpa-sample1").versionAsInProject(),
             workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample2-service"));
-    }
-
-    private static UrlProvisionOption wrappedDeltaSpikeBundle(String artifactId) {
-        String url = mavenBundle("org.apache.deltaspike.modules", artifactId).versionAsInProject().getURL();
-        return bundle(String.format("wrap:%s,file:src/test/resources/%s.bnd", url, artifactId));
     }
 
     @Test
