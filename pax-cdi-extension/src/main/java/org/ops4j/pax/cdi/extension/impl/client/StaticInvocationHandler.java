@@ -1,17 +1,17 @@
 /*
  * Copyright 2012 Harald Wellmann.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
  * implied.
- *
+ * 
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -33,37 +33,39 @@ import org.osgi.framework.ServiceException;
  *
  */
 public class StaticInvocationHandler<S> extends AbstractServiceInvocationHandler<S> {
-
-    public StaticInvocationHandler(InjectionPoint ip) {
-        super(ip);
-        service = serviceObjects.getService();
-    }
-
-    @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args)
-    // CHECKSTYLE:SKIP
-        throws Throwable {
-
-        if (serviceRef != null) {
-            Object result = ContextClassLoaderUtils.doWithClassLoader(
-                cdiContainer.getContextClassLoader(), new Callable<Object>() {
-
-                    @Override
-                    public Object call() throws Exception {
-                        if (service != null) {
-                            return method.invoke(service, args);
-                        }
-                        return null;
-                    }
-                });
-            return result;
-        }
-        throw new ServiceException("no service for injection point " + ip,
-            ServiceException.UNREGISTERED);
-    }
-
-    @Override
-    public void release() {
-        serviceObjects.ungetService(service);
-    }
+	
+	private S	service;
+	
+	public StaticInvocationHandler(InjectionPoint ip) {
+		super(ip);
+		this.service = this.serviceObjects.getService();
+	}
+	
+	@Override
+	public Object invoke(final Object proxy, final Method method, final Object[] args)
+			// CHECKSTYLE:SKIP
+			throws Throwable {
+		
+		if (this.serviceRef != null) {
+			Object result = ContextClassLoaderUtils.doWithClassLoader(
+					this.cdiContainer.getContextClassLoader(), new Callable<Object>() {
+						
+						@Override
+						public Object call() throws Exception {
+							if (StaticInvocationHandler.this.service != null) {
+								return method.invoke(StaticInvocationHandler.this.service, args);
+							}
+							return null;
+						}
+					});
+			return result;
+		}
+		throw new ServiceException("no service for injection point " + this.ip,
+				ServiceException.UNREGISTERED);
+	}
+	
+	@Override
+	public void release() {
+		this.serviceObjects.ungetService(this.service);
+	}
 }
