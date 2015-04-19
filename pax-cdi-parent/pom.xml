@@ -17,7 +17,7 @@
         <guava.version>13.0.1</guava.version>
         <jersey.version>1.13</jersey.version>
         <logback.version>1.0.0</logback.version>
-        <openwebbeans15.version>1.5.0-SNAPSHOT</openwebbeans15.version>
+        <openwebbeans15.version>1.5.0</openwebbeans15.version>
         <openjpa.version>2.2.0</openjpa.version>
         <ops4j.base.version>1.5.0</ops4j.base.version>
         <pax.exam.version>4.5.0</pax.exam.version>
