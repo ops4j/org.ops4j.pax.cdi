@@ -34,7 +34,6 @@ public class Injector {
     private CdiContainer cdiContainer;
 
     public Injector(CdiContainer cdiContainer) {
-        assert beanManager != null;
         this.cdiContainer = cdiContainer;
         this.beanManager = cdiContainer.getBeanManager();
     }
