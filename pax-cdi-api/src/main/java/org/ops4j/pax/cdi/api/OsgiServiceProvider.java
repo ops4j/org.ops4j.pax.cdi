@@ -62,13 +62,13 @@ public @interface OsgiServiceProvider {
      * @return registered service classes or interfaces
      */
     @Nonbinding
-    Class<?>[] classes() default {};
+    Class<?>[] classes() default { };
 
     /**
      * Defines the service ranking order for the registered service. This corresponds to the
      * {@code service.ranking} property, see {@code org.osgi.framework.Constants.SERVICE_RANKING}.
      *
-     * @return service ranking
+     * @return
      */
     int ranking() default 0;
 }
