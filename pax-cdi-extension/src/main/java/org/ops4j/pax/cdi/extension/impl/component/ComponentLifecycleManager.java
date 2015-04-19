@@ -42,6 +42,7 @@ import org.ops4j.pax.cdi.extension.impl.context.ServiceFactoryBuilder;
 import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceException;
@@ -129,12 +130,12 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
             Collection<?> serviceReferences = bc.getServiceReferences(klass, filter);
             if (serviceReferences.isEmpty()) {
                 String msg = "no matching service reference for injection point " + ip;
-                throw new ServiceException(msg,ServiceException.UNREGISTERED);
+                throw new ServiceException(msg, ServiceException.UNREGISTERED);
             }
         }
         catch (InvalidSyntaxException e) {
             String msg = "invalid filter syntax: " + filter;
-            throw new ServiceException(msg,ServiceException.UNSPECIFIED);
+            throw new ServiceException(msg, ServiceException.UNSPECIFIED);
         }
     }
 
@@ -146,15 +147,15 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
     @SuppressWarnings("rawtypes")
     public void stop() {
         ComponentDependencyListener noop = new DefaultComponentDependencyListener();
-        for (Bean bean : componentRegistry.getComponents()) {
-            ComponentDescriptor descriptor = componentRegistry.getDescriptor(bean);
+        for (Bean bean : this.componentRegistry.getComponents()) {
+            ComponentDescriptor descriptor = this.componentRegistry.getDescriptor(bean);
             descriptor.setListener(noop);
             descriptor.stop();
         }
     }
 
     private boolean isBeanFromCurrentBundle(Bean<?> bean) {
-        long extendedBundleId = bundleContext.getBundle().getBundleId();
+        long extendedBundleId = this.bundleContext.getBundle().getBundleId();
         Class<?> klass = bean.getBeanClass();
         long serviceBundleId = FrameworkUtil.getBundle(klass).getBundleId();
         return serviceBundleId == extendedBundleId;
@@ -176,7 +177,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
         }
 
         Class<?> klass = bean.getBeanClass();
-        AnnotatedType<?> annotatedType = beanManager.createAnnotatedType(klass);
+        AnnotatedType<?> annotatedType = this.beanManager.createAnnotatedType(klass);
         OsgiServiceProvider provider = annotatedType.getAnnotation(OsgiServiceProvider.class);
 
         String[] typeNames;
@@ -187,7 +188,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
             typeNames = getTypeNamesForClasses(provider.classes());
         }
 
-        Dictionary<String, Object> props = createProperties(klass, service);
+        Dictionary<String, Object> props = createProperties(klass, provider.ranking());
         log.debug("publishing service {}, props = {}", typeNames[0], props);
         ServiceRegistration<?> reg = bundleContext.registerService(typeNames, service, props);
         descriptor.setServiceRegistration(reg);
@@ -231,14 +232,19 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
         return typeNames;
     }
 
-    private Dictionary<String, Object> createProperties(Class<?> klass, Object service) {
+    private Dictionary<String, Object> createProperties(Class<?> klass, int ranking) {
         Properties props = klass.getAnnotation(Properties.class);
-        if (props == null) {
+        if (props == null && ranking == 0) {
             return null;
         }
         Hashtable<String, Object> dict = new Hashtable<String, Object>();
-        for (Property property : props.value()) {
-            dict.put(property.name(), property.value());
+        if (props != null) {
+            for (Property property : props.value()) {
+                dict.put(property.name(), property.value());
+            }
+        }
+        if (ranking != 0) {
+            dict.put(Constants.SERVICE_RANKING, ranking);
         }
         return dict;
     }

@@ -34,9 +34,11 @@ import org.osgi.framework.ServiceException;
  */
 public class StaticInvocationHandler<S> extends AbstractServiceInvocationHandler<S> {
 
+    private S service;
+
     public StaticInvocationHandler(InjectionPoint ip) {
         super(ip);
-        service = serviceObjects.getService();
+        this.service = serviceObjects.getService();
     }
 
     @Override

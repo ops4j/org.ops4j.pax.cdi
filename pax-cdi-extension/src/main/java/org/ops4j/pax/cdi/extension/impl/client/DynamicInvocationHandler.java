@@ -23,7 +23,10 @@ import java.util.concurrent.Callable;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.ops4j.pax.cdi.api.OsgiService;
+import org.ops4j.pax.cdi.api.ServiceUnavailableException;
+import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * A dynamic proxy invocation handler which looks up a matching OSGi service for a CDI injection
@@ -35,23 +38,32 @@ import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
  */
 public class DynamicInvocationHandler<S> extends AbstractServiceInvocationHandler<S> {
 
+    private ServiceTracker<S, S> serviceTracker;
+    private int timeout;
+
+    @SuppressWarnings("unchecked")
     public DynamicInvocationHandler(InjectionPoint ip) {
         super(ip);
+        this.timeout = InjectionPointOsgiUtils.getTimeout(ip);
+        this.serviceTracker = InjectionPointOsgiUtils.getServiceTracker(ip);
+        serviceTracker.open(); // martin.schaefer: where to close it?
     }
 
     @Override
     // CHECKSTYLE:SKIP
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-        final S service = serviceObjects.getService();
+    public Object invoke(final Object proxy, final Method method, final Object[] args)
+        throws Throwable {
+        final S service = serviceTracker.waitForService(timeout);
+        if (service == null) {
+            throw new ServiceUnavailableException("Service was not available after waiting "
+                + timeout + " milliseconds");
+        }
         Object result = ContextClassLoaderUtils.doWithClassLoader(
             cdiContainer.getContextClassLoader(), new Callable<Object>() {
 
                 @Override
                 public Object call() throws Exception {
-                    if (service != null) {
-                        return method.invoke(service, args);
-                    }
-                    return null;
+                    return method.invoke(service, args);
                 }
             });
         serviceObjects.ungetService(service);
@@ -60,6 +72,6 @@ public class DynamicInvocationHandler<S> extends AbstractServiceInvocationHandle
 
     @Override
     public void release() {
-        // nothing
+        // Do nothing
     }
 }
