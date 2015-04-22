@@ -26,7 +26,7 @@ import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.bootstrap.spi.CDI11Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.serialization.spi.ProxyServices;
@@ -34,7 +34,7 @@ import org.ops4j.pax.cdi.spi.scan.BeanScanner;
 import org.ops4j.pax.cdi.weld.impl.OsgiProxyService;
 import org.osgi.framework.Bundle;
 
-public class BundleDeployment implements Deployment {
+public class BundleDeployment implements CDI11Deployment {
 
     private ServiceRegistry serviceRegistry;
 
@@ -83,5 +83,10 @@ public class BundleDeployment implements Deployment {
     @Override
     public Iterable<Metadata<Extension>> getExtensions() {
         return extensions;
+    }
+
+    @Override
+    public BeanDeploymentArchive getBeanDeploymentArchive(Class<?> beanClass) {
+        return beanDeploymentArchive;
     }
 }
