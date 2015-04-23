@@ -17,6 +17,9 @@
  */
 package org.ops4j.pax.cdi.test.karaf;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
@@ -90,7 +93,8 @@ public class RegressionConfiguration {
 
     public static String karafVersion() {
         ConfigurationManager cm = new ConfigurationManager();
-        String karafVersion = cm.getProperty("pax.exam.karaf.version", "3.0.2");
+        String karafVersion = cm.getProperty("pax.exam.karaf.version");
+        assertThat(karafVersion, is(notNullValue()));
         return karafVersion;
     }
 }
