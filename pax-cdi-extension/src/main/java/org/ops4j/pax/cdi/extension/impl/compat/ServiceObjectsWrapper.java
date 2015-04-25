@@ -24,11 +24,9 @@ public interface ServiceObjectsWrapper<S> {
 
     void init(BundleContext bc, ServiceReference<S> serviceReference);
 
-
     S getService();
 
     void ungetService(S service);
 
     ServiceReference<S> getServiceReference();
-
 }

@@ -24,8 +24,5 @@ import org.ops4j.pax.cdi.api.SingletonScoped;
 
 public class SingletonScopedLiteral extends AnnotationLiteral<SingletonScoped> implements SingletonScoped {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 }

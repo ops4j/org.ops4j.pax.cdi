@@ -42,7 +42,7 @@ import org.osgi.framework.Bundle;
 @Typed()
 public class BundleScopeContext implements AlterableContext {
 
-    private Map<Contextual<?>, SingletonScopeContextEntry<?>> serviceBeans = new ConcurrentHashMap<Contextual<?>, SingletonScopeContextEntry<?>>();
+    private Map<Contextual<?>, SingletonScopeContextEntry<?>> serviceBeans = new ConcurrentHashMap<>();
     private BeanManager beanManager;
 
     private ThreadLocal<Bundle> clientBundle;
@@ -51,8 +51,8 @@ public class BundleScopeContext implements AlterableContext {
 
     public BundleScopeContext(BeanManager beanManager) {
         this.beanManager = beanManager;
-        this.clientBundle = new ThreadLocal<Bundle>();
-        this.beanMaps = new HashMap<Bundle, BeanMap>();
+        this.clientBundle = new ThreadLocal<>();
+        this.beanMaps = new HashMap<>();
     }
 
     @Override
@@ -141,14 +141,14 @@ public class BundleScopeContext implements AlterableContext {
 
 
     /**
-     * @param clientBundle the clientBundle to set
+     * @param bundle the clientBundle to set
      */
-    public void setClientBundle(Bundle clientBundle) {
-        if (clientBundle == null) {
+    public void setClientBundle(Bundle bundle) {
+        if (bundle == null) {
             this.clientBundle.remove();
         }
         else {
-            this.clientBundle.set(clientBundle);
+            this.clientBundle.set(bundle);
         }
     }
 

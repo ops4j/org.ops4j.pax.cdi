@@ -30,7 +30,7 @@ import javax.enterprise.inject.spi.InjectionTargetFactory;
 
 public class Injector {
     private BeanManager beanManager;
-    private Map<Class<?>, InjectionTarget<?>> injectionTargets = new WeakHashMap<Class<?>, InjectionTarget<?>>();
+    private Map<Class<?>, InjectionTarget<?>> injectionTargets = new WeakHashMap<>();
     private CdiContainer cdiContainer;
 
     public Injector(CdiContainer cdiContainer) {

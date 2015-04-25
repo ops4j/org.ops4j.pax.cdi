@@ -29,5 +29,4 @@ public class EnumerationList<T> extends ArrayList<T> {
             add(enumeration.nextElement());
         }
     }
-
 }

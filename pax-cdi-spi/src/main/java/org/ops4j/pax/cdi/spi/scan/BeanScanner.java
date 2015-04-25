@@ -17,6 +17,11 @@
  */
 package org.ops4j.pax.cdi.spi.scan;
 
+import static org.ops4j.pax.cdi.api.Constants.CDI_EXTENSION_CAPABILITY;
+import static org.osgi.framework.Constants.BUNDLE_CLASSPATH;
+import static org.osgi.framework.wiring.BundleRevision.BUNDLE_NAMESPACE;
+import static org.osgi.framework.wiring.BundleRevision.PACKAGE_NAMESPACE;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -37,11 +42,6 @@ import org.osgi.framework.wiring.BundleWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.osgi.framework.Constants.BUNDLE_CLASSPATH;
-import static org.osgi.framework.wiring.BundleRevision.BUNDLE_NAMESPACE;
-import static org.osgi.framework.wiring.BundleRevision.PACKAGE_NAMESPACE;
-import static org.ops4j.pax.cdi.api.Constants.CDI_EXTENSION_CAPABILITY;
-
 /**
  * Scans a bundle for candidate managed bean classes. The scanner only looks at bundle entries but
  * does not load classes. The set of candidate classes is passed to the CDI implementation which
@@ -51,20 +51,20 @@ import static org.ops4j.pax.cdi.api.Constants.CDI_EXTENSION_CAPABILITY;
  * The scanner returns all classes contained in the given bundle, including embedded archives and
  * directories from the bundle classpath, and all classes visible from required bundle wires
  * (package imports or required bundles), provided that the exporting bundle is a bean bundle.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public class BeanScanner {
 
     private static final String CLASS_EXT = ".class";
-    
+
     private static final String[] BEAN_DESCRIPTOR_PATHS = new String[]  {
       "META-INF/beans.xml",
       "WEB-INF/beans.xml"
     };
 
-    private Logger log = LoggerFactory.getLogger(BeanScanner.class);
+    private static Logger log = LoggerFactory.getLogger(BeanScanner.class);
 
     private Bundle bundle;
 
@@ -75,19 +75,19 @@ public class BeanScanner {
 
     /**
      * Constructs a bean scanner for the given bundle.
-     * 
+     *
      * @param bundle
      *            bundle to be scanned
      */
     public BeanScanner(Bundle bundle) {
         this.bundle = bundle;
-        this.beanDescriptors = new HashSet<URL>();
-        this.beanClasses = new TreeSet<String>();
+        this.beanDescriptors = new HashSet<>();
+        this.beanClasses = new TreeSet<>();
     }
 
     /**
      * Returns the class names of all bean candidate classes.
-     * 
+     *
      * @return unmodifiable set
      */
     public Set<String> getBeanClasses() {
@@ -96,7 +96,7 @@ public class BeanScanner {
 
     /**
      * Return the URLs of all bean descriptors (beans.xml).
-     * 
+     *
      * @return unmodifiable set
      */
     public Set<URL> getBeanDescriptors() {

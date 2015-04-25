@@ -29,9 +29,9 @@ import java.util.concurrent.Callable;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.apache.xbean.osgi.bundle.util.DelegatingBundle;
-import org.ops4j.lang.Ops4jException;
 import org.ops4j.pax.cdi.api.ContainerInitialized;
 import org.ops4j.pax.cdi.api.ServicesPublished;
+import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -128,7 +128,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
      * @param bundle
      */
     protected void buildContextClassLoader() {
-        List<Bundle> delegateBundles = new ArrayList<Bundle>();
+        List<Bundle> delegateBundles = new ArrayList<>();
         delegateBundles.add(bundle);
         delegateBundles.addAll(additionalBundles);
         delegateBundles.addAll(extensionBundles);
@@ -175,7 +175,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
         // CHECKSTYLE:SKIP
         catch (Exception exc) {
             log.error("", exc);
-            throw new Ops4jException(exc);
+            throw Exceptions.unchecked(exc);
         }
     }
 

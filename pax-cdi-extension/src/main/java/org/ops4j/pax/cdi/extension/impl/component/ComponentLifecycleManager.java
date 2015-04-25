@@ -237,7 +237,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
         if (props == null && ranking == 0) {
             return null;
         }
-        Hashtable<String, Object> dict = new Hashtable<String, Object>();
+        Hashtable<String, Object> dict = new Hashtable<>();
         if (props != null) {
             for (Property property : props.value()) {
                 dict.put(property.name(), property.value());

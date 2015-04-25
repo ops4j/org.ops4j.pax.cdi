@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.cdi.extension.impl.compat;
 
+import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
@@ -74,7 +75,7 @@ public class PrototypeScopeUtils {
             return klass;
         }
         catch (ClassNotFoundException exc) {
-            throw new IllegalArgumentException(exc);
+            throw Exceptions.unchecked(exc);
         }
     }
 

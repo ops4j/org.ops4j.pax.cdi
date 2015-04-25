@@ -71,7 +71,7 @@ public class OsgiExtension implements Extension {
     private static Logger log = LoggerFactory.getLogger(OsgiExtension.class);
 
     /** Maps service types to injection points. */
-    private Map<Type, Set<InjectionPoint>> typeToIpMap = new HashMap<Type, Set<InjectionPoint>>();
+    private Map<Type, Set<InjectionPoint>> typeToIpMap = new HashMap<>();
 
     /**
      * Registry for service components and their dependencies.
@@ -238,7 +238,7 @@ public class OsgiExtension implements Extension {
 
     @SuppressWarnings("rawtypes")
     private void addBean(AfterBeanDiscovery event, Type type, Set<InjectionPoint> injectionPoints) {
-        List<OsgiService> registeredBeans = new ArrayList<OsgiService>();
+        List<OsgiService> registeredBeans = new ArrayList<>();
         for (InjectionPoint ip : injectionPoints) {
             OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
             if (!registeredBeans.contains(qualifier)) {

@@ -24,8 +24,7 @@ package org.ops4j.pax.cdi.extension.impl.component;
  *
  */
 public interface ComponentDependencyListener {
-    
+
     <S> void onComponentSatisfied(ComponentDescriptor<S> descriptor);
     <S> void onComponentUnsatisfied(ComponentDescriptor<S> descriptor);
-
 }

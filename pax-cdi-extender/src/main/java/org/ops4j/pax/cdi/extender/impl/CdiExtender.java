@@ -63,7 +63,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
 
     private CDIProvider cdiProvider;
 
-    private Map<Long, Bundle> webBundles = new HashMap<Long, Bundle>();
+    private Map<Long, Bundle> webBundles = new HashMap<>();
 
     @Activate
     public synchronized void activate(BundleContext ctx) {
@@ -75,7 +75,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
         CDI.setCDIProvider(cdiProvider);
 
         log.info("starting CDI extender {}", context.getBundle().getSymbolicName());
-        this.bundleWatcher = new BundleTracker<CdiContainerWrapper>(context, Bundle.ACTIVE, this);
+        this.bundleWatcher = new BundleTracker<>(context, Bundle.ACTIVE, this);
         bundleWatcher.open();
 
     }
@@ -158,7 +158,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
 
     private CdiContainer doCreateContainer(Bundle bundle, CdiContainerType containerType) {
         // Find extensions
-        Set<Bundle> extensions = new HashSet<Bundle>();
+        Set<Bundle> extensions = new HashSet<>();
         findExtensions(bundle, extensions);
 
         log.info("creating CDI container for bean bundle {} with extension bundles {}", bundle,
@@ -166,7 +166,8 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
         return factory.createContainer(bundle, extensions, containerType);
     }
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, target = "(type=web)")
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC,
+        target = "(type=web)")
     public synchronized void setWebAdapter(CdiContainerListener listener) {
         log.debug("adding web adapter");
         this.webAdapter = listener;

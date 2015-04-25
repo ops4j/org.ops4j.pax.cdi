@@ -102,7 +102,6 @@ public class OsgiInjectionTarget<T> implements InjectionTarget<T> {
                 throw new RuntimeException(exc);
             }
         }
-
     }
 
     private OsgiService getOsgiServiceQualifier(InjectionPoint ip) {

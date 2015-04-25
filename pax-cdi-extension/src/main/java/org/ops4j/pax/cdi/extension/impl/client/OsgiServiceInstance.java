@@ -68,19 +68,16 @@ public class OsgiServiceInstance<T> implements Instance<T> {
 
     @Override
     public Instance<T> select(Annotation... qualifiers) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 
     @Override
     public <U extends T> Instance<U> select(Class<U> subtype, Annotation... qualifiers) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 
     @Override
     public <U extends T> Instance<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 

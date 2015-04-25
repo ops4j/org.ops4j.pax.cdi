@@ -98,7 +98,7 @@ public class OsgiServiceBean<T> implements Bean<T> {
 
     @Override
     public Set<Annotation> getQualifiers() {
-        Set<Annotation> s = new HashSet<Annotation>();
+        Set<Annotation> s = new HashSet<>();
         s.add(new OsgiServiceQualifierType(qualifier));
         return s;
     }
@@ -115,7 +115,7 @@ public class OsgiServiceBean<T> implements Bean<T> {
 
     @Override
     public Set<Type> getTypes() {
-        Set<Type> s = new HashSet<Type>();
+        Set<Type> s = new HashSet<>();
         s.add(type);
         s.add(Object.class);
         return s;

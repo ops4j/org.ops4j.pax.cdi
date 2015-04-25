@@ -35,10 +35,10 @@ import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.ops4j.lang.Ops4jException;
 import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
+import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.ops4j.pax.cdi.weld.impl.bda.BundleDeployment;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
@@ -48,9 +48,9 @@ import org.slf4j.LoggerFactory;
 /**
  * {@link CdiContainer} implementation wrapping a JBoss Weld container, represented by a
  * {@link WeldBootstrap}.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public class WeldCdiContainer extends AbstractCdiContainer {
 
@@ -67,7 +67,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
 
     /**
      * Construct a CDI container for the given extended bundle.
-     * 
+     *
      * @param ownBundle
      *            bundle containing this class
      * @param bundle
@@ -96,10 +96,10 @@ public class WeldCdiContainer extends AbstractCdiContainer {
         }
         // CHECKSTYLE:SKIP
         catch (Exception exc) {
-            throw new Ops4jException(exc);
+            throw Exceptions.unchecked(exc);
         }
     }
-    
+
     private BeanManager createBeanManager() {
         bootstrap = new WeldBootstrap();
         BundleDeployment deployment = new BundleDeployment(getBundle(), bootstrap, getContextClassLoader());
@@ -114,7 +114,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
         bootstrap.validateBeans();
         bootstrap.endInitialization();
         manager = bootstrap.getManager(beanDeploymentArchive);
-        return manager;        
+        return manager;
     }
 
     @Override
@@ -131,7 +131,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
         }
         // CHECKSTYLE:SKIP
         catch (Exception exc) {
-            throw new Ops4jException(exc);
+            throw Exceptions.unchecked(exc);
         }
     }
 

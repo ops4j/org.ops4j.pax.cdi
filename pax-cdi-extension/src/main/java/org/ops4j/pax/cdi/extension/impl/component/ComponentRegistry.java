@@ -43,11 +43,11 @@ public class ComponentRegistry {
 
     private static Logger log = LoggerFactory.getLogger(ComponentRegistry.class);
 
-    private Map<Bean<?>, ComponentDescriptor<?>> descriptors = new HashMap<Bean<?>, ComponentDescriptor<?>>();
+    private Map<Bean<?>, ComponentDescriptor<?>> descriptors = new HashMap<>();
 
     private BundleContext bundleContext;
 
-    private Set<InjectionPoint> nonComponentDependencies = new HashSet<InjectionPoint>();
+    private Set<InjectionPoint> nonComponentDependencies = new HashSet<>();
 
 
     public ComponentRegistry(int dummy) {

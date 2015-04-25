@@ -85,7 +85,8 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
         String filterString = InjectionPointOsgiUtils.getFilter(ip);
         try {
             Filter filter = FrameworkUtil.createFilter(filterString);
-            ComponentDependency<S, T> componentDependency = new ComponentDependency<S, T>(this, ip, filter);
+            ComponentDependency<S, T> componentDependency
+                = new ComponentDependency<>(this, ip, filter);
             dependencies.add(componentDependency);
             numUnsatisfiedDependencies++;
         }

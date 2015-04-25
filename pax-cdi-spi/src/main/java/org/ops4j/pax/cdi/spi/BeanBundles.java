@@ -38,12 +38,12 @@ import org.osgi.framework.wiring.BundleWiring;
  *
  */
 public class BeanBundles {
-    
-    private static Map<ClassLoader, Bundle> bundleMap = new HashMap<ClassLoader, Bundle>();
-    private static Set<Bundle> beanBundles = new HashSet<Bundle>();
-    
+
+    private static Map<ClassLoader, Bundle> bundleMap = new HashMap<>();
+    private static Set<Bundle> beanBundles = new HashSet<>();
+
     private BeanBundles() {
-        
+
     }
 
     public static boolean isBeanBundle(Bundle candidate) {
@@ -64,11 +64,11 @@ public class BeanBundles {
         }
         return false;
     }
-    
+
     public static boolean isActiveBeanBundle(Bundle candidate) {
         return beanBundles.contains(candidate);
     }
-    
+
     public static synchronized void addBundle(ClassLoader cl, Bundle bundle) {
         bundleMap.put(cl, bundle);
         beanBundles.add(bundle);
@@ -78,7 +78,7 @@ public class BeanBundles {
         bundleMap.remove(cl);
         beanBundles.remove(bundle);
     }
-    
+
     public static synchronized Bundle getBundle(ClassLoader cl) {
         return bundleMap.get(cl);
     }
@@ -87,7 +87,7 @@ public class BeanBundles {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         return bundleMap.get(cl);
     }
-    
+
     public static void findExtensions(Bundle bundle, Set<Bundle> extensions) {
         List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires(
             CDI_EXTENSION_CAPABILITY);
@@ -99,5 +99,4 @@ public class BeanBundles {
             }
         }
     }
-    
 }
