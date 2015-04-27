@@ -35,12 +35,12 @@ import javax.enterprise.util.AnnotationLiteral;
  */
 public class InitializedLiteral extends AnnotationLiteral<Initialized> implements Initialized {
 
-    private static final long serialVersionUID = -9014737143348998988L;
-
     public static final InitializedLiteral REQUEST = new InitializedLiteral(RequestScoped.class);
     public static final InitializedLiteral CONVERSATION = new InitializedLiteral(ConversationScoped.class);
     public static final InitializedLiteral SESSION = new InitializedLiteral(SessionScoped.class);
     public static final InitializedLiteral APPLICATION = new InitializedLiteral(ApplicationScoped.class);
+
+    private static final long serialVersionUID = -9014737143348998988L;
 
     private Class<? extends Annotation> value;
 

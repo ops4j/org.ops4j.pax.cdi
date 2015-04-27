@@ -87,8 +87,8 @@ public class WeldCdiContainer extends AbstractCdiContainer {
     }
 
     @Override
-    protected void doStart(Object environment) {
-        this.environment = environment;
+    protected void doStart(Object start) {
+        this.environment = start;
         try {
             doWithClassLoader(getContextClassLoader(), new Callable<BeanManager>() {
 

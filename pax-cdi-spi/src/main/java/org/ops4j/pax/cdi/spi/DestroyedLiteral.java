@@ -35,12 +35,12 @@ import javax.enterprise.util.AnnotationLiteral;
  */
 public class DestroyedLiteral extends AnnotationLiteral<Destroyed> implements Destroyed {
 
-    private static final long serialVersionUID = -8560340388621930476L;
-
     public static final DestroyedLiteral REQUEST = new DestroyedLiteral(RequestScoped.class);
     public static final DestroyedLiteral CONVERSATION = new DestroyedLiteral(ConversationScoped.class);
     public static final DestroyedLiteral SESSION = new DestroyedLiteral(SessionScoped.class);
     public static final DestroyedLiteral APPLICATION = new DestroyedLiteral(ApplicationScoped.class);
+
+    private static final long serialVersionUID = -8560340388621930476L;
 
     private Class<? extends Annotation> value;
 
