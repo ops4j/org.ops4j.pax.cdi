@@ -30,13 +30,14 @@ import java.lang.annotation.Target;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
+
 /**
  * Qualifier for automatic registration of CDI beans as OSGi service.
  * <p>
  * In application code, this qualifier shall only be used on classes and producer methods.
  * <p>
  * For each bean with this qualifier, a bean instance is automatically registered as an OSGi service
- * when the {@link ContainerInitialized} event has been observed.
+ * when the CDI container has been initialized.
  * <p>
  * The {@link #classes()} attribute denotes the classes or interfaces under which this service is
  * registered, defaulting to the interfaces the service class is assignable to, or to the service

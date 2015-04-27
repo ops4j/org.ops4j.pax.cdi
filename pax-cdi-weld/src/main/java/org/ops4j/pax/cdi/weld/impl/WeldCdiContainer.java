@@ -38,6 +38,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
+import org.ops4j.pax.cdi.spi.DestroyedLiteral;
+import org.ops4j.pax.cdi.spi.InitializedLiteral;
 import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.ops4j.pax.cdi.weld.impl.bda.BundleDeployment;
 import org.osgi.framework.Bundle;
@@ -65,6 +67,8 @@ public class WeldCdiContainer extends AbstractCdiContainer {
 
     private BeanManagerImpl manager;
 
+    private Object environment;
+
     /**
      * Construct a CDI container for the given extended bundle.
      *
@@ -84,7 +88,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
 
     @Override
     protected void doStart(Object environment) {
-        buildContextClassLoader();
+        this.environment = environment;
         try {
             doWithClassLoader(getContextClassLoader(), new Callable<BeanManager>() {
 
@@ -114,6 +118,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
         bootstrap.validateBeans();
         bootstrap.endInitialization();
         manager = bootstrap.getManager(beanDeploymentArchive);
+        manager.fireEvent(environment, InitializedLiteral.APPLICATION);
         return manager;
     }
 
@@ -124,6 +129,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
 
                 @Override
                 public Object call() throws Exception {
+                    manager.fireEvent(environment, DestroyedLiteral.APPLICATION);
                     bootstrap.shutdown();
                     return null;
                 }

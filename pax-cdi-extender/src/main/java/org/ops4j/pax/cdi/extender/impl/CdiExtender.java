@@ -150,7 +150,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
             // Web containers will be started later when the servlet context is available.
             // Standalone containers are started right now.
             container = doCreateContainer(bundle, containerType);
-            container.start(null);
+            container.start(new Object());
         }
         wrapper.setCdiContainer(container);
         return wrapper;

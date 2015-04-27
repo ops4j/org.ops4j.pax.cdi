@@ -24,10 +24,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
@@ -35,7 +31,6 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionTarget;
-import javax.inject.Singleton;
 
 import org.apache.webbeans.config.WebBeansContext;
 import org.apache.webbeans.spi.ContainerLifecycle;
@@ -95,7 +90,6 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
      * @return
      */
     private WebBeansContext createWebBeansContext(Bundle bundle, final Object environment) {
-        buildContextClassLoader();
         try {
             return doWithClassLoader(getContextClassLoader(), new Callable<WebBeansContext>() {
 
@@ -104,7 +98,6 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
                     WebBeansContext webBeansContext = WebBeansContext.currentInstance();
                     lifecycle = webBeansContext.getService(ContainerLifecycle.class);
                     lifecycle.startApplication(environment);
-                    startContexts(webBeansContext);
                     return webBeansContext;
                 }
             });
@@ -113,32 +106,6 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
         catch (Exception exc) {
             throw Exceptions.unchecked(exc);
         }
-    }
-
-    /**
-     * Starts all CDI contexts.
-     *
-     * @param webBeansContext
-     */
-    private void startContexts(WebBeansContext webBeansContext) {
-        ContextsService contextService = lifecycle.getContextService();
-        contextService.startContext(RequestScoped.class, null);
-        contextService.startContext(ConversationScoped.class, null);
-        contextService.startContext(SessionScoped.class, null);
-        contextService.startContext(ApplicationScoped.class, null);
-        contextService.startContext(Singleton.class, null);
-    }
-
-    /**
-     * Stops all CDI contexts.
-     */
-    private void stopContexts() {
-        ContextsService contextService = lifecycle.getContextService();
-        contextService.endContext(RequestScoped.class, null);
-        contextService.endContext(ConversationScoped.class, null);
-        contextService.endContext(SessionScoped.class, null);
-        contextService.endContext(ApplicationScoped.class, null);
-        contextService.endContext(Singleton.class, null);
     }
 
     @Override
@@ -158,7 +125,6 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
                 @Override
                 public Void call() throws Exception {
                     if (lifecycle != null) {
-                        stopContexts();
                         lifecycle.stopApplication(getContextClassLoader());
                     }
                     return null;

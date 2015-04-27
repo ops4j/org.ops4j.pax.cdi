@@ -29,7 +29,6 @@ import java.util.concurrent.Callable;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.apache.xbean.osgi.bundle.util.DelegatingBundle;
-import org.ops4j.pax.cdi.api.ContainerInitialized;
 import org.ops4j.pax.cdi.api.ServicesPublished;
 import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.ops4j.pax.swissbox.core.BundleClassLoader;
@@ -86,8 +85,9 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     public synchronized void start(Object environment) {
         if (!started) {
             log.info("Starting CDI container for bundle {}", getBundle());
-            doStart(environment);
+            buildContextClassLoader();
             BeanBundles.addBundle(getContextClassLoader(), getBundle());
+            doStart(environment);
             finishStartup();
             started = true;
         }
@@ -97,8 +97,8 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     public synchronized void stop() {
         if (started) {
             log.info("Stopping CDI container for bundle {}", getBundle());
-            BeanBundles.removeBundle(getContextClassLoader(), getBundle());
             doStop();
+            BeanBundles.removeBundle(getContextClassLoader(), getBundle());
             unregister(cdiContainerReg);
             unregister(beanManagerReg);
             started = false;
