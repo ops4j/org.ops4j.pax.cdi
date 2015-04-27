@@ -1,0 +1,147 @@
+= Pax CDI
+OPS4J 
+:doctype: book 
+:toc: left 
+:toclevels: 3
+:toc-position: left 
+:toc-title: Pax CDI
+:numbered:
+
+// Push titles down one level
+:leveloffset: 1
+
+++++ 
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.1.0/css/font-awesome.min.css">
+++++
+
+:icons: font
+
+= Introduction
+
+== Purpose
+
+== Motivation for OSGi users
+
+Working with the OSGi service registry using nothing but the OSGi core APIs can be a bit tedious. 
+Publishing or looking up a service requires a few lines of boilerplate code, and you also need to 
+deal with the dynamics of bundles and services which may come and go at any time.
+
+Dependency injection is a popular approach for delegating the low-level plumbing of an application 
+to a container, where application components simply specify their dependencies in metadata, 
+letting the container instantiate and connect the components.
+
+Rather than inventing yet another dependency injection solution, Pax CDI uses the CDI standard to 
+bring type-safe annotation-based dependency injection to OSGi.
+
+=== Background
+
+==== Dependency Injection in OSGi
+
+The OSGi Compendium specification defines two dependency injection solutions, Declarative Services 
+and Blueprint.
+
+Both of these require metadata to be specified in XML. Since OSGi Compendium 5.0, Declarative 
+Services metadata can also be specified by compile-time Java annotations, using an annotation 
+processor to generate the XML metadata. For Blueprint, on the other hand, there are no standardized 
+annotations.
+
+==== XML Metadata vs. Annotations
+
+With XML-based metadata, the dependency definitions are strictly decoupled from the Java 
+implementation classes, and the Java classes do not depend on any container API. The downside 
+is that the implementation classes need to be kept in sync with the meta-data, manually or 
+by special tooling.
+
+Annotation-based metadata is less verbose and more robust. Annotations are type-safe and amenable 
+to automatic refactoring by most IDEs, without any specific extensions.
+
+==== Managed Services and Managed Beans
+
+Both Declarative Services and Blueprint manage the component lifecycle by activating a component 
+not until its dependencies have been satisfied by injecting services from the OSGi service 
+registry, and both allow components to publish services on activation simply by listing them in 
+metadata.
+
+Unlike Declarative Services, Blueprint can inject not only OSGi services, but also managed beans, 
+i.e. plain old Java objects. Managed beans are local to the current component and cannot be 
+injected into other components. Each Blueprint-enabled bundle has its own Blueprint context 
+with managed beans and OSGi service references. The contexts of different bundles can interact 
+by injecting services published by another bundle.
+
+=== Contexts and Dependency Injection
+
+JSR-299 Contexts and Dependency Injection (CDI) is a Java Community Standard released in 
+December 2009 under the Java EE 6 umbrella. It builds upon the JSR-330 Dependency Injection 
+standard, adding support for bean scopes, interceptors, events and portable extensions.
+
+CDI is annotation-based and uses very little or no additional XML metadata. CDI includes an 
+annotation processing engine and defines hooks for user-defined annotations to add semantics to 
+the component lifecycle. Such user-defined extensions are called portable extensions in the 
+CDI jargon, in the sense of being portable to any given CDI container implementation.
+
+Portable extensions are a very powerful feature for connecting CDI with other frameworks. 
+Pax CDI is based on a portable extension which looks up dependencies from the OSGi service registry.
+
+=== Bean Bundles
+
+Pax CDI introduces the concept of a bean bundle, being a CDI-enabled OSGi bundle. A bundle is 
+turned into a bean bundle by requiring the `pax.cdi` extender capability, see 
+Requirements and Capabilities for more details.
+
+A bundle which is a valid bean deployment archive but does not require the `pax.cdi` extender 
+capability will not be considered by Pax CDI.
+
+Pax CDI uses the OSGi extender pattern to create a CDI container for each bean bundle. These CDI 
+containers are completely disjoint. The CDI container lifecycle is tied to the bundle 
+lifecycle of the owning bundle.
+
+Indirect references between bean bundles can be established by injecting OSGi service dependencies. 
+These dependencies are proxied by default. The proxy looks up the required service either 
+statically on injection or dynamically on every method invocation.
+
+
+
+
+== Motivation for CDI users
+
+
+=== Modularity in Java EE
+
+The module concept of Java EE 6 is rather coarse: A web application is a single module, typically a 
+fairly large one, with a single CDI container. You cannot easily share components between 
+applications, except by embedding them into each WEB-INF/lib or by moving them to a shared 
+location of the application server, making them visible to all applications deployed on the server.
+
+CDI injection cannot cross module boundaries. The only way to indirectly inject shared resources or 
+EJBs from other modules is by wrapping them in a local producer method.
+
+The set of managed beans is determined during application deployment and remains fixed during the 
+lifetime of the applications.
+
+=== Modularity in OSGi
+
+OSGi has a very rich and dynamic module concept. OSGi applications typically contain dozens or 
+hundreds of fairly small modules or bundles, some of which may come and go during the lifetime of 
+the application. Bundles can register services in the central OSGi service registry, or look up and 
+use services registered by other bundles, without having to know exactly the bundle providing a 
+given service. Like bundles, services may come and go at any time.
+
+=== The Best of Both
+
+The idea of Pax CDI is to break up a monolithic application with a large CDI container into a 
+number of smaller bean bundles, each with its own CDI container. CDI containers from different 
+bundles can interact indirectly through the OSGi service registry.
+
+A bean from bundle A may inject a (proxy of a) bean provided by bundle B, if B has published the 
+bean in the OSGi service registry.
+
+Pax CDI encapsulates OSGi APIs in a portable CDI extension, enabling application developers to 
+publish or consume OSGi services by a handful of annotations.
+
+
+= Getting Started
+
+
+
+// Return to normal title levels 
+:leveloffset: 0

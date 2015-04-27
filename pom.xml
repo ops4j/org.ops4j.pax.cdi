@@ -40,6 +40,7 @@
         <module>pax-cdi-test-support</module>
         <module>pax-cdi-servlet</module>
         <module>pax-cdi-undertow-weld</module>
+        <module>pax-cdi-manual</module>
     </modules>
 
     <profiles>
