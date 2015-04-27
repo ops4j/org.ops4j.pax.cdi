@@ -19,6 +19,7 @@ package org.ops4j.pax.cdi.extension.impl.compat;
 
 import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.slf4j.Logger;
@@ -27,6 +28,8 @@ import org.slf4j.LoggerFactory;
 public class PrototypeScopeUtils {
 
     private static Logger log = LoggerFactory.getLogger(PrototypeScopeUtils.class);
+
+    private static final Version OSGI6_FRAMEWORK_VERSION = new Version(1, 8, 0);
 
     private static Class<?> wrapperClass;
 
@@ -89,12 +92,7 @@ public class PrototypeScopeUtils {
     }
 
     public static boolean hasPrototypeScope(BundleContext bc) {
-        // TODO workaround for FELIX-4850
-        String felixVersion = bc.getProperty("felix.version");
-        if (felixVersion != null && felixVersion.startsWith("4.6.")) {
-            return true;
-        }
-        Version actualVersion = Version.parseVersion(bc.getProperty("org.osgi.framework.version"));
-        return actualVersion.compareTo(new Version(1, 8, 0)) >= 0;
+        Version actualVersion = Version.parseVersion(bc.getProperty(Constants.FRAMEWORK_VERSION));
+        return actualVersion.compareTo(OSGI6_FRAMEWORK_VERSION) >= 0;
     }
 }
