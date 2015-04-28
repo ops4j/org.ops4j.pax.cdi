@@ -30,6 +30,7 @@ import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
+import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -95,11 +96,8 @@ public class OsgiInjectionTarget<T> implements InjectionTarget<T> {
             try {
                 field.set(beanInstance, instance);
             }
-            catch (IllegalArgumentException exc) {
-                throw new RuntimeException(exc);
-            }
-            catch (IllegalAccessException exc) {
-                throw new RuntimeException(exc);
+            catch (IllegalArgumentException | IllegalAccessException exc) {
+                throw Exceptions.unchecked(exc);
             }
         }
     }

@@ -177,9 +177,7 @@ public class BeanScanner {
         if (zipEntry == null) {
             return;
         }
-        ZipInputStream in = null;
-        try {
-            in = new ZipInputStream(zipEntry.openStream());
+        try (ZipInputStream in = new ZipInputStream(zipEntry.openStream())) {
             ZipEntry entry;
             while ((entry = in.getNextEntry()) != null) {
                 String name = entry.getName();
@@ -190,16 +188,6 @@ public class BeanScanner {
         }
         catch (IOException exc) {
             log.warn("error scanning zip file " + zipName, exc);
-        }
-        finally {
-            if (in != null) {
-                try {
-                    in.close();
-                }
-                catch (IOException e) {
-                    // ignore
-                }
-            }
         }
     }
 

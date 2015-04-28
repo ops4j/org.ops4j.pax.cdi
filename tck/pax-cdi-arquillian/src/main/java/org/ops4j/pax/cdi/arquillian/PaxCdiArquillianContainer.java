@@ -84,16 +84,7 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
             testContainer = PaxExamRuntime.createContainer(system);
             testContainer.start();
         }
-        catch (IOException exc) {
-            log.error("error starting Pax Exam container", exc);
-        }
-        catch (TestContainerException exc) {
-            log.error("error starting Pax Exam container", exc);
-        }
-        catch (SecurityException exc) {
-            log.error("error starting Pax Exam container", exc);
-        }
-        catch (IllegalArgumentException exc) {
+        catch (IOException | TestContainerException | SecurityException | IllegalArgumentException exc) {
             log.error("error starting Pax Exam container", exc);
         }
     }

@@ -14,7 +14,7 @@
  *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * Copied from Weld, where this class is not exported.
  */
 package org.ops4j.pax.cdi.weld.impl.bda;
@@ -43,13 +43,7 @@ public abstract class AbstractClassLoaderResourceLoader implements ResourceLoade
         try {
             return classLoader().loadClass(name);
         }
-        catch (ClassNotFoundException e) {
-            throw new ResourceLoadingException(ERROR_LOADING_CLASS + name, e);
-        }
-        catch (LinkageError e) {
-            throw new ResourceLoadingException(ERROR_LOADING_CLASS + name, e);
-        }
-        catch (TypeNotPresentException e) {
+        catch (ClassNotFoundException | LinkageError | TypeNotPresentException e) {
             throw new ResourceLoadingException(ERROR_LOADING_CLASS + name, e);
         }
     }

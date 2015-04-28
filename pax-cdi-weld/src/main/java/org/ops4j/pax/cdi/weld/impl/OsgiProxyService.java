@@ -22,7 +22,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
 import org.jboss.weld.serialization.spi.ProxyServices;
-import org.ops4j.lang.Ops4jException;
+import org.ops4j.pax.cdi.spi.util.Exceptions;
 
 public class OsgiProxyService implements ProxyServices {
 
@@ -43,7 +43,7 @@ public class OsgiProxyService implements ProxyServices {
             return (Class<?>) AccessController.doPrivileged(new LoadClass(className));
         }
         catch (PrivilegedActionException pae) {
-            throw new Ops4jException(pae);
+            throw Exceptions.unchecked(pae);
         }
     }
 
@@ -51,7 +51,7 @@ public class OsgiProxyService implements ProxyServices {
     public void cleanup() {
         // empty
     }
-    
+
     private class LoadClass implements PrivilegedExceptionAction<Object> {
 
         private String className;
@@ -60,6 +60,7 @@ public class OsgiProxyService implements ProxyServices {
             this.className = className;
         }
 
+        @Override
         public Object run() throws Exception {
             return Class.forName(className, true, loader);
         }

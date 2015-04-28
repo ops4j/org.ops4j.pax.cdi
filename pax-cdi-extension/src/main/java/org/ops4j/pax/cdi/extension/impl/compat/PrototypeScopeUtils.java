@@ -52,10 +52,7 @@ public class PrototypeScopeUtils {
             Object instance = getWrapperClass(bc).newInstance();
             return (ServiceObjectsWrapper<S>) instance;
         }
-        catch (InstantiationException exc) {
-            log.error("", exc);
-        }
-        catch (IllegalAccessException exc) {
+        catch (InstantiationException | IllegalAccessException exc) {
             log.error("", exc);
         }
         return null;
