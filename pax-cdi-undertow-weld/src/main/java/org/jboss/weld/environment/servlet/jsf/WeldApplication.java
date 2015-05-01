@@ -32,13 +32,15 @@ import org.jboss.weld.environment.servlet.util.TransparentELResolver;
  * @author Ales Justin
  */
 public class WeldApplication extends ForwardingApplication {
+
     /**
-     * The BeanManager may not have been initialized at the time JSF is initializing. Therefore,
-     * we stick in a ForwardingELResolver that delegates to the BeanManager ELResolver, which will
-     * be plugged in when it's available. If the ELResolver is invoked before the BeanManager
-     * is available, the resolver will perform no action (and thus produce no result).
+     * The BeanManager may not have been initialized at the time JSF is initializing. Therefore, we
+     * stick in a ForwardingELResolver that delegates to the BeanManager ELResolver, which will be
+     * plugged in when it's available. If the ELResolver is invoked before the BeanManager is
+     * available, the resolver will perform no action (and thus produce no result).
      */
     private static class LazyBeanManagerIntegrationELResolver extends ForwardingELResolver {
+
         private ELResolver delegate;
 
         public LazyBeanManagerIntegrationELResolver() {
@@ -71,7 +73,9 @@ public class WeldApplication extends ForwardingApplication {
     private void init() {
         ExpressionFactory expressionFactory = null;
         BeanManager beanManager = null;
-        if (expressionFactory == null && (expressionFactory = application.getExpressionFactory()) != null && (beanManager = beanManager()) != null) {
+        if (expressionFactory == null
+            && (expressionFactory = application.getExpressionFactory()) != null
+            && (beanManager = beanManager()) != null) {
             elResolver.beanManagerReady(beanManager);
             this.expressionFactory = beanManager.wrapExpressionFactory(expressionFactory);
         }
@@ -88,7 +92,8 @@ public class WeldApplication extends ForwardingApplication {
         init();
         if (expressionFactory == null) {
             return application.getExpressionFactory();
-        } else {
+        }
+        else {
             return expressionFactory;
         }
     }
@@ -101,21 +106,18 @@ public class WeldApplication extends ForwardingApplication {
             try {
                 if (obj instanceof ServletContext) {
                     final ServletContext ctx = (ServletContext) obj;
-                    final BeanManager tmp = (BeanManager) ctx.getAttribute("org.ops4j.pax.cdi.BeanManager");
+                    final BeanManager tmp = (BeanManager) ctx
+                        .getAttribute("org.ops4j.pax.cdi.BeanManager");
                     if (tmp == null) {
                         return null;
                     }
                     this.beanManager = tmp;
-//                } else if (PortletSupport.isPortletEnvSupported() && PortletSupport.isPortletContext(obj)) {
-//                    final BeanManager tmp = PortletSupport.getBeanManager(obj);
-//                    if (tmp == null) {
-//                        return null;
-//                    }
-//                    this.beanManager = tmp;
-                } else {
+                }
+                else {
                     notFound = true;
                 }
-            } catch (Throwable t) {
+            }
+            catch (Exception t) {
                 throw new IllegalStateException("Exception fetching BeanManager instance!", t);
             }
             if (notFound) {
@@ -124,5 +126,4 @@ public class WeldApplication extends ForwardingApplication {
         }
         return beanManager;
     }
-
 }

@@ -89,7 +89,7 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
      * @param bundle
      * @return
      */
-    private WebBeansContext createWebBeansContext(Bundle bundle, final Object environment) {
+    private WebBeansContext createWebBeansContext(final Object environment) {
         try {
             return doWithClassLoader(getContextClassLoader(), new Callable<WebBeansContext>() {
 
@@ -110,7 +110,7 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
 
     @Override
     protected void doStart(Object environment) {
-        context = createWebBeansContext(getBundle(), environment);
+        context = createWebBeansContext(environment);
         if (log.isDebugEnabled()) {
             for (Bean<?> bean : context.getBeanManagerImpl().getBeans()) {
                 log.debug("  {}", bean);

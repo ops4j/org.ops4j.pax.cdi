@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
@@ -39,6 +40,7 @@ import org.slf4j.LoggerFactory;
  * @author Harald Wellmann
  *
  */
+@Typed()
 public class ComponentRegistry {
 
     private static Logger log = LoggerFactory.getLogger(ComponentRegistry.class);
@@ -49,9 +51,6 @@ public class ComponentRegistry {
 
     private Set<InjectionPoint> nonComponentDependencies = new HashSet<>();
 
-
-    public ComponentRegistry(int dummy) {
-    }
 
     /**
      * Adds a component bean type to the registry, creating an empty descriptor for it.

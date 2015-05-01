@@ -76,7 +76,7 @@ public class OsgiExtension implements Extension {
     /**
      * Registry for service components and their dependencies.
      */
-    private ComponentRegistry componentRegistry = new ComponentRegistry(0);
+    private ComponentRegistry componentRegistry = new ComponentRegistry();
 
     private SingletonScopeContext serviceContext;
 

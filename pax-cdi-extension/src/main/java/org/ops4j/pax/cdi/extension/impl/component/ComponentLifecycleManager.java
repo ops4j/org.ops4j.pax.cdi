@@ -194,8 +194,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
         descriptor.setServiceRegistration(reg);
     }
 
-    private <S> void unregisterService(Bean<S> bean, Object service,
-        ComponentDescriptor<S> descriptor) {
+    private <S> void unregisterService(ComponentDescriptor<S> descriptor) {
         ServiceRegistration<S> reg = descriptor.getServiceRegistration();
         if (reg != null) {
             log.debug("removing service {}", reg);
@@ -263,7 +262,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
         Bean<S> bean = descriptor.getBean();
         S service = context.get(bean);
         if (service != null) {
-            unregisterService(bean, service, descriptor);
+            unregisterService(descriptor);
             context.destroy(bean);
         }
     }
