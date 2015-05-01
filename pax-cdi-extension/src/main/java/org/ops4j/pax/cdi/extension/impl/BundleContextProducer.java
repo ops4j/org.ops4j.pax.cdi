@@ -30,33 +30,33 @@ import org.osgi.framework.BundleContext;
 
 /**
  * Produces the {@link BundleContext} of the current bean bundle as managed bean.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 @ApplicationScoped
 public class BundleContextProducer {
 
     private BundleContext bundleContext;
-    
+
     @Inject
     private OsgiExtension extension;
 
     @Produces
-    public BundleContext bundleContext() {
+    public BundleContext getBundleContext() {
         if (bundleContext == null) {
             Bundle bundle = BeanBundles.getBundle(Thread.currentThread().getContextClassLoader());
             bundleContext = bundle.getBundleContext();
         }
         return bundleContext;
     }
-    
-    @Produces 
+
+    @Produces
     public ComponentRegistry componentRegistry() {
         return extension.getComponentRegistry();
     }
 
-    @Produces 
+    @Produces
     public SingletonScopeContext serviceContext() {
         return extension.getServiceContext();
     }

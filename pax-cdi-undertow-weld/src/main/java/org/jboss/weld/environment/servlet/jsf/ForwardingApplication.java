@@ -16,12 +16,17 @@
  */
 package org.jboss.weld.environment.servlet.jsf;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+
 import javax.el.ELContextListener;
 import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
-import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.NavigationHandler;
 import javax.faces.application.ProjectStage;
@@ -35,19 +40,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.el.MethodBinding;
 import javax.faces.el.PropertyResolver;
-import javax.faces.el.ReferenceSyntaxException;
 import javax.faces.el.ValueBinding;
 import javax.faces.el.VariableResolver;
 import javax.faces.event.ActionListener;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.validator.Validator;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
 
 /**
  * @author pmuir
@@ -57,14 +55,17 @@ public abstract class ForwardingApplication extends Application {
 
     protected abstract Application delegate();
 
+    @Override
     public void addBehavior(String behaviorId, String behaviorClass) {
         delegate().addBehavior(behaviorId, behaviorClass);
     }
 
+    @Override
     public void addComponent(String componentType, String componentClass) {
         delegate().addComponent(componentType, componentClass);
     }
 
+    @Override
     public void addConverter(String converterId, String converterClass) {
         delegate().addConverter(converterId, converterClass);
     }
@@ -96,7 +97,7 @@ public abstract class ForwardingApplication extends Application {
     }
 
     @Override
-    public Behavior createBehavior(String behaviorId) throws FacesException {
+    public Behavior createBehavior(String behaviorId) {
         return delegate().createBehavior(behaviorId);
     }
 
@@ -111,7 +112,7 @@ public abstract class ForwardingApplication extends Application {
     }
 
     @Override
-    public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType) throws FacesException {
+    public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType) {
         return delegate().createComponent(componentExpression, context, componentType);
     }
 
@@ -121,13 +122,13 @@ public abstract class ForwardingApplication extends Application {
     }
 
     @Override
-    public UIComponent createComponent(String componentType) throws FacesException {
+    public UIComponent createComponent(String componentType) {
         return delegate().createComponent(componentType);
     }
 
     @Override
     @Deprecated
-    public UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType) throws FacesException {
+    public UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType) {
         return delegate().createComponent(componentBinding, context, componentType);
     }
 
@@ -145,18 +146,18 @@ public abstract class ForwardingApplication extends Application {
     @SuppressWarnings("rawtypes")
     @Deprecated
     @Override
-    public MethodBinding createMethodBinding(String ref, Class[] params) throws ReferenceSyntaxException {
+    public MethodBinding createMethodBinding(String ref, Class[] params) {
         return delegate().createMethodBinding(ref, params);
     }
 
     @Override
-    public Validator createValidator(String validatorId) throws FacesException {
+    public Validator createValidator(String validatorId) {
         return delegate().createValidator(validatorId);
     }
 
     @Override
     @Deprecated
-    public ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException {
+    public ValueBinding createValueBinding(String ref) {
         return delegate().createValueBinding(ref);
     }
 

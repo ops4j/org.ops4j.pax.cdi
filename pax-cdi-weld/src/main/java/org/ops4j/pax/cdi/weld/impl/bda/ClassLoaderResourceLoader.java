@@ -14,7 +14,7 @@
  *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * Copied from Weld, where this class is not exported.
  */
 package org.ops4j.pax.cdi.weld.impl.bda;
@@ -39,6 +39,7 @@ public class ClassLoaderResourceLoader extends AbstractClassLoaderResourceLoader
         return classLoader;
     }
 
+    @Override
     public void cleanup() {
         this.classLoader = null;
     }

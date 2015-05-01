@@ -31,14 +31,15 @@ import org.ops4j.pax.cdi.sample1.Vanilla;
 @OsgiServiceProvider(classes = { VanillaService.class, IceCreamService.class })
 @Properties(@Property(name = "flavour", value = "vanilla"))
 class VanillaService implements IceCreamService {
-    
+
     private boolean initialized;
-    
+
     @PostConstruct
     public void init() {
         initialized = true;
     }
 
+    @Override
     public String getFlavour() {
         if (!initialized) {
             throw new AssertionError("VanillaService is not initialized");

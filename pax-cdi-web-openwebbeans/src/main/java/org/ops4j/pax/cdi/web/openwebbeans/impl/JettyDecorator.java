@@ -69,35 +69,43 @@ public class JettyDecorator implements ServletContextHandler.Decorator {
         return injector;
     }
 
+    @Override
     public <T extends Filter> T decorateFilterInstance(T filter) {
         getInjector().inject(filter);
         return filter;
     }
 
+    @Override
     public <T extends Servlet> T decorateServletInstance(T servlet) {
         getInjector().inject(servlet);
         return servlet;
     }
 
+    @Override
     public <T extends EventListener> T decorateListenerInstance(T listener) {
         getInjector().inject(listener);
         return listener;
     }
 
+    @Override
     public void decorateFilterHolder(FilterHolder filter) {
     }
 
+    @Override
     public void decorateServletHolder(ServletHolder servlet) {
     }
 
+    @Override
     public void destroyServletInstance(Servlet servlet) {
         getInjector().destroy(servlet);
     }
 
+    @Override
     public void destroyFilterInstance(Filter filter) {
         getInjector().destroy(filter);
     }
 
+    @Override
     public void destroyListenerInstance(EventListener listener) {
         getInjector().destroy(listener);
     }

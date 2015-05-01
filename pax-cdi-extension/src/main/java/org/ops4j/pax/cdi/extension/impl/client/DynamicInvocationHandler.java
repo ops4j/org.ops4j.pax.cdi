@@ -37,7 +37,7 @@ import org.osgi.framework.ServiceReference;
  * @author Harald Wellmann
  *
  */
-public class DynamicInvocationHandler<S> extends AbstractServiceInvocationHandler<S> {
+public class DynamicInvocationHandler<S> extends AbstractServiceInvocationHandler {
 
 
     public DynamicInvocationHandler(InjectionPoint ip) {

@@ -71,7 +71,7 @@ public class OsgiServiceBean<T> implements Bean<T> {
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         InvocationHandler handler = Proxy.getInvocationHandler(instance);
         if (handler instanceof AbstractServiceInvocationHandler) {
-            AbstractServiceInvocationHandler<?> serviceHandler = (AbstractServiceInvocationHandler<?>) handler;
+            AbstractServiceInvocationHandler serviceHandler = (AbstractServiceInvocationHandler) handler;
             serviceHandler.release();
         }
     }

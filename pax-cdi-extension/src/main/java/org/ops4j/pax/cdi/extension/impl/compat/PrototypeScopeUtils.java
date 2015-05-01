@@ -31,7 +31,7 @@ public class PrototypeScopeUtils {
 
     private static final Version OSGI6_FRAMEWORK_VERSION = new Version(1, 8, 0);
 
-    private static Class<?> wrapperClass;
+    private static volatile Class<?> wrapperClass;
 
 
     private PrototypeScopeUtils() {

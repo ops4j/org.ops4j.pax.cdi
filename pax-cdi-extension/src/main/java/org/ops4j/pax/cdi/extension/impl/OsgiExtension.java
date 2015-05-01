@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -219,12 +220,13 @@ public class OsgiExtension implements Extension {
         event.addContext(bundleScopeContext);
         PrototypeScopeContext prototypeScopeContext = new PrototypeScopeContext(beanManager);
         event.addContext(prototypeScopeContext);
-        for (Type type : typeToIpMap.keySet()) {
+        for (Entry<Type, Set<InjectionPoint>> entry : typeToIpMap.entrySet()) {
+            Type type = entry.getKey();
             if (isInstance(type)) {
                 // handled by OsgiInjectionTarget
             }
             else if (type instanceof Class) {
-                addBean(event, type, typeToIpMap.get(type));
+                addBean(event, type, entry.getValue());
             }
             else {
                 InjectionPoint ip = typeToIpMap.get(type).iterator().next();
@@ -247,10 +249,8 @@ public class OsgiExtension implements Extension {
                 event.addBean(new OsgiServiceBean(ip));
                 registeredBeans.add(qualifier);
 
-                if (!qualifier.dynamic()) {
-                    if (!componentRegistry.isComponent(ip.getBean())) {
-                        componentRegistry.addNonComponentDependency(ip);
-                    }
+                if (!qualifier.dynamic() && !componentRegistry.isComponent(ip.getBean())) {
+                    componentRegistry.addNonComponentDependency(ip);
                 }
             }
         }

@@ -61,7 +61,7 @@ public class OsgiProxyService implements ProxyServices {
         }
 
         @Override
-        public Object run() throws Exception {
+        public Object run() throws ClassNotFoundException  {
             return Class.forName(className, true, loader);
         }
     }

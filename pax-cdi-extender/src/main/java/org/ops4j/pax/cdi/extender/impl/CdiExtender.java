@@ -84,7 +84,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
     public synchronized void deactivate(BundleContext ctx) {
         BundleCdi.dispose();
 
-        log.info("stopping CDI extender {}", context.getBundle().getSymbolicName());
+        log.info("stopping CDI extender {}", ctx.getBundle().getSymbolicName());
         bundleWatcher.close();
     }
 
@@ -192,7 +192,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
     }
 
     @Reference
-    public void setCdiContainerFactory(CdiContainerFactory cdiContainerFactory) {
+    public synchronized void setCdiContainerFactory(CdiContainerFactory cdiContainerFactory) {
         this.factory = cdiContainerFactory;
     }
 
@@ -201,7 +201,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
      *            the cdiProvider to set
      */
     @Reference
-    public void setCdiProvider(CDIProvider cdiProvider) {
+    public synchronized void setCdiProvider(CDIProvider cdiProvider) {
         this.cdiProvider = cdiProvider;
     }
 

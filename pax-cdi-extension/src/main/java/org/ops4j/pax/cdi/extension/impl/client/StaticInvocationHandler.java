@@ -36,7 +36,7 @@ import org.osgi.framework.ServiceReference;
  * @author Harald Wellmann
  *
  */
-public class StaticInvocationHandler<S> extends AbstractServiceInvocationHandler<S> {
+public class StaticInvocationHandler<S> extends AbstractServiceInvocationHandler {
 
     private S service;
     private ServiceReference<S> serviceRef;

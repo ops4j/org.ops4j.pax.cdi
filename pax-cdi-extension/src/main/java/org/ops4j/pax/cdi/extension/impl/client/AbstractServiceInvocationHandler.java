@@ -10,7 +10,7 @@ import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-public abstract class AbstractServiceInvocationHandler<S> implements InvocationHandler {
+public abstract class AbstractServiceInvocationHandler implements InvocationHandler {
 
     protected InjectionPoint ip;
     protected BundleContext bundleContext;

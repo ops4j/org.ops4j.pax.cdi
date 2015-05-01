@@ -28,7 +28,7 @@ public class BeanMap extends HashMap<Contextual<?>, SingletonScopeContextEntry<?
 
     private static final long serialVersionUID = 1L;
 
-    private CreationalContext<Object> creationalContext;
+    private transient CreationalContext<Object> creationalContext;
 
 
     /**

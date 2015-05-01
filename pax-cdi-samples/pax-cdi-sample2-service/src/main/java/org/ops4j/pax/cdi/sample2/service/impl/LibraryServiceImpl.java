@@ -33,22 +33,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 @Transactional
 @OsgiServiceProvider
 public class LibraryServiceImpl implements LibraryService {
 
     private static Logger log = LoggerFactory.getLogger(LibraryServiceImpl.class);
-    
+
     @Inject
     private AuthorDao authorDao;
 
     @Inject
     private EntityManager em;
 
+    @Override
     public List<Book> findBooks() {
         log.info("finding books");
         String jpql = "select b from Book b";
@@ -57,6 +58,7 @@ public class LibraryServiceImpl implements LibraryService {
         return books;
     }
 
+    @Override
     public List<Book> findBooksByAuthor(String lastName) {
         String jpql = "select b from Book b where b.author.lastName = :lastName";
         TypedQuery<Book> query = em.createQuery(jpql, Book.class);
@@ -65,6 +67,7 @@ public class LibraryServiceImpl implements LibraryService {
         return books;
     }
 
+    @Override
     public List<Book> findBooksByTitle(String title) {
         String jpql = "select b from Book b where b.title = :title";
         TypedQuery<Book> query = em.createQuery(jpql, Book.class);
@@ -73,6 +76,7 @@ public class LibraryServiceImpl implements LibraryService {
         return books;
     }
 
+    @Override
     public Author createAuthor(String firstName, String lastName) {
         Author author = new Author();
         author.setFirstName(firstName);
@@ -80,15 +84,17 @@ public class LibraryServiceImpl implements LibraryService {
         em.persist(author);
         return author;
     }
-    
+
+    @Override
     public Author createAuthorViaDao(String firstName, String lastName) {
         Author author = new Author();
         author.setFirstName(firstName);
         author.setLastName(lastName);
         return authorDao.save(author);
     }
-    
-    
+
+
+    @Override
     public Author findAuthor(String firstName, String lastName) {
         String jpql = "select a from Author a where a.firstName = :firstName and a.lastName = :lastName";
         TypedQuery<Author> query = em.createQuery(jpql, Author.class);
@@ -99,6 +105,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
 
+    @Override
     public Book createBook(String title, Author author) {
         Book book = new Book();
         book.setTitle(title);
@@ -107,13 +114,15 @@ public class LibraryServiceImpl implements LibraryService {
         em.persist(book);
         return book;
     }
-    
+
+    @Override
     public long getNumBooks() {
         String jpql = "select count(b) from Book b";
         Long numBooks = (Long) em.createQuery(jpql).getSingleResult();
         return numBooks;
     }
 
+    @Override
     public long getNumAuthors() {
         String jpql = "select count(a) from Author a";
         Long numAuthors = (Long) em.createQuery(jpql).getSingleResult();
