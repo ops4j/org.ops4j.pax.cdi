@@ -31,7 +31,7 @@ import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.ops4j.pax.cdi.spi.scan.BeanScanner;
-import org.ops4j.pax.cdi.weld.impl.OsgiProxyService;
+import org.ops4j.pax.cdi.weld.impl.util.OsgiProxyService;
 import org.osgi.framework.Bundle;
 
 public class BundleDeployment implements CDI11Deployment {

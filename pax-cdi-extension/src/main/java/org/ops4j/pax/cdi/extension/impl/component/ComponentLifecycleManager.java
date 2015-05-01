@@ -104,7 +104,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
                 descriptor.setListener(this);
                 if (descriptor.isSatisfied()) {
                     log.info("component {} is available", bean);
-                    Object service = serviceFactoryBuilder.buildServiceFactory(descriptor);
+                    Object service = serviceFactoryBuilder.buildServiceFactory(bean);
                     registerService(bean, service, descriptor);
                 }
                 descriptor.start();
@@ -253,7 +253,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
     public <S> void onComponentSatisfied(ComponentDescriptor<S> descriptor) {
         Bean bean = descriptor.getBean();
         log.info("component {} is available", bean);
-        Object sf = serviceFactoryBuilder.buildServiceFactory(descriptor);
+        Object sf = serviceFactoryBuilder.buildServiceFactory(bean);
         registerService(bean, sf, descriptor);
     }
 

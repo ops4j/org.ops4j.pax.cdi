@@ -25,7 +25,7 @@ import java.util.Collection;
 
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
-import org.ops4j.pax.cdi.weld.impl.EnumerationList;
+import org.ops4j.pax.cdi.weld.impl.util.EnumerationList;
 
 /**
  * General {@link ResourceLoader} implementation that delegates resource loading to

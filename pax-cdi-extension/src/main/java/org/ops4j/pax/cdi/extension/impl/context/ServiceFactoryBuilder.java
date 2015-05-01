@@ -25,8 +25,6 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.ops4j.pax.cdi.extension.impl.component.ComponentDescriptor;
-
 
 public class ServiceFactoryBuilder {
 
@@ -37,8 +35,7 @@ public class ServiceFactoryBuilder {
         this.beanManager = beanManager;
     }
 
-    public <S> Object buildServiceFactory(ComponentDescriptor<S> descriptor) {
-        Bean<S> bean = descriptor.getBean();
+    public <S> Object buildServiceFactory(Bean<S> bean) {
         Class<? extends Annotation> scope = bean.getScope();
         Context context = beanManager.getContext(scope);
         if (context instanceof PrototypeScopeContext) {
@@ -56,7 +53,7 @@ public class ServiceFactoryBuilder {
         }
         throw new IllegalStateException(bean.getBeanClass() + " does not have an OSGi compatible scope");
     }
-    
+
     protected <S> Object buildPrototypeScopeServiceFactory(PrototypeScopeContext context, Bean<S> bean) {
         throw new IllegalStateException("prototype scope not supported");
     }
