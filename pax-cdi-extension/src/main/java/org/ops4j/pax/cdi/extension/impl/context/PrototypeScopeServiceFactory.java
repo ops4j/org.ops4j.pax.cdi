@@ -26,12 +26,28 @@ import org.osgi.framework.PrototypeServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 
 
+/**
+ * A service factory for prototype scoped OSGI service components.
+ *
+ * @param <S>
+ *            service type
+ *
+ * @author Harald Wellmann
+ */
 public class PrototypeScopeServiceFactory<S> implements PrototypeServiceFactory<S> {
 
 
     private PrototypeScopeContext context;
     private Bean<S> bean;
 
+    /**
+     * Creates a service factory for the given CDI context and the given bean.
+     *
+     * @param context
+     *            bundle scope context
+     * @param bean
+     *            CDI bean with bundle scope
+     */
     public PrototypeScopeServiceFactory(PrototypeScopeContext context, Bean<S> bean) {
         this.context = context;
         this.bean = bean;

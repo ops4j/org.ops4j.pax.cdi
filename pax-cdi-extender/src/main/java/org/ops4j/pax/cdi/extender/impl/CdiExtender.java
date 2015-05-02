@@ -199,9 +199,11 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
     }
 
     /**
-     * Sets the optional web adapter dependency. When the adapter
+     * Sets the optional web adapter dependency. When the adapter is set, web bundles will be
+     * processed.
      *
      * @param listener
+     *            web adapter
      */
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, target = "(type=web)")
     public synchronized void setWebAdapter(CdiContainerListener listener) {
@@ -220,6 +222,12 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
         webBundles.clear();
     }
 
+    /**
+     * Unsets the optional web adapter dependency.
+     *
+     * @param listener
+     *            web adapter
+     */
     public synchronized void unsetWebAdapter(CdiContainerListener listener) {
         if (factory != null) {
             factory.removeListener(listener);

@@ -23,8 +23,21 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanAttributes;
 
+/**
+ * Helper class for wrapping bean attributes.
+ *
+ * @param <T>
+ *            bean type
+ *
+ * @author Harald Wellmann
+ */
 public abstract class WrappedBeanAttributes<T> implements BeanAttributes<T> {
 
+    /**
+     * Returns original bean attributes.
+     *
+     * @return attributes to be wrapped
+     */
     protected abstract BeanAttributes<T> attributes();
 
     @Override

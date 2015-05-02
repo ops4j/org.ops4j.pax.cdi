@@ -23,16 +23,11 @@ import java.lang.reflect.Type;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.cdi.extension.impl.compat.PrototypeScopeUtils;
-import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.ops4j.pax.swissbox.tracker.ServiceLookup;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.Constants;
-import org.osgi.framework.Filter;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,15 +41,18 @@ public class InjectionPointOsgiUtils {
 
     private static Logger log = LoggerFactory.getLogger(InjectionPointOsgiUtils.class);
 
-
     /** Hidden constructor of utility class. */
     private InjectionPointOsgiUtils() {
     }
 
-    public static boolean isServiceAvailable(InjectionPoint ip) {
-        return InjectionPointOsgiUtils.getServiceReference(ip) != null;
-    }
-
+    /**
+     * Gets a service reference for the given injection point which must be annotated with
+     * {@link OsgiService}.
+     *
+     * @param ip
+     *            injection point
+     * @return matching service reference
+     */
     @SuppressWarnings("rawtypes")
     public static ServiceReference getServiceReference(InjectionPoint ip) {
         OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
@@ -65,53 +63,21 @@ public class InjectionPointOsgiUtils {
         return ServiceLookup.getServiceReference(bc, klass.getName(), getTimeout(os), filter);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static ServiceTracker getServiceTracker(InjectionPoint ip) {
-        OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
-        Type serviceType = ip.getType();
-        Class<?> klass = (Class<?>) serviceType;
-        String filterExpression = "(" + Constants.OBJECTCLASS + "=" + klass.getName() + ")";
-        if (qualifier.filter().length() > 0) {
-            filterExpression = "(&" + filterExpression + qualifier.filter() + ")";
-        }
-        BundleContext bc = getBundleContext(ip);
-        try {
-            Filter filter = bc.createFilter(filterExpression);
-            return new ServiceTracker(bc, filter, null);
-        }
-        catch (InvalidSyntaxException exc) {
-            throw Exceptions.unchecked(exc);
-        }
-    }
-
     private static int getTimeout(OsgiService os) {
         int timeout = os.timeout() == -1 ? 1 : os.timeout();
         return timeout;
     }
 
-    public static Object lookupService(BundleContext bc, InjectionPoint ip) {
-        Class<?> klass = (Class<?>) ip.getType();
-        OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
-
-        String filter = getFilter(klass, os);
-        int timeout = os.timeout() == -1 ? 1 : os.timeout();
-        ServiceReference<?> serviceRef = ServiceLookup.getServiceReference(bc, klass.getName(), timeout, filter);
-        return PrototypeScopeUtils.createServiceObjectsWrapper(bc, serviceRef).getService();
-    }
-
-    public static Object lookupService(InjectionPoint ip) {
-        Class<?> klass = (Class<?>) ip.getType();
-        OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
-
-        BundleContext bc = getBundleContext(ip);
-
-        String filter = getFilter(klass, os);
-        int timeout = os.timeout() == -1 ? 1 : os.timeout();
-        ServiceReference<?> serviceRef = ServiceLookup.getServiceReference(bc, klass.getName(),
-            timeout, filter);
-        return bc.getServiceObjects(serviceRef).getService();
-    }
-
+    /**
+     * Gets a complete LDAP filter string for an OSGi service with the given class and a partial
+     * filter.
+     *
+     * @param serviceType
+     *            service type
+     * @param qualifier
+     *            qualifier with partial filter
+     * @return filter string
+     */
     public static String getFilter(Class<?> serviceType, OsgiService qualifier) {
         String objectClassClause = "(" + Constants.OBJECTCLASS + "=" + serviceType.getName() + ")";
         String filter = "(&" + objectClassClause + qualifier.filter() + ")";
@@ -119,6 +85,13 @@ public class InjectionPointOsgiUtils {
         return filter;
     }
 
+    /**
+     * Gets a complete LDAP filter string for an OSGi service injection point.
+     *
+     * @param ip
+     *            injection point
+     * @return filter string
+     */
     public static String getFilter(InjectionPoint ip) {
         Class<?> klass = getServiceType(ip);
         OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
@@ -145,10 +118,26 @@ public class InjectionPointOsgiUtils {
         return (Class<?>) serviceType;
     }
 
+    /**
+     * Gets the bundle context of the class containing the given injection point.
+     *
+     * @param ip
+     *            injection point
+     * @return bundle context
+     */
     public static BundleContext getBundleContext(InjectionPoint ip) {
         return getBundleContext(ip.getMember().getDeclaringClass());
     }
 
+    /**
+     * Gets the bundle context of the given class.
+     *
+     * @param ip
+     *            injection point
+     * @return bundle context
+     * @throws IllegalArgumentException
+     *             when the class is not from an OSGi bundle
+     */
     public static BundleContext getBundleContext(Class<?> klass) {
         BundleContext bc = null;
         try {
@@ -156,8 +145,8 @@ public class InjectionPointOsgiUtils {
             bc = bundleRef.getBundle().getBundleContext();
         }
         catch (ClassCastException exc) {
-            log.error("class " + klass.getName() + " is not loaded from an OSGi bundle");
-            throw exc;
+            throw new IllegalArgumentException("class " + klass.getName()
+                + " is not loaded from an OSGi bundle");
         }
         return bc;
     }

@@ -35,6 +35,9 @@ import org.osgi.framework.ServiceRegistration;
 /**
  * Describes an OSGi service component and its dependencies.
  *
+ * @param <S>
+ *            service component type
+ *
  * @author Harald Wellmann
  *
  */
@@ -58,9 +61,11 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
 
     private Bean<S> bean;
 
-
     /**
+     * Constructs a component descriptor for the given bean.
      *
+     * @param bean
+     *            service component bean
      */
     public ComponentDescriptor(Bean<S> bean) {
         this.bean = bean;
@@ -85,8 +90,8 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
         String filterString = InjectionPointOsgiUtils.getFilter(ip);
         try {
             Filter filter = FrameworkUtil.createFilter(filterString);
-            ComponentDependency<S, T> componentDependency
-                = new ComponentDependency<>(this, ip, filter);
+            ComponentDependency<S, T> componentDependency = new ComponentDependency<>(this, ip,
+                filter);
             dependencies.add(componentDependency);
             numUnsatisfiedDependencies++;
         }
@@ -116,7 +121,6 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
         }
     }
 
-
     /**
      * @return the serviceRegistration
      */
@@ -124,14 +128,13 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
         return serviceRegistration;
     }
 
-
     /**
-     * @param serviceRegistration the serviceRegistration to set
+     * @param serviceRegistration
+     *            the serviceRegistration to set
      */
     public void setServiceRegistration(ServiceRegistration<S> serviceRegistration) {
         this.serviceRegistration = serviceRegistration;
     }
-
 
     /**
      * @return the listener
@@ -140,14 +143,13 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
         return listener;
     }
 
-
     /**
-     * @param listener the listener to set
+     * @param listener
+     *            the listener to set
      */
     public void setListener(ComponentDependencyListener listener) {
         this.listener = listener;
     }
-
 
     /**
      * @return the bean

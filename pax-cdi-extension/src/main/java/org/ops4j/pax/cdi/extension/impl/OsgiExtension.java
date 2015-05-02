@@ -81,10 +81,6 @@ public class OsgiExtension implements Extension {
 
     private SingletonScopeContext serviceContext;
 
-    public OsgiExtension() {
-        log.debug("constructing OsgiExtension");
-    }
-
     /**
      * BeforeBeanDiscovery observer which creates some additional beans and the Service Scope for
      * OSGi components.

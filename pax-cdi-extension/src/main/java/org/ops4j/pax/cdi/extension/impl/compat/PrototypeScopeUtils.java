@@ -25,6 +25,12 @@ import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Utilities for dealing with prototype scope in OSGi 6.0 or higher.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class PrototypeScopeUtils {
 
     private static Logger log = LoggerFactory.getLogger(PrototypeScopeUtils.class);
