@@ -20,7 +20,7 @@ package org.ops4j.pax.cdi.web.weld.impl;
 import javax.servlet.ServletContextListener;
 
 import org.ops4j.pax.cdi.spi.CdiContainerListener;
-import org.ops4j.pax.cdi.web.CdiWebAppDependencyManager;
+import org.ops4j.pax.cdi.web.AbstractWebAppDependencyManager;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Component;
  *
  */
 @Component(immediate = true, property = "type=web", service = CdiContainerListener.class)
-public class WeldWebAdapter extends CdiWebAppDependencyManager {
+public class WeldWebAdapter extends AbstractWebAppDependencyManager {
 
     @Override
     protected ServletContextListener getServletContextListener() {

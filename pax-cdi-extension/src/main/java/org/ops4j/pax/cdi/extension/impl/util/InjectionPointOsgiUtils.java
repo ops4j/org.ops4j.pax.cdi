@@ -20,6 +20,8 @@ package org.ops4j.pax.cdi.extension.impl.util;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.DeploymentException;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.ops4j.pax.cdi.api.OsgiService;
@@ -93,14 +95,27 @@ public class InjectionPointOsgiUtils {
      * @return filter string
      */
     public static String getFilter(InjectionPoint ip) {
-        Class<?> klass = getServiceType(ip);
         OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
+        Class<?> klass = getServiceType(ip);
         return getFilter(klass, os);
     }
 
-    public static Type getInstanceType(InjectionPoint ip) {
+    /**
+     * Gets the argument type of an {@code Instance<T>} injection point.
+     *
+     * @param ip
+     *            OsgiService injection point
+     * @return argument type, or null if injection point type has no arguments
+     * @throws DeploymentException
+     *             if the injection point has some other parameterized type, e.g. List<T>
+     */
+    public static Type getInstanceArgumentType(InjectionPoint ip) {
         if (ip.getType() instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) ip.getType();
+            if (!(Instance.class.equals(parameterizedType.getRawType()))) {
+                throw new DeploymentException(
+                    "@OsgiService injection points cannot be parameterized, except Instance<T>");
+            }
             Type[] argTypes = parameterizedType.getActualTypeArguments();
             if (argTypes.length > 0) {
                 Type instanceType = argTypes[0];
@@ -110,8 +125,17 @@ public class InjectionPointOsgiUtils {
         return null;
     }
 
+    /**
+     * Gets the service type for an OSGi service injection point. For an {@code Instance<T>}
+     * injection point, this is the argument type {@code T}. Otherwise, the result is the type of
+     * the injection point itself.
+     *
+     * @param ip
+     *            OsgiService injection point
+     * @return type of OSGi service(s) to be injected
+     */
     public static Class<?> getServiceType(InjectionPoint ip) {
-        Type serviceType = getInstanceType(ip);
+        Type serviceType = getInstanceArgumentType(ip);
         if (serviceType == null) {
             serviceType = ip.getType();
         }
@@ -132,8 +156,8 @@ public class InjectionPointOsgiUtils {
     /**
      * Gets the bundle context of the given class.
      *
-     * @param ip
-     *            injection point
+     * @param klass
+     *            class from an OSGi bundle
      * @return bundle context
      * @throws IllegalArgumentException
      *             when the class is not from an OSGi bundle
@@ -146,7 +170,7 @@ public class InjectionPointOsgiUtils {
         }
         catch (ClassCastException exc) {
             throw new IllegalArgumentException("class " + klass.getName()
-                + " is not loaded from an OSGi bundle");
+                + " is not loaded from an OSGi bundle", exc);
         }
         return bc;
     }

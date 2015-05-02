@@ -24,14 +24,14 @@ import org.osgi.framework.hooks.weaving.WeavingHook;
 
 /**
  * Activator for OpenWebBeans {@link CdiContainerFactory} implementation.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public class Activator implements BundleActivator {
 
     /**
-     * Starts this bundle and registers a weaving hook for Javassist proxies.
+     * Starts this bundle and registers a weaving hook for OpenWebBeans proxies.
      */
     @Override
     public void start(BundleContext context) throws Exception {
@@ -41,5 +41,6 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
+        // not used
     }
 }

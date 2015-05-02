@@ -55,7 +55,7 @@ import org.ops4j.pax.cdi.extension.impl.context.BundleScopeContext;
 import org.ops4j.pax.cdi.extension.impl.context.PrototypeScopeContext;
 import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
-import org.ops4j.pax.cdi.extension.impl.util.WrappedBeanAttributes;
+import org.ops4j.pax.cdi.extension.impl.util.AbstractWrappedBeanAttributes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,7 +116,7 @@ public class OsgiExtension implements Extension {
             return;
         }
 
-        BeanAttributes<T> wrappedAttributes = new WrappedBeanAttributes<T>() {
+        BeanAttributes<T> wrappedAttributes = new AbstractWrappedBeanAttributes<T>() {
 
             @Override
             protected BeanAttributes<T> attributes() {
@@ -162,7 +162,7 @@ public class OsgiExtension implements Extension {
             log.debug("service injection point {} with qualifier {}", ip, qualifier);
             storeServiceInjectionPoint(ip);
         }
-        Type instanceType = InjectionPointOsgiUtils.getInstanceType(ip);
+        Type instanceType = InjectionPointOsgiUtils.getInstanceArgumentType(ip);
         return instanceType != null;
     }
 

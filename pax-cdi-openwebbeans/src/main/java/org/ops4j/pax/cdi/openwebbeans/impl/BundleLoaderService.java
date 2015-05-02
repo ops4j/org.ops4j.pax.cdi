@@ -22,9 +22,14 @@ import java.util.List;
 import org.apache.webbeans.spi.LoaderService;
 import org.ops4j.spi.SafeServiceLoader;
 
-
+/**
+ * Implements {@link LoaderService} for OSGi bundles.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class BundleLoaderService implements LoaderService {
-    
+
     @Override
     public <T> List<T> load(Class<T> serviceType) {
         return load(serviceType, Thread.currentThread().getContextClassLoader());

@@ -85,7 +85,7 @@ public class OsgiInjectionTarget<T> implements InjectionTarget<T> {
         if (qualifier == null) {
             return;
         }
-        Type instanceType = InjectionPointOsgiUtils.getInstanceType(ip);
+        Type instanceType = InjectionPointOsgiUtils.getInstanceArgumentType(ip);
         if (instanceType == null) {
             return;
         }

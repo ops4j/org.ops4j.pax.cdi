@@ -46,6 +46,9 @@ public class WeldServletContextListener extends ForwardingServletListener {
 
     private CdiContainer cdiContainer;
 
+    /**
+     * Creates a listener.
+     */
     public WeldServletContextListener() {
         weldListener = new WeldInitialListener();
     }

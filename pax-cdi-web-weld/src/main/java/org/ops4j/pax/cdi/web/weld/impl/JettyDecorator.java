@@ -94,10 +94,12 @@ public class JettyDecorator implements ServletContextHandler.Decorator {
 
     @Override
     public void decorateFilterHolder(FilterHolder filter) {
+        // not used
     }
 
     @Override
     public void decorateServletHolder(ServletHolder servlet) {
+        // not used
     }
 
     @Override

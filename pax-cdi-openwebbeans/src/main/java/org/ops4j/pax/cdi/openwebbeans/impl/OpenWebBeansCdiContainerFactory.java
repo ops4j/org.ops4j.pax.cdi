@@ -36,9 +36,9 @@ import org.osgi.service.component.annotations.Component;
 
 /**
  * {@link CdiContainerFactory} implementation based on Apache OpenWebBeans.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 @Component
 public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
@@ -49,9 +49,15 @@ public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
 
     public OpenWebBeansCdiContainerFactory() {
     }
-    
+
+    /**
+     * Called by the service component runtime when this component gets activated.
+     *
+     * @param cc
+     *            component context
+     */
     @Activate
-    protected void activate(ComponentContext cc) {
+    public void activate(ComponentContext cc) {
         this.componentContext = cc;
     }
 
@@ -61,7 +67,8 @@ public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
     }
 
     @Override
-    public CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions, CdiContainerType containerType) {
+    public CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions,
+        CdiContainerType containerType) {
         Bundle ownBundle = componentContext.getBundleContext().getBundle();
         OpenWebBeansCdiContainer container = new OpenWebBeansCdiContainer(containerType, ownBundle,
             bundle, extensions);

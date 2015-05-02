@@ -43,9 +43,9 @@ import org.slf4j.LoggerFactory;
  * @author Harald Wellmann
  *
  */
-public abstract class CdiWebAppDependencyManager implements CdiContainerListener {
+public abstract class AbstractWebAppDependencyManager implements CdiContainerListener {
 
-    private static Logger log = LoggerFactory.getLogger(CdiWebAppDependencyManager.class);
+    private static Logger log = LoggerFactory.getLogger(AbstractWebAppDependencyManager.class);
 
     private Map<Bundle, ServiceRegistration<WebAppDependencyHolder>> registrations = new HashMap<Bundle, ServiceRegistration<WebAppDependencyHolder>>();
 
@@ -70,8 +70,9 @@ public abstract class CdiWebAppDependencyManager implements CdiContainerListener
             try {
                 registration.unregister();
             }
-            catch (IllegalStateException e) {
+            catch (IllegalStateException exc) {
                 // ignore if already unregistered
+                log.trace("service cannot be unregistered", exc);
             }
         }
     }
@@ -91,11 +92,5 @@ public abstract class CdiWebAppDependencyManager implements CdiContainerListener
     @Override
     public synchronized void preDestroy(CdiContainer container) {
         unregister(container.getBundle());
-    }
-
-    public synchronized void unregisterAll() {
-        while (!registrations.isEmpty()) {
-            unregister(registrations.keySet().iterator().next());
-        }
     }
 }

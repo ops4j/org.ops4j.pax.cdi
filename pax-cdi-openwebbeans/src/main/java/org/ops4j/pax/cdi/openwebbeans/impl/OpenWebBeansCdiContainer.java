@@ -69,6 +69,8 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
     /**
      * Construct a CDI container for the given extended bundle.
      *
+     * @param containerType
+     *            type of CDI container (web or standalone)
      * @param ownBundle
      *            bundle containing this class
      * @param extendedBundle
@@ -122,6 +124,7 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
     protected void doStop() {
         try {
             doWithClassLoader(getContextClassLoader(), new Callable<Void>() {
+
                 @Override
                 public Void call() throws Exception {
                     if (lifecycle != null) {

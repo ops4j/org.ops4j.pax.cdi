@@ -21,7 +21,7 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.webbeans.config.WebBeansFinder;
 import org.ops4j.pax.cdi.spi.CdiContainerListener;
-import org.ops4j.pax.cdi.web.CdiWebAppDependencyManager;
+import org.ops4j.pax.cdi.web.AbstractWebAppDependencyManager;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Component;
  *
  */
 @Component(immediate = true, property = "type=web", service = CdiContainerListener.class)
-public class OpenWebBeansWebAdapter extends CdiWebAppDependencyManager {
+public class OpenWebBeansWebAdapter extends AbstractWebAppDependencyManager {
 
     private ServletContextListener listener = new OpenWebBeansListener();
 

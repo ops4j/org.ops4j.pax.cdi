@@ -50,6 +50,14 @@ public class ComponentRegistry {
 
     private Set<InjectionPoint> nonComponentDependencies = new HashSet<>();
 
+
+    /**
+     *
+     */
+    public ComponentRegistry() {
+        // TODO Auto-generated constructor stub
+    }
+
     /**
      * Adds a component bean type to the registry, creating an empty descriptor for it.
      *

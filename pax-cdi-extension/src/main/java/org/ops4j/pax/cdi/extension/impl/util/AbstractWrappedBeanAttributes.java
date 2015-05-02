@@ -31,7 +31,7 @@ import javax.enterprise.inject.spi.BeanAttributes;
  *
  * @author Harald Wellmann
  */
-public abstract class WrappedBeanAttributes<T> implements BeanAttributes<T> {
+public abstract class AbstractWrappedBeanAttributes<T> implements BeanAttributes<T> {
 
     /**
      * Returns original bean attributes.

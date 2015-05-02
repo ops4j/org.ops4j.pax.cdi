@@ -208,11 +208,13 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
         for (Type type : closure) {
             Class<?> c = (Class<?>) type;
             if (c.isInterface()) {
-                typeNames[i++] = c.getName();
+                typeNames[i] = c.getName();
+                i++;
             }
         }
         if (i == 0) {
-            typeNames[i++] = bean.getBeanClass().getName();
+            typeNames[i] = bean.getBeanClass().getName();
+            i++;
         }
         return Arrays.copyOf(typeNames, i);
     }
@@ -230,7 +232,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
         if (props == null && ranking == 0) {
             return null;
         }
-        Hashtable<String, Object> dict = new Hashtable<>();
+        Dictionary<String, Object> dict = new Hashtable<>();
         if (props != null) {
             for (Property property : props.value()) {
                 dict.put(property.name(), property.value());
