@@ -23,8 +23,8 @@ import java.lang.reflect.Type;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.cdi.api.ServiceInvocationException;
 import org.ops4j.pax.cdi.extension.impl.compat.PrototypeScopeUtils;
+import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.ops4j.pax.swissbox.tracker.ServiceLookup;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
@@ -79,9 +79,8 @@ public class InjectionPointOsgiUtils {
             Filter filter = bc.createFilter(filterExpression);
             return new ServiceTracker(bc, filter, null);
         }
-        catch (InvalidSyntaxException e) {
-            throw new ServiceInvocationException("The provided filter is invalid : "
-                + filterExpression, e);
+        catch (InvalidSyntaxException exc) {
+            throw Exceptions.unchecked(exc);
         }
     }
 
