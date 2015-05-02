@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
  * @author Harald Wellmann
  *
  */
-@Component(immediate = true, service = {})
+@Component(immediate = true, service = { })
 public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper> {
 
     private static Logger log = LoggerFactory.getLogger(CdiExtender.class);
