@@ -196,7 +196,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
                 reg.unregister();
             }
             catch (IllegalStateException exc) {
-                // Ignore if the service has already been unregistered
+                log.trace("cannot unregister service", exc);
             }
         }
     }

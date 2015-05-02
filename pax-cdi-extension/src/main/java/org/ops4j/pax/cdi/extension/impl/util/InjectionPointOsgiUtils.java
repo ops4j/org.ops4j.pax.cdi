@@ -66,8 +66,7 @@ public class InjectionPointOsgiUtils {
     }
 
     private static int getTimeout(OsgiService os) {
-        int timeout = os.timeout() == -1 ? 1 : os.timeout();
-        return timeout;
+        return os.timeout() == -1 ? 1 : os.timeout();
     }
 
     /**
@@ -118,8 +117,7 @@ public class InjectionPointOsgiUtils {
             }
             Type[] argTypes = parameterizedType.getActualTypeArguments();
             if (argTypes.length > 0) {
-                Type instanceType = argTypes[0];
-                return instanceType;
+                return argTypes[0];
             }
         }
         return null;

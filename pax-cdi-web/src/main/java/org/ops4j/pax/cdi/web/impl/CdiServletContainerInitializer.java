@@ -46,6 +46,15 @@ public class CdiServletContainerInitializer implements ServletContainerInitializ
 
     private ServletContextListener servletContextListener;
 
+    /**
+     * Creates a servlet container initializer for the given CDI container and the given context
+     * listener to be called on startup.
+     *
+     * @param cdiContainer
+     *            CDI container
+     * @param servletContextListener
+     *            servlet context listener
+     */
     public CdiServletContainerInitializer(CdiContainer cdiContainer,
         ServletContextListener servletContextListener) {
         this.cdiContainer = cdiContainer;

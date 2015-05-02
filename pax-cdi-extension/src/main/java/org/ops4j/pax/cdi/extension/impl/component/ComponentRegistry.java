@@ -52,13 +52,6 @@ public class ComponentRegistry {
 
 
     /**
-     *
-     */
-    public ComponentRegistry() {
-        // TODO Auto-generated constructor stub
-    }
-
-    /**
      * Adds a component bean type to the registry, creating an empty descriptor for it.
      *
      * @param component

@@ -95,14 +95,12 @@ public class OsgiServiceInstance<T> implements Instance<T> {
 
     @Override
     public boolean isUnsatisfied() {
-        Collection<ServiceReference<T>> refs = getServiceReferences();
-        return refs.isEmpty();
+        return getServiceReferences().isEmpty();
     }
 
     private Collection<ServiceReference<T>> getServiceReferences() {
         try {
-            Collection<ServiceReference<T>> refs = bc.getServiceReferences(klass, filter);
-            return refs;
+            return bc.getServiceReferences(klass, filter);
         }
         catch (InvalidSyntaxException exc) {
             throw Exceptions.unchecked(exc);

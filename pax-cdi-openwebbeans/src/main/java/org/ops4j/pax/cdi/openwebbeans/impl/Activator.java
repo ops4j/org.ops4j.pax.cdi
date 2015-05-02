@@ -17,13 +17,12 @@
  */
 package org.ops4j.pax.cdi.openwebbeans.impl;
 
-import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 
 /**
- * Activator for OpenWebBeans {@link CdiContainerFactory} implementation.
+ * Activator for OpenWebBeans {@code CdiContainerFactory} implementation.
  *
  * @author Harald Wellmann
  *

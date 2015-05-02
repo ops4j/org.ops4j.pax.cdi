@@ -84,9 +84,7 @@ public class PrototypeScopeUtils {
         String className = String.format("%s.%s", PrototypeScopeUtils.class.getPackage().getName(),
             simpleClassName);
         try {
-            Class<?> klass = Class.forName(className, true,
-                PrototypeScopeUtils.class.getClassLoader());
-            return klass;
+            return Class.forName(className, true, PrototypeScopeUtils.class.getClassLoader());
         }
         catch (ClassNotFoundException exc) {
             throw Exceptions.unchecked(exc);

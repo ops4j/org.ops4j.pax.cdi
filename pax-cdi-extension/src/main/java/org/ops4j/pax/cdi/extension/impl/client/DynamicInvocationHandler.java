@@ -22,7 +22,6 @@ import java.util.concurrent.Callable;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.extension.impl.compat.PrototypeScopeUtils;
 import org.ops4j.pax.cdi.extension.impl.compat.ServiceObjectsWrapper;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
@@ -32,7 +31,7 @@ import org.osgi.framework.ServiceReference;
 /**
  * A dynamic proxy invocation handler which looks up a matching OSGi service for a CDI injection
  * point on each method invocation, possibly including a wait period as indicated by the
- * {@link OsgiService} qualifier.
+ * {@code OsgiService} qualifier.
  *
  * @param <S>
  *            service type

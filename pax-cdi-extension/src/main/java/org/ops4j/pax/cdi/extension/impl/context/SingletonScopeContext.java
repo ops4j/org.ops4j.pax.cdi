@@ -40,7 +40,6 @@ import org.ops4j.pax.cdi.api.SingletonScoped;
 public class SingletonScopeContext implements AlterableContext {
 
     private Map<Contextual<?>, SingletonScopeContextEntry<?>> serviceBeans = new ConcurrentHashMap<>();
-    private BeanManager beanManager;
     private CreationalContext<Object> cc;
 
     /**
@@ -50,8 +49,7 @@ public class SingletonScopeContext implements AlterableContext {
      *            bean manager of current bundle
      */
     public SingletonScopeContext(BeanManager beanManager) {
-        this.beanManager = beanManager;
-        this.cc = this.beanManager.createCreationalContext(null);
+        this.cc = beanManager.createCreationalContext(null);
     }
 
     @Override

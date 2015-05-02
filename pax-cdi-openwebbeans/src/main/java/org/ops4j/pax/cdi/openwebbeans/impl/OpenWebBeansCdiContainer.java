@@ -36,7 +36,6 @@ import org.apache.webbeans.config.WebBeansContext;
 import org.apache.webbeans.spi.ContainerLifecycle;
 import org.apache.webbeans.spi.ContextsService;
 import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
-import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.osgi.framework.Bundle;
@@ -44,7 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link CdiContainer} implementation wrapping an Apache OpenWebBeans container, represented by a
+ * {@code CdiContainer} implementation wrapping an Apache OpenWebBeans container, represented by a
  * {@link WebBeansContext}.
  *
  * @author Harald Wellmann

@@ -57,8 +57,7 @@ public class PrototypeScopeServiceFactory<S> implements PrototypeServiceFactory<
     @SuppressWarnings({ "unchecked" })
     public S getService(Bundle bundle, ServiceRegistration<S> registration) {
         CreationalContext<S> cc = (CreationalContext<S>) context.getCreationalContext();
-        S service = context.get(bean, cc);
-        return service;
+        return context.get(bean, cc);
     }
 
     @Override

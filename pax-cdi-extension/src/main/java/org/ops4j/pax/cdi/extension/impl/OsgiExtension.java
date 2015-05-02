@@ -54,8 +54,8 @@ import org.ops4j.pax.cdi.extension.impl.component.ComponentRegistry;
 import org.ops4j.pax.cdi.extension.impl.context.BundleScopeContext;
 import org.ops4j.pax.cdi.extension.impl.context.PrototypeScopeContext;
 import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
-import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.ops4j.pax.cdi.extension.impl.util.AbstractWrappedBeanAttributes;
+import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -229,7 +229,8 @@ public class OsgiExtension implements Extension {
             }
             else {
                 InjectionPoint ip = typeToIpMap.get(type).iterator().next();
-                String msg = "The type of an @OSGi service injection point must not be parameterized. Injection point = "
+                String msg = "The type of an @OSGi service injection point must not "
+                    + "be parameterized. Injection point = "
                     + ip;
                 event.addDefinitionError(new UnsupportedOperationException(msg));
                 continue;

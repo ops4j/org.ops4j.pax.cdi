@@ -123,7 +123,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
             EXTENDER_CAPABILITY);
         if (wires != null) {
             for (BundleWire wire : wires) {
-                if (wire.getProviderWiring().getBundle() == context.getBundle()) {
+                if (wire.getProviderWiring().getBundle().equals(context.getBundle())) {
                     wired = true;
                     break;
                 }

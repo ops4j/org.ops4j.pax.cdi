@@ -47,7 +47,7 @@ public abstract class AbstractWebAppDependencyManager implements CdiContainerLis
 
     private static Logger log = LoggerFactory.getLogger(AbstractWebAppDependencyManager.class);
 
-    private Map<Bundle, ServiceRegistration<WebAppDependencyHolder>> registrations = new HashMap<Bundle, ServiceRegistration<WebAppDependencyHolder>>();
+    private Map<Bundle, ServiceRegistration<WebAppDependencyHolder>> registrations = new HashMap<>();
 
     protected abstract ServletContextListener getServletContextListener();
 

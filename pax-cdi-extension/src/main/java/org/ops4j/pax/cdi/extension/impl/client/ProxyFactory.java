@@ -52,10 +52,10 @@ public class ProxyFactory {
     public static <T> Object getServiceProxy(InjectionPoint ip) {
         OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
         log.debug("getting service proxy for {}, {} ", ip.getType(), qualifier);
-        T instance = createServiceProxy(ip);
-        return instance;
+        return createServiceProxy(ip);
     }
 
+    @SuppressWarnings("unchecked")
     private static <T> T createServiceProxy(InjectionPoint ip) {
         Class<?> klass = (Class<?>) ip.getType();
         OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
@@ -64,8 +64,6 @@ public class ProxyFactory {
             : new StaticInvocationHandler<T>(ip);
 
         ClassLoader classLoader = ip.getMember().getDeclaringClass().getClassLoader();
-        @SuppressWarnings("unchecked")
-        T instance = (T) Proxy.newProxyInstance(classLoader, new Class[] { klass }, handler);
-        return instance;
+        return (T) Proxy.newProxyInstance(classLoader, new Class[] { klass }, handler);
     }
 }

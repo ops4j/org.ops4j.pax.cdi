@@ -65,7 +65,7 @@ public class StaticInvocationHandler<S> extends AbstractServiceInvocationHandler
     public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
 
         if (serviceRef != null) {
-            Object result = ContextClassLoaderUtils.doWithClassLoader(
+            return ContextClassLoaderUtils.doWithClassLoader(
                 cdiContainer.getContextClassLoader(), new Callable<Object>() {
 
                     @Override
@@ -76,7 +76,6 @@ public class StaticInvocationHandler<S> extends AbstractServiceInvocationHandler
                         return null;
                     }
                 });
-            return result;
         }
         throw new ServiceException("no service for injection point " + ip,
             ServiceException.UNREGISTERED);
