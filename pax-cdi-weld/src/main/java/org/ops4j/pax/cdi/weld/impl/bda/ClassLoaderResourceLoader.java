@@ -22,7 +22,9 @@ package org.ops4j.pax.cdi.weld.impl.bda;
 
 
 /**
- * A (@link ResourceLoader} implementation that uses a specific @{link ClassLoader}
+ * A (@link ResourceLoader} implementation that uses a specific @{link ClassLoader}.
+ * <p>
+ * Not exported by Weld, so we use a local copy for Pax CDI.
  *
  * @author Marius Bogoevici
  *
@@ -30,6 +32,10 @@ package org.ops4j.pax.cdi.weld.impl.bda;
 public class ClassLoaderResourceLoader extends AbstractClassLoaderResourceLoader {
     private ClassLoader classLoader;
 
+    /**
+     * Creates a resource loader for the given class loader.
+     * @param classLoader
+     */
     public ClassLoaderResourceLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }

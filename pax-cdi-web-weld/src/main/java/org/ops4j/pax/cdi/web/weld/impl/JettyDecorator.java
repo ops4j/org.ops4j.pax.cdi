@@ -29,16 +29,29 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.ops4j.pax.cdi.spi.Injector;
 
+/**
+ * Decorator for servlets, filters and listeners instantiated by Jetty. The decorator performs
+ * dependency injection and cleanup.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class JettyDecorator implements ServletContextHandler.Decorator {
     public static final String INJECTOR_KEY = "org.ops4j.pax.cdi.injector";
 
     private ServletContext servletContext;
     private Injector injector;
 
-    protected JettyDecorator(ServletContext servletContext) {
+    private JettyDecorator(ServletContext servletContext) {
         this.servletContext = servletContext;
     }
 
+    /**
+     * Adds an instance of this decorator class to the given context.
+     *
+     * @param context
+     *            servlet context
+     */
     public static void process(ServletContext context) {
         if (context instanceof ContextHandler.Context) {
             ContextHandler.Context cc = (ContextHandler.Context) context;
@@ -50,7 +63,7 @@ public class JettyDecorator implements ServletContextHandler.Decorator {
         }
     }
 
-    protected Injector getInjector() {
+    private Injector getInjector() {
         if (injector == null) {
             injector = (Injector) servletContext.getAttribute(INJECTOR_KEY);
 

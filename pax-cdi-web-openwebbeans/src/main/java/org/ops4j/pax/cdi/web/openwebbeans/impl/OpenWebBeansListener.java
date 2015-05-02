@@ -38,6 +38,12 @@ import org.ops4j.pax.cdi.spi.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Servlet context listener for starting and stopping the OpenWebBeans CDI container.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class OpenWebBeansListener implements ServletContextListener, ServletRequestListener,
     HttpSessionListener {
 

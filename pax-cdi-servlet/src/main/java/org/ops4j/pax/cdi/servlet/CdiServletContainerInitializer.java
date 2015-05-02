@@ -29,11 +29,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A {@link ServletContainerInitializer} which stores the CDI container in the servlet context
- * and registers a CDI provider dependent {@link ServletContextListener}.
+ * A {@link ServletContainerInitializer} which stores the CDI container in the servlet context and
+ * registers a CDI provider dependent {@link ServletContextListener}.
  * <p>
  * This listener is responsible for starting the CDI container.
- * 
+ *
  * @author Harald Wellmann
  *
  */
@@ -45,6 +45,15 @@ public class CdiServletContainerInitializer implements ServletContainerInitializ
 
     protected ServletContextListener servletContextListener;
 
+    /**
+     * Creates a servlet container initializer for the given CDI container and the given context
+     * listener to be called on startup.
+     *
+     * @param cdiContainer
+     *            CDI container
+     * @param servletContextListener
+     *            servlet context listener
+     */
     public CdiServletContainerInitializer(CdiContainer cdiContainer,
         ServletContextListener servletContextListener) {
         this.cdiContainer = cdiContainer;

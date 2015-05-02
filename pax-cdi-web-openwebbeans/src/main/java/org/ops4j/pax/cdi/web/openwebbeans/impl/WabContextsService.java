@@ -14,7 +14,7 @@
  *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * Derived from org.apache.webbeans.web.context.WebContextsService.
  */
 package org.ops4j.pax.cdi.web.openwebbeans.impl;
@@ -52,13 +52,11 @@ import org.apache.webbeans.conversation.ConversationImpl;
 import org.apache.webbeans.conversation.ConversationManager;
 import org.apache.webbeans.el.ELContextStore;
 import org.apache.webbeans.logger.WebBeansLoggerFacade;
-import org.apache.webbeans.spi.FailOverService;
 import org.apache.webbeans.web.context.ServletRequestContext;
 import org.apache.webbeans.web.context.SessionContextManager;
 import org.apache.webbeans.web.intercept.RequestScopedBeanInterceptorHandler;
-
 /**
- * Web container {@link org.apache.webbeans.spi.ContextsService} implementation.
+ * Web bundle {@link org.apache.webbeans.spi.ContextsService} implementation.
  */
 public class WabContextsService extends AbstractContextsService {
 
@@ -88,8 +86,6 @@ public class WabContextsService extends AbstractContextsService {
 
     /** Current singleton contexts */
     private static Map<ServletContext, SingletonContext> currentSingletonContexts = new ConcurrentHashMap<ServletContext, SingletonContext>();
-
-    protected FailOverService failoverService;
 
     /** Session context manager */
     private final SessionContextManager sessionCtxManager = new SessionContextManager();
@@ -150,7 +146,6 @@ public class WabContextsService extends AbstractContextsService {
             this.webBeansContext = webBeansContext;
             supportsConversation = webBeansContext.getOpenWebBeansConfiguration()
                 .supportsConversation();
-            failoverService = webBeansContext.getService(FailOverService.class);
             conversationManager = webBeansContext.getConversationManager();
         }
     }
@@ -298,7 +293,7 @@ public class WabContextsService extends AbstractContextsService {
 
     /**
      * Initialize requext context with the given request object.
-     * 
+     *
      * @param event
      *            http servlet request event
      */
@@ -339,7 +334,7 @@ public class WabContextsService extends AbstractContextsService {
 
     /**
      * Destroys the request context and all of its components.
-     * 
+     *
      * @param request
      *            http servlet request object
      */
@@ -402,7 +397,7 @@ public class WabContextsService extends AbstractContextsService {
 
     /**
      * Creates the session context at the session start.
-     * 
+     *
      * @param session
      *            http session object
      */
@@ -437,7 +432,7 @@ public class WabContextsService extends AbstractContextsService {
 
     /**
      * Destroys the session context and all of its components at the end of the session.
-     * 
+     *
      * @param session
      *            http session object
      */
@@ -462,7 +457,7 @@ public class WabContextsService extends AbstractContextsService {
 
     /**
      * Creates the application context at the application startup
-     * 
+     *
      * @param servletContext
      *            servlet context object
      */
@@ -490,7 +485,7 @@ public class WabContextsService extends AbstractContextsService {
 
     /**
      * Destroys the application context and all of its components at the end of the application.
-     * 
+     *
      * @param servletContext
      *            servlet context object
      */
@@ -566,7 +561,7 @@ public class WabContextsService extends AbstractContextsService {
 
     /**
      * Initialize singleton context.
-     * 
+     *
      * @param servletContext
      *            servlet context
      */
@@ -591,7 +586,7 @@ public class WabContextsService extends AbstractContextsService {
 
     /**
      * Destroy singleton context.
-     * 
+     *
      * @param servletContext
      *            servlet context
      */
@@ -626,7 +621,7 @@ public class WabContextsService extends AbstractContextsService {
 
     /**
      * Initialize conversation context.
-     * 
+     *
      * @param context
      *            context
      */
@@ -665,7 +660,7 @@ public class WabContextsService extends AbstractContextsService {
 
     /**
      * Get current request ctx.
-     * 
+     *
      * @return request context
      */
     private RequestContext getRequestContext() {
@@ -674,7 +669,7 @@ public class WabContextsService extends AbstractContextsService {
 
     /**
      * Get current session ctx.
-     * 
+     *
      * @return session context
      */
     private SessionContext getSessionContext() {
@@ -689,7 +684,7 @@ public class WabContextsService extends AbstractContextsService {
 
     /**
      * Gets application context.
-     * 
+     *
      * @return application context
      */
     private ApplicationContext getApplicationContext() {
@@ -698,7 +693,7 @@ public class WabContextsService extends AbstractContextsService {
 
     /**
      * Gets singleton context.
-     * 
+     *
      * @return singleton context
      */
     private SingletonContext getSingletonContext() {
@@ -707,7 +702,7 @@ public class WabContextsService extends AbstractContextsService {
 
     /**
      * Get current conversation ctx.
-     * 
+     *
      * @return conversation context
      */
     private ConversationContext getConversationContext() {
@@ -730,9 +725,6 @@ public class WabContextsService extends AbstractContextsService {
                 try {
                     HttpSession currentSession = servletRequest.getSession();
                     initSessionContext(currentSession);
-                    if (failoverService != null && failoverService.isSupportFailOver()) {
-                        failoverService.sessionIsInUse(currentSession);
-                    }
 
                     if (logger.isLoggable(Level.FINE)) {
                         logger.log(Level.FINE, "Lazy SESSION context initialization SUCCESS");
@@ -764,7 +756,7 @@ public class WabContextsService extends AbstractContextsService {
 
     /**
      * This might be needed when you aim to start a new thread in a WebApp.
-     * 
+     *
      * @param scopeType
      */
     @Override

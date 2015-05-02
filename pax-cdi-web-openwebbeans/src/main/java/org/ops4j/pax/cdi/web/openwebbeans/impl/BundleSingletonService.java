@@ -36,6 +36,12 @@ import org.osgi.framework.BundleReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Singleton service which determines the current WebBeansContext based on the extended bundle
+ * class loader.
+ *
+ * @author Harald Wellmann
+ */
 public class BundleSingletonService implements SingletonService<WebBeansContext> {
 
     private static Logger log = LoggerFactory.getLogger(BundleSingletonService.class);

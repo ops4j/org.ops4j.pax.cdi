@@ -22,14 +22,16 @@ package org.ops4j.pax.cdi.weld.impl.bda;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
-import org.ops4j.pax.cdi.weld.impl.util.EnumerationList;
 
 /**
  * General {@link ResourceLoader} implementation that delegates resource loading to
  * {@link #classLoader()}.
+ * <p>
+ * Not exported by Weld, so we use a local copy for Pax CDI.
  *
  * @author Jozef Hartinger
  *
@@ -56,7 +58,7 @@ public abstract class AbstractClassLoaderResourceLoader implements ResourceLoade
     @Override
     public Collection<URL> getResources(String name) {
         try {
-            return new EnumerationList<URL>(classLoader().getResources(name));
+            return Collections.list(classLoader().getResources(name));
         }
         catch (IOException e) {
             throw new ResourceLoadingException("Error loading resource " + name, e);

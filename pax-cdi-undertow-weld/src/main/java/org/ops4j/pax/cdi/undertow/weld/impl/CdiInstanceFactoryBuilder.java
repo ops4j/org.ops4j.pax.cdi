@@ -23,8 +23,7 @@ import io.undertow.servlet.api.InstanceFactory;
 import javax.enterprise.inject.spi.BeanManager;
 
 /**
- * Builds an instance factory for a given class. The factory produces contextual instances if the
- * given class is a bean type.
+ * Builds an instance factory for a given injectable class.
  *
  * @author Harald Wellmann
  *

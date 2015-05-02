@@ -41,6 +41,13 @@ import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Modified copy of {@code org.apache.webbeans.lifecycle.AbstractLifecycle} which allows us to set
+ * the {@code WebBeansContext}.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public abstract class AbstractLifeCycle implements ContainerLifecycle {
 
     // Logger instance

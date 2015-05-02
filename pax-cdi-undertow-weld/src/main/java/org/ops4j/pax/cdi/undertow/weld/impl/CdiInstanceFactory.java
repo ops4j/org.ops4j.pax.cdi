@@ -25,12 +25,12 @@ import javax.enterprise.inject.spi.Unmanaged;
 import javax.enterprise.inject.spi.Unmanaged.UnmanagedInstance;
 
 /**
- * Undertow instance factory for bean classes. This factory produces contextual instances
- * of beans.
+ * Undertow instance factory for injectable classes. This factory produces instances
+ * of the given class with injected dependencies.
  *
  * @author Harald Wellmann
  *
- * @param <T> bean type
+ * @param <T> type of injectable class, not necessarily a bean class
  */
 public class CdiInstanceFactory<T> implements InstanceFactory<T> {
 
@@ -38,6 +38,11 @@ public class CdiInstanceFactory<T> implements InstanceFactory<T> {
     private BeanManager beanManager;
     private Class<T> klass;
 
+    /**
+     * Creates an instance factory for the given bean manager and the given class.
+     * @param beanManager bean manager
+     * @param klass injectable class
+     */
     public CdiInstanceFactory(BeanManager beanManager, Class<T> klass) {
         this.beanManager = beanManager;
         this.klass = klass;

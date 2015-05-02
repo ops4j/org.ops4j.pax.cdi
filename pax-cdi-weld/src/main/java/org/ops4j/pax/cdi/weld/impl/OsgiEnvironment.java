@@ -25,6 +25,12 @@ import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
 
+/**
+ * Environment for OSGi bean bundles.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class OsgiEnvironment implements Environment {
 
     private static OsgiEnvironment instance;
@@ -32,12 +38,16 @@ public class OsgiEnvironment implements Environment {
     private Set<Class<? extends Service>> deploymentServices = new HashSet<>();
     private Set<Class<? extends Service>> bdaServices = new HashSet<>();
 
-
     private OsgiEnvironment() {
         deploymentServices.add(ScheduledExecutorServiceFactory.class);
         bdaServices.add(ResourceLoader.class);
     }
 
+    /**
+     * Get singleton instance of this environment.
+     *
+     * @return singleton environment
+     */
     public static synchronized OsgiEnvironment getInstance() {
         if (instance == null) {
             instance = new OsgiEnvironment();

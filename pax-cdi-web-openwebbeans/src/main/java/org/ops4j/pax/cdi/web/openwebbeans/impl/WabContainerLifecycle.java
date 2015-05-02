@@ -41,6 +41,12 @@ import org.apache.webbeans.web.context.WebContextsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Customized lifecyle for web bundles.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class WabContainerLifecycle extends AbstractLifeCycle {
 
     private static Logger log = LoggerFactory.getLogger(WabContainerLifecycle.class);
@@ -145,7 +151,7 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
      * removed in order to prevent memory leaks.
      */
     private void cleanupShutdownThreadLocals() {
-        //InjectionPointBean.removeThreadLocal();
+        // InjectionPointBean.removeThreadLocal();
         WebContextsService.removeThreadLocals();
     }
 

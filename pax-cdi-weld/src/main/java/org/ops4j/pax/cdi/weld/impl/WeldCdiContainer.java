@@ -72,6 +72,8 @@ public class WeldCdiContainer extends AbstractCdiContainer {
     /**
      * Construct a CDI container for the given extended bundle.
      *
+     * @param containerType
+     *            container type (web or standalone)
      * @param ownBundle
      *            bundle containing this class
      * @param bundle
@@ -106,12 +108,11 @@ public class WeldCdiContainer extends AbstractCdiContainer {
 
     private BeanManager createBeanManager() {
         bootstrap = new WeldBootstrap();
-        BundleDeployment deployment = new BundleDeployment(getBundle(), bootstrap, getContextClassLoader());
-        BeanDeploymentArchive beanDeploymentArchive = deployment
-            .getBeanDeploymentArchive();
+        BundleDeployment deployment = new BundleDeployment(getBundle(), bootstrap,
+            getContextClassLoader());
+        BeanDeploymentArchive beanDeploymentArchive = deployment.getBeanDeploymentArchive();
 
-        String contextId = getBundle().getSymbolicName() + ":"
-            + getBundle().getBundleId();
+        String contextId = getBundle().getSymbolicName() + ":" + getBundle().getBundleId();
         bootstrap.startContainer(contextId, OsgiEnvironment.getInstance(), deployment);
         bootstrap.startInitialization();
         bootstrap.deployBeans();

@@ -24,6 +24,13 @@ import java.security.PrivilegedExceptionAction;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.ops4j.pax.cdi.spi.util.Exceptions;
 
+/**
+ * Implements {@link ProxyServices} based on the extended bundle class loader which must
+ * be set as thread context class loader.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class OsgiProxyService implements ProxyServices {
 
     private ClassLoader loader;

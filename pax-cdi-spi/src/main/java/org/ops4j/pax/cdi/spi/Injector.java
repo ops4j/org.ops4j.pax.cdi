@@ -26,16 +26,34 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.InjectionTargetFactory;
 
+/**
+ * Injector for unmanaged injection targets like servlets.
+ *
+ * @author Harald Wellmann
+ */
 public class Injector {
+
     private BeanManager beanManager;
     private Map<Class<?>, InjectionTarget<?>> injectionTargets = new WeakHashMap<>();
     private CdiContainer cdiContainer;
 
+    /**
+     * Creates an injector for the given CDI container.
+     *
+     * @param cdiContainer
+     *            CDI container
+     */
     public Injector(CdiContainer cdiContainer) {
         this.cdiContainer = cdiContainer;
         this.beanManager = cdiContainer.getBeanManager();
     }
 
+    /**
+     * Injects dependencies into an unmanaged target.
+     *
+     * @param target
+     *            target instance
+     */
     @SuppressWarnings({ "unchecked" })
     public <T> void inject(T target) {
         Class<T> klass = (Class<T>) target.getClass();
@@ -70,6 +88,12 @@ public class Injector {
 
     }
 
+    /**
+     * Destroy dependencies of an unmanaged target.
+     *
+     * @param instance
+     *            target instance
+     */
     @SuppressWarnings({ "unchecked" })
     public <T> void destroy(T instance) {
         if (instance != null) {

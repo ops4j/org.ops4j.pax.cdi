@@ -31,9 +31,7 @@ import org.ops4j.pax.cdi.web.impl.CdiWebAppDependencyHolder;
 import org.ops4j.pax.web.service.WebAppDependencyHolder;
 import org.ops4j.pax.web.service.WebContainerConstants;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.component.annotations.Activate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,12 +50,6 @@ public abstract class CdiWebAppDependencyManager implements CdiContainerListener
     private Map<Bundle, ServiceRegistration<WebAppDependencyHolder>> registrations = new HashMap<Bundle, ServiceRegistration<WebAppDependencyHolder>>();
 
     protected abstract ServletContextListener getServletContextListener();
-
-    @Activate
-    public void activate(BundleContext bc) {
-        log.debug("activating {}", getClass());
-    }
-
 
     private void register(Bundle bundle, CdiContainer cdiContainer) {
         CdiServletContainerInitializer initializer = new CdiServletContainerInitializer(

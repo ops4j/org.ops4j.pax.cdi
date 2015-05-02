@@ -22,8 +22,9 @@ import javax.enterprise.inject.spi.InjectionTarget;
 /**
  * Wraps an injection target to provide alternative behaviour.
  *
- * @author Harald Wellmann
+ * @param <T> injection target type
  *
+ * @author Harald Wellmann
  */
 public interface InjectionTargetWrapper<T> {
 

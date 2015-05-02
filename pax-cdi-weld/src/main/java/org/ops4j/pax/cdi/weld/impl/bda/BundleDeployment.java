@@ -34,6 +34,12 @@ import org.ops4j.pax.cdi.spi.scan.BeanScanner;
 import org.ops4j.pax.cdi.weld.impl.util.OsgiProxyService;
 import org.osgi.framework.Bundle;
 
+/**
+ * Implements {@link CDI11Deployment} for bean bundles, keeping track of the given bundle.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class BundleDeployment implements CDI11Deployment {
 
     private ServiceRegistry serviceRegistry;
@@ -41,6 +47,12 @@ public class BundleDeployment implements CDI11Deployment {
     private Iterable<Metadata<Extension>> extensions;
     private BundleBeanDeploymentArchive beanDeploymentArchive;
 
+    /**
+     * Creates a bundle deplyoment for the given bundle.
+     * @param bundle bean bundle
+     * @param bootstrap Weld bootstrap
+     * @param extensionClassLoader extended bundle class loader covering the required extensions
+     */
     public BundleDeployment(Bundle bundle, Bootstrap bootstrap, ClassLoader extensionClassLoader) {
 
         serviceRegistry = new SimpleServiceRegistry();
