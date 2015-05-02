@@ -62,6 +62,12 @@ public @interface OsgiService {
      */
     boolean dynamic() default false;
 
+    /**
+     * Indicates whether this service is required. A service defined by {@link OsgiServiceProvider}
+     * does not become available until all its required dependencies are available.
+     *
+     * @return true if dependency is required
+     */
     boolean required() default false;
 
     /**
