@@ -21,7 +21,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.DeploymentException;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.ops4j.pax.cdi.api.OsgiService;
@@ -104,20 +103,16 @@ public class InjectionPointOsgiUtils {
      *
      * @param ip
      *            OsgiService injection point
-     * @return argument type, or null if injection point type has no arguments
-     * @throws DeploymentException
-     *             if the injection point has some other parameterized type, e.g. List<T>
+     * @return argument type, or null if injection point type is not {@code Instance<T>}
      */
     public static Type getInstanceArgumentType(InjectionPoint ip) {
         if (ip.getType() instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) ip.getType();
-            if (!(Instance.class.equals(parameterizedType.getRawType()))) {
-                throw new DeploymentException(
-                    "@OsgiService injection points cannot be parameterized, except Instance<T>");
-            }
-            Type[] argTypes = parameterizedType.getActualTypeArguments();
-            if (argTypes.length > 0) {
-                return argTypes[0];
+            if (Instance.class.equals(parameterizedType.getRawType())) {
+                Type[] argTypes = parameterizedType.getActualTypeArguments();
+                if (argTypes.length > 0) {
+                    return argTypes[0];
+                }
             }
         }
         return null;
