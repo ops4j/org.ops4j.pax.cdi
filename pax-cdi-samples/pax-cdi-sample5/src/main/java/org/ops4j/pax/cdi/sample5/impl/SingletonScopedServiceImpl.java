@@ -32,15 +32,4 @@ public class SingletonScopedServiceImpl extends AbstractInstanceCountedService i
     public SingletonScopedServiceImpl() {
         super(++numInstances);
     }
-
-    @Override
-    public int getNumInstances() {
-        return numInstances;
-    }
-
-    @Override
-    public String getName() {
-        return getClass().getSimpleName();
-    }
-
 }

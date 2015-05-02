@@ -32,15 +32,4 @@ public class PrototypeScopedServiceImpl extends AbstractInstanceCountedService i
     public PrototypeScopedServiceImpl() {
         super(++numInstances);
     }
-
-    @Override
-    public int getNumInstances() {
-        return numInstances;
-    }
-
-    @Override
-    public String getName() {
-        return getClass().getSimpleName();
-    }
-
 }
