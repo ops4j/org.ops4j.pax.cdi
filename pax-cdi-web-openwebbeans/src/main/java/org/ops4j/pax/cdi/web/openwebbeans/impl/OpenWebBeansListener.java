@@ -47,18 +47,20 @@ import org.slf4j.LoggerFactory;
 public class OpenWebBeansListener implements ServletContextListener, ServletRequestListener,
     HttpSessionListener {
 
+
     private static Logger log = LoggerFactory.getLogger(OpenWebBeansListener.class);
+
+    private static final String CDI_CONTAINER = "org.ops4j.pax.cdi.container";
+
     private ContainerLifecycle lifecycle;
-    private WebBeansContext webBeansContext;
-    private CdiContainer cdiContainer;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext context = sce.getServletContext();
-        cdiContainer = (CdiContainer) context.getAttribute("org.ops4j.pax.cdi.container");
+        CdiContainer cdiContainer = (CdiContainer) context.getAttribute(CDI_CONTAINER);
         cdiContainer.start(context);
 
-        webBeansContext = cdiContainer.unwrap(WebBeansContext.class);
+        WebBeansContext webBeansContext = cdiContainer.unwrap(WebBeansContext.class);
         lifecycle = cdiContainer.unwrap(ContainerLifecycle.class);
         BeanManager manager = webBeansContext.getBeanManagerImpl();
 
@@ -72,7 +74,7 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         ServletContext context = sce.getServletContext();
-        context.removeAttribute("org.ops4j.pax.cdi.container");
+        context.removeAttribute(CDI_CONTAINER);
     }
 
     @Override

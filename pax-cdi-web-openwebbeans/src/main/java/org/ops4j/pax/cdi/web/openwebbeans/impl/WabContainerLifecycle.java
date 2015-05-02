@@ -166,8 +166,7 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
     private ServletContext getServletContext(Object object) {
         if (object != null) {
             if (object instanceof ServletContextEvent) {
-                ServletContext context = ((ServletContextEvent) object).getServletContext();
-                return context;
+                return ((ServletContextEvent) object).getServletContext();
             }
             else {
                 throw new WebBeansException(

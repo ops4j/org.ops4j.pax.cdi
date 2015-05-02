@@ -26,7 +26,7 @@ import java.util.Iterator;
  *
  * @author Dan Allen
  */
-public abstract class ForwardingELResolver extends ELResolver {
+public abstract class AbstractForwardingELResolver extends ELResolver {
     protected abstract ELResolver delegate();
 
     @Override

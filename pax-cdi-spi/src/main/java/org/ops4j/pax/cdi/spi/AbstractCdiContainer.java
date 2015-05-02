@@ -140,7 +140,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
         return contextClassLoader;
     }
 
-    protected void finishStartup() {
+    private void finishStartup() {
         try {
             cdiContainerReg = doWithClassLoader(getContextClassLoader(),
                 new Callable<ServiceRegistration<CdiContainer>>() {

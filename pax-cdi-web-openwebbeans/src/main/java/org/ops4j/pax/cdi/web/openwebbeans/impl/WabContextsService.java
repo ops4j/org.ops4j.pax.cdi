@@ -55,6 +55,7 @@ import org.apache.webbeans.logger.WebBeansLoggerFacade;
 import org.apache.webbeans.web.context.ServletRequestContext;
 import org.apache.webbeans.web.context.SessionContextManager;
 import org.apache.webbeans.web.intercept.RequestScopedBeanInterceptorHandler;
+
 /**
  * Web bundle {@link org.apache.webbeans.spi.ContextsService} implementation.
  */
@@ -82,10 +83,12 @@ public class WabContextsService extends AbstractContextsService {
     private static DependentContext dependentContext;
 
     /** Current application contexts */
-    private static Map<ServletContext, ApplicationContext> currentApplicationContexts = new ConcurrentHashMap<ServletContext, ApplicationContext>();
+    private static Map<ServletContext, ApplicationContext> currentApplicationContexts
+        = new ConcurrentHashMap<>();
 
     /** Current singleton contexts */
-    private static Map<ServletContext, SingletonContext> currentSingletonContexts = new ConcurrentHashMap<ServletContext, SingletonContext>();
+    private static Map<ServletContext, SingletonContext> currentSingletonContexts
+        = new ConcurrentHashMap<>();
 
     /** Session context manager */
     private final SessionContextManager sessionCtxManager = new SessionContextManager();
@@ -302,7 +305,8 @@ public class WabContextsService extends AbstractContextsService {
         RequestContext rq = new ServletRequestContext();
         rq.setActive(true);
 
-        requestContexts.set(rq);// set thread local
+        // set thread local
+        requestContexts.set(rq);
 
         if (event != null) {
             HttpServletRequest request = (HttpServletRequest) event.getServletRequest();
@@ -720,22 +724,9 @@ public class WabContextsService extends AbstractContextsService {
         if (context instanceof ServletRequestContext) {
             ServletRequestContext requestContext = (ServletRequestContext) context;
             HttpServletRequest servletRequest = requestContext.getServletRequest();
-            if (null != servletRequest) { // this could be null if there is no active request
-                                          // context
-                try {
-                    HttpSession currentSession = servletRequest.getSession();
-                    initSessionContext(currentSession);
-
-                    if (logger.isLoggable(Level.FINE)) {
-                        logger.log(Level.FINE, "Lazy SESSION context initialization SUCCESS");
-                    }
-                }
-                // CHECKSTYLE:SKIP
-                catch (Exception e) {
-                    logger.log(Level.SEVERE,
-                        WebBeansLoggerFacade.constructMessage(OWBLogConst.ERROR_0013, e));
-                }
-
+            // this could be null if there is no active request context
+            if (null != servletRequest) {
+                doStartSessionContext(servletRequest);
             }
             else {
                 logger
@@ -754,6 +745,22 @@ public class WabContextsService extends AbstractContextsService {
         return webContext;
     }
 
+    private void doStartSessionContext(HttpServletRequest servletRequest) {
+        try {
+            HttpSession currentSession = servletRequest.getSession();
+            initSessionContext(currentSession);
+
+            if (logger.isLoggable(Level.FINE)) {
+                logger.log(Level.FINE, "Lazy SESSION context initialization SUCCESS");
+            }
+        }
+        // CHECKSTYLE:SKIP
+        catch (Exception e) {
+            logger.log(Level.SEVERE,
+                WebBeansLoggerFacade.constructMessage(OWBLogConst.ERROR_0013, e));
+        }
+    }
+
     /**
      * This might be needed when you aim to start a new thread in a WebApp.
      *
@@ -761,13 +768,11 @@ public class WabContextsService extends AbstractContextsService {
      */
     @Override
     public void activateContext(Class<? extends Annotation> scopeType) {
-        if (scopeType.equals(ApplicationScoped.class)) {
-            if (applicationContexts.get() == null) {
-                applicationContexts.set(sharedApplicationContext);
-            }
+        if (scopeType.equals(ApplicationScoped.class) && applicationContexts.get() == null) {
+            applicationContexts.set(sharedApplicationContext);
         }
         if (scopeType.equals(SessionScoped.class)) {
-            // getSessionContext() implicitely creates and binds the SessionContext
+            // getSessionContext() implicitly creates and binds the SessionContext
             // to the current Thread if it doesn't yet exist.
             getSessionContext().setActive(true);
         }

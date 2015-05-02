@@ -20,9 +20,12 @@ import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 
 /**
+ * Base class for forwarding JSF ApplicationFactories. Extend to add or adapt functionality.
+ *
  * @author pmuir
+ * @author Harald Wellmann
  */
-public abstract class ForwardingApplicationFactory extends ApplicationFactory {
+public abstract class AbstractForwardingApplicationFactory extends ApplicationFactory {
 
     protected abstract ApplicationFactory delegate();
 

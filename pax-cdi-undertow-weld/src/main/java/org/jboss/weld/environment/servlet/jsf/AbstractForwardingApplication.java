@@ -48,10 +48,13 @@ import javax.faces.event.SystemEventListener;
 import javax.faces.validator.Validator;
 
 /**
+ * Base class for forwarding JSF applications. Extend to add or adapt functionality.
+ *
  * @author pmuir
+ * @author Harald Wellmann
  */
 @SuppressWarnings("deprecation")
-public abstract class ForwardingApplication extends Application {
+public abstract class AbstractForwardingApplication extends Application {
 
     protected abstract Application delegate();
 
@@ -107,18 +110,22 @@ public abstract class ForwardingApplication extends Application {
     }
 
     @Override
-    public UIComponent createComponent(FacesContext context, String componentType, String rendererType) {
+    public UIComponent createComponent(FacesContext context, String componentType,
+        String rendererType) {
         return delegate().createComponent(context, componentType, rendererType);
     }
 
     @Override
-    public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType) {
+    public UIComponent createComponent(ValueExpression componentExpression, FacesContext context,
+        String componentType) {
         return delegate().createComponent(componentExpression, context, componentType);
     }
 
     @Override
-    public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType, String rendererType) {
-        return delegate().createComponent(componentExpression, context, componentType, rendererType);
+    public UIComponent createComponent(ValueExpression componentExpression, FacesContext context,
+        String componentType, String rendererType) {
+        return delegate()
+            .createComponent(componentExpression, context, componentType, rendererType);
     }
 
     @Override
@@ -128,7 +135,8 @@ public abstract class ForwardingApplication extends Application {
 
     @Override
     @Deprecated
-    public UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType) {
+    public UIComponent createComponent(ValueBinding componentBinding, FacesContext context,
+        String componentType) {
         return delegate().createComponent(componentBinding, context, componentType);
     }
 
@@ -162,7 +170,8 @@ public abstract class ForwardingApplication extends Application {
     }
 
     @Override
-    public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType) throws ELException {
+    public <T> T evaluateExpressionGet(FacesContext context, String expression,
+        Class<? extends T> expectedType) throws ELException {
         return delegate().evaluateExpressionGet(context, expression, expectedType);
     }
 
@@ -175,7 +184,6 @@ public abstract class ForwardingApplication extends Application {
     public Iterator<String> getBehaviorIds() {
         return delegate().getBehaviorIds();
     }
-
 
     @Override
     public Iterator<String> getComponentTypes() {
@@ -280,12 +288,14 @@ public abstract class ForwardingApplication extends Application {
     }
 
     @Override
-    public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source) {
+    public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass,
+        Class<?> sourceBaseType, Object source) {
         delegate().publishEvent(context, systemEventClass, sourceBaseType, source);
     }
 
     @Override
-    public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Object source) {
+    public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass,
+        Object source) {
         delegate().publishEvent(context, systemEventClass, source);
     }
 
@@ -318,7 +328,6 @@ public abstract class ForwardingApplication extends Application {
     public void setNavigationHandler(NavigationHandler handler) {
         delegate().setNavigationHandler(handler);
     }
-
 
     @Override
     @Deprecated
@@ -354,22 +363,26 @@ public abstract class ForwardingApplication extends Application {
     }
 
     @Override
-    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {
+    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass,
+        Class<?> sourceClass, SystemEventListener listener) {
         delegate().subscribeToEvent(systemEventClass, sourceClass, listener);
     }
 
     @Override
-    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
+    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass,
+        SystemEventListener listener) {
         delegate().subscribeToEvent(systemEventClass, listener);
     }
 
     @Override
-    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass,
+        Class<?> sourceClass, SystemEventListener listener) {
         delegate().unsubscribeFromEvent(systemEventClass, sourceClass, listener);
     }
 
     @Override
-    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass,
+        SystemEventListener listener) {
         delegate().unsubscribeFromEvent(systemEventClass, listener);
     }
 
@@ -387,5 +400,4 @@ public abstract class ForwardingApplication extends Application {
     public String toString() {
         return delegate().toString();
     }
-
 }

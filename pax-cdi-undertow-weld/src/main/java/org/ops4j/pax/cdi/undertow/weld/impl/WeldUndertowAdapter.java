@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Component;
 /**
  * Pax CDI Adapter for Weld using the Undertow servlet container. This adapter provides
  * a servlet container initializer to be picked up by Undertow.
- * 
+ *
  * @author Harald Wellmann
  *
  */
@@ -41,8 +41,6 @@ public class WeldUndertowAdapter extends AbstractWebCdiContainerListener {
      */
     @Override
     protected ServletContainerInitializer getServletContainerInitializer(CdiContainer cdiContainer) {
-        ServletContainerInitializer initializer = new WeldServletContainerInitializer(
-            cdiContainer, new WeldServletContextListener());
-        return initializer;
+        return new WeldServletContainerInitializer(cdiContainer, new WeldServletContextListener());
     }
 }
