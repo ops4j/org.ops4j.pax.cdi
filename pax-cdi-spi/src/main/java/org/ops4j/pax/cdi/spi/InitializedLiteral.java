@@ -36,20 +36,22 @@ import javax.enterprise.util.AnnotationLiteral;
 public class InitializedLiteral extends AnnotationLiteral<Initialized> implements Initialized {
 
     public static final InitializedLiteral REQUEST = new InitializedLiteral(RequestScoped.class);
-    public static final InitializedLiteral CONVERSATION = new InitializedLiteral(ConversationScoped.class);
+    public static final InitializedLiteral CONVERSATION
+        = new InitializedLiteral(ConversationScoped.class);
     public static final InitializedLiteral SESSION = new InitializedLiteral(SessionScoped.class);
-    public static final InitializedLiteral APPLICATION = new InitializedLiteral(ApplicationScoped.class);
+    public static final InitializedLiteral APPLICATION
+        = new InitializedLiteral(ApplicationScoped.class);
 
     private static final long serialVersionUID = -9014737143348998988L;
 
-    private Class<? extends Annotation> value;
+    private Class<? extends Annotation> klass;
 
     private InitializedLiteral(Class<? extends Annotation> value) {
-        this.value = value;
+        this.klass = value;
     }
 
     @Override
     public Class<? extends Annotation> value() {
-        return value;
+        return klass;
     }
 }

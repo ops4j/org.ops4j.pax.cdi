@@ -110,9 +110,8 @@ public abstract class AbstractCdiContainer implements CdiContainer {
             try {
                 registration.unregister();
             }
-            // CHECKSTYLE:SKIP
-            catch (Exception e) {
-                // Ignore
+            catch (IllegalStateException exc) {
+                log.trace("service already unregistered", exc);
             }
         }
     }
@@ -148,27 +147,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
 
                     @Override
                     public ServiceRegistration<CdiContainer> call() throws Exception {
-                        BundleContext bc = bundle.getBundleContext();
-
-                        // fire ContainerInitialized event
-                        BeanManager beanManager = getBeanManager();
-                        beanManager.fireEvent(new ContainerInitialized());
-
-                        // register CdiContainer service
-                        Dictionary<String, Object> props = new Hashtable<String, Object>();
-                        props.put("bundleId", bundle.getBundleId());
-                        props.put("symbolicName", bundle.getSymbolicName());
-
-                        ServiceRegistration<CdiContainer> reg = bc.registerService(
-                            CdiContainer.class, AbstractCdiContainer.this, props);
-
-                        beanManagerReg = bc.registerService(
-                            BeanManager.class, AbstractCdiContainer.this.getBeanManager(), props);
-
-                        // fire ServicesPublished event
-                        beanManager.fireEvent(new ServicesPublished());
-
-                        return reg;
+                        return registerCdiContainer();
                     }
                 });
         }
@@ -177,6 +156,30 @@ public abstract class AbstractCdiContainer implements CdiContainer {
             log.error("", exc);
             throw Exceptions.unchecked(exc);
         }
+    }
+
+    private ServiceRegistration<CdiContainer> registerCdiContainer() {
+        BundleContext bc = bundle.getBundleContext();
+
+        // fire ContainerInitialized event
+        BeanManager beanManager = getBeanManager();
+        beanManager.fireEvent(new ContainerInitialized());
+
+        // register CdiContainer service
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("bundleId", bundle.getBundleId());
+        props.put("symbolicName", bundle.getSymbolicName());
+
+        ServiceRegistration<CdiContainer> reg = bc.registerService(
+            CdiContainer.class, AbstractCdiContainer.this, props);
+
+        beanManagerReg = bc.registerService(
+            BeanManager.class, AbstractCdiContainer.this.getBeanManager(), props);
+
+        // fire ServicesPublished event
+        beanManager.fireEvent(new ServicesPublished());
+
+        return reg;
     }
 
     @Override

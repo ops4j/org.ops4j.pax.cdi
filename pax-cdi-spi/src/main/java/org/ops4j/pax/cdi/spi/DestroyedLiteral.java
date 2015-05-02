@@ -42,14 +42,14 @@ public class DestroyedLiteral extends AnnotationLiteral<Destroyed> implements De
 
     private static final long serialVersionUID = -8560340388621930476L;
 
-    private Class<? extends Annotation> value;
+    private Class<? extends Annotation> klass;
 
     private DestroyedLiteral(Class<? extends Annotation> value) {
-        this.value = value;
+        this.klass = value;
     }
 
     @Override
     public Class<? extends Annotation> value() {
-        return value;
+        return klass;
     }
 }

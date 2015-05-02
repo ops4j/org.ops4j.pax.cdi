@@ -49,9 +49,13 @@ public class BundleDeployment implements CDI11Deployment {
 
     /**
      * Creates a bundle deplyoment for the given bundle.
-     * @param bundle bean bundle
-     * @param bootstrap Weld bootstrap
-     * @param extensionClassLoader extended bundle class loader covering the required extensions
+     *
+     * @param bundle
+     *            bean bundle
+     * @param bootstrap
+     *            Weld bootstrap
+     * @param extensionClassLoader
+     *            extended bundle class loader covering the required extensions
      */
     public BundleDeployment(Bundle bundle, Bootstrap bootstrap, ClassLoader extensionClassLoader) {
 
@@ -62,7 +66,8 @@ public class BundleDeployment implements CDI11Deployment {
         createBeanDeploymentArchive(bundle, bootstrap, extensionClassLoader);
     }
 
-    private void createBeanDeploymentArchive(Bundle bundle, Bootstrap bootstrap, ClassLoader extensionClassLoader) {
+    private void createBeanDeploymentArchive(Bundle bundle, Bootstrap bootstrap,
+        ClassLoader extensionClassLoader) {
         BeanScanner scanner = new BeanScanner(bundle);
         scanner.scan();
         beanDeploymentArchive = new BundleBeanDeploymentArchive("pax-cdi-bda"

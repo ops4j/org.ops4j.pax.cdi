@@ -49,7 +49,7 @@ public class ProxyFactory {
      *            injection point
      * @return service proxy
      */
-    public static <T> Object getServiceProxy(InjectionPoint ip) {
+    public static <T> T getServiceProxy(InjectionPoint ip) {
         OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
         log.debug("getting service proxy for {}, {} ", ip.getType(), qualifier);
         return createServiceProxy(ip);

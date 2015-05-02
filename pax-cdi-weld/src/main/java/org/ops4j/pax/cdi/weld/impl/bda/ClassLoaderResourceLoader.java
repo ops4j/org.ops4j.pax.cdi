@@ -30,23 +30,23 @@ package org.ops4j.pax.cdi.weld.impl.bda;
  *
  */
 public class ClassLoaderResourceLoader extends AbstractClassLoaderResourceLoader {
-    private ClassLoader classLoader;
+    private ClassLoader cl;
 
     /**
      * Creates a resource loader for the given class loader.
      * @param classLoader
      */
     public ClassLoaderResourceLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+        this.cl = classLoader;
     }
 
     @Override
     protected ClassLoader classLoader() {
-        return classLoader;
+        return cl;
     }
 
     @Override
     public void cleanup() {
-        this.classLoader = null;
+        this.cl = null;
     }
 }

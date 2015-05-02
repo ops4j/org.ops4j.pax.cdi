@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.ops4j.pax.cdi.api.Constants;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
@@ -42,7 +41,7 @@ import org.osgi.framework.wiring.BundleWiring;
 public class BeanBundles {
 
     private static Map<ClassLoader, Bundle> bundleMap = new HashMap<>();
-    private static Set<Bundle> beanBundles = new HashSet<>();
+    private static Set<Bundle> bundleSet = new HashSet<>();
 
     private BeanBundles() {
         // hidden utility class constructor
@@ -50,7 +49,7 @@ public class BeanBundles {
 
     /**
      * Checks if the given bundle is a bean bundle by inspecting its wiring. The bundle is a bean
-     * bundle if it is wired to the {@link Constants#CDI_EXTENDER} capability.
+     * bundle if it is wired to the {@ode Constants#CDI_EXTENDER} capability.
      *
      * @param candidate
      *            candidate bundle
@@ -82,7 +81,7 @@ public class BeanBundles {
      * @return true if the bundle is a bean bundle with status ACTIVE and a started CDI container
      */
     public static boolean isActiveBeanBundle(Bundle candidate) {
-        return beanBundles.contains(candidate);
+        return bundleSet.contains(candidate);
     }
 
     /**
@@ -95,7 +94,7 @@ public class BeanBundles {
      */
     public static synchronized void addBundle(ClassLoader cl, Bundle bundle) {
         bundleMap.put(cl, bundle);
-        beanBundles.add(bundle);
+        bundleSet.add(bundle);
     }
 
     /**
@@ -108,7 +107,7 @@ public class BeanBundles {
      */
     public static synchronized void removeBundle(ClassLoader cl, Bundle bundle) {
         bundleMap.remove(cl);
-        beanBundles.remove(bundle);
+        bundleSet.remove(bundle);
     }
 
     /**

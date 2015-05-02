@@ -63,11 +63,10 @@ public class OsgiServiceBean<T> implements Bean<T> {
         this.qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public T create(CreationalContext<T> ctx) {
         try {
-            return (T) ProxyFactory.getServiceProxy(ip);
+            return ProxyFactory.getServiceProxy(ip);
         }
         catch (ServiceException exc) {
             throw new CreationException(exc);

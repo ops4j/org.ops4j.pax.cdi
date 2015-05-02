@@ -36,7 +36,6 @@ import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
-import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.ops4j.pax.cdi.spi.DestroyedLiteral;
 import org.ops4j.pax.cdi.spi.InitializedLiteral;
@@ -48,7 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link CdiContainer} implementation wrapping a JBoss Weld container, represented by a
+ * {@code CdiContainer} implementation wrapping a JBoss Weld container, represented by a
  * {@link WeldBootstrap}.
  *
  * @author Harald Wellmann

@@ -25,15 +25,15 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 
 /**
- * Holds the runtime dependencies of a web bean bundle. For each web bean bundle, an instance
- * of this class is registered an an OSGi service with property {@code bundle.id} set to the
- * bundle ID of the web bean bundle.
+ * Holds the runtime dependencies of a web bean bundle. For each web bean bundle, an instance of
+ * this class is registered an an OSGi service with property {@code bundle.id} set to the bundle ID
+ * of the web bean bundle.
  * <p>
  * The service is unregistered as soon as one of the dependencies becomes unavailable.
  * <p>
  * The collaboration of Pax CDI and Pax Web in the startup phase of a web bean bundle is
  * synchronized by means of this service.
- * 
+ *
  * @author Harald Wellmann
  */
 public class CdiWebAppDependencyHolder implements WebAppDependencyHolder {
@@ -42,15 +42,24 @@ public class CdiWebAppDependencyHolder implements WebAppDependencyHolder {
     private ServletContainerInitializer initializer;
     private HttpService httpService;
 
-    public CdiWebAppDependencyHolder(BundleContext context, ServletContainerInitializer initializer) {
+    /**
+     * Creates a dependency holder for the given web bundle.
+     *
+     * @param context
+     *            bundle context of web bundle
+     * @param sci
+     *            Pax CDI servlet container initializer
+     */
+    public CdiWebAppDependencyHolder(BundleContext context, ServletContainerInitializer sci) {
         this.context = context;
-        this.initializer = initializer;
+        this.initializer = sci;
     }
 
     @Override
     public HttpService getHttpService() {
         if (httpService == null) {
-            ServiceReference<HttpService> httpServiceRef = context.getServiceReference(HttpService.class);
+            ServiceReference<HttpService> httpServiceRef = context
+                .getServiceReference(HttpService.class);
             httpService = context.getService(httpServiceRef);
         }
         return httpService;

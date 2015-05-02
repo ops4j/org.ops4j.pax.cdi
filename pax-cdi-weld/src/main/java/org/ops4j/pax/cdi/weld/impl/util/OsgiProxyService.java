@@ -33,11 +33,7 @@ import org.ops4j.pax.cdi.spi.util.Exceptions;
  */
 public class OsgiProxyService implements ProxyServices {
 
-    private ClassLoader loader;
-
-    public OsgiProxyService() {
-        this.loader = Thread.currentThread().getContextClassLoader();
-    }
+    private ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
     @Override
     public ClassLoader getClassLoader(Class<?> proxiedBeanType) {
