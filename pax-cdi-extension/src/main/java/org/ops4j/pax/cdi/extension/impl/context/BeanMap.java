@@ -23,13 +23,17 @@ import java.util.HashMap;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-
+/**
+ * Maps beans to scope entries and stores the creational context for bean references.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class BeanMap extends HashMap<Contextual<?>, SingletonScopeContextEntry<?>> {
 
     private static final long serialVersionUID = 1L;
 
     private transient CreationalContext<Object> creationalContext;
-
 
     /**
      * @return the creationalContext
@@ -38,9 +42,9 @@ public class BeanMap extends HashMap<Contextual<?>, SingletonScopeContextEntry<?
         return creationalContext;
     }
 
-
     /**
-     * @param creationalContext the creationalContext to set
+     * @param creationalContext
+     *            the creationalContext to set
      */
     public void setCreationalContext(CreationalContext<Object> creationalContext) {
         this.creationalContext = creationalContext;

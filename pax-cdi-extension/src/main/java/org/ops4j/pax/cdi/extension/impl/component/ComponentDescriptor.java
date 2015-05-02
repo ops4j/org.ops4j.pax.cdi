@@ -95,6 +95,9 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
         }
     }
 
+    /**
+     * Must be invoked whenever a dependency becomes satisfied.
+     */
     public void onDependencySatisfied() {
         numUnsatisfiedDependencies--;
         if (isSatisfied()) {
@@ -102,6 +105,9 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
         }
     }
 
+    /**
+     * Must be invoked whenever a dependency becomes unsatisfied.
+     */
     public void onDependencyUnsatisfied() {
         boolean notifyListener = isSatisfied();
         numUnsatisfiedDependencies++;

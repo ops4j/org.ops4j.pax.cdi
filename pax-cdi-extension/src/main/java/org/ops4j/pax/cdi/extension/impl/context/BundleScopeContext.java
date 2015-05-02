@@ -48,7 +48,12 @@ public class BundleScopeContext implements AlterableContext {
     private ThreadLocal<Bundle> clientBundle;
     private Map<Bundle, BeanMap> beanMaps;
 
-
+    /**
+     * Creates the bundle scope context for the current bean bundle.
+     *
+     * @param beanManager
+     *            bean manager of current bundle
+     */
     public BundleScopeContext(BeanManager beanManager) {
         this.beanManager = beanManager;
         this.clientBundle = new ThreadLocal<>();
@@ -65,14 +70,14 @@ public class BundleScopeContext implements AlterableContext {
     public <T> T get(Contextual<T> component, CreationalContext<T> creationalContext) {
         BeanMap beanMap = getBeanMap(creationalContext);
 
-
         SingletonScopeContextEntry serviceBean = beanMap.get(component);
         if (serviceBean != null) {
             return (T) serviceBean.getContextualInstance();
         }
 
         T instance = component.create(creationalContext);
-        serviceBean = new SingletonScopeContextEntry(component, instance, beanMap.getCreationalContext());
+        serviceBean = new SingletonScopeContextEntry(component, instance,
+            beanMap.getCreationalContext());
         serviceBeans.put(component, serviceBean);
 
         return instance;
@@ -133,15 +138,19 @@ public class BundleScopeContext implements AlterableContext {
     }
 
     /**
-     * @return the clientBundle
+     * Returns the bundle using this context. This is not the Pax CDI extension bundle itself.
+     *
+     * @return the client bundle
      */
     public Bundle getClientBundle() {
         return clientBundle.get();
     }
 
-
     /**
-     * @param bundle the clientBundle to set
+     * Sets or removes the client bundle.
+     *
+     * @param bundle
+     *            the client bundle to set, or null to remove the stored client
      */
     public void setClientBundle(Bundle bundle) {
         if (bundle == null) {
@@ -152,6 +161,11 @@ public class BundleScopeContext implements AlterableContext {
         }
     }
 
+    /**
+     * Gets a creational context for bundle scoped beans.
+     *
+     * @return creational context
+     */
     public CreationalContext<?> getCreationalContext() {
         return beanManager.createCreationalContext(null);
     }

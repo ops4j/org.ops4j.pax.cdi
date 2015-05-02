@@ -39,7 +39,6 @@ import org.ops4j.pax.cdi.api.Property;
 import org.ops4j.pax.cdi.extension.impl.compat.PrototypeScopeUtils;
 import org.ops4j.pax.cdi.extension.impl.context.Osgi6ServiceFactoryBuilder;
 import org.ops4j.pax.cdi.extension.impl.context.ServiceFactoryBuilder;
-import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -73,12 +72,6 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
      */
     @Inject
     private BundleContext bundleContext;
-
-    /**
-     * Service context for OSGi component {@code @ServiceScoped} contextual instances.
-     */
-    @Inject
-    private SingletonScopeContext context;
 
     private ServiceFactoryBuilder serviceFactoryBuilder;
 
@@ -152,6 +145,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
             descriptor.setListener(noop);
             descriptor.stop();
         }
+        componentRegistry.setBundleContext(null);
     }
 
     private boolean isBeanFromCurrentBundle(Bean<?> bean) {
@@ -259,11 +253,6 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
 
     @Override
     public <S> void onComponentUnsatisfied(ComponentDescriptor<S> descriptor) {
-        Bean<S> bean = descriptor.getBean();
-        S service = context.get(bean);
-        if (service != null) {
-            unregisterService(descriptor);
-            context.destroy(bean);
-        }
+        unregisterService(descriptor);
     }
 }

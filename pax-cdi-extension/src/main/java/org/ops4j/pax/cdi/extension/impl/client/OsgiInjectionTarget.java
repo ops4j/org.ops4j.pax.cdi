@@ -34,8 +34,8 @@ import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.osgi.framework.BundleContext;
 
 /**
- * Wrapped {@link InjectionTarget} for OSGi services. Overrides injection into
- * Instance<T> when qualified as {@link OsgiService}.
+ * Wrapped {@link InjectionTarget} for OSGi services. Overrides injection into Instance<T> when
+ * qualified as {@link OsgiService}.
  *
  * @author Harald Wellmann
  *
@@ -45,6 +45,12 @@ public class OsgiInjectionTarget<T> implements InjectionTarget<T> {
 
     private InjectionTarget<T> delegate;
 
+    /**
+     * Wraps the given injection target.
+     *
+     * @param delegate
+     *            target to be wrapped
+     */
     public OsgiInjectionTarget(InjectionTarget<T> delegate) {
         this.delegate = delegate;
     }

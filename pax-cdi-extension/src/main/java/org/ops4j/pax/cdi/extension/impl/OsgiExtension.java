@@ -211,6 +211,9 @@ public class OsgiExtension implements Extension {
      * by OSGi service injection points.
      *
      * @param event
+     *            lifecycle event
+     * @param beanManager
+     *            current bean manager
      */
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
         log.debug("afterBeanDiscovery");

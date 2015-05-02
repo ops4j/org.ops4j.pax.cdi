@@ -33,6 +33,9 @@ import org.osgi.framework.ServiceReference;
  * A static proxy invocation handler which always uses the same service reference obtained on
  * construction.
  *
+ * @param <S>
+ *            OSGi service type
+ *
  * @author Harald Wellmann
  *
  */
@@ -42,6 +45,12 @@ public class StaticInvocationHandler<S> extends AbstractServiceInvocationHandler
     private ServiceReference<S> serviceRef;
     private ServiceObjectsWrapper<S> serviceObjects;
 
+    /**
+     * Constructs a static invocation handler for the given OSGi service injection point.
+     *
+     * @param ip
+     *            injection point
+     */
     @SuppressWarnings("unchecked")
     public StaticInvocationHandler(InjectionPoint ip) {
         super(ip);

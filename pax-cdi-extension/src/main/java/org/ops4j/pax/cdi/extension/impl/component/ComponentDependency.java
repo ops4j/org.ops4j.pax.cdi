@@ -31,13 +31,19 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 /**
  * An OSGi service dependency of a given service component.
  *
- * @author Harald Wellmann
+ * @param <S>
+ *            type of parent component
+ * @param <T>
+ *            type of child component
  *
+ * @author Harald Wellmann
  */
-public class ComponentDependency<S, T> extends AbstractLifecycle implements ServiceTrackerCustomizer<T, T> {
+public class ComponentDependency<S, T> extends AbstractLifecycle implements
+    ServiceTrackerCustomizer<T, T> {
 
     /**
      * Injection point of this dependency. Must be qualified with {@code @OsgiService).
+
      */
     private InjectionPoint injectionPoint;
 
@@ -58,7 +64,14 @@ public class ComponentDependency<S, T> extends AbstractLifecycle implements Serv
     private BundleContext bc;
 
     /**
+     * Creates a component dependency for the given parent and injection point.
      *
+     * @param parent
+     *            descriptor of component containing the given injection point
+     * @param ip
+     *            injection point for service component dependency
+     * @param filter
+     *            OSGi service filter for injection point
      */
     public ComponentDependency(ComponentDescriptor<S> parent, InjectionPoint ip, Filter filter) {
         this.parent = parent;
@@ -67,21 +80,27 @@ public class ComponentDependency<S, T> extends AbstractLifecycle implements Serv
     }
 
     /**
-     * @return the injectionPoint
+     * Gets the injection point.
+     *
+     * @return the injection point
      */
     public InjectionPoint getInjectionPoint() {
         return injectionPoint;
     }
 
     /**
+     * Sets the injection point.
+     *
      * @param injectionPoint
-     *            the injectionPoint to set
+     *            the injection point to set
      */
     public void setInjectionPoint(InjectionPoint injectionPoint) {
         this.injectionPoint = injectionPoint;
     }
 
     /**
+     * Gets the filter.
+     *
      * @return the filter
      */
     public Filter getFilter() {
@@ -89,6 +108,8 @@ public class ComponentDependency<S, T> extends AbstractLifecycle implements Serv
     }
 
     /**
+     * Sets the filter.
+     *
      * @param filter
      *            the filter to set
      */
@@ -97,15 +118,19 @@ public class ComponentDependency<S, T> extends AbstractLifecycle implements Serv
     }
 
     /**
-     * @return the satisfied
+     * Checks if this dependency is satisfied
+     *
+     * @return true if dependency is satisfied
      */
     public boolean isSatisfied() {
         return satisfied;
     }
 
     /**
+     * Marks the dependency as satisfied or not.
+     *
      * @param satisfied
-     *            the satisfied to set
+     *            true if dependency is satisfied
      */
     public void setSatisfied(boolean satisfied) {
         this.satisfied = satisfied;

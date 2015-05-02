@@ -22,11 +22,13 @@ import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.ops4j.pax.cdi.spi.InjectionTargetWrapper;
 
-
 /**
  * Wraps an injection target to add OSGi-specific resolution of {@code Instance<T>} injection
  * points.
- * 
+ *
+ * @param <T>
+ *            type of injection target
+ *
  * @author Harald Wellmann
  *
  */

@@ -22,11 +22,20 @@ import java.lang.annotation.Annotation;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.ops4j.pax.cdi.api.event.ServiceAdded;
+import org.ops4j.pax.cdi.api.event.ServiceRemoved;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
+/**
+ * Maps OSGi service events to CDI events. Fires events qualified with {@link ServiceAdded} or
+ * {@link ServiceRemoved}.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class ServiceEventBridge implements ServiceListener {
 
     @Inject
@@ -68,10 +77,16 @@ public class ServiceEventBridge implements ServiceListener {
         }
     }
 
+    /**
+     * Starts the service event bridge.
+     */
     public void start() {
         bundleContext.addServiceListener(this);
     }
 
+    /**
+     * Stops the service event bridge.
+     */
     public void stop() {
         bundleContext.removeServiceListener(this);
     }

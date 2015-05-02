@@ -44,6 +44,12 @@ public class PrototypeScopeContext implements AlterableContext {
 
     private ThreadLocal<Object> service;
 
+    /**
+     * Constructs a new prototype scope context.
+     *
+     * @param beanManager
+     *            bean manager of current bean bundle
+     */
     public PrototypeScopeContext(BeanManager beanManager) {
         this.beanManager = beanManager;
         this.service = new ThreadLocal<>();

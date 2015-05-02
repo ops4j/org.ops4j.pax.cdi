@@ -21,10 +21,21 @@ package org.ops4j.pax.cdi.extension.impl.context;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
-
+/**
+ * Specialized service factory builder for OSGi 6.0 This factory also handles protoytype scoped
+ * beans.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class Osgi6ServiceFactoryBuilder extends ServiceFactoryBuilder {
 
-
+    /**
+     * Constructs a service factory builder.
+     *
+     * @param beanManager
+     *            bean manager of current bean bundle
+     */
     public Osgi6ServiceFactoryBuilder(BeanManager beanManager) {
         super(beanManager);
     }
@@ -34,5 +45,4 @@ public class Osgi6ServiceFactoryBuilder extends ServiceFactoryBuilder {
         Bean<S> bean) {
         return new PrototypeScopeServiceFactory<S>(context, bean);
     }
-
 }

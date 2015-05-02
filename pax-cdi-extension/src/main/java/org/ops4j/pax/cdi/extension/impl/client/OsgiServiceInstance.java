@@ -34,9 +34,11 @@ import org.osgi.framework.ServiceReference;
 /**
  * A specialized {@link Instance} which looks up matching OSGi services from the service registry.
  *
+ * @param <T>
+ *            OSGi service bean type
+ *
  * @author Harald Wellmann
  *
- * @param <T>
  */
 public class OsgiServiceInstance<T> implements Instance<T> {
 
@@ -44,6 +46,16 @@ public class OsgiServiceInstance<T> implements Instance<T> {
     private Class<T> klass;
     private String filter;
 
+    /**
+     * Creates an OSGi service instance holder.
+     *
+     * @param bc
+     *            bundle context
+     * @param klass
+     *            bean class
+     * @param filter
+     *            OSGi service filter
+     */
     public OsgiServiceInstance(BundleContext bc, Class<T> klass, String filter) {
         this.bc = bc;
         this.klass = klass;

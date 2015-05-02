@@ -25,16 +25,39 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
-
+/**
+ * Builds service factories for OSGi service component beans, depending on the bean or service
+ * scope.
+ * <p>
+ * This is the default builder for OSGi 4.3 and OSGi 5.0. On OSGi 6.0, a specialized builder is used
+ * to handle the prototype scope.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class ServiceFactoryBuilder {
-
 
     private BeanManager beanManager;
 
+    /**
+     * Constructs a service factory builder.
+     *
+     * @param beanManager
+     *            bean manager of current bean bundle
+     */
     public ServiceFactoryBuilder(BeanManager beanManager) {
         this.beanManager = beanManager;
     }
 
+    /**
+     * Builds a service factory for the given bean.
+     *
+     * @param bean
+     *            OSGi service bean
+     * @param <S>
+     *            service type
+     * @return service facto4ry
+     */
     public <S> Object buildServiceFactory(Bean<S> bean) {
         Class<? extends Annotation> scope = bean.getScope();
         Context context = beanManager.getContext(scope);
@@ -51,10 +74,21 @@ public class ServiceFactoryBuilder {
             CreationalContext<S> cc = singletonContext.getCreationalContext();
             return singletonContext.get(bean, cc);
         }
-        throw new IllegalStateException(bean.getBeanClass() + " does not have an OSGi compatible scope");
+        throw new IllegalStateException(bean.getBeanClass()
+            + " does not have an OSGi compatible scope");
     }
 
-    protected <S> Object buildPrototypeScopeServiceFactory(PrototypeScopeContext context, Bean<S> bean) {
+    /**
+     * Builds a service factory for a prototype scoped bean.
+     *
+     * @param context
+     *            context of prototype scope
+     * @param bean
+     *            OSGi service bean
+     * @return service factory.
+     */
+    protected <S> Object buildPrototypeScopeServiceFactory(PrototypeScopeContext context,
+        Bean<S> bean) {
         throw new IllegalStateException("prototype scope not supported");
     }
 }

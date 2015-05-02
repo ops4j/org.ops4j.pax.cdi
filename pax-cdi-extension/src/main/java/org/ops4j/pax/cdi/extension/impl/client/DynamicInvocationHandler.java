@@ -34,12 +34,20 @@ import org.osgi.framework.ServiceReference;
  * point on each method invocation, possibly including a wait period as indicated by the
  * {@link OsgiService} qualifier.
  *
+ * @param <S>
+ *            service type
+ *
  * @author Harald Wellmann
  *
  */
 public class DynamicInvocationHandler<S> extends AbstractServiceInvocationHandler {
 
-
+    /**
+     * Creates an invocation handler for the given injection point.
+     *
+     * @param ip
+     *            OSGi service injection point.
+     */
     public DynamicInvocationHandler(InjectionPoint ip) {
         super(ip);
     }

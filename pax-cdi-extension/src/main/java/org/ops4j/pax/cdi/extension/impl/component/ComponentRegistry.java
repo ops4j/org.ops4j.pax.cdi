@@ -31,11 +31,10 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * A registry for all service components, i.e. managed beans qualified as {@code @OsgiServiceProvider}.
- * The registry maps each such bean type to a component descriptor which tracks the service
- * dependencies of the given component.
+ * A registry for all service components, i.e. managed beans qualified as
+ * {@code @OsgiServiceProvider}. The registry maps each such bean type to a component descriptor
+ * which tracks the service dependencies of the given component.
  *
  * @author Harald Wellmann
  *
@@ -51,9 +50,9 @@ public class ComponentRegistry {
 
     private Set<InjectionPoint> nonComponentDependencies = new HashSet<>();
 
-
     /**
      * Adds a component bean type to the registry, creating an empty descriptor for it.
+     *
      * @param component
      */
     public <S> void addComponent(Bean<S> component) {
@@ -64,8 +63,11 @@ public class ComponentRegistry {
      * Adds a service dependency for a bean type.
      * <p>
      * Precondition: The bean type was added to the registry by {@link #addComponent(Bean)}.
-     * @param component component bean
-     * @param ip injection point of the given bean, qualified as {@code OsgiService}
+     *
+     * @param component
+     *            component bean
+     * @param ip
+     *            injection point of the given bean, qualified as {@code OsgiService}
      */
     public <S> void addDependency(Bean<S> component, InjectionPoint ip) {
         log.debug("adding dependency {} -> {}", component, ip);
@@ -75,6 +77,7 @@ public class ComponentRegistry {
 
     /**
      * Returns all component beans.
+     *
      * @return set of beans
      */
     public Set<Bean<?>> getComponents() {
@@ -83,41 +86,60 @@ public class ComponentRegistry {
 
     /**
      * Returns the component descriptor for the given bean type.
-     * @param component service component bean
+     *
+     * @param component
+     *            service component bean
      * @return component descriptor, or null if the bean is not a service component
      */
     public ComponentDescriptor<?> getDescriptor(Bean<?> component) {
         return descriptors.get(component);
     }
 
-
     /**
-     * @return the bundleContext
+     * Gets the bundle context.
+     *
+     * @return the bundle context
      */
     public BundleContext getBundleContext() {
         return bundleContext;
     }
 
-
     /**
-     * @param bundleContext the bundleContext to set
+     * Sets the bundle context.
+     *
+     * @param bundleContext
+     *            the bundle context to set
      */
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
     }
 
+    /**
+     * Adds a dependency for an injection point which is not a service component.
+     *
+     * @param ip
+     *            injection point
+     */
     public void addNonComponentDependency(InjectionPoint ip) {
         nonComponentDependencies.add(ip);
     }
 
-
     /**
-     * @return the nonComponentDependencies
+     * Returns the set of beans dependencies which are not OSGi service components.
+     *
+     * @return the non-component dependencies
      */
     public Set<InjectionPoint> getNonComponentDependencies() {
         return nonComponentDependencies;
     }
 
+    /**
+     * Checks if the given bean is an OSGi service component.
+     *
+     * @param bean
+     *            CDI bean
+     * @return true if bean is a service component.
+     */
     public boolean isComponent(Bean<?> bean) {
         return descriptors.containsKey(bean);
     }

@@ -20,7 +20,15 @@ package org.ops4j.pax.cdi.extension.impl.compat;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-
+/**
+ * Implements {@link ServiceObjectsWrapper} for OSGi 4.3 and 5.0. The implementation simply ignores
+ * the prototype scope and only handles singleton and bundle scope via the wrapped bundle context.
+ *
+ * @param <S>
+ *            OSGi service type
+ *
+ * @author Harald Wellmann
+ */
 public class Osgi5ServiceObjectsWrapper<S> implements ServiceObjectsWrapper<S> {
 
     private BundleContext bundleContext;

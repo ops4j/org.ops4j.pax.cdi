@@ -33,11 +33,19 @@ public class PrototypeScopeUtils {
 
     private static volatile Class<?> wrapperClass;
 
-
     private PrototypeScopeUtils() {
         // Hidden utility class constructor
     }
 
+    /**
+     * Creates a {@link ServiceObjectsWrapper} for the given bundle context and service reference.
+     *
+     * @param bc
+     *            bundle context
+     * @param serviceReference
+     *            service reference
+     * @return wrapper object, with type depending on the OSGi framework version
+     */
     @SuppressWarnings("unchecked")
     public static <S> ServiceObjectsWrapper<S> createServiceObjectsWrapper(BundleContext bc,
         ServiceReference<S> serviceReference) {
@@ -88,6 +96,13 @@ public class PrototypeScopeUtils {
         }
     }
 
+    /**
+     * Checks if the current OSGi framework supports prototype scope.
+     *
+     * @param bc
+     *            bundle context of any bundle
+     * @return true if the framework version is 1.8 or higher
+     */
     public static boolean hasPrototypeScope(BundleContext bc) {
         Version actualVersion = Version.parseVersion(bc.getProperty(Constants.FRAMEWORK_VERSION));
         return actualVersion.compareTo(OSGI6_FRAMEWORK_VERSION) >= 0;
