@@ -52,12 +52,12 @@ public class BundleContextProducer {
     }
 
     @Produces
-    public ComponentRegistry componentRegistry() {
+    public ComponentRegistry getComponentRegistry() {
         return extension.getComponentRegistry();
     }
 
     @Produces
-    public SingletonScopeContext serviceContext() {
+    public SingletonScopeContext getServiceContext() {
         return extension.getServiceContext();
     }
 }

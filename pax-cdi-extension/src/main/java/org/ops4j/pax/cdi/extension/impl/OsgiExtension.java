@@ -265,11 +265,11 @@ public class OsgiExtension implements Extension {
         return false;
     }
 
-    public ComponentRegistry getComponentRegistry() {
+    ComponentRegistry getComponentRegistry() {
         return componentRegistry;
     }
 
-    public SingletonScopeContext getServiceContext() {
+    SingletonScopeContext getServiceContext() {
         return serviceContext;
     }
 }

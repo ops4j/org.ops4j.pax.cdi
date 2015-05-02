@@ -27,19 +27,24 @@ import javax.enterprise.util.TypeLiteral;
 
 import org.ops4j.pax.cdi.spi.CdiContainer;
 
-
 /**
  * Adapts {@link CdiContainer} to {@link CDI}.
- * 
- * @author Harald Wellmann
  *
  * @param <T>
+ *            type argument for bean instances
+
+ * @author Harald Wellmann
  */
 public class BundleCdi<T> extends CDI<T> {
-    
+
     private CdiContainer container;
-    
-    
+
+    /**
+     * Creates a {@link CDI} wrapper for the given container.
+     *
+     * @param container
+     *            Pax CDI container
+     */
     public BundleCdi(CdiContainer container) {
         this.container = container;
     }
@@ -92,13 +97,16 @@ public class BundleCdi<T> extends CDI<T> {
     public BeanManager getBeanManager() {
         return container.getBeanManager();
     }
-    
+
     @Override
     public String toString() {
         return String.format("[CDI container %s]", container.getBundle());
- 
+
     }
-    
+
+    /**
+     * Disposes the PAX CDI provider. Must be called when the Pax CDI extender is stopped.
+     */
     public static void dispose() {
         configuredProvider = null;
     }
