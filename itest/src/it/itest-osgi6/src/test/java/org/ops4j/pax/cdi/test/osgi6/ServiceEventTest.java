@@ -82,15 +82,6 @@ public class ServiceEventTest {
                 return -1;
             }
 
-            @Override
-            public int getNumInstances() {
-                return 1;
-            }
-
-            @Override
-            public String getName() {
-                return "adHoc";
-            }
         };
 
         bc.registerService(SingletonScopedService.class, myService, null);
