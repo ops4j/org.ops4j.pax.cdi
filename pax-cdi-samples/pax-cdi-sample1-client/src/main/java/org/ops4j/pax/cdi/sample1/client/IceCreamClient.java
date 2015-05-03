@@ -31,6 +31,8 @@ import javax.inject.Inject;
 import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.event.ServiceAdded;
+import org.ops4j.pax.cdi.api.event.ServiceCdiEvent;
+import org.ops4j.pax.cdi.api.event.ServiceRemoved;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
 
 @OsgiServiceProvider
@@ -44,17 +46,37 @@ public class IceCreamClient {
     @OsgiService(timeout = 2000, dynamic = true)
     private Instance<IceCreamService> iceCreamServices;
 
+    private List<String> events = new ArrayList<>();
+
 
     public void onInit(@Observes @Initialized(ApplicationScoped.class) Object object) {
-        System.out.println("initialized application scope");
+        events.add("initialized application scope");
     }
 
     public void onShutdown(@Observes @Destroyed(ApplicationScoped.class) Object object) {
-        System.out.println("destroyed application scope");
+        events.add("destroyed application scope");
     }
 
     public void onInit(@Observes @ServiceAdded BeanManager manager) {
-        System.out.println("registered BeanManager");
+        events.add("registered BeanManager");
+    }
+
+    public void onIceCreamServiceAdded(@Observes @ServiceAdded ServiceCdiEvent<IceCreamService> event) {
+        String flavour = (String) event.getReference().getProperty("flavour");
+        events.add("added IceCreamService with flavour " + flavour);
+    }
+
+    public void onIceCreamServiceAdded(@Observes @ServiceAdded IceCreamService service) {
+        events.add("added IceCreamService with class " + service.getClass().getName());
+    }
+
+    public void onIceCreamServiceRemoved(@Observes @ServiceRemoved ServiceCdiEvent<IceCreamService> event) {
+        String flavour = (String) event.getReference().getProperty("flavour");
+        events.add("removed IceCreamService with flavour " + flavour);
+    }
+
+    public void onIceCreamServiceRemoved(@Observes @ServiceRemoved IceCreamService service) {
+        events.add("removed IceCreamService with class " + service.getClass().getName());
     }
 
     public String getFlavour() {
@@ -68,5 +90,9 @@ public class IceCreamClient {
             flavours.add(flavour);
         }
         return flavours;
+    }
+
+    public List<String> getEvents() {
+        return events;
     }
 }

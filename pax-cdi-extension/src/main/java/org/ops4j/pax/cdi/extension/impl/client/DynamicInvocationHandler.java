@@ -22,7 +22,7 @@ import java.util.concurrent.Callable;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.ops4j.pax.cdi.extension.impl.compat.PrototypeScopeUtils;
+import org.ops4j.pax.cdi.extension.impl.compat.OsgiScopeUtils;
 import org.ops4j.pax.cdi.extension.impl.compat.ServiceObjectsWrapper;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
@@ -56,7 +56,7 @@ public class DynamicInvocationHandler<S> extends AbstractServiceInvocationHandle
     public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
         @SuppressWarnings("unchecked")
         ServiceReference<S> serviceRef = InjectionPointOsgiUtils.getServiceReference(ip);
-        ServiceObjectsWrapper<S> serviceObjects = PrototypeScopeUtils.createServiceObjectsWrapper(
+        ServiceObjectsWrapper<S> serviceObjects = OsgiScopeUtils.createServiceObjectsWrapper(
             bundleContext, serviceRef);
         final S service = serviceObjects.getService();
         Object result = ContextClassLoaderUtils.doWithClassLoader(

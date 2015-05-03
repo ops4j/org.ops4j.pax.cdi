@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.cdi.test;
 
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -35,6 +36,7 @@ import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
+import org.ops4j.pax.cdi.sample1.client.IceCreamClient;
 import org.ops4j.pax.cdi.sample1.client.StrawberryClient;
 import org.ops4j.pax.cdi.sample1.client.StrawberryService;
 import org.ops4j.pax.exam.Configuration;
@@ -54,6 +56,9 @@ public class ComponentLifecycleTest {
     @Inject
     private BundleContext bc;
 
+    @Inject
+    private IceCreamClient client;
+
     @Configuration
     public Option[] config() {
         return options(
@@ -61,8 +66,8 @@ public class ComponentLifecycleTest {
 
             workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
             workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-client"),
-            
-            paxCdiProviderAdapter(),            
+
+            paxCdiProviderAdapter(),
             cdiProviderBundles());
 
     }
@@ -71,19 +76,41 @@ public class ComponentLifecycleTest {
     public void componentWithUnsatisfiedDependencyShouldNotBeRegistered(){
         ServiceLookup.getService(bc, StrawberryClient.class, 10);
     }
-    
+
     @Test
     public void componentShouldRegisterWhenDependencyAppears(){
-        StrawberryService strawberryService = new StrawberryService();
-        Dictionary<String,String> props = new Hashtable<String, String>();
-        props.put("flavour", "strawberry");
-        ServiceRegistration<IceCreamService> reg = bc.registerService(IceCreamService.class, strawberryService, props);
+        ServiceRegistration<IceCreamService> reg = registerStrawberryService();
         StrawberryClient strawberryClient = ServiceLookup.getService(bc, StrawberryClient.class, 100);
         assertThat(strawberryClient, is(notNullValue()));
         assertThat(strawberryClient.getFlavour(), is("Strawberry"));
-        
+
         reg.unregister();
         assertThat(bc.getServiceReference(StrawberryClient.class), is(nullValue()));
-        
+    }
+
+    private ServiceRegistration<IceCreamService> registerStrawberryService() {
+        StrawberryService strawberryService = new StrawberryService();
+        Dictionary<String,String> props = new Hashtable<String, String>();
+        props.put("flavour", "strawberry");
+        ServiceRegistration<IceCreamService> reg =
+            bc.registerService(IceCreamService.class, strawberryService, props);
+        return reg;
+    }
+
+    @Test
+    public void shouldObserveServiceAddedEvents(){
+        registerStrawberryService();
+        assertThat(client.getEvents(), hasItems(
+            "added IceCreamService with class org.ops4j.pax.cdi.sample1.client.StrawberryService",
+            "added IceCreamService with flavour strawberry"));
+    }
+
+    @Test
+    public void shouldObserveServiceRemovedEvents(){
+        ServiceRegistration<IceCreamService> reg = registerStrawberryService();
+        reg.unregister();
+        assertThat(client.getEvents(), hasItems(
+            "removed IceCreamService with class org.ops4j.pax.cdi.sample1.client.StrawberryService",
+            "removed IceCreamService with flavour strawberry"));
     }
 }

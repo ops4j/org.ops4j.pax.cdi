@@ -22,7 +22,7 @@ import java.util.concurrent.Callable;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.ops4j.pax.cdi.extension.impl.compat.PrototypeScopeUtils;
+import org.ops4j.pax.cdi.extension.impl.compat.OsgiScopeUtils;
 import org.ops4j.pax.cdi.extension.impl.compat.ServiceObjectsWrapper;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
@@ -55,7 +55,7 @@ public class StaticInvocationHandler<S> extends AbstractServiceInvocationHandler
     public StaticInvocationHandler(InjectionPoint ip) {
         super(ip);
         this.serviceRef = InjectionPointOsgiUtils.getServiceReference(ip);
-        this.serviceObjects = PrototypeScopeUtils.createServiceObjectsWrapper(bundleContext,
+        this.serviceObjects = OsgiScopeUtils.createServiceObjectsWrapper(bundleContext,
             serviceRef);
         this.service = serviceObjects.getService();
     }

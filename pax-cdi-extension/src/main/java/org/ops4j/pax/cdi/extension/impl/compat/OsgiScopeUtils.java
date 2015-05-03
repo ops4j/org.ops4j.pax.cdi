@@ -31,15 +31,15 @@ import org.slf4j.LoggerFactory;
  * @author Harald Wellmann
  *
  */
-public class PrototypeScopeUtils {
+public class OsgiScopeUtils {
 
-    private static Logger log = LoggerFactory.getLogger(PrototypeScopeUtils.class);
+    private static Logger log = LoggerFactory.getLogger(OsgiScopeUtils.class);
 
     private static final Version OSGI6_FRAMEWORK_VERSION = new Version(1, 8, 0);
 
     private static volatile Class<?> wrapperClass;
 
-    private PrototypeScopeUtils() {
+    private OsgiScopeUtils() {
         // Hidden utility class constructor
     }
 
@@ -81,10 +81,10 @@ public class PrototypeScopeUtils {
 
     private static Class<?> loadWrapperClass(BundleContext bc) {
         String simpleClassName = getWrapperClassName(bc);
-        String className = String.format("%s.%s", PrototypeScopeUtils.class.getPackage().getName(),
+        String className = String.format("%s.%s", OsgiScopeUtils.class.getPackage().getName(),
             simpleClassName);
         try {
-            return Class.forName(className, true, PrototypeScopeUtils.class.getClassLoader());
+            return Class.forName(className, true, OsgiScopeUtils.class.getClassLoader());
         }
         catch (ClassNotFoundException exc) {
             throw Exceptions.unchecked(exc);
