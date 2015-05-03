@@ -83,12 +83,10 @@ public class WabContextsService extends AbstractContextsService {
     private static DependentContext dependentContext;
 
     /** Current application contexts */
-    private static Map<ServletContext, ApplicationContext> currentApplicationContexts
-        = new ConcurrentHashMap<>();
+    private static Map<ServletContext, ApplicationContext> currentApplicationContexts = new ConcurrentHashMap<>();
 
     /** Current singleton contexts */
-    private static Map<ServletContext, SingletonContext> currentSingletonContexts
-        = new ConcurrentHashMap<>();
+    private static Map<ServletContext, SingletonContext> currentSingletonContexts = new ConcurrentHashMap<>();
 
     /** Session context manager */
     private final SessionContextManager sessionCtxManager = new SessionContextManager();
@@ -118,10 +116,19 @@ public class WabContextsService extends AbstractContextsService {
         dependentContext.setActive(true);
     }
 
+    /**
+     * Creates a contexts service with an undefined WebBeansContext.
+     */
     public WabContextsService() {
         this(null);
     }
 
+    /**
+     * Creates a contexts service with a given WebBeansContext.
+     *
+     * @param webBeansContext
+     *            context (may be null)
+     */
     public WabContextsService(WebBeansContext webBeansContext) {
         setWebBeansContext(webBeansContext);
         sharedApplicationContext = new ApplicationContext();
@@ -138,10 +145,6 @@ public class WabContextsService extends AbstractContextsService {
         conversationContexts.remove();
         singletonContexts.remove();
         RequestScopedBeanInterceptorHandler.removeThreadLocals();
-    }
-
-    public SessionContextManager getSessionContextManager() {
-        return sessionCtxManager;
     }
 
     private void setWebBeansContext(WebBeansContext webBeansContext) {
@@ -208,7 +211,7 @@ public class WabContextsService extends AbstractContextsService {
     @Override
     public void endContext(Class<? extends Annotation> scopeType, Object endParameters) {
         if (scopeType.equals(RequestScoped.class)) {
-            destroyRequestContext((ServletRequestEvent) endParameters);
+            destroyRequestContext();
         }
         else if (scopeType.equals(SessionScoped.class)) {
             destroySessionContext((HttpSession) endParameters);
@@ -339,10 +342,8 @@ public class WabContextsService extends AbstractContextsService {
     /**
      * Destroys the request context and all of its components.
      *
-     * @param request
-     *            http servlet request object
      */
-    private void destroyRequestContext(ServletRequestEvent request) {
+    private void destroyRequestContext() {
         // cleanup open conversations first
         if (supportsConversation) {
             cleanupConversations();
@@ -522,7 +523,7 @@ public class WabContextsService extends AbstractContextsService {
         // destroyDependents all sessions
         Collection<SessionContext> allSessionContexts = sessionCtxManager.getAllSessionContexts()
             .values();
-        if (allSessionContexts != null && allSessionContexts.size() > 0) {
+        if (allSessionContexts != null && !allSessionContexts.isEmpty()) {
             for (SessionContext sessionContext : allSessionContexts) {
                 sessionContexts.set(sessionContext);
 
@@ -539,7 +540,7 @@ public class WabContextsService extends AbstractContextsService {
         // destroyDependents all conversations
         Collection<ConversationContext> allConversationContexts = conversationManager
             .getAllConversationContexts().values();
-        if (allConversationContexts != null && allConversationContexts.size() > 0) {
+        if (allConversationContexts != null && !allConversationContexts.isEmpty()) {
             for (ConversationContext conversationContext : allConversationContexts) {
                 conversationContexts.set(conversationContext);
 

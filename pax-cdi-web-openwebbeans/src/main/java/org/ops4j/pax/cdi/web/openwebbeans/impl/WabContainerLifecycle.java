@@ -61,7 +61,10 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
     }
 
     /**
-     * Creates a new lifecycle instance and initializes the instance variables.
+     * Creates a new lifecycle instance with the given context.
+     *
+     * @param webBeansContext
+     *            context
      */
     public WabContainerLifecycle(WebBeansContext webBeansContext) {
         super(null, webBeansContext);
@@ -76,9 +79,8 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
         service = Executors.newScheduledThreadPool(1, new ThreadFactory() {
 
             @Override
-            public Thread newThread(Runnable runable) {
-                Thread t = new Thread(runable, "OwbConversationCleaner-"
-                /* + ServletCompatibilityUtil.getServletInfo((ServletContext) (startupObject)) */);
+            public Thread newThread(Runnable runnable) {
+                Thread t = new Thread(runnable, "OwbConversationCleaner");
                 t.setDaemon(true);
                 return t;
             }
@@ -120,16 +122,6 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
 
     @Override
     protected void afterStopApplication(Object stopObject) {
-        // ServletContext servletContext;
-        //
-        // if(stopObject instanceof ServletContext)
-        // {
-        // servletContext = (ServletContext)stopObject;
-        // }
-        // else
-        // {
-        // //servletContext = getServletContext(stopObject);
-        // }
 
         // Clear the resource injection service
         ResourceInjectionService injectionServices = getWebBeansContext().getService(
@@ -138,10 +130,7 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
             injectionServices.clear();
         }
 
-        // Comment out for commit OWB-502
-        // ContextFactory.cleanUpContextFactory();
-
-        this.cleanupShutdownThreadLocals();
+        cleanupShutdownThreadLocals();
 
         log.debug("OpenWebBeans container has stopped");
     }
@@ -151,7 +140,6 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
      * removed in order to prevent memory leaks.
      */
     private void cleanupShutdownThreadLocals() {
-        // InjectionPointBean.removeThreadLocal();
         WebContextsService.removeThreadLocals();
     }
 
@@ -183,14 +171,9 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
      */
     private static class ConversationCleaner implements Runnable {
 
-        public ConversationCleaner() {
-
-        }
-
         @Override
         public void run() {
             WebBeansContext.currentInstance().getConversationManager().destroyWithRespectToTimout();
-
         }
     }
 }

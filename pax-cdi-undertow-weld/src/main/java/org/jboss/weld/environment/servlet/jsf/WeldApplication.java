@@ -41,19 +41,19 @@ public class WeldApplication extends AbstractForwardingApplication {
      */
     private static class LazyBeanManagerIntegrationELResolver extends AbstractForwardingELResolver {
 
-        private ELResolver delegate;
+        private ELResolver delegateResolver;
 
         public LazyBeanManagerIntegrationELResolver() {
-            delegate = new TransparentELResolver();
+            delegateResolver = new TransparentELResolver();
         }
 
         public void beanManagerReady(BeanManager beanManager) {
-            this.delegate = beanManager.getELResolver();
+            delegateResolver = beanManager.getELResolver();
         }
 
         @Override
         protected ELResolver delegate() {
-            return delegate;
+            return delegateResolver;
         }
     }
 
@@ -71,13 +71,11 @@ public class WeldApplication extends AbstractForwardingApplication {
     }
 
     private void init() {
-        ExpressionFactory expressionFactory = null;
-        BeanManager beanManager = null;
-        if (expressionFactory == null
-            && (expressionFactory = application.getExpressionFactory()) != null
-            && (beanManager = beanManager()) != null) {
+        ExpressionFactory factory = application.getExpressionFactory();
+        BeanManager beanManager = getBeanManager();
+        if (factory != null && beanManager != null) {
             elResolver.beanManagerReady(beanManager);
-            this.expressionFactory = beanManager.wrapExpressionFactory(expressionFactory);
+            this.expressionFactory = beanManager.wrapExpressionFactory(factory);
         }
     }
 
@@ -98,10 +96,13 @@ public class WeldApplication extends AbstractForwardingApplication {
         }
     }
 
-    private BeanManager beanManager() {
-        FacesContext facesContext;
-        if (beanManager == null && (facesContext = FacesContext.getCurrentInstance()) != null) {
-            return lookupBeanManager(facesContext);
+    private BeanManager getBeanManager() {
+
+        if (beanManager == null) {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            if (facesContext != null) {
+                return lookupBeanManager(facesContext);
+            }
         }
         return beanManager;
     }
