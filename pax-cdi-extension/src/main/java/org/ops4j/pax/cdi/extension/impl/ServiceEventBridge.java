@@ -22,6 +22,8 @@ import java.lang.annotation.Annotation;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.ops4j.pax.cdi.extension.impl.util.ServiceAddedLiteral;
+import org.ops4j.pax.cdi.extension.impl.util.ServiceRemovedLiteral;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;

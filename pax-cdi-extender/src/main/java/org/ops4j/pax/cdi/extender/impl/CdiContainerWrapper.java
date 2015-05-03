@@ -21,12 +21,13 @@ import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.osgi.framework.Bundle;
 
 /**
- * Wraps a CdiContainer for tracking by the BundleTracker of the CdiExtender.
+ * Wraps a {@link CdiContainer} to be tracked by the {@code BundleTracker} of the
+ * {@code CdiExtender}.
  * <p>
- * Background: For web bean bundle, the CDI web adapter may not yet be available when the bundle
+ * Background: For web bean bundles, the CDI web adapter may not yet be available when the bundle
  * gets tracked, so we cannot create a CDI container. Rather than returning null from the bundle
- * tracker callback, we use this wrapper. This ensures that the removeBundle callback will be
- * called.
+ * tracker callback, we use this wrapper. This ensures that the {@code removedBundle()} callback
+ * will be called.
  *
  * @author Harald Wellmann
  *
