@@ -8,9 +8,9 @@
     </parent>
 
     <groupId>org.ops4j.pax.cdi.tck</groupId>
-    <artifactId>pax-cdi-tck11-runner</artifactId>
+    <artifactId>pax-cdi-tck-runner</artifactId>
 
-    <name>OPS4J Pax CDI TCK 1.1 Runner</name>
+    <name>OPS4J Pax CDI TCK Runner</name>
 
     <dependencies>
 

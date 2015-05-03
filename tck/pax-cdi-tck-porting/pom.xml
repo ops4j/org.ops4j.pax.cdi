@@ -8,9 +8,9 @@
     </parent>
 
     <groupId>org.ops4j.pax.cdi.tck</groupId>
-    <artifactId>pax-cdi-tck11-porting</artifactId>
+    <artifactId>pax-cdi-tck-porting</artifactId>
     
-    <name>OPS4J Pax CDI TCK 1.1 Porting Package</name>
+    <name>OPS4J Pax CDI TCK Porting Package</name>
 
     <dependencies>
 
