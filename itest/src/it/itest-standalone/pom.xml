@@ -9,9 +9,11 @@
     </parent>
 
     <groupId>org.ops4j.pax.cdi.itest</groupId>
-    <artifactId>itest-cdi10</artifactId>
+    <artifactId>itest-standalone</artifactId>
 
-    <name>OPS4J Pax CDI 1.2 Integration Tests</name>
+    <name>OPS4J Pax CDI Standalone Integration Tests</name>
+
+    <description>These tests use a stand-alone OSGi 4.3 framework (as opposed to Karaf).</description>
 
     <dependencyManagement>
         <dependencies>
