@@ -29,7 +29,6 @@ import java.util.concurrent.Callable;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.apache.xbean.osgi.bundle.util.DelegatingBundle;
-import org.ops4j.pax.cdi.api.ServicesPublished;
 import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.osgi.framework.Bundle;
@@ -175,9 +174,6 @@ public abstract class AbstractCdiContainer implements CdiContainer {
 
         beanManagerReg = bc.registerService(
             BeanManager.class, AbstractCdiContainer.this.getBeanManager(), props);
-
-        // fire ServicesPublished event
-        beanManager.fireEvent(new ServicesPublished());
 
         return reg;
     }
