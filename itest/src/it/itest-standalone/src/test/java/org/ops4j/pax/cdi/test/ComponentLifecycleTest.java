@@ -102,7 +102,8 @@ public class ComponentLifecycleTest {
         registerStrawberryService();
         assertThat(client.getEvents(), hasItems(
             "added IceCreamService with class org.ops4j.pax.cdi.sample1.client.StrawberryService",
-            "added IceCreamService with flavour strawberry"));
+            "added IceCreamService with flavour strawberry"
+            ));
     }
 
     @Test

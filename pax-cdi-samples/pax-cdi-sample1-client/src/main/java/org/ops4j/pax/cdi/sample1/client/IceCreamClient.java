@@ -61,7 +61,7 @@ public class IceCreamClient {
         events.add("registered BeanManager");
     }
 
-    public void onIceCreamServiceAdded(@Observes @ServiceAdded ServiceCdiEvent<IceCreamService> event) {
+    public void onIceCreamServiceAdded(@Observes @ServiceAdded ServiceCdiEvent<? extends IceCreamService> event) {
         String flavour = (String) event.getReference().getProperty("flavour");
         events.add("added IceCreamService with flavour " + flavour);
     }
@@ -70,7 +70,7 @@ public class IceCreamClient {
         events.add("added IceCreamService with class " + service.getClass().getName());
     }
 
-    public void onIceCreamServiceRemoved(@Observes @ServiceRemoved ServiceCdiEvent<IceCreamService> event) {
+    public void onIceCreamServiceRemoved(@Observes @ServiceRemoved ServiceCdiEvent<? extends IceCreamService> event) {
         String flavour = (String) event.getReference().getProperty("flavour");
         events.add("removed IceCreamService with flavour " + flavour);
     }
