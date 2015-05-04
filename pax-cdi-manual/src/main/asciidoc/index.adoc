@@ -6,6 +6,8 @@ OPS4J
 :toc-position: left 
 :toc-title: Pax CDI
 :numbered:
+:source-highlighter: pygments
+:source-language: java
 
 // Push titles down one level
 :leveloffset: 1
@@ -139,8 +141,319 @@ Pax CDI encapsulates OSGi APIs in a portable CDI extension, enabling application
 publish or consume OSGi services by a handful of annotations.
 
 
-= Getting Started
+= Cheat Sheet
 
+== Injecting a Managed Bean
+
+[source]
+----
+@Inject
+private IceCreamService iceCream;
+----
+
+== Disambiguating Injection Points for Managed Beans
+
+[source]
+----
+@Inject @Chocolate
+private IceCreamService iceCream;
+----
+
+== Selecting Beans at Run-Time
+
+[source]
+----
+@Inject @Any
+private Instance<IceCreamService> anyIceCream;
+
+public void printFlavours() {
+    for (IceCreamService iceCream : anyIceCream) {
+        System.out.println(iceCream.getFlavour());
+    }
+}
+----
+
+== Injecting an OSGi Service
+
+[source]
+----
+@Inject @OsgiService
+private IceCreamService iceCream;
+----
+
+== Disambiguating OSGi Services
+
+[source]
+----
+@Inject @OsgiService(filter = "(&(flavour=chocolate)(lactose=false))")
+private IceCreamService iceCream;
+----
+
+== Selecting OSGi Services at Run-Time
+
+[source]
+----
+@Inject
+@OsgiService(dynamic = true)
+private Instance<IceCreamService> iceCreamServices;
+----
+
+A filter member may be added to the @OsgiService annotation to narrow down the set of matching OSGi services.
+
+Instance<T> implements Iterable<T>, so to iterate over all matching services, simply write:
+
+[source]
+----
+for (IceCreamService iceCreamService : iceCreamServices) {
+    // ...
+}
+----
+
+== Publishing a Bean as OSGi Service with singleton scope
+
+[source]
+----
+@OsgiServiceProvider
+public class ChocolateService implements IceCreamService {
+
+}
+----
+
+By default, the service bean has CDI scope @SingletonScoped and the corresponding OSGi service is published with singleton scope. The @SingletonScoped annotation is optional.
+
+== Publishing a Bean as OSGi Service with bundle scope
+
+[source]
+----
+@OsgiServiceProvider
+@BundleScoped
+public class ChocolateService implements IceCreamService {
+
+}
+----
+
+== Publishing a Bean as OSGi Service with prototype scope
+
+[source]
+----
+@OsgiServiceProvider
+@PrototypeScoped
+public class ChocolateService implements IceCreamService {
+
+}
+----
+
+
+Prototype scope is only supported when running on OSGi 6.0 or higher.
+
+== Setting OSGi Service Properties
+
+[source]
+----
+@OsgiServiceProvider
+@Properties({
+    @Property(name = "flavour", value = "chocolate"),
+    @Property(name = "lactose", value = "false")
+})
+public class ChocolateService implements IceCreamService {
+
+}
+----
+
+== Publishing an OSGi Service with Explicit Interfaces
+
+[source]
+----
+@OsgiServiceProvider(classes = {ChocolateService.class, IceCreamService.class})
+public class ChocolateService implements IceCreamService {
+
+}
+----
+
+= Bean Scanning
+
+Pax CDI builds a CDI container for each bean bundle, using a *bean scanner* to find candidate 
+classes for managed beans. A candidate class may be discarded by the CDI implementation if the 
+given class does not satisfy all requirements for a managed bean (e.g. a default constructor and 
+no final methods, among others).
+
+The bean scanner does not actually load any classes. It only scans entries of the bean bundle and 
+any other bundles wired to the given bean bundle (using `Bundle.findEntries()`). 
+The following locations are scanned in the given order:
+
+* The bundle classpath, including embedded directories and archives.
+* Each imported package, if the bundle providing the package is a bean bundle.
+* Each required bundle, if the required bundle is a bean bundle.
+* Each bundle providing a required CDI extension, if the providing bundle is a bean bundle.
+
+= Requirements and Capabilities
+
+== Background
+
+OSGi Core 4.3 introduced bundle requirements and capabilities as a generalization of imported and 
+exported packages or required bundles. Lists of capabilities provided or required by a given bundle 
+are declared in special bundle manifest headers. Pax CDI uses the capability concept
+
+* to declare a dependency on an OSGi CDI extender
+* to mark bundles as bean bundles, opting in to be handled by the OSGi CDI extender
+* to mark a CDI extension bundle as OSGi enabled
+* to define the set of portable CDI extension bundles to be considered for a given bean bundle.
+
+== CDI Extender Capability
+
+Each bean bundle must require a CDI extender capability
+
+ Require-Capability : osgi.extender; filter:="(osgi.extender=pax.cdi)"
+
+This capability is provided by the `pax-cdi-extender` which uses the OSGi extender pattern to 
+CDI-enable other bundles. The bean bundle will fail to resolve if there is no bundle providing 
+a matching capability.
+
+Theoretically, any other bundle might provide the matching `pax.cdi` extender capability, so there 
+is just a very loose coupling between bean bundles and `pax-cdi-extender`.
+
+The marker manifest header `Pax-ManagedBeans` is deprecated since Pax CDI 0.4.0.
+
+Up to Pax CDI 0.3.0, if you forgot to provision the CDI extender bundle, you would not even see 
+a clear error message in this case.
+
+== Portable CDI extension bundles
+
+A portable CDI extension bundle must provide a CDI extension capability to be considered by 
+the OSGI CDI extender:
+
+ Provide-Capability : org.ops4j.pax.cdi.extension; extension=foo
+
+The value of the extension attribute should be any suitable logical name, preferably not the 
+bundle symbolic name.
+
+An extension bundle may or may not be a bean bundle. This is in keeping with the CDI Specification 
+stating that an extension does not necessarily have to be located in a bean deployment archive.
+
+ 
+== Bean bundles using a portable CDI extension
+
+A bean bundle wishing to use a CDI extension for its CDI container must require the corresponding 
+extension capability, or else the CDI extender will ignore the extension bundle.
+
+ Require-Capability : org.ops4j.pax.cdi.extension; filter:="(extension=foo)"
+
+== Pax CDI OSGi Extension
+
+Pax CDI itself provides and portable CDI extension for publishing and consuming OSGi services by 
+means of CDI annotations. A bean bundle wishing to use this extension must require the 
+following extension capability:
+
+ Require-Capability : org.ops4j.pax.cdi.extension; filter:="(extension=pax-cdi-extension)"
+
+Note that it is perfectly legal for a bean bundle not to use this extension. In this case the 
+bean bundle only uses CDI internally or contributes CDI beans to other bundles which import 
+packages from the given bundle.
+
+= Service Component Lifecycle
+
+== Service Components
+
+A managed bean with an @OsgiServiceProvider annotation is a service component.
+
+== Service Component Dependency
+
+A dependency of a service component bean is any injection point qualified with @OsgiService. The dependency is available, when a matching OSGi service exists. It is unavailable when no matching OSGi service exists.
+
+== Required and Optional Dependencies
+
+All dependencies are required. Support for optional dependencies is planned for a future release.
+
+== Lifecycle
+
+Initially, each service component is unavailable.
+
+A service component becomes available when all its dependencies are available. A service component 
+without dependencies becomes available immediately after container start-up.
+
+When a service becomes available, it is registered by the Pax CDI Extender as an OSGi service.
+
+An available service component becomes unavailable when one of its dependencies becomes unavailable. 
+A service component without dependencies becomes unavailable when its bundle is stopped.
+
+= Web Applications
+
+== Introduction
+
+Pax CDI can be used with or without a web container.
+
+In a minimal configuration, i.e. without a web container, Pax CDI supports bean bundles, 
+a combination of OSGi bundles and CDI bean archives, offering all CDI features available in a 
+Java SE (or non-Java-EE) environment.
+
+In a web configuration, Pax CDI supports web bean bundles, a combination of CDI bean archives 
+and web application bundles (WABs), offering all CDI features available in a servlet container, 
+e.g. session and request scoped beans, injection into servlets etc., but not the features 
+requiring a Java EE Web (or Full) Profile container, like injection of persistence contexts 
+or EJBs and declarative transactions.
+
+A web bean bundle is identified by two special manifest headers:
+
+* Pax-ManagedBeans, marking the bundle as a bean bundle
+* `Web-ContextPath`, marking the bundle as a web application bundle
+
+== Runtime Requirements
+
+Runtime support for non-web bean bundles requires the following Pax CDI bundles:
+
+*    pax-cdi-api
+*    pax-cdi-spi
+*    pax-cdi-extender
+*    pax-cdi-extension
+*    pax-cdi-openwebbeans or pax-cdi-weld
+
+As of 0.4.0, Pax CDI requires Declarative Services, e.g. from `mvn:org.apache.felix/org.apache.felix.scr/1.6.2`.
+
+Web bean bundles are enabled by the joint forces of Pax Web, Pax CDI and a CDI provider like 
+OpenWebBeans or Weld. In addition to the Pax CDI bundles listed above, you need to provision
+
+*    pax-cdi-web
+*    pax-cdi-web-openwebbeans or pax-cdi-web-weld
+
+pax-cdi-web has a compile-time dependency on Pax Web, by implementing the WebAppDependencyHolder 
+interface provided by Pax Web (since 3.0.0.M1). Pax Web has no compile-time or run-time 
+dependencies on Pax CDI. Since pax-cdi-web is an optional add-on for web bean bundles, there is 
+only a very loose coupling between Pax CDI and Pax Web.
+
+Pax CDI only works with the traditional Pax Web Jetty container. 
+It does not yet support the Pax Web Tomcat container.
+
+= Supported CDI Providers
+
+== Apache OpenWebBeans
+
+Pax CDI can be used with Apache OpenWebBeans 1.1.5 or higher using the pax-cdi-openwebbeans adapter. 
+In addition to the adapter, you need to provision OpenWebBeans and its run-time dependencies.
+
+Earlier versions of OpenWebBeans will not work due to OWB-668.
+
+== JBoss Weld 1.x
+
+Weld 1.2.0.Beta1 is supported since Pax CDI 0.3.0 using the pax-cdi-weld adapter. In addition to 
+the adapter, you need to provision weld-osgi-bundle and its run-time dependencies.
+
+Earlier releases of Weld will not work in OSGi environments due to a global container singleton 
+used by Weld, which does not match the container-per-bundle approach of Pax CDI.
+
+== JBoss Weld 2.x
+
+2.1.0 and newer versions are supported since Pax CDI 0.5.0 using the pax-cdi-weld adapter. 
+In addition to the adapter, you need to provision weld-osgi-bundle and its run-time dependencies.
+
+Weld 2.0.x will not work in OSGi due to the same global container singleton found in Weld 1.1.x.
+
+Pax CDI currently targets the CDI 1.0 specification, so new features of the CDI 1.1 specification 
+are not guaranteed to work.
+
+== Dependencies
+
+To find the correct set of dependencies for any of these supported configurations, have a look 
+at org.ops4j.pax.cdi.test.support.TestConfiguration or at the Karaf features in pax-cdi-features.
 
 
 // Return to normal title levels 
