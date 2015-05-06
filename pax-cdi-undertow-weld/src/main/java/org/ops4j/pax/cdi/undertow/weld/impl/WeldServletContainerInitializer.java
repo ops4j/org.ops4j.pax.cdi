@@ -30,12 +30,21 @@ import org.osgi.framework.Bundle;
 
 /**
  * Servlet container initializer for Undertow, integrating Pax CDI and Weld.
- * 
+ *
  * @author Harald Wellmann
  *
  */
 public class WeldServletContainerInitializer extends CdiServletContainerInitializer {
 
+    /**
+     * Creates a servlet container initializer for the given CDI container and the given context
+     * listener to be called on startup.
+     *
+     * @param cdiContainer
+     *            CDI container
+     * @param servletContextListener
+     *            servlet context listener
+     */
     public WeldServletContainerInitializer(CdiContainer cdiContainer,
         ServletContextListener servletContextListener) {
         super(cdiContainer, servletContextListener);

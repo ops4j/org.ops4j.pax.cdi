@@ -33,14 +33,4 @@ public class BundleScopedServiceImpl extends AbstractInstanceCountedService impl
         super(++numInstances);
     }
 
-    @Override
-    public int getNumInstances() {
-        return numInstances;
-    }
-
-    @Override
-    public String getName() {
-        return getClass().getSimpleName();
-    }
-
 }

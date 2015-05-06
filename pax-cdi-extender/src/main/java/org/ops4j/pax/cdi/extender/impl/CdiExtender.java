@@ -50,6 +50,18 @@ import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Implements the PAX CDI extender capability. This extender depends on a {@link CDIProvider}, a
+ * {@link CdiContainerFactory} and and optional CDI web adapter, represented by a
+ * {@link CdiContainerListener} with the property {@code type} set to {@code web}.
+ * <p>
+ * The extender creates a CDI container for each bean bundle. For web beans bundles, the CDI
+ * container is not created until the web adapter is available.
+ *
+ * @author Guillaume Nodet
+ * @author Harald Wellmann
+ *
+ */
 @Component(immediate = true, service = { })
 public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper> {
 
@@ -63,10 +75,17 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
 
     private CDIProvider cdiProvider;
 
-    private Map<Long, Bundle> webBundles = new HashMap<Long, Bundle>();
+    private Map<Long, Bundle> webBundles = new HashMap<>();
 
+    /**
+     * Called by the OSGi framework when this bundle is started. Registers the CDI provider, handles
+     * web bundles and start a bundle tracker.
+     *
+     * @param ctx
+     *            bundle context
+     */
     @Activate
-    public void activate(BundleContext ctx) {
+    public synchronized void activate(BundleContext ctx) {
         this.context = ctx;
         if (webAdapter != null) {
             handleWebBundles();
@@ -75,27 +94,36 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
         CDI.setCDIProvider(cdiProvider);
 
         log.info("starting CDI extender {}", context.getBundle().getSymbolicName());
-        this.bundleWatcher = new BundleTracker<CdiContainerWrapper>(context, Bundle.ACTIVE, this);
+        this.bundleWatcher = new BundleTracker<>(context, Bundle.ACTIVE, this);
         bundleWatcher.open();
 
     }
 
+    /**
+     * Called by the OSGi framework when this bundle is stopped. Unregisters the CDI provider and
+     * stops the bundle tracker. Since all extended bundles depend on this bundle's extender
+     * capability, they will be stopped automatically, unregistering any services created by this
+     * extender.
+     *
+     * @param ctx
+     *            bundle context
+     */
     @Deactivate
-    public void deactivate(BundleContext ctx) {
+    public synchronized void deactivate(BundleContext ctx) {
         BundleCdi.dispose();
 
-        log.info("stopping CDI extender {}", context.getBundle().getSymbolicName());
+        log.info("stopping CDI extender {}", ctx.getBundle().getSymbolicName());
         bundleWatcher.close();
     }
 
     @Override
-    public CdiContainerWrapper addingBundle(final Bundle bundle, BundleEvent event) {
+    public synchronized CdiContainerWrapper addingBundle(final Bundle bundle, BundleEvent event) {
         boolean wired = false;
         List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires(
             EXTENDER_CAPABILITY);
         if (wires != null) {
             for (BundleWire wire : wires) {
-                if (wire.getProviderWiring().getBundle() == context.getBundle()) {
+                if (wire.getProviderWiring().getBundle().equals(context.getBundle())) {
                     wired = true;
                     break;
                 }
@@ -117,7 +145,8 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
     }
 
     @Override
-    public void removedBundle(Bundle bundle, BundleEvent event, CdiContainerWrapper wrapper) {
+    public synchronized void removedBundle(Bundle bundle, BundleEvent event,
+        CdiContainerWrapper wrapper) {
         CdiContainer container = wrapper.getCdiContainer();
         if (container != null) {
             synchronized (container) {
@@ -136,20 +165,24 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
 
         CdiContainerWrapper wrapper = new CdiContainerWrapper(bundle);
         CdiContainer container = null;
+
+        // Web bundles require a web adapter.
         if (containerType == CdiContainerType.WEB) {
+            // If the adapter is not available, just remember the bundle
             if (webAdapter == null) {
+                log.debug("waiting for web adapter for {}", bundle);
                 webBundles.put(bundle.getBundleId(), bundle);
             }
+            // otherwise, create the CDI container, but don't start it until the servlet
+            // context is available
             else {
                 container = doCreateContainer(bundle, containerType);
             }
         }
+        // Standalone containers are started right now.
         else {
-            // create container, but do not start it
-            // Web containers will be started later when the servlet context is available.
-            // Standalone containers are started right now.
             container = doCreateContainer(bundle, containerType);
-            container.start(null);
+            container.start(new Object());
         }
         wrapper.setCdiContainer(container);
         return wrapper;
@@ -157,7 +190,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
 
     private CdiContainer doCreateContainer(Bundle bundle, CdiContainerType containerType) {
         // Find extensions
-        Set<Bundle> extensions = new HashSet<Bundle>();
+        Set<Bundle> extensions = new HashSet<>();
         findExtensions(bundle, extensions);
 
         log.info("creating CDI container for bean bundle {} with extension bundles {}", bundle,
@@ -165,8 +198,16 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
         return factory.createContainer(bundle, extensions, containerType);
     }
 
+    /**
+     * Sets the optional web adapter dependency. When the adapter is set, web bundles will be
+     * processed.
+     *
+     * @param listener
+     *            web adapter
+     */
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, target = "(type=web)")
-    public void setWebAdapter(CdiContainerListener listener) {
+    public synchronized void setWebAdapter(CdiContainerListener listener) {
+        log.debug("adding web adapter");
         this.webAdapter = listener;
         if (context != null) {
             handleWebBundles();
@@ -181,25 +222,38 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
         webBundles.clear();
     }
 
-    public void unsetWebAdapter(CdiContainerListener listener) {
+    /**
+     * Unsets the optional web adapter dependency.
+     *
+     * @param listener
+     *            web adapter
+     */
+    public synchronized void unsetWebAdapter(CdiContainerListener listener) {
         if (factory != null) {
             factory.removeListener(listener);
         }
         this.webAdapter = null;
     }
 
+    /**
+     * Sets the CDI container factory dependency.
+     *
+     * @param cdiContainerFactory
+     *            CDI container factory
+     */
     @Reference
-    public void setCdiContainerFactory(CdiContainerFactory cdiContainerFactory) {
+    public synchronized void setCdiContainerFactory(CdiContainerFactory cdiContainerFactory) {
         this.factory = cdiContainerFactory;
     }
 
     /**
+     * Set the CDI provider dependency.
+     *
      * @param cdiProvider
      *            the cdiProvider to set
      */
     @Reference
-    public void setCdiProvider(CDIProvider cdiProvider) {
+    public synchronized void setCdiProvider(CDIProvider cdiProvider) {
         this.cdiProvider = cdiProvider;
     }
-
 }

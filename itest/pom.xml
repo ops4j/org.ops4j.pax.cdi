@@ -23,7 +23,7 @@
         <profile>
             <id>matrix</id>
             <modules>
-                <module>src/it/itest-cdi10</module>
+                <module>src/it/itest-standalone</module>
                 <module>src/it/itest-karaf</module>
                 <module>src/it/itest-osgi6</module>
             </modules>
@@ -68,9 +68,6 @@
                                         <profile>weld2</profile>
                                     </profiles>
                                     <cloneProjectsTo>${project.build.directory}/equinox-weld2</cloneProjectsTo>
-                                    <!--<pomExcludes>-->
-                                        <!--<pomExclude>itest-karaf/pom.xml</pomExclude>-->
-                                    <!--</pomExcludes>-->
                                 </configuration>
                             </execution>
                             <execution>
@@ -84,9 +81,6 @@
                                         <profile>owb15</profile>
                                     </profiles>
                                     <cloneProjectsTo>${project.build.directory}/felix-owb15</cloneProjectsTo>
-                                    <!--<pomExcludes>-->
-                                        <!--<pomExclude>itest-osgi6/pom.xml</pomExclude>-->
-                                    <!--</pomExcludes>-->
                                 </configuration>
                             </execution>
                             <execution>
@@ -100,17 +94,12 @@
                                         <profile>weld2</profile>
                                     </profiles>
                                     <cloneProjectsTo>${project.build.directory}/felix-weld2</cloneProjectsTo>
-                                    <!--<pomExcludes>-->
-                                        <!--<pomExclude>itest-karaf/pom.xml</pomExclude>-->
-                                        <!--<pomExclude>itest-osgi6/pom.xml</pomExclude>-->
-                                    <!--</pomExcludes>-->
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
                 </plugins>
             </build>
-
         </profile>
     </profiles>
 </project>

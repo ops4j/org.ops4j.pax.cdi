@@ -41,6 +41,13 @@ import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Modified copy of {@code org.apache.webbeans.lifecycle.AbstractLifecycle} which allows us to set
+ * the {@code WebBeansContext}.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public abstract class AbstractLifeCycle implements ContainerLifecycle {
 
     // Logger instance
@@ -76,30 +83,18 @@ public abstract class AbstractLifeCycle implements ContainerLifecycle {
 
     protected void createDeployer() {
         try {
-            Class<?> configuratorClass = getClass().getClassLoader().loadClass("org.apache.webbeans.xml.WebBeansXMLConfigurator");
+            Class<?> configuratorClass = getClass().getClassLoader().loadClass(
+                "org.apache.webbeans.xml.WebBeansXMLConfigurator");
             Object configurator = configuratorClass.newInstance();
-            Constructor<BeansDeployer> constructor = BeansDeployer.class.getConstructor(configuratorClass, WebBeansContext.class);
+            Constructor<BeansDeployer> constructor = BeansDeployer.class.getConstructor(
+                configuratorClass, WebBeansContext.class);
             deployer = constructor.newInstance(configurator, this.webBeansContext);
         }
         catch (ClassNotFoundException e) {
             createDeployer15();
         }
-        catch (InstantiationException exc) {
-            throw Exceptions.unchecked(exc);
-        }
-        catch (IllegalAccessException exc) {
-            throw Exceptions.unchecked(exc);
-        }
-        catch (NoSuchMethodException exc) {
-            throw Exceptions.unchecked(exc);
-        }
-        catch (SecurityException exc) {
-            throw Exceptions.unchecked(exc);
-        }
-        catch (IllegalArgumentException exc) {
-            throw Exceptions.unchecked(exc);
-        }
-        catch (InvocationTargetException exc) {
+        catch (InstantiationException | IllegalAccessException | NoSuchMethodException
+            | SecurityException | IllegalArgumentException | InvocationTargetException exc) {
             throw Exceptions.unchecked(exc);
         }
     }
@@ -110,22 +105,8 @@ public abstract class AbstractLifeCycle implements ContainerLifecycle {
             constructor = BeansDeployer.class.getConstructor(WebBeansContext.class);
             deployer = constructor.newInstance(this.webBeansContext);
         }
-        catch (NoSuchMethodException exc) {
-            throw Exceptions.unchecked(exc);
-        }
-        catch (SecurityException exc) {
-            throw Exceptions.unchecked(exc);
-        }
-        catch (InstantiationException exc) {
-            throw Exceptions.unchecked(exc);
-        }
-        catch (IllegalAccessException exc) {
-            throw Exceptions.unchecked(exc);
-        }
-        catch (IllegalArgumentException exc) {
-            throw Exceptions.unchecked(exc);
-        }
-        catch (InvocationTargetException exc) {
+        catch (NoSuchMethodException | SecurityException | InstantiationException
+            | IllegalAccessException | IllegalArgumentException | InvocationTargetException exc) {
             throw Exceptions.unchecked(exc);
         }
     }

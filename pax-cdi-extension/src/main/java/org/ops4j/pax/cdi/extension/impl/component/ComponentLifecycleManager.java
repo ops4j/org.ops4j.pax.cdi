@@ -35,12 +35,12 @@ import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.Properties;
 import org.ops4j.pax.cdi.api.Property;
-import org.ops4j.pax.cdi.extension.impl.compat.PrototypeScopeUtils;
+import org.ops4j.pax.cdi.extension.impl.compat.OsgiScopeUtils;
 import org.ops4j.pax.cdi.extension.impl.context.Osgi6ServiceFactoryBuilder;
 import org.ops4j.pax.cdi.extension.impl.context.ServiceFactoryBuilder;
-import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceException;
@@ -49,6 +49,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Manages the lifecycle of OSGi service components.
+ *
  * @author Harald Wellmann
  *
  */
@@ -72,12 +74,6 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
     @Inject
     private BundleContext bundleContext;
 
-    /**
-     * Service context for OSGi component {@code @ServiceScoped} contextual instances.
-     */
-    @Inject
-    private SingletonScopeContext context;
-
     private ServiceFactoryBuilder serviceFactoryBuilder;
 
     /**
@@ -88,11 +84,11 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void start() {
         componentRegistry.setBundleContext(bundleContext);
-        if (PrototypeScopeUtils.hasPrototypeScope(bundleContext)) {
-            this.serviceFactoryBuilder = new Osgi6ServiceFactoryBuilder(beanManager);
+        if (OsgiScopeUtils.hasPrototypeScope(bundleContext)) {
+            serviceFactoryBuilder = new Osgi6ServiceFactoryBuilder(beanManager);
         }
         else {
-            this.serviceFactoryBuilder = new ServiceFactoryBuilder(beanManager);
+            serviceFactoryBuilder = new ServiceFactoryBuilder(beanManager);
         }
 
         // register services for all components that are satisfied already
@@ -102,7 +98,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
                 descriptor.setListener(this);
                 if (descriptor.isSatisfied()) {
                     log.info("component {} is available", bean);
-                    Object service = serviceFactoryBuilder.buildServiceFactory(descriptor);
+                    Object service = serviceFactoryBuilder.buildServiceFactory(bean);
                     registerService(bean, service, descriptor);
                 }
                 descriptor.start();
@@ -128,12 +124,12 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
             Collection<?> serviceReferences = bc.getServiceReferences(klass, filter);
             if (serviceReferences.isEmpty()) {
                 String msg = "no matching service reference for injection point " + ip;
-                throw new ServiceException(msg,ServiceException.UNREGISTERED);
+                throw new ServiceException(msg, ServiceException.UNREGISTERED);
             }
         }
         catch (InvalidSyntaxException e) {
             String msg = "invalid filter syntax: " + filter;
-            throw new ServiceException(msg,ServiceException.UNSPECIFIED);
+            throw new ServiceException(msg, ServiceException.UNSPECIFIED);
         }
     }
 
@@ -150,6 +146,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
             descriptor.setListener(noop);
             descriptor.stop();
         }
+        componentRegistry.setBundleContext(null);
     }
 
     private boolean isBeanFromCurrentBundle(Bean<?> bean) {
@@ -186,14 +183,13 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
             typeNames = getTypeNamesForClasses(provider.classes());
         }
 
-        Dictionary<String, Object> props = createProperties(klass, service);
+        Dictionary<String, Object> props = createProperties(klass, provider.ranking());
         log.debug("publishing service {}, props = {}", typeNames[0], props);
         ServiceRegistration<?> reg = bundleContext.registerService(typeNames, service, props);
         descriptor.setServiceRegistration(reg);
     }
 
-    private <S> void unregisterService(Bean<S> bean, Object service,
-        ComponentDescriptor<S> descriptor) {
+    private <S> void unregisterService(ComponentDescriptor<S> descriptor) {
         ServiceRegistration<S> reg = descriptor.getServiceRegistration();
         if (reg != null) {
             log.debug("removing service {}", reg);
@@ -201,7 +197,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
                 reg.unregister();
             }
             catch (IllegalStateException exc) {
-                // Ignore if the service has already been unregistered
+                log.trace("cannot unregister service", exc);
             }
         }
     }
@@ -217,12 +213,14 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
             if (type instanceof Class) {
                 Class<?> c = (Class<?>) type;
                 if (c.isInterface()) {
-                    typeNames[i++] = c.getName();
+                    typeNames[i] = c.getName();
+                    i++;
                 }
             }
         }
         if (i == 0) {
-            typeNames[i++] = bean.getBeanClass().getName();
+            typeNames[i] = bean.getBeanClass().getName();
+            i++;
         }
         return Arrays.copyOf(typeNames, i);
     }
@@ -235,14 +233,19 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
         return typeNames;
     }
 
-    private Dictionary<String, Object> createProperties(Class<?> klass, Object service) {
+    private Dictionary<String, Object> createProperties(Class<?> klass, int ranking) {
         Properties props = klass.getAnnotation(Properties.class);
-        if (props == null) {
+        if (props == null && ranking == 0) {
             return null;
         }
-        Hashtable<String, Object> dict = new Hashtable<String, Object>();
-        for (Property property : props.value()) {
-            dict.put(property.name(), property.value());
+        Dictionary<String, Object> dict = new Hashtable<>();
+        if (props != null) {
+            for (Property property : props.value()) {
+                dict.put(property.name(), property.value());
+            }
+        }
+        if (ranking != 0) {
+            dict.put(Constants.SERVICE_RANKING, ranking);
         }
         return dict;
     }
@@ -252,17 +255,12 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
     public <S> void onComponentSatisfied(ComponentDescriptor<S> descriptor) {
         Bean bean = descriptor.getBean();
         log.info("component {} is available", bean);
-        Object sf = serviceFactoryBuilder.buildServiceFactory(descriptor);
+        Object sf = serviceFactoryBuilder.buildServiceFactory(bean);
         registerService(bean, sf, descriptor);
     }
 
     @Override
     public <S> void onComponentUnsatisfied(ComponentDescriptor<S> descriptor) {
-        Bean<S> bean = descriptor.getBean();
-        S service = context.get(bean);
-        if (service != null) {
-            unregisterService(bean, service, descriptor);
-            context.destroy(bean);
-        }
+        unregisterService(descriptor);
     }
 }

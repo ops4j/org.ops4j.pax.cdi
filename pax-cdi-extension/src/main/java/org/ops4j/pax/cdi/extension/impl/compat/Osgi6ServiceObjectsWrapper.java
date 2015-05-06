@@ -21,7 +21,16 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceObjects;
 import org.osgi.framework.ServiceReference;
 
-
+/**
+ * Implements {@link ServiceObjectsWrapper} for OSGi 6.0 and higher. The implementation uses
+ * {@link ServiceObjects} to correctly handle prototype scope, in addition to singleton and bundle
+ * scope.
+ *
+ * @param <S>
+ *            OSGi service type
+ *
+ * @author Harald Wellmann
+ */
 public class Osgi6ServiceObjectsWrapper<S> implements ServiceObjectsWrapper<S> {
 
     private ServiceObjects<S> serviceObjects;

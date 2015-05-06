@@ -17,15 +17,21 @@
  */
 package org.ops4j.pax.cdi.weld.impl.bda;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 
-import java.util.Collection;
-import java.util.Collections;
-
+/**
+ * Implements {@link BeanDeploymentArchive} for bundle deployments.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class BundleBeanDeploymentArchive implements BeanDeploymentArchive {
 
     private String id;
@@ -36,6 +42,12 @@ public class BundleBeanDeploymentArchive implements BeanDeploymentArchive {
 
     private ServiceRegistry serviceRegistry;
 
+    /**
+     * Creates a bean deployment archive with the given ID. The ID is suffixed with the bundle ID.
+     *
+     * @param id
+     *            archive identity
+     */
     public BundleBeanDeploymentArchive(String id) {
         this.id = id;
         this.serviceRegistry = new SimpleServiceRegistry();

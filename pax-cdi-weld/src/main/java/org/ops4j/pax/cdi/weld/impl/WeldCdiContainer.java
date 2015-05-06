@@ -35,10 +35,11 @@ import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.ops4j.lang.Ops4jException;
 import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
-import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
+import org.ops4j.pax.cdi.spi.DestroyedLiteral;
+import org.ops4j.pax.cdi.spi.InitializedLiteral;
+import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.ops4j.pax.cdi.weld.impl.bda.BundleDeployment;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
@@ -46,11 +47,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link CdiContainer} implementation wrapping a JBoss Weld container, represented by a
+ * {@code CdiContainer} implementation wrapping a JBoss Weld container, represented by a
  * {@link WeldBootstrap}.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public class WeldCdiContainer extends AbstractCdiContainer {
 
@@ -65,9 +66,13 @@ public class WeldCdiContainer extends AbstractCdiContainer {
 
     private BeanManagerImpl manager;
 
+    private Object environment;
+
     /**
      * Construct a CDI container for the given extended bundle.
-     * 
+     *
+     * @param containerType
+     *            container type (web or standalone)
      * @param ownBundle
      *            bundle containing this class
      * @param bundle
@@ -83,8 +88,8 @@ public class WeldCdiContainer extends AbstractCdiContainer {
     }
 
     @Override
-    protected void doStart(Object environment) {
-        buildContextClassLoader();
+    protected void doStart(Object start) {
+        this.environment = start;
         try {
             doWithClassLoader(getContextClassLoader(), new Callable<BeanManager>() {
 
@@ -96,25 +101,25 @@ public class WeldCdiContainer extends AbstractCdiContainer {
         }
         // CHECKSTYLE:SKIP
         catch (Exception exc) {
-            throw new Ops4jException(exc);
+            throw Exceptions.unchecked(exc);
         }
     }
-    
+
     private BeanManager createBeanManager() {
         bootstrap = new WeldBootstrap();
-        BundleDeployment deployment = new BundleDeployment(getBundle(), bootstrap, getContextClassLoader());
-        BeanDeploymentArchive beanDeploymentArchive = deployment
-            .getBeanDeploymentArchive();
+        BundleDeployment deployment = new BundleDeployment(getBundle(), bootstrap,
+            getContextClassLoader());
+        BeanDeploymentArchive beanDeploymentArchive = deployment.getBeanDeploymentArchive();
 
-        String contextId = getBundle().getSymbolicName() + ":"
-            + getBundle().getBundleId();
+        String contextId = getBundle().getSymbolicName() + ":" + getBundle().getBundleId();
         bootstrap.startContainer(contextId, OsgiEnvironment.getInstance(), deployment);
         bootstrap.startInitialization();
         bootstrap.deployBeans();
         bootstrap.validateBeans();
         bootstrap.endInitialization();
         manager = bootstrap.getManager(beanDeploymentArchive);
-        return manager;        
+        manager.fireEvent(environment, InitializedLiteral.APPLICATION);
+        return manager;
     }
 
     @Override
@@ -124,6 +129,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
 
                 @Override
                 public Object call() throws Exception {
+                    manager.fireEvent(environment, DestroyedLiteral.APPLICATION);
                     bootstrap.shutdown();
                     return null;
                 }
@@ -131,7 +137,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
         }
         // CHECKSTYLE:SKIP
         catch (Exception exc) {
-            throw new Ops4jException(exc);
+            throw Exceptions.unchecked(exc);
         }
     }
 

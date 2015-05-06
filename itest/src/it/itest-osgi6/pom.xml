@@ -5,7 +5,7 @@
         <groupId>org.ops4j.pax.cdi</groupId>
         <version>1.0.0-SNAPSHOT</version>
         <artifactId>pax-cdi-parent</artifactId>
-        <relativePath>../../../../pax-cdi-parent/pom.xml</relativePath>
+        <relativePath>../../../../pax-cdi-parent</relativePath>
     </parent>
 
     <groupId>org.ops4j.pax.cdi.itest</groupId>
@@ -447,20 +447,10 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.framework</artifactId>
-                    <version>4.6.0</version>
+                    <version>5.0.0</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
         <profile>
             <id>owb15</id>

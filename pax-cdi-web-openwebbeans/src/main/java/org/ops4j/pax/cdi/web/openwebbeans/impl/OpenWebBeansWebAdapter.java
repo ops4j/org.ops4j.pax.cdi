@@ -21,32 +21,32 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.webbeans.config.WebBeansFinder;
 import org.ops4j.pax.cdi.spi.CdiContainerListener;
-import org.ops4j.pax.cdi.web.CdiWebAppDependencyManager;
-import org.osgi.framework.BundleContext;
+import org.ops4j.pax.cdi.web.AbstractWebAppDependencyManager;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 
-@Component(property = "type=web", service = CdiContainerListener.class)
-public class OpenWebBeansWebAdapter extends CdiWebAppDependencyManager {
+/**
+ * Web adapter for OpenWebBeans.
+ *
+ * @author Harald Wellmann
+ *
+ */
+@Component(immediate = true, property = "type=web", service = CdiContainerListener.class)
+public class OpenWebBeansWebAdapter extends AbstractWebAppDependencyManager {
 
+    private ServletContextListener listener = new OpenWebBeansListener();
+
+    /**
+     * Called by the OSGi framework when this bundle is activated. Registers a custom
+     * singleton service.
+     */
     @Activate
-    public void activate(BundleContext context) {
+    public void activate() {
         WebBeansFinder.setSingletonService(new BundleSingletonService());
     }
 
-    @Deactivate
-    public void deactivate(BundleContext context) {
-        // TODO the following causes an exception:
-        // org.apache.webbeans.exception.WebBeansConfigurationException: 
-        // Already using another custom SingletonService!
-
-        // WebBeansFinder.setSingletonService(null);
-    }
-
-    
     @Override
     public ServletContextListener getServletContextListener() {
-        return new OpenWebBeansListener();
+        return listener;
     }
 }

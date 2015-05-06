@@ -52,15 +52,19 @@ public class BundleEventBridge implements BundleTrackerCustomizer<Void> {
 
     private BundleTracker<Void> bundleTracker;
 
-    private int stateMask;
-
+    /**
+     * Starts the bundle tracker.
+     */
     public void start() {
-        stateMask = Bundle.INSTALLED | Bundle.UNINSTALLED | Bundle.ACTIVE | Bundle.STARTING
+        int stateMask = Bundle.INSTALLED | Bundle.UNINSTALLED | Bundle.STARTING
             | Bundle.STOPPING | Bundle.RESOLVED | Bundle.ACTIVE;
-        bundleTracker = new BundleTracker<Void>(bundleContext, stateMask, this);
+        bundleTracker = new BundleTracker<>(bundleContext, stateMask, this);
         bundleTracker.open();
     }
 
+    /**
+     * Stops the bundle tracker.
+     */
     public void stop() {
         bundleTracker.close();
     }

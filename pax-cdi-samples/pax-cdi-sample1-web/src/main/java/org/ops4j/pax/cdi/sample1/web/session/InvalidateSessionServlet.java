@@ -19,8 +19,6 @@ package org.ops4j.pax.cdi.sample1.web.session;
 
 import java.io.IOException;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,9 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/invalidate")
 public class InvalidateSessionServlet extends HttpServlet {
-
-    @Inject
-    private BeanManager beanManager;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

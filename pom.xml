@@ -38,9 +38,9 @@
         <module>pax-cdi-web-openwebbeans</module>
         <module>pax-cdi-features</module>
         <module>pax-cdi-test-support</module>
-        <module>pax-cdi-fragment</module>
         <module>pax-cdi-servlet</module>
         <module>pax-cdi-undertow-weld</module>
+        <module>pax-cdi-manual</module>
     </modules>
 
     <profiles>
@@ -102,7 +102,7 @@
 
     <issueManagement>
         <system>jira</system>
-        <url>http://issues.ops4j.org/jira/browse/PAXCDI</url>
+        <url>http://team.ops4j.org/browse/PAXCDI</url>
     </issueManagement>
 
     <developers>

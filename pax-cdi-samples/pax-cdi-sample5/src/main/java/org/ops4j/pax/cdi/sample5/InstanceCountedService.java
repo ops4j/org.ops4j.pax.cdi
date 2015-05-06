@@ -20,7 +20,5 @@ package org.ops4j.pax.cdi.sample5;
 
 public interface InstanceCountedService {
 
-    int getNumInstances();
-    String getName();
     int getNumber();
 }

@@ -30,21 +30,22 @@ import java.lang.annotation.Target;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
+
 /**
  * Qualifier for automatic registration of CDI beans as OSGi service.
  * <p>
  * In application code, this qualifier shall only be used on classes and producer methods.
  * <p>
  * For each bean with this qualifier, a bean instance is automatically registered as an OSGi service
- * when the {@link ContainerInitialized} event has been observed.
+ * when the CDI container has been initialized.
  * <p>
  * The {@link #classes()} attribute denotes the classes or interfaces under which this service is
  * registered, defaulting to the interfaces the service class is assignable to, or to the service
  * class itself, if it is not assignable to any interface.
  * <p>
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 @Qualifier
 @Target({ TYPE, METHOD, PARAMETER, FIELD })
@@ -56,10 +57,19 @@ public @interface OsgiServiceProvider {
      * The list of classes or interfaces under which the service is registered. The class annotated
      * by this qualifier must be assignable to each class in this list.
      * <p>
-     * If this list is empty, the service will be registered for each interface it is assignable
-     * to, or for the service class itself, if the service is not assignable to any interface.
-     * @return
+     * If this list is empty, the service will be registered for each interface it is assignable to,
+     * or for the service class itself, if the service is not assignable to any interface.
+     *
+     * @return registered service classes or interfaces
      */
     @Nonbinding
     Class<?>[] classes() default { };
+
+    /**
+     * Defines the service ranking order for the registered service. This corresponds to the
+     * {@code service.ranking} property, see {@code org.osgi.framework.Constants.SERVICE_RANKING}.
+     *
+     * @return
+     */
+    int ranking() default 0;
 }

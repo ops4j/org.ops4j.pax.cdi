@@ -20,23 +20,31 @@ package org.ops4j.pax.cdi.extension.impl.client;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.ops4j.pax.cdi.extension.impl.compat.PrototypeScopeUtils;
+import org.ops4j.pax.cdi.extension.impl.compat.OsgiScopeUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-
 
 /**
  * Iterates over all services for a given collection of service references.
  *
- * @author Harald Wellmann
- *
  * @param <T>
+ *            OSGi service type
+ *
+ * @author Harald Wellmann
  */
 public class OsgiServiceIterator<T> implements Iterator<T> {
 
     private BundleContext bc;
     private Iterator<ServiceReference<T>> refIt;
 
+    /**
+     * Creates an iterator for the given collection of service references.
+     *
+     * @param bc
+     *            bundle context
+     * @param references
+     *            service references
+     */
     public OsgiServiceIterator(BundleContext bc, Collection<ServiceReference<T>> references) {
         this.bc = bc;
         this.refIt = references.iterator();
@@ -50,7 +58,7 @@ public class OsgiServiceIterator<T> implements Iterator<T> {
     @Override
     public T next() {
         ServiceReference<T> ref = refIt.next();
-        return PrototypeScopeUtils.createServiceObjectsWrapper(bc, ref).getService();
+        return OsgiScopeUtils.createServiceObjectsWrapper(bc, ref).getService();
     }
 
     @Override

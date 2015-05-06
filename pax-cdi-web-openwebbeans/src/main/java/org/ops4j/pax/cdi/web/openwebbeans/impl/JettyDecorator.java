@@ -31,6 +31,13 @@ import org.ops4j.pax.cdi.spi.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Decorator for servlets, filters and listeners instantiated by Jetty. The decorator performs
+ * dependency injection and cleanup.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class JettyDecorator implements ServletContextHandler.Decorator {
 
     public static final String INJECTOR_KEY = "org.ops4j.pax.cdi.injector";
@@ -45,6 +52,12 @@ public class JettyDecorator implements ServletContextHandler.Decorator {
         this.servletContext = servletContext;
     }
 
+    /**
+     * Adds an instance of this decorator class to the given context.
+     *
+     * @param context
+     *            servlet context
+     */
     public static void register(ServletContext context) {
         if (context instanceof ContextHandler.Context) {
             ContextHandler.Context cc = (ContextHandler.Context) context;
@@ -69,35 +82,43 @@ public class JettyDecorator implements ServletContextHandler.Decorator {
         return injector;
     }
 
+    @Override
     public <T extends Filter> T decorateFilterInstance(T filter) {
         getInjector().inject(filter);
         return filter;
     }
 
+    @Override
     public <T extends Servlet> T decorateServletInstance(T servlet) {
         getInjector().inject(servlet);
         return servlet;
     }
 
+    @Override
     public <T extends EventListener> T decorateListenerInstance(T listener) {
         getInjector().inject(listener);
         return listener;
     }
 
+    @Override
     public void decorateFilterHolder(FilterHolder filter) {
     }
 
+    @Override
     public void decorateServletHolder(ServletHolder servlet) {
     }
 
+    @Override
     public void destroyServletInstance(Servlet servlet) {
         getInjector().destroy(servlet);
     }
 
+    @Override
     public void destroyFilterInstance(Filter filter) {
         getInjector().destroy(filter);
     }
 
+    @Override
     public void destroyListenerInstance(EventListener listener) {
         getInjector().destroy(listener);
     }

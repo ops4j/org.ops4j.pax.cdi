@@ -20,26 +20,29 @@ package org.ops4j.pax.cdi.undertow.weld.impl;
 import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.InstanceHandle;
 
-import java.util.Set;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Unmanaged;
+import javax.enterprise.inject.spi.Unmanaged.UnmanagedInstance;
 
 /**
- * Undertow instance factory for bean classes. This factory produces contextual instances
- * of beans.
- * 
+ * Undertow instance factory for injectable classes. This factory produces instances
+ * of the given class with injected dependencies.
+ *
  * @author Harald Wellmann
  *
- * @param <T> bean type
+ * @param <T> type of injectable class, not necessarily a bean class
  */
 public class CdiInstanceFactory<T> implements InstanceFactory<T> {
-    
-    
+
+
     private BeanManager beanManager;
     private Class<T> klass;
 
+    /**
+     * Creates an instance factory for the given bean manager and the given class.
+     * @param beanManager bean manager
+     * @param klass injectable class
+     */
     public CdiInstanceFactory(BeanManager beanManager, Class<T> klass) {
         this.beanManager = beanManager;
         this.klass = klass;
@@ -47,14 +50,10 @@ public class CdiInstanceFactory<T> implements InstanceFactory<T> {
 
     @Override
     public InstanceHandle<T> createInstance() throws InstantiationException {
-        Set<Bean<?>> beans = beanManager.getBeans(klass);
-        Bean<?> bean = beanManager.resolve(beans);
-        Class<?> beanClass = bean.getBeanClass();
-        final CreationalContext<?> cc = beanManager.createCreationalContext(bean);
-        
-        @SuppressWarnings("unchecked")
-        final T instance = (T) beanManager.getReference(bean, beanClass, cc);
-        
+        Unmanaged<T> unmanaged = new Unmanaged<T>(beanManager, klass);
+        final UnmanagedInstance<T> unmanagedInstance = unmanaged.newInstance();
+        final T instance = unmanagedInstance.produce().inject().postConstruct().get();
+
         return new InstanceHandle<T>() {
 
             @Override
@@ -64,8 +63,8 @@ public class CdiInstanceFactory<T> implements InstanceFactory<T> {
 
             @Override
             public void release() {
-                cc.release();
-            }            
+                unmanagedInstance.preDestroy().dispose();
+            }
         };
     }
 }

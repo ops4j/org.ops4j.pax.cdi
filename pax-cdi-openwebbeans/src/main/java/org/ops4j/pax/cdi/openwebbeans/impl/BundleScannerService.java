@@ -30,6 +30,12 @@ import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Implements {@link ScannerService} for OSGi bundles.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class BundleScannerService implements ScannerService {
 
     private static Logger log = LoggerFactory.getLogger(BundleScannerService.class);
@@ -39,6 +45,9 @@ public class BundleScannerService implements ScannerService {
     private Set<Class<?>> beanClasses;
     private Map<String, Set<String>> classAnnotations;
 
+    /**
+     * Creates a new scanner service.
+     */
     public BundleScannerService() {
         classAnnotations = new HashMap<String, Set<String>>();
     }
@@ -78,7 +87,7 @@ public class BundleScannerService implements ScannerService {
                     beanClasses.add(klass);
                 }
                 catch (ClassNotFoundException exc) {
-                    log.debug("cannot load {}, cause: {}", className, exc.getMessage());
+                    log.debug("cannot load class " + className, exc);
                 }
             }
         }

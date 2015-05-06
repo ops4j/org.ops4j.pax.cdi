@@ -28,27 +28,34 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Creates OSGi service proxies for CDI injection points.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public class ProxyFactory {
 
     private static Logger log = LoggerFactory.getLogger(ProxyFactory.class);
-    
+
     /**
      * Hidden constructor of utility class.
      */
     private ProxyFactory() {
     }
 
-    public static <T> Object getServiceProxy(InjectionPoint ip) {
+    /**
+     * Creates a service proxy for the given {@link OsgiService} injection point.
+     *
+     * @param ip
+     *            injection point
+     * @return service proxy
+     */
+    public static <T> T getServiceProxy(InjectionPoint ip) {
         OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
         log.debug("getting service proxy for {}, {} ", ip.getType(), qualifier);
-        T instance = createServiceProxy(ip);
-        return instance;
+        return createServiceProxy(ip);
     }
 
+    @SuppressWarnings("unchecked")
     private static <T> T createServiceProxy(InjectionPoint ip) {
         Class<?> klass = (Class<?>) ip.getType();
         OsgiService os = ip.getAnnotated().getAnnotation(OsgiService.class);
@@ -57,8 +64,6 @@ public class ProxyFactory {
             : new StaticInvocationHandler<T>(ip);
 
         ClassLoader classLoader = ip.getMember().getDeclaringClass().getClassLoader();
-        @SuppressWarnings("unchecked")
-        T instance = (T) Proxy.newProxyInstance(classLoader, new Class[] { klass }, handler);
-        return instance;
+        return (T) Proxy.newProxyInstance(classLoader, new Class[] { klass }, handler);
     }
 }

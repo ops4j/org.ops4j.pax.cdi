@@ -1,9 +1,10 @@
 package org.jboss.weld.environment.servlet.util;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
+
+import javax.el.ELContext;
+import javax.el.ELResolver;
 
 /**
  * An ELResolver that behaves as though it is invisible, meaning it's
@@ -40,6 +41,7 @@ public class TransparentELResolver extends ELResolver {
 
     @Override
     public void setValue(ELContext arg0, Object arg1, Object arg2, Object arg3) {
+        // not used
     }
 
 }

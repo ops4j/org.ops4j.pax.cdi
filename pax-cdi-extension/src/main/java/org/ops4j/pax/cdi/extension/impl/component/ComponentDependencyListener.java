@@ -18,14 +18,32 @@
 
 package org.ops4j.pax.cdi.extension.impl.component;
 
-
 /**
+ * Handles component dependency events.
+ *
  * @author Harald Wellmann
  *
  */
 public interface ComponentDependencyListener {
-    
-    <S> void onComponentSatisfied(ComponentDescriptor<S> descriptor);
-    <S> void onComponentUnsatisfied(ComponentDescriptor<S> descriptor);
 
+    /**
+     * Invoked when component becomes satisfied. (I.e. all required dependencies are available.)
+     *
+     * @param descriptor
+     *            component descriptor
+     * @param <S>
+     *            component type
+     */
+    <S> void onComponentSatisfied(ComponentDescriptor<S> descriptor);
+
+    /**
+     * Invoked when component becomes unsatisfied. (I.e. at least one require dependency is not
+     * available.)
+     *
+     * @param descriptor
+     *            component descriptor
+     * @param <S>
+     *            component type
+     */
+    <S> void onComponentUnsatisfied(ComponentDescriptor<S> descriptor);
 }

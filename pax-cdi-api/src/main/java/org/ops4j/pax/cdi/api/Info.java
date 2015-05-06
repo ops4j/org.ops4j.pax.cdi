@@ -23,9 +23,9 @@ import java.util.Properties;
 
 /**
  * Provides version information about this release of Pax CDI.
- * 
+ *
  * Fully static
- * 
+ *
  * @author Harald Wellmann
  */
 public class Info {
@@ -75,8 +75,8 @@ public class Info {
                 }
             }
         }
-        catch (IOException ignore) {
-            throw new IllegalStateException("cannot read META-INF/pax-cdi-version.properties");
+        catch (IOException exc) {
+            throw new IllegalStateException("cannot read META-INF/pax-cdi-version.properties", exc);
         }
         PAX_CDI_VERSION = paxCdiVersion;
         paxCdiSnapshotVersion = paxCdiVersion.endsWith(SNAPSHOT);
@@ -93,7 +93,7 @@ public class Info {
 
     /**
      * Discovers the Pax CDI version. If version cannot be determined returns an empty string.
-     * 
+     *
      * @return Pax CDI version
      */
     public static String getPaxCdiVersion() {
@@ -102,7 +102,7 @@ public class Info {
 
     /**
      * Getter.
-     * 
+     *
      * @return true if Pax CDI is a snapshot version, false otherwise
      */
     public static boolean isPaxCdiSnapshotVersion() {
@@ -111,7 +111,7 @@ public class Info {
 
     /**
      * Discovers the Pax Web version. If version cannot be determined returns an empty string.
-     * 
+     *
      * @return Pax Web version
      */
     public static String getPaxWebVersion() {
@@ -120,7 +120,7 @@ public class Info {
 
     /**
      * Getter.
-     * 
+     *
      * @return true if Pax Web is a snapshot version, false otherwise
      */
     public static boolean isPaxWebSnapshotVersion() {

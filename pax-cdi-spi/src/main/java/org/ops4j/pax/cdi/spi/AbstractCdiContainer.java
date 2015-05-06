@@ -29,9 +29,7 @@ import java.util.concurrent.Callable;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.apache.xbean.osgi.bundle.util.DelegatingBundle;
-import org.ops4j.lang.Ops4jException;
-import org.ops4j.pax.cdi.api.ContainerInitialized;
-import org.ops4j.pax.cdi.api.ServicesPublished;
+import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -86,8 +84,9 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     public synchronized void start(Object environment) {
         if (!started) {
             log.info("Starting CDI container for bundle {}", getBundle());
-            doStart(environment);
+            buildContextClassLoader();
             BeanBundles.addBundle(getContextClassLoader(), getBundle());
+            doStart(environment);
             finishStartup();
             started = true;
         }
@@ -97,8 +96,8 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     public synchronized void stop() {
         if (started) {
             log.info("Stopping CDI container for bundle {}", getBundle());
-            BeanBundles.removeBundle(getContextClassLoader(), getBundle());
             doStop();
+            BeanBundles.removeBundle(getContextClassLoader(), getBundle());
             unregister(cdiContainerReg);
             unregister(beanManagerReg);
             started = false;
@@ -110,9 +109,8 @@ public abstract class AbstractCdiContainer implements CdiContainer {
             try {
                 registration.unregister();
             }
-            // CHECKSTYLE:SKIP
-            catch (Exception e) {
-                // Ignore
+            catch (IllegalStateException exc) {
+                log.trace("service already unregistered", exc);
             }
         }
     }
@@ -128,7 +126,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
      * @param bundle
      */
     protected void buildContextClassLoader() {
-        List<Bundle> delegateBundles = new ArrayList<Bundle>();
+        List<Bundle> delegateBundles = new ArrayList<>();
         delegateBundles.add(bundle);
         delegateBundles.addAll(additionalBundles);
         delegateBundles.addAll(extensionBundles);
@@ -141,42 +139,43 @@ public abstract class AbstractCdiContainer implements CdiContainer {
         return contextClassLoader;
     }
 
-    protected void finishStartup() {
+    private void finishStartup() {
         try {
             cdiContainerReg = doWithClassLoader(getContextClassLoader(),
                 new Callable<ServiceRegistration<CdiContainer>>() {
 
                     @Override
                     public ServiceRegistration<CdiContainer> call() throws Exception {
-                        BundleContext bc = bundle.getBundleContext();
-
-                        // fire ContainerInitialized event
-                        BeanManager beanManager = getBeanManager();
-                        beanManager.fireEvent(new ContainerInitialized());
-
-                        // register CdiContainer service
-                        Dictionary<String, Object> props = new Hashtable<String, Object>();
-                        props.put("bundleId", bundle.getBundleId());
-                        props.put("symbolicName", bundle.getSymbolicName());
-
-                        ServiceRegistration<CdiContainer> reg = bc.registerService(
-                            CdiContainer.class, AbstractCdiContainer.this, props);
-
-                        beanManagerReg = bc.registerService(
-                            BeanManager.class, AbstractCdiContainer.this.getBeanManager(), props);
-
-                        // fire ServicesPublished event
-                        beanManager.fireEvent(new ServicesPublished());
-
-                        return reg;
+                        return registerCdiContainer();
                     }
                 });
         }
         // CHECKSTYLE:SKIP
         catch (Exception exc) {
             log.error("", exc);
-            throw new Ops4jException(exc);
+            throw Exceptions.unchecked(exc);
         }
+    }
+
+    private ServiceRegistration<CdiContainer> registerCdiContainer() {
+        BundleContext bc = bundle.getBundleContext();
+
+        // fire ContainerInitialized event
+        BeanManager beanManager = getBeanManager();
+        beanManager.fireEvent(new ContainerInitialized());
+
+        // register CdiContainer service
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("bundleId", bundle.getBundleId());
+        props.put("symbolicName", bundle.getSymbolicName());
+
+        ServiceRegistration<CdiContainer> reg = bc.registerService(
+            CdiContainer.class, AbstractCdiContainer.this, props);
+
+        beanManagerReg = bc.registerService(
+            BeanManager.class, AbstractCdiContainer.this.getBeanManager(), props);
+
+        return reg;
     }
 
     @Override

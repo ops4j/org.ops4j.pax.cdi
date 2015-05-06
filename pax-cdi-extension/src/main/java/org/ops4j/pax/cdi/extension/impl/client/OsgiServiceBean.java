@@ -40,9 +40,10 @@ import org.osgi.framework.ServiceException;
  * is looked up per method invocation (dynamic = true) or once on bean instantiation (dynamic =
  * false)
  *
- * @author Harald Wellmann
- *
  * @param <T>
+ *            bean type
+ *
+ * @author Harald Wellmann
  */
 public class OsgiServiceBean<T> implements Bean<T> {
 
@@ -50,17 +51,22 @@ public class OsgiServiceBean<T> implements Bean<T> {
     private InjectionPoint ip;
     private OsgiService qualifier;
 
+    /**
+     * Creates a bean for the given OSGi service injection point.
+     *
+     * @param injectionPoint
+     *            injection point
+     */
     public OsgiServiceBean(InjectionPoint injectionPoint) {
         this.ip = injectionPoint;
         this.type = ip.getType();
         this.qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public T create(CreationalContext<T> ctx) {
         try {
-            return (T) ProxyFactory.getServiceProxy(ip);
+            return ProxyFactory.getServiceProxy(ip);
         }
         catch (ServiceException exc) {
             throw new CreationException(exc);
@@ -71,7 +77,7 @@ public class OsgiServiceBean<T> implements Bean<T> {
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         InvocationHandler handler = Proxy.getInvocationHandler(instance);
         if (handler instanceof AbstractServiceInvocationHandler) {
-            AbstractServiceInvocationHandler<?> serviceHandler = (AbstractServiceInvocationHandler<?>) handler;
+            AbstractServiceInvocationHandler serviceHandler = (AbstractServiceInvocationHandler) handler;
             serviceHandler.release();
         }
     }
@@ -98,8 +104,8 @@ public class OsgiServiceBean<T> implements Bean<T> {
 
     @Override
     public Set<Annotation> getQualifiers() {
-        Set<Annotation> s = new HashSet<Annotation>();
-        s.add(new OsgiServiceQualifierType(qualifier));
+        Set<Annotation> s = new HashSet<>();
+        s.add(qualifier);
         return s;
     }
 
@@ -115,7 +121,7 @@ public class OsgiServiceBean<T> implements Bean<T> {
 
     @Override
     public Set<Type> getTypes() {
-        Set<Type> s = new HashSet<Type>();
+        Set<Type> s = new HashSet<>();
         s.add(type);
         s.add(Object.class);
         return s;

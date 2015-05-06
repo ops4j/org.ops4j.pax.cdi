@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -46,14 +47,15 @@ import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.SingletonScoped;
 import org.ops4j.pax.cdi.extension.impl.client.OsgiInjectionTarget;
+import org.ops4j.pax.cdi.extension.impl.client.OsgiInjectionTargetWrapper;
 import org.ops4j.pax.cdi.extension.impl.client.OsgiServiceBean;
 import org.ops4j.pax.cdi.extension.impl.component.ComponentLifecycleManager;
 import org.ops4j.pax.cdi.extension.impl.component.ComponentRegistry;
 import org.ops4j.pax.cdi.extension.impl.context.BundleScopeContext;
 import org.ops4j.pax.cdi.extension.impl.context.PrototypeScopeContext;
 import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
+import org.ops4j.pax.cdi.extension.impl.util.AbstractWrappedBeanAttributes;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
-import org.ops4j.pax.cdi.extension.impl.util.WrappedBeanAttributes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,18 +72,14 @@ public class OsgiExtension implements Extension {
     private static Logger log = LoggerFactory.getLogger(OsgiExtension.class);
 
     /** Maps service types to injection points. */
-    private Map<Type, Set<InjectionPoint>> typeToIpMap = new HashMap<Type, Set<InjectionPoint>>();
+    private Map<Type, Set<InjectionPoint>> typeToIpMap = new HashMap<>();
 
     /**
      * Registry for service components and their dependencies.
      */
-    private ComponentRegistry componentRegistry = new ComponentRegistry(0);
+    private ComponentRegistry componentRegistry = new ComponentRegistry();
 
     private SingletonScopeContext serviceContext;
-
-    public OsgiExtension() {
-        log.debug("constructing OsgiExtension");
-    }
 
     /**
      * BeforeBeanDiscovery observer which creates some additional beans and the Service Scope for
@@ -97,6 +95,7 @@ public class OsgiExtension implements Extension {
         event.addAnnotatedType(manager.createAnnotatedType(ServiceEventBridge.class));
         event.addAnnotatedType(manager.createAnnotatedType(BundleContextProducer.class));
         event.addAnnotatedType(manager.createAnnotatedType(ComponentLifecycleManager.class));
+        event.addAnnotatedType(manager.createAnnotatedType(OsgiInjectionTargetWrapper.class));
         event.addScope(SingletonScoped.class, false, false);
     }
 
@@ -117,7 +116,7 @@ public class OsgiExtension implements Extension {
             return;
         }
 
-        BeanAttributes<T> wrappedAttributes = new WrappedBeanAttributes<T>() {
+        BeanAttributes<T> wrappedAttributes = new AbstractWrappedBeanAttributes<T>() {
 
             @Override
             protected BeanAttributes<T> attributes() {
@@ -163,7 +162,7 @@ public class OsgiExtension implements Extension {
             log.debug("service injection point {} with qualifier {}", ip, qualifier);
             storeServiceInjectionPoint(ip);
         }
-        Type instanceType = InjectionPointOsgiUtils.getInstanceType(ip);
+        Type instanceType = InjectionPointOsgiUtils.getInstanceArgumentType(ip);
         return instanceType != null;
     }
 
@@ -208,6 +207,9 @@ public class OsgiExtension implements Extension {
      * by OSGi service injection points.
      *
      * @param event
+     *            lifecycle event
+     * @param beanManager
+     *            current bean manager
      */
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
         log.debug("afterBeanDiscovery");
@@ -217,16 +219,18 @@ public class OsgiExtension implements Extension {
         event.addContext(bundleScopeContext);
         PrototypeScopeContext prototypeScopeContext = new PrototypeScopeContext(beanManager);
         event.addContext(prototypeScopeContext);
-        for (Type type : typeToIpMap.keySet()) {
+        for (Entry<Type, Set<InjectionPoint>> entry : typeToIpMap.entrySet()) {
+            Type type = entry.getKey();
             if (isInstance(type)) {
                 // handled by OsgiInjectionTarget
             }
             else if (type instanceof Class) {
-                addBean(event, type, typeToIpMap.get(type));
+                addBean(event, type, entry.getValue());
             }
             else {
                 InjectionPoint ip = typeToIpMap.get(type).iterator().next();
-                String msg = "The type of an @OSGi service injection point must not be parameterized. Injection point = "
+                String msg = "The type of an @OSGi service injection point must not "
+                    + "be parameterized. Injection point = "
                     + ip;
                 event.addDefinitionError(new UnsupportedOperationException(msg));
                 continue;
@@ -236,7 +240,7 @@ public class OsgiExtension implements Extension {
 
     @SuppressWarnings("rawtypes")
     private void addBean(AfterBeanDiscovery event, Type type, Set<InjectionPoint> injectionPoints) {
-        List<OsgiService> registeredBeans = new ArrayList<OsgiService>();
+        List<OsgiService> registeredBeans = new ArrayList<>();
         for (InjectionPoint ip : injectionPoints) {
             OsgiService qualifier = ip.getAnnotated().getAnnotation(OsgiService.class);
             if (!registeredBeans.contains(qualifier)) {
@@ -245,10 +249,8 @@ public class OsgiExtension implements Extension {
                 event.addBean(new OsgiServiceBean(ip));
                 registeredBeans.add(qualifier);
 
-                if (!qualifier.dynamic()) {
-                    if (!componentRegistry.isComponent(ip.getBean())) {
-                        componentRegistry.addNonComponentDependency(ip);
-                    }
+                if (!qualifier.dynamic() && !componentRegistry.isComponent(ip.getBean())) {
+                    componentRegistry.addNonComponentDependency(ip);
                 }
             }
         }

@@ -31,7 +31,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import org.ops4j.pax.cdi.api.SingletonScoped;
 
 /**
- * Custom CDI context for OSGi service components.
+ * Custom CDI context for OSGi service components with singleton scope.
  *
  * @author Harald Wellmann
  *
@@ -39,13 +39,17 @@ import org.ops4j.pax.cdi.api.SingletonScoped;
 @Typed()
 public class SingletonScopeContext implements AlterableContext {
 
-    private Map<Contextual<?>, SingletonScopeContextEntry<?>> serviceBeans = new ConcurrentHashMap<Contextual<?>, SingletonScopeContextEntry<?>>();
-    private BeanManager beanManager;
+    private Map<Contextual<?>, SingletonScopeContextEntry<?>> serviceBeans = new ConcurrentHashMap<>();
     private CreationalContext<Object> cc;
 
+    /**
+     * Creates the singleton scope context for the current bean bundle.
+     *
+     * @param beanManager
+     *            bean manager of current bundle
+     */
     public SingletonScopeContext(BeanManager beanManager) {
-        this.beanManager = beanManager;
-        this.cc = this.beanManager.createCreationalContext(null);
+        this.cc = beanManager.createCreationalContext(null);
     }
 
     @Override

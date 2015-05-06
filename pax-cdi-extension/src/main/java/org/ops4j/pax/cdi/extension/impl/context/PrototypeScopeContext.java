@@ -39,14 +39,20 @@ import org.ops4j.pax.cdi.api.PrototypeScoped;
 @Typed()
 public class PrototypeScopeContext implements AlterableContext {
 
-    private Map<Object, CreationalContext<?>> instanceMap = new IdentityHashMap<Object, CreationalContext<?>>();
+    private Map<Object, CreationalContext<?>> instanceMap = new IdentityHashMap<>();
     private BeanManager beanManager;
 
     private ThreadLocal<Object> service;
 
+    /**
+     * Constructs a new prototype scope context.
+     *
+     * @param beanManager
+     *            bean manager of current bean bundle
+     */
     public PrototypeScopeContext(BeanManager beanManager) {
         this.beanManager = beanManager;
-        this.service = new ThreadLocal<Object>();
+        this.service = new ThreadLocal<>();
     }
 
     @Override
@@ -98,5 +104,4 @@ public class PrototypeScopeContext implements AlterableContext {
             this.service.set(service);
         }
     }
-
 }

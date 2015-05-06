@@ -32,27 +32,35 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 
-
 /**
+ * Registry for bean bundles.
+ *
  * @author Harald Wellmann
  *
  */
 public class BeanBundles {
-    
-    private static Map<ClassLoader, Bundle> bundleMap = new HashMap<ClassLoader, Bundle>();
-    private static Set<Bundle> beanBundles = new HashSet<Bundle>();
-    
+
+    private static Map<ClassLoader, Bundle> bundleMap = new HashMap<>();
+    private static Set<Bundle> bundleSet = new HashSet<>();
+
     private BeanBundles() {
-        
+        // hidden utility class constructor
     }
 
+    /**
+     * Checks if the given bundle is a bean bundle by inspecting its wiring. The bundle is a bean
+     * bundle if it is wired to the {@ode Constants#CDI_EXTENDER} capability.
+     *
+     * @param candidate
+     *            candidate bundle
+     * @return true if bundle is a bean bundle
+     */
     public static boolean isBeanBundle(Bundle candidate) {
         BundleWiring wiring = candidate.adapt(BundleWiring.class);
         if (wiring == null) {
             return false;
         }
-        List<BundleWire> wires = wiring.getRequiredWires(
-            EXTENDER_CAPABILITY);
+        List<BundleWire> wires = wiring.getRequiredWires(EXTENDER_CAPABILITY);
         for (BundleWire wire : wires) {
             Object object = wire.getCapability().getAttributes().get(EXTENDER_CAPABILITY);
             if (object instanceof String) {
@@ -64,30 +72,76 @@ public class BeanBundles {
         }
         return false;
     }
-    
+
+    /**
+     * Checks is the bundle is an active bean bundle.
+     *
+     * @param candidate
+     *            candidate bean bundle
+     * @return true if the bundle is a bean bundle with status ACTIVE and a started CDI container
+     */
     public static boolean isActiveBeanBundle(Bundle candidate) {
-        return beanBundles.contains(candidate);
-    }
-    
-    public static synchronized void addBundle(ClassLoader cl, Bundle bundle) {
-        bundleMap.put(cl, bundle);
-        beanBundles.add(bundle);
+        return bundleSet.contains(candidate);
     }
 
+    /**
+     * Adds a bean bundle.
+     *
+     * @param cl
+     *            extended bundle class loader
+     * @param bundle
+     *            bean bundle
+     */
+    public static synchronized void addBundle(ClassLoader cl, Bundle bundle) {
+        bundleMap.put(cl, bundle);
+        bundleSet.add(bundle);
+    }
+
+    /**
+     * Removes a bean bundle.
+     *
+     * @param cl
+     *            extended bundle class loader
+     * @param bundle
+     *            bean bundle
+     */
     public static synchronized void removeBundle(ClassLoader cl, Bundle bundle) {
         bundleMap.remove(cl);
-        beanBundles.remove(bundle);
+        bundleSet.remove(bundle);
     }
-    
+
+    /**
+     * Gets the bean bundle for the given extended bundle class loader.
+     *
+     * @param cl
+     *            class loader
+     * @return bean bundle, or null
+     */
     public static synchronized Bundle getBundle(ClassLoader cl) {
         return bundleMap.get(cl);
     }
 
+    /**
+     * Gets the bean bundle correspsonding to the current thread context class loader.
+     *
+     * @param cl
+     *            class loader
+     * @return bean bundle associated to TCCL, or null
+     */
     public static synchronized Bundle getCurrentBundle() {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         return bundleMap.get(cl);
     }
-    
+
+    /**
+     * Finds the CDI extension bundles wired to this given bundle. This method recursively calls
+     * itself to track examine wirings of wired bundles.
+     *
+     * @param bundle
+     *            bean bundle
+     * @param extensions
+     *            set of found extension bundles.
+     */
     public static void findExtensions(Bundle bundle, Set<Bundle> extensions) {
         List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires(
             CDI_EXTENSION_CAPABILITY);
@@ -99,5 +153,4 @@ public class BeanBundles {
             }
         }
     }
-    
 }

@@ -17,16 +17,31 @@
  */
 package org.ops4j.pax.cdi.extension.impl;
 
+import static org.ops4j.pax.cdi.extension.impl.compat.OsgiScopeUtils.createServiceObjectsWrapper;
+
 import java.lang.annotation.Annotation;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.util.TypeLiteral;
 import javax.inject.Inject;
 
+import org.ops4j.pax.cdi.api.event.ServiceCdiEvent;
+import org.ops4j.pax.cdi.extension.impl.compat.ServiceObjectsWrapper;
+import org.ops4j.pax.cdi.extension.impl.util.ParameterizedTypeLiteral;
+import org.ops4j.pax.cdi.extension.impl.util.ServiceAddedLiteral;
+import org.ops4j.pax.cdi.extension.impl.util.ServiceRemovedLiteral;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
+/**
+ * Maps OSGi service events to CDI events. Fires events qualified with {@code ServiceAdded} or
+ * {@code ServiceRemoved}.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class ServiceEventBridge implements ServiceListener {
 
     @Inject
@@ -43,15 +58,21 @@ public class ServiceEventBridge implements ServiceListener {
             return;
         }
 
-        ServiceReference<?> serviceReference = serviceEvent.getServiceReference();
-        Object service = bundleContext.getService(serviceReference);
+        ServiceReference serviceReference = serviceEvent.getServiceReference();
+        ServiceObjectsWrapper serviceObjects =
+            createServiceObjectsWrapper(bundleContext, serviceReference);
+        Object service = serviceObjects.getService();
 
         try {
-            Event specificEvent = event.select(service.getClass(), qualifier);
-            specificEvent.fire(service);
+            Class klass = service.getClass();
+            event.select(klass, qualifier).fire(service);
+
+            TypeLiteral literal = new ParameterizedTypeLiteral(ServiceCdiEvent.class, klass);
+            ServiceCdiEvent cdiEvent = new ServiceCdiEvent(serviceReference, service);
+            event.select(literal, qualifier).fire(cdiEvent);
         }
         finally {
-            bundleContext.ungetService(serviceReference);
+            serviceObjects.ungetService(service);
         }
     }
 
@@ -68,12 +89,17 @@ public class ServiceEventBridge implements ServiceListener {
         }
     }
 
+    /**
+     * Starts the service event bridge.
+     */
     public void start() {
         bundleContext.addServiceListener(this);
     }
 
+    /**
+     * Stops the service event bridge.
+     */
     public void stop() {
         bundleContext.removeServiceListener(this);
     }
-
 }

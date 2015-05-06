@@ -40,9 +40,9 @@ import javax.inject.Qualifier;
  * <p>
  * For the complementary action of publishing a CDI bean in the OSGi service registry, use the
  * {@link OsgiServiceProvider} qualifier.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 @Qualifier
 @Target({ TYPE, METHOD, PARAMETER, FIELD })
@@ -57,17 +57,23 @@ public @interface OsgiService {
      * invocation is forwarded to the service instance acquired during bean validation. If the
      * service has been unregistered, the proxy throws an exception and will not try to acquire
      * another service instance.
-     * 
+     *
      * @return dynamic proxy flag
      */
     boolean dynamic() default false;
 
+    /**
+     * Indicates whether this service is required. A service defined by {@link OsgiServiceProvider}
+     * does not become available until all its required dependencies are available.
+     *
+     * @return true if dependency is required
+     */
     boolean required() default false;
 
     /**
      * An LDAP filter in the usual OSGi syntax for narrowing down the set of matching OSGi services.
      * The {@code objectClass} property is always implicitly set to the type of the injection point.
-     * 
+     *
      * @return service filter
      */
     String filter() default "";
@@ -77,9 +83,14 @@ public @interface OsgiService {
      * this timeout applies to every method invocation of the injected bean: If a matching service
      * is available, the proxied method is invoked immediately. Otherwise, the proxy method blocks for
      * at most the given timeout period until a matching service has been acquired.
-     * 
+     * <p>
+     * The default value is 0, meaning that service lookup will wait indefinitely.
+     * <p>
+     * A value of -1 indicates that service lookup shall not wait and fail immediately when
+     * no matching service is available.
+     *
      * @return service availability timeout in ms
      */
     int timeout() default 0;
-    
+
 }

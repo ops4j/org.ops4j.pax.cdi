@@ -24,7 +24,7 @@ import javax.servlet.jsp.JspFactory;
 
 import org.jboss.weld.el.WeldELContextListener;
 import org.jboss.weld.manager.api.WeldManager;
-import org.jboss.weld.servlet.WeldListener;
+import org.jboss.weld.servlet.WeldInitialListener;
 import org.jboss.weld.servlet.api.ServletListener;
 import org.jboss.weld.servlet.api.helpers.ForwardingServletListener;
 import org.ops4j.pax.cdi.spi.CdiContainer;
@@ -32,6 +32,12 @@ import org.ops4j.pax.cdi.spi.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Servlet context listener for starting and stopping the Weld CDI container.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class WeldServletContextListener extends ForwardingServletListener {
 
     private static Logger log = LoggerFactory.getLogger(WeldServletContextListener.class);
@@ -40,8 +46,11 @@ public class WeldServletContextListener extends ForwardingServletListener {
 
     private CdiContainer cdiContainer;
 
+    /**
+     * Creates a listener.
+     */
     public WeldServletContextListener() {
-        weldListener = new WeldListener();
+        weldListener = new WeldInitialListener();
     }
 
     @Override
@@ -53,7 +62,7 @@ public class WeldServletContextListener extends ForwardingServletListener {
         cdiContainer.start(context);
         WeldManager manager = cdiContainer.unwrap(WeldManager.class);
 
-        Injector injector = new Injector(manager);
+        Injector injector = new Injector(cdiContainer);
         context.setAttribute(JettyDecorator.INJECTOR_KEY, injector);
         JettyDecorator.process(context);
         log.info("registered Jetty decorator for JSR-299 injection");

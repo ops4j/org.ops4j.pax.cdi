@@ -23,41 +23,43 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.ops4j.pax.cdi.extension.impl.component.ComponentRegistry;
-import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
 import org.ops4j.pax.cdi.spi.BeanBundles;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
- * Produces the {@link BundleContext} of the current bean bundle as managed bean.
- * 
+ * Produces the {@link BundleContext} of the current bean bundle and some other managed beans.
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 @ApplicationScoped
-public class BundleContextProducer {
+class BundleContextProducer {
 
     private BundleContext bundleContext;
-    
+
     @Inject
     private OsgiExtension extension;
 
+    /**
+     * Produces the bundle context for the current bean bundle.
+     * @return bundle context
+     */
     @Produces
-    public BundleContext bundleContext() {
+    BundleContext getBundleContext() {
         if (bundleContext == null) {
             Bundle bundle = BeanBundles.getBundle(Thread.currentThread().getContextClassLoader());
             bundleContext = bundle.getBundleContext();
         }
         return bundleContext;
     }
-    
-    @Produces 
-    public ComponentRegistry componentRegistry() {
-        return extension.getComponentRegistry();
-    }
 
-    @Produces 
-    public SingletonScopeContext serviceContext() {
-        return extension.getServiceContext();
+    /**
+     * Produces the component registry for the current bean bundle.
+     * @return component registry
+     */
+    @Produces
+    ComponentRegistry getComponentRegistry() {
+        return extension.getComponentRegistry();
     }
 }

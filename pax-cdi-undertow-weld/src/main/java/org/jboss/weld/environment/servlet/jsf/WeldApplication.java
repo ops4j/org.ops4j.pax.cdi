@@ -23,7 +23,7 @@ import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
-import org.jboss.weld.environment.servlet.util.ForwardingELResolver;
+import org.jboss.weld.environment.servlet.util.AbstractForwardingELResolver;
 import org.jboss.weld.environment.servlet.util.TransparentELResolver;
 
 /**
@@ -31,27 +31,29 @@ import org.jboss.weld.environment.servlet.util.TransparentELResolver;
  * @author Dan Allen
  * @author Ales Justin
  */
-public class WeldApplication extends ForwardingApplication {
+public class WeldApplication extends AbstractForwardingApplication {
+
     /**
-     * The BeanManager may not have been initialized at the time JSF is initializing. Therefore,
-     * we stick in a ForwardingELResolver that delegates to the BeanManager ELResolver, which will
-     * be plugged in when it's available. If the ELResolver is invoked before the BeanManager
-     * is available, the resolver will perform no action (and thus produce no result).
+     * The BeanManager may not have been initialized at the time JSF is initializing. Therefore, we
+     * stick in a ForwardingELResolver that delegates to the BeanManager ELResolver, which will be
+     * plugged in when it's available. If the ELResolver is invoked before the BeanManager is
+     * available, the resolver will perform no action (and thus produce no result).
      */
-    private static class LazyBeanManagerIntegrationELResolver extends ForwardingELResolver {
-        private ELResolver delegate;
+    private static class LazyBeanManagerIntegrationELResolver extends AbstractForwardingELResolver {
+
+        private ELResolver delegateResolver;
 
         public LazyBeanManagerIntegrationELResolver() {
-            delegate = new TransparentELResolver();
+            delegateResolver = new TransparentELResolver();
         }
 
         public void beanManagerReady(BeanManager beanManager) {
-            this.delegate = beanManager.getELResolver();
+            delegateResolver = beanManager.getELResolver();
         }
 
         @Override
         protected ELResolver delegate() {
-            return delegate;
+            return delegateResolver;
         }
     }
 
@@ -69,11 +71,11 @@ public class WeldApplication extends ForwardingApplication {
     }
 
     private void init() {
-        ExpressionFactory expressionFactory = null;
-        BeanManager beanManager = null;
-        if (expressionFactory == null && (expressionFactory = application.getExpressionFactory()) != null && (beanManager = beanManager()) != null) {
+        ExpressionFactory factory = application.getExpressionFactory();
+        BeanManager beanManager = getBeanManager();
+        if (factory != null && beanManager != null) {
             elResolver.beanManagerReady(beanManager);
-            this.expressionFactory = beanManager.wrapExpressionFactory(expressionFactory);
+            this.expressionFactory = beanManager.wrapExpressionFactory(factory);
         }
     }
 
@@ -88,41 +90,47 @@ public class WeldApplication extends ForwardingApplication {
         init();
         if (expressionFactory == null) {
             return application.getExpressionFactory();
-        } else {
+        }
+        else {
             return expressionFactory;
         }
     }
 
-    private BeanManager beanManager() {
-        FacesContext facesContext;
-        if (beanManager == null && (facesContext = FacesContext.getCurrentInstance()) != null) {
-            Object obj = facesContext.getExternalContext().getContext();
-            boolean notFound = false;
-            try {
-                if (obj instanceof ServletContext) {
-                    final ServletContext ctx = (ServletContext) obj;
-                    final BeanManager tmp = (BeanManager) ctx.getAttribute("org.ops4j.pax.cdi.BeanManager");
-                    if (tmp == null) {
-                        return null;
-                    }
-                    this.beanManager = tmp;
-//                } else if (PortletSupport.isPortletEnvSupported() && PortletSupport.isPortletContext(obj)) {
-//                    final BeanManager tmp = PortletSupport.getBeanManager(obj);
-//                    if (tmp == null) {
-//                        return null;
-//                    }
-//                    this.beanManager = tmp;
-                } else {
-                    notFound = true;
-                }
-            } catch (Throwable t) {
-                throw new IllegalStateException("Exception fetching BeanManager instance!", t);
-            }
-            if (notFound) {
-                throw new IllegalStateException("Not in a servlet or portlet environment!");
+    private BeanManager getBeanManager() {
+
+        if (beanManager == null) {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            if (facesContext != null) {
+                return lookupBeanManager(facesContext);
             }
         }
         return beanManager;
     }
 
+    private BeanManager lookupBeanManager(FacesContext facesContext) {
+        Object obj = facesContext.getExternalContext().getContext();
+        boolean notFound = false;
+        try {
+            if (obj instanceof ServletContext) {
+                final ServletContext ctx = (ServletContext) obj;
+                final BeanManager tmp = (BeanManager) ctx
+                    .getAttribute("org.ops4j.pax.cdi.BeanManager");
+                if (tmp == null) {
+                    return null;
+                }
+                this.beanManager = tmp;
+                return beanManager;
+            }
+            else {
+                notFound = true;
+            }
+        }
+        catch (Exception t) {
+            throw new IllegalStateException("Exception fetching BeanManager instance!", t);
+        }
+        if (notFound) {
+            throw new IllegalStateException("Not in a servlet or portlet environment!");
+        }
+        return null;
+    }
 }

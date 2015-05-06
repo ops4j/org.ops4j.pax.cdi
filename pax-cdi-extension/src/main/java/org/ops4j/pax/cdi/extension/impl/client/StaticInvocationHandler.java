@@ -22,30 +22,50 @@ import java.util.concurrent.Callable;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.ops4j.pax.cdi.extension.impl.compat.OsgiScopeUtils;
+import org.ops4j.pax.cdi.extension.impl.compat.ServiceObjectsWrapper;
+import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
 import org.osgi.framework.ServiceException;
+import org.osgi.framework.ServiceReference;
 
 /**
  * A static proxy invocation handler which always uses the same service reference obtained on
  * construction.
  *
+ * @param <S>
+ *            OSGi service type
+ *
  * @author Harald Wellmann
  *
  */
-public class StaticInvocationHandler<S> extends AbstractServiceInvocationHandler<S> {
+public class StaticInvocationHandler<S> extends AbstractServiceInvocationHandler {
 
+    private S service;
+    private ServiceReference<S> serviceRef;
+    private ServiceObjectsWrapper<S> serviceObjects;
+
+    /**
+     * Constructs a static invocation handler for the given OSGi service injection point.
+     *
+     * @param ip
+     *            injection point
+     */
+    @SuppressWarnings("unchecked")
     public StaticInvocationHandler(InjectionPoint ip) {
         super(ip);
-        service = serviceObjects.getService();
+        this.serviceRef = InjectionPointOsgiUtils.getServiceReference(ip);
+        this.serviceObjects = OsgiScopeUtils.createServiceObjectsWrapper(bundleContext,
+            serviceRef);
+        this.service = serviceObjects.getService();
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args)
     // CHECKSTYLE:SKIP
-        throws Throwable {
+    public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
 
         if (serviceRef != null) {
-            Object result = ContextClassLoaderUtils.doWithClassLoader(
+            return ContextClassLoaderUtils.doWithClassLoader(
                 cdiContainer.getContextClassLoader(), new Callable<Object>() {
 
                     @Override
@@ -56,7 +76,6 @@ public class StaticInvocationHandler<S> extends AbstractServiceInvocationHandler
                         return null;
                     }
                 });
-            return result;
         }
         throw new ServiceException("no service for injection point " + ip,
             ServiceException.UNREGISTERED);

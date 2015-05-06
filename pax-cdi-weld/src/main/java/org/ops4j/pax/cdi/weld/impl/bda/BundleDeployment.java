@@ -26,21 +26,37 @@ import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.bootstrap.spi.CDI11Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.ops4j.pax.cdi.spi.scan.BeanScanner;
-import org.ops4j.pax.cdi.weld.impl.OsgiProxyService;
+import org.ops4j.pax.cdi.weld.impl.util.OsgiProxyService;
 import org.osgi.framework.Bundle;
 
-public class BundleDeployment implements Deployment {
+/**
+ * Implements {@link CDI11Deployment} for bean bundles, keeping track of the given bundle.
+ *
+ * @author Harald Wellmann
+ *
+ */
+public class BundleDeployment implements CDI11Deployment {
 
     private ServiceRegistry serviceRegistry;
 
     private Iterable<Metadata<Extension>> extensions;
     private BundleBeanDeploymentArchive beanDeploymentArchive;
 
+    /**
+     * Creates a bundle deplyoment for the given bundle.
+     *
+     * @param bundle
+     *            bean bundle
+     * @param bootstrap
+     *            Weld bootstrap
+     * @param extensionClassLoader
+     *            extended bundle class loader covering the required extensions
+     */
     public BundleDeployment(Bundle bundle, Bootstrap bootstrap, ClassLoader extensionClassLoader) {
 
         serviceRegistry = new SimpleServiceRegistry();
@@ -50,7 +66,8 @@ public class BundleDeployment implements Deployment {
         createBeanDeploymentArchive(bundle, bootstrap, extensionClassLoader);
     }
 
-    private void createBeanDeploymentArchive(Bundle bundle, Bootstrap bootstrap, ClassLoader extensionClassLoader) {
+    private void createBeanDeploymentArchive(Bundle bundle, Bootstrap bootstrap,
+        ClassLoader extensionClassLoader) {
         BeanScanner scanner = new BeanScanner(bundle);
         scanner.scan();
         beanDeploymentArchive = new BundleBeanDeploymentArchive("pax-cdi-bda"
@@ -83,5 +100,10 @@ public class BundleDeployment implements Deployment {
     @Override
     public Iterable<Metadata<Extension>> getExtensions() {
         return extensions;
+    }
+
+    @Override
+    public BeanDeploymentArchive getBeanDeploymentArchive(Class<?> beanClass) {
+        return beanDeploymentArchive;
     }
 }

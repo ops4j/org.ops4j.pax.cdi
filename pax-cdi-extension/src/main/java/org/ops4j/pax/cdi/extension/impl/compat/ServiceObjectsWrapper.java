@@ -20,15 +20,46 @@ package org.ops4j.pax.cdi.extension.impl.compat;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+/**
+ * Wrapper for the {@code org.osgi.framework.ServiceObjects} interface introduced in OSGi Core 6.0.
+ * Used for backward compatibility with OSGI 4.3.
+ *
+ * @author Harald Wellmann
+ *
+ * @param <S>
+ *            service type
+ */
 public interface ServiceObjectsWrapper<S> {
 
+    /**
+     * Initializes this wrapper for the given bundle context and service reference.
+     *
+     * @param bc
+     *            bundle context
+     * @param serviceReference
+     *            service reference
+     */
     void init(BundleContext bc, ServiceReference<S> serviceReference);
 
-
+    /**
+     * Gets a service for the wrapped reference.
+     *
+     * @return service service instance
+     */
     S getService();
 
+    /**
+     * Ungets a service instance for the wrapped reference.
+     *
+     * @param service
+     *            service instance
+     */
     void ungetService(S service);
 
+    /**
+     * Gets the wrapped service reference.
+     *
+     * @return service reference.
+     */
     ServiceReference<S> getServiceReference();
-
 }

@@ -20,5 +20,11 @@
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

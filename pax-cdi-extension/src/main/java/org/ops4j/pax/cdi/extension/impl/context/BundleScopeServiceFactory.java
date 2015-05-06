@@ -25,13 +25,27 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 
-
+/**
+ * A service factory for bundle scoped OSGI service components.
+ *
+ * @param <S>
+ *            service type
+ *
+ * @author Harald Wellmann
+ */
 public class BundleScopeServiceFactory<S> implements ServiceFactory<S> {
-
 
     private BundleScopeContext context;
     private Bean<S> bean;
 
+    /**
+     * Creates a service factory for the given CDI context and the given bean.
+     *
+     * @param context
+     *            bundle scope context
+     * @param bean
+     *            CDI bean with bundle scope
+     */
     public BundleScopeServiceFactory(BundleScopeContext context, Bean<S> bean) {
         this.context = context;
         this.bean = bean;

@@ -53,12 +53,24 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
     private List<CdiContainerListener> listeners = new CopyOnWriteArrayList<CdiContainerListener>();
     private BundleContext bundleContext;
 
-    @Activate    
+    /**
+     * Called by the OSGi framework when this bundle is started. Sets the singleton provider.
+     *
+     * @param bc
+     *            bundle context of this bundle
+     */
+    @Activate
     public void activate(BundleContext bc) {
         this.bundleContext = bc;
         SingletonProvider.initialize(new RegistrySingletonProvider());
     }
 
+    /**
+     * Called by the OSGi framework when this bundle is stopped. Resets the singleton provider.
+     *
+     * @param bc
+     *            bundle context of this bundle
+     */
     @Deactivate
     public void deactivate() {
         SingletonProvider.reset();
@@ -70,8 +82,10 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
     }
 
     @Override
-    public CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions, CdiContainerType containerType) {
-        WeldCdiContainer container = new WeldCdiContainer(containerType, bundleContext.getBundle(), bundle, extensions);
+    public CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions,
+        CdiContainerType containerType) {
+        WeldCdiContainer container = new WeldCdiContainer(containerType, bundleContext.getBundle(),
+            bundle, extensions);
         containers.put(bundle.getBundleId(), container);
         for (CdiContainerListener listener : listeners) {
             listener.postCreate(container);
@@ -107,5 +121,4 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
     public void removeListener(CdiContainerListener listener) {
         listeners.remove(listener);
     }
-
 }

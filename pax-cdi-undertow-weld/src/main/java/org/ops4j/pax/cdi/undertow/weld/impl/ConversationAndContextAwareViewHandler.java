@@ -25,16 +25,22 @@ import org.jboss.weld.Container;
 import org.jboss.weld.jsf.ConversationAwareViewHandler;
 
 /**
- * Wraps {@link ConversationAwareViewHandler} to copy the CDI context ID from the
- * servlet context to the faces context.
- * 
+ * Wraps {@link ConversationAwareViewHandler} to copy the CDI context ID from the servlet context to
+ * the faces context.
+ *
  * @author Harald Wellmann
  *
  */
 public class ConversationAndContextAwareViewHandler extends ConversationAwareViewHandler {
-    
+
     private String contextId;
 
+    /**
+     * Wraps the given view handler.
+     *
+     * @param delegate
+     *            delegate view handler
+     */
     public ConversationAndContextAwareViewHandler(ViewHandler delegate) {
         super(delegate);
     }

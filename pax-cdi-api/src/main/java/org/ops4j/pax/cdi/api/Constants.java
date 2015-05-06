@@ -17,21 +17,34 @@
  */
 package org.ops4j.pax.cdi.api;
 
-
+/**
+ * Constants used in the PAX CDI API.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class Constants {
 
     /**
-     * Opt-in manifest header, starting a CDI container
+     * Value of the {@link #EXTENDER_CAPABILITY}, denoting the PAX CDI extender.
      */
     public static final String CDI_EXTENDER = "pax.cdi";
-    
+
+    /**
+     * Namespace of OSGi extender capability. In OSGi 5.0.0 or higher, this is defined by
+     * {@code org.osgi.namespace.extender.ExtenderNamespace.EXTENDER_NAMESPACE}.
+     */
     public static final String EXTENDER_CAPABILITY = "osgi.extender";
 
+    /**
+     * Namespace of Pax CDI extension capability. Each portable CDI extension must provide a
+     * capability in this namespace to be considered by Pax CDI.
+     */
     public static final String CDI_EXTENSION_CAPABILITY = "org.ops4j.pax.cdi.extension";
-    
+
     /**
      * Hidden constructor of utility class.
      */
     private Constants() {
-    }    
+    }
 }

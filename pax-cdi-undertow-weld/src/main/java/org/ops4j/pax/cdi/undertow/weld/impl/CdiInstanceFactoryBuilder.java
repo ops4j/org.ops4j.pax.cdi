@@ -17,19 +17,14 @@
  */
 package org.ops4j.pax.cdi.undertow.weld.impl;
 
-import java.util.Set;
-
 import io.undertow.servlet.api.ClassIntrospecter;
 import io.undertow.servlet.api.InstanceFactory;
-import io.undertow.servlet.util.ConstructorInstanceFactory;
 
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 /**
- * Builds an instance factory for a given class. The factory produces contextual instances if the
- * given class is a bean type.
- * 
+ * Builds an instance factory for a given injectable class.
+ *
  * @author Harald Wellmann
  *
  */
@@ -39,7 +34,7 @@ public class CdiInstanceFactoryBuilder implements ClassIntrospecter {
 
     /**
      * Creates an instance factory builder using the given bean manager.
-     * 
+     *
      * @param beanManager
      *            CDI bean manager
      */
@@ -50,12 +45,6 @@ public class CdiInstanceFactoryBuilder implements ClassIntrospecter {
     @Override
     public <T> InstanceFactory<T> createInstanceFactory(Class<T> klass)
         throws NoSuchMethodException {
-        Set<Bean<?>> beans = beanManager.getBeans(klass);
-        if (beans.isEmpty()) {
-            return new ConstructorInstanceFactory<T>(klass.getDeclaredConstructor());
-        }
-        else {
-            return new CdiInstanceFactory<T>(beanManager, klass);
-        }
+        return new CdiInstanceFactory<T>(beanManager, klass);
     }
 }

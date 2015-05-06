@@ -32,15 +32,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public abstract class AbstractWebCdiContainerListener implements CdiContainerListener {
 
     private static Logger log = LoggerFactory.getLogger(AbstractWebCdiContainerListener.class);
 
-    private Map<Bundle, ServiceRegistration<ServletContainerInitializer>> registrations 
+    private Map<Bundle, ServiceRegistration<ServletContainerInitializer>> registrations
         = new HashMap<Bundle, ServiceRegistration<ServletContainerInitializer>>();
 
     protected abstract ServletContainerInitializer getServletContainerInitializer(CdiContainer cdiContainer);
@@ -63,8 +63,8 @@ public abstract class AbstractWebCdiContainerListener implements CdiContainerLis
                 registration.unregister();
                 log.info("unregistered ServletContainerInitializer for bundle [{}]", bundle);
             }
-            catch (IllegalStateException e) {
-                // ignore if already unregistered
+            catch (IllegalStateException exc) {
+                log.trace("cannot unregister service", exc);
             }
         }
     }

@@ -49,7 +49,7 @@ import org.osgi.framework.launch.FrameworkFactory;
 public class TestConfiguration {
 
     private static final String JETTY_VERSION = "9.0.7.v20131107";
-    private static String paxCdiRoot;
+    private static volatile String paxCdiRoot;
 
     private static boolean consoleEnabled = Boolean.getBoolean("org.ops4j.pax.cdi.console");
 
@@ -339,6 +339,4 @@ public class TestConfiguration {
         FrameworkFactory factory = ServiceLoader.load(FrameworkFactory.class).iterator().next();
         return factory.getClass().getCanonicalName().contains("felix");
     }
-
-
 }

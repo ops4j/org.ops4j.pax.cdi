@@ -14,7 +14,7 @@
  *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * Derived from org.apache.webbeans.web.lifecycle.WebContainerLifecycle.
  */
 package org.ops4j.pax.cdi.web.openwebbeans.impl;
@@ -41,8 +41,14 @@ import org.apache.webbeans.web.context.WebContextsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Customized lifecyle for web bundles.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class WabContainerLifecycle extends AbstractLifeCycle {
-    
+
     private static Logger log = LoggerFactory.getLogger(WabContainerLifecycle.class);
 
     /** Manages unused conversations */
@@ -55,12 +61,16 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
     }
 
     /**
-     * Creates a new lifecycle instance and initializes the instance variables.
+     * Creates a new lifecycle instance with the given context.
+     *
+     * @param webBeansContext
+     *            context
      */
     public WabContainerLifecycle(WebBeansContext webBeansContext) {
         super(null, webBeansContext);
     }
 
+    @Override
     protected void afterStartApplication(final Object startupObject) {
         String strDelay = getWebBeansContext().getOpenWebBeansConfiguration().getProperty(
             OpenWebBeansConfiguration.CONVERSATION_PERIODIC_DELAY, "150000");
@@ -68,9 +78,9 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
 
         service = Executors.newScheduledThreadPool(1, new ThreadFactory() {
 
-            public Thread newThread(Runnable runable) {
-                Thread t = new Thread(runable, "OwbConversationCleaner-"
-                /* + ServletCompatibilityUtil.getServletInfo((ServletContext) (startupObject)) */);
+            @Override
+            public Thread newThread(Runnable runnable) {
+                Thread t = new Thread(runnable, "OwbConversationCleaner");
                 t.setDaemon(true);
                 return t;
             }
@@ -97,6 +107,7 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
 
     }
 
+    @Override
     protected void beforeStartApplication(Object startupObject) {
         setWebBeansContext(WebBeansContext.currentInstance());
         this.scannerService.init(startupObject);
@@ -111,16 +122,6 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
 
     @Override
     protected void afterStopApplication(Object stopObject) {
-        // ServletContext servletContext;
-        //
-        // if(stopObject instanceof ServletContext)
-        // {
-        // servletContext = (ServletContext)stopObject;
-        // }
-        // else
-        // {
-        // //servletContext = getServletContext(stopObject);
-        // }
 
         // Clear the resource injection service
         ResourceInjectionService injectionServices = getWebBeansContext().getService(
@@ -129,10 +130,7 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
             injectionServices.clear();
         }
 
-        // Comment out for commit OWB-502
-        // ContextFactory.cleanUpContextFactory();
-
-        this.cleanupShutdownThreadLocals();
+        cleanupShutdownThreadLocals();
 
         log.debug("OpenWebBeans container has stopped");
     }
@@ -142,13 +140,12 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
      * removed in order to prevent memory leaks.
      */
     private void cleanupShutdownThreadLocals() {
-        //InjectionPointBean.removeThreadLocal();
         WebContextsService.removeThreadLocals();
     }
 
     /**
      * Returns servelt context otherwise throws exception.
-     * 
+     *
      * @param object
      *            object
      * @return servlet context
@@ -157,8 +154,7 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
     private ServletContext getServletContext(Object object) {
         if (object != null) {
             if (object instanceof ServletContextEvent) {
-                ServletContext context = ((ServletContextEvent) object).getServletContext();
-                return context;
+                return ((ServletContextEvent) object).getServletContext();
             }
             else {
                 throw new WebBeansException(
@@ -171,17 +167,13 @@ public class WabContainerLifecycle extends AbstractLifeCycle {
 
     /**
      * Conversation cleaner thread, that clears unused conversations.
-     * 
+     *
      */
     private static class ConversationCleaner implements Runnable {
 
-        public ConversationCleaner() {
-
-        }
-
+        @Override
         public void run() {
             WebBeansContext.currentInstance().getConversationManager().destroyWithRespectToTimout();
-
         }
     }
 }

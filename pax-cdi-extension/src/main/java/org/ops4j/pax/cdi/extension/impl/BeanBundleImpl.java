@@ -22,8 +22,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.api.ContainerInitialized;
 import org.ops4j.pax.cdi.extension.impl.component.ComponentLifecycleManager;
+import org.ops4j.pax.cdi.spi.ContainerInitialized;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -31,9 +31,9 @@ import org.osgi.framework.Bundle;
  * <p>
  * A {@code CdiContainerFactory} is able to create multiple {@link CdiContainer}s in parallel, one
  * for each CDI-enabled bundle, also called <em>bean bundle</em> for short.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public interface CdiContainerFactory {
 
@@ -41,17 +41,20 @@ public interface CdiContainerFactory {
      * Creates a CDI container for the given bundle. The bundle is assumed to be started. The CDI
      * container has a lifecycle of its own. The container returned by this method is not yet
      * started.
-     * 
-     * @param bundle a bundle to be extended with a CDI container
-     * @param extensions the collection of extension bundles
-     * @param containerType 
+     *
+     * @param bundle
+     *            a bundle to be extended with a CDI container
+     * @param extensions
+     *            the collection of extension bundles
+     * @param containerType
      * @return
      */
-    CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions, CdiContainerType containerType);
+    CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions,
+        CdiContainerType containerType);
 
     /**
      * Gets the CDI container for the given bundle, or null if the bundle is not a bean bundle.
-     * 
+     *
      * @param bundle
      *            bundle
      * @return associated CDI container
@@ -60,7 +63,7 @@ public interface CdiContainerFactory {
 
     /**
      * Gets the collection of all active CDI containers created by this factory.
-     * 
+     *
      * @return
      */
     Collection<CdiContainer> getContainers();
@@ -68,7 +71,7 @@ public interface CdiContainerFactory {
     /**
      * Removes the CDI container for the given bundle. This method must be called after the bundle
      * is stopped.
-     * 
+     *
      * @param bundle
      */
     void removeContainer(Bundle bundle);
@@ -76,12 +79,24 @@ public interface CdiContainerFactory {
     /**
      * Returns a name identifying the CDI provider. This should be a CDI container implementation
      * class name.
-     * 
+     *
      * @return CDI provider name
      */
     String getProviderName();
-    
+
+    /**
+     * Adds a listener for CDI container events.
+     *
+     * @param listener
+     *            CDI container listener
+     */
     void addListener(CdiContainerListener listener);
-    
+
+    /**
+     * Removes a listener for CDI container events.
+     *
+     * @param listener
+     *            CDI container listener
+     */
     void removeListener(CdiContainerListener listener);
 }

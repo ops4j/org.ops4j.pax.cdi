@@ -30,12 +30,13 @@ import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
+import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.osgi.framework.BundleContext;
 
 /**
- * Wrapped {@link InjectionTarget} for OSGi services. Overrides injection into
- * Instance<T> when qualified as {@link OsgiService}.
- * 
+ * Wrapped {@link InjectionTarget} for OSGi services. Overrides injection into Instance<T> when
+ * qualified as {@link OsgiService}.
+ *
  * @author Harald Wellmann
  *
  * @param <T>
@@ -44,6 +45,12 @@ public class OsgiInjectionTarget<T> implements InjectionTarget<T> {
 
     private InjectionTarget<T> delegate;
 
+    /**
+     * Wraps the given injection target.
+     *
+     * @param delegate
+     *            target to be wrapped
+     */
     public OsgiInjectionTarget(InjectionTarget<T> delegate) {
         this.delegate = delegate;
     }
@@ -78,7 +85,7 @@ public class OsgiInjectionTarget<T> implements InjectionTarget<T> {
         if (qualifier == null) {
             return;
         }
-        Type instanceType = InjectionPointOsgiUtils.getInstanceType(ip);
+        Type instanceType = InjectionPointOsgiUtils.getInstanceArgumentType(ip);
         if (instanceType == null) {
             return;
         }
@@ -95,14 +102,10 @@ public class OsgiInjectionTarget<T> implements InjectionTarget<T> {
             try {
                 field.set(beanInstance, instance);
             }
-            catch (IllegalArgumentException exc) {
-                throw new RuntimeException(exc);
-            }
-            catch (IllegalAccessException exc) {
-                throw new RuntimeException(exc);
+            catch (IllegalArgumentException | IllegalAccessException exc) {
+                throw Exceptions.unchecked(exc);
             }
         }
-
     }
 
     private OsgiService getOsgiServiceQualifier(InjectionPoint ip) {

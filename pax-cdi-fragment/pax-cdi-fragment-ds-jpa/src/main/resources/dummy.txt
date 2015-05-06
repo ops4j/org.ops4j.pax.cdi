@@ -1,1 +1,0 @@
-# Maker file to stop maven-bundle-plugin complaining about an empty JAR

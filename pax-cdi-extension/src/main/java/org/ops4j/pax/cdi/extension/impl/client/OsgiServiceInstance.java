@@ -34,9 +34,11 @@ import org.osgi.framework.ServiceReference;
 /**
  * A specialized {@link Instance} which looks up matching OSGi services from the service registry.
  *
+ * @param <T>
+ *            OSGi service bean type
+ *
  * @author Harald Wellmann
  *
- * @param <T>
  */
 public class OsgiServiceInstance<T> implements Instance<T> {
 
@@ -44,6 +46,16 @@ public class OsgiServiceInstance<T> implements Instance<T> {
     private Class<T> klass;
     private String filter;
 
+    /**
+     * Creates an OSGi service instance holder.
+     *
+     * @param bc
+     *            bundle context
+     * @param klass
+     *            bean class
+     * @param filter
+     *            OSGi service filter
+     */
     public OsgiServiceInstance(BundleContext bc, Class<T> klass, String filter) {
         this.bc = bc;
         this.klass = klass;
@@ -68,32 +80,27 @@ public class OsgiServiceInstance<T> implements Instance<T> {
 
     @Override
     public Instance<T> select(Annotation... qualifiers) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 
     @Override
     public <U extends T> Instance<U> select(Class<U> subtype, Annotation... qualifiers) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 
     @Override
     public <U extends T> Instance<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isUnsatisfied() {
-        Collection<ServiceReference<T>> refs = getServiceReferences();
-        return refs.isEmpty();
+        return getServiceReferences().isEmpty();
     }
 
     private Collection<ServiceReference<T>> getServiceReferences() {
         try {
-            Collection<ServiceReference<T>> refs = bc.getServiceReferences(klass, filter);
-            return refs;
+            return bc.getServiceReferences(klass, filter);
         }
         catch (InvalidSyntaxException exc) {
             throw Exceptions.unchecked(exc);

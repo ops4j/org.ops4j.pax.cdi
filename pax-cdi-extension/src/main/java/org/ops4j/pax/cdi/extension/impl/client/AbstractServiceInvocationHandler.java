@@ -4,37 +4,42 @@ import java.lang.reflect.InvocationHandler;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.ops4j.pax.cdi.extension.impl.compat.PrototypeScopeUtils;
-import org.ops4j.pax.cdi.extension.impl.compat.ServiceObjectsWrapper;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-
-public abstract class AbstractServiceInvocationHandler<S> implements InvocationHandler {
-
+/**
+ * Common base class for static and dynamic service invocation handlers.
+ *
+ * @author Harald Wellmann
+ *
+ */
+public abstract class AbstractServiceInvocationHandler implements InvocationHandler {
 
     protected InjectionPoint ip;
     protected BundleContext bundleContext;
-    protected ServiceReference<S> serviceRef;
     protected CdiContainer cdiContainer;
-    protected ServiceObjectsWrapper<S> serviceObjects;
-    protected S service;
 
-    @SuppressWarnings("unchecked")
+    /**
+     * Constructs an invocation handler for the given injection point.
+     *
+     * @param ip
+     *            OSGi service injection point
+     */
     protected AbstractServiceInvocationHandler(InjectionPoint ip) {
         this.ip = ip;
         this.bundleContext = InjectionPointOsgiUtils.getBundleContext(ip);
-        this.serviceRef = InjectionPointOsgiUtils.getServiceReference(ip);
-        this.serviceObjects = PrototypeScopeUtils.createServiceObjectsWrapper(bundleContext, serviceRef);
         ServiceReference<CdiContainerFactory> serviceReference = bundleContext
             .getServiceReference(CdiContainerFactory.class);
         CdiContainerFactory cdiContainerFactory = bundleContext.getService(serviceReference);
         this.cdiContainer = cdiContainerFactory.getContainer(bundleContext.getBundle());
     }
 
+    /**
+     * Releases any resources held by this invocation handler.
+     */
     public abstract void release();
 
 }

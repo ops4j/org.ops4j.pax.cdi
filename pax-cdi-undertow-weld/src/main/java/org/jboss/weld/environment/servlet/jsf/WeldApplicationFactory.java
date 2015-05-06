@@ -21,15 +21,22 @@ import javax.faces.application.ApplicationFactory;
 
 
 /**
+ * Wraps the given JSF application factory.
+ *
  * @author pmuir
  * @author alesj
+ * @author Harald Wellmann
  */
-public class WeldApplicationFactory extends ForwardingApplicationFactory {
+public class WeldApplicationFactory extends AbstractForwardingApplicationFactory {
 
     private final ApplicationFactory applicationFactory;
 
     private volatile Application application;
 
+    /**
+     * Wraps the given application factory.
+     * @param applicationFactory application factory
+     */
     public WeldApplicationFactory(ApplicationFactory applicationFactory) {
         this.applicationFactory = applicationFactory;
     }
@@ -54,7 +61,8 @@ public class WeldApplicationFactory extends ForwardingApplicationFactory {
     @Override
     public void setApplication(Application application) {
         synchronized (this) {
-            this.application = null; // invalidate the instance, so it picks up new application
+            // invalidate the instance, so it picks up new application
+            this.application = null;
             super.setApplication(application);
         }
     }
