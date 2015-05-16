@@ -62,7 +62,6 @@ public class ExtenderLifecyleTest {
     public Option[] config() {
         return options(
             regressionDefaults(),
-
             workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
             paxCdiProviderAdapter(),
             cdiProviderBundles());
@@ -70,7 +69,8 @@ public class ExtenderLifecyleTest {
 
     @Test
     public void shouldUnregisterCdiContainerOnExtenderStopped() throws BundleException {
-        ServiceReference<?> ref = ServiceLookup.getServiceReference(bc, CdiContainer.class.getName(), 1000, null);
+        ServiceReference<?> ref = ServiceLookup.getServiceReference(bc,
+            CdiContainer.class.getName(), 1000, null);
         assertThat(ref, is(notNullValue()));
 
         stopExtender();
@@ -80,14 +80,25 @@ public class ExtenderLifecyleTest {
     }
 
     private void stopExtender() throws BundleException {
+        Bundle extender = findExtender();
+        extender.stop();
+    }
+
+    private Bundle findExtender() {
         Bundle extender = BundleUtils.getBundle(bc, "org.ops4j.pax.cdi.extender");
         assertThat(extender, is(notNullValue()));
-        extender.stop();
+        return extender;
+    }
+
+    private void startExtender() throws BundleException {
+        Bundle extender = findExtender();
+        extender.start();
     }
 
     @Test
     public void shouldUnregisterBeanManagerOnExtenderStopped() throws BundleException {
-        ServiceReference<?> ref = ServiceLookup.getServiceReference(bc, BeanManager.class.getName(), 1000, null);
+        ServiceReference<?> ref = ServiceLookup.getServiceReference(bc,
+            BeanManager.class.getName(), 1000, null);
         assertThat(ref, is(notNullValue()));
 
         stopExtender();
@@ -98,12 +109,29 @@ public class ExtenderLifecyleTest {
 
     @Test
     public void shouldUnregisterServiceComponentsOnExtenderStopped() throws BundleException {
-        ServiceReference<?> ref = ServiceLookup.getServiceReference(bc, IceCreamService.class.getName(), 1000, null);
+        ServiceReference<?> ref = ServiceLookup.getServiceReference(bc,
+            IceCreamService.class.getName(), 1000, null);
         assertThat(ref, is(notNullValue()));
 
         stopExtender();
 
         thrown.expect(ServiceLookupException.class);
         ServiceLookup.getServiceReference(bc, IceCreamService.class.getName(), 1000, null);
+    }
+
+    @Test
+    public void shouldRegisterServiceComponentsOnExtenderRestarted() throws BundleException {
+        stopExtender();
+        try {
+            ServiceLookup.getServiceReference(bc, IceCreamService.class.getName(), 1000, null);
+        }
+        catch (ServiceLookupException exc) {
+            // ignore
+        }
+        startExtender();
+
+        ServiceReference<?> ref = ServiceLookup.getServiceReference(bc,
+            IceCreamService.class.getName(), 1000, null);
+        assertThat(ref, is(notNullValue()));
     }
 }

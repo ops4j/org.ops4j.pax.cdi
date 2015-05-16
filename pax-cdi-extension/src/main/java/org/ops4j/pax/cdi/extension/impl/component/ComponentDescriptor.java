@@ -171,5 +171,6 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
         for (ComponentDependency<S, ?> dependency : dependencies) {
             dependency.stop();
         }
+        serviceRegistration.unregister();
     }
 }
