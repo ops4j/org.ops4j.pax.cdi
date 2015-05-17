@@ -16,7 +16,6 @@
     <properties>
         <bundle.symbolicName>org.ops4j.pax.cdi.web.weld</bundle.symbolicName>
         <bundle.namespace>org.ops4j.pax.cdi.web.weld</bundle.namespace>
-        <jetty.version>9.0.7.v20131107</jetty.version>
     </properties>
 
     <dependencies>

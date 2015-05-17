@@ -48,6 +48,7 @@ import org.osgi.framework.launch.FrameworkFactory;
  */
 public class TestConfiguration {
 
+    // private static final String JETTY_VERSION = "9.2.10.v20150310";
     private static final String JETTY_VERSION = "9.0.7.v20131107";
     private static volatile String paxCdiRoot;
 
@@ -154,7 +155,7 @@ public class TestConfiguration {
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web-openwebbeans"),
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject(),
-                    // needed by pax-cdi-web-openwebean
+                    // needed by pax-cdi-web-openwebbeans
                     mavenBundle("org.apache.geronimo.specs", "geronimo-jsp_2.2_spec", "1.2")
                     );
 
@@ -263,7 +264,6 @@ public class TestConfiguration {
                 Info.getPaxWebVersion()),
             mavenBundle("org.ops4j.pax.web", "pax-web-jetty").version(Info.getPaxWebVersion()),
             mavenBundle("org.ops4j.pax.web", "pax-web-runtime").version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-jsp").version(Info.getPaxWebVersion()),
             mavenBundle("org.eclipse.jdt.core.compiler", "ecj").version("3.5.1"),
             mavenBundle("org.eclipse.jetty", "jetty-util").version(JETTY_VERSION),
             mavenBundle("org.eclipse.jetty", "jetty-io").version(JETTY_VERSION),
