@@ -19,8 +19,8 @@ package org.ops4j.pax.cdi.arquillian;
 
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderWebAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxWebBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderUndertowAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxWebUndertowBundles;
 import static org.ops4j.pax.exam.CoreOptions.bootDelegationPackage;
 import static org.ops4j.pax.exam.CoreOptions.cleanCaches;
 import static org.ops4j.pax.exam.CoreOptions.frameworkProperty;
@@ -186,24 +186,27 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
 
 
             mavenBundle("org.ops4j.base", "ops4j-base", "1.5.0"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-core", "1.8.0"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-extender", "1.8.0"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-framework", "1.8.0"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-lifecycle", "1.8.0"),
-            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker", "1.8.0"),
-            mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-core", "1.8.1"),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-extender", "1.8.1"),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-framework", "1.8.1"),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-lifecycle", "1.8.1"),
+            mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-tracker", "1.8.1"),
+            mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.8.2"),
+            mavenBundle("org.apache.felix", "org.apache.felix.jaas", "0.0.2"),
+            mavenBundle("org.osgi", "org.osgi.compendium", "4.3.1"),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils", "3.18"),
+            mavenBundle("org.apache.xbean", "xbean-asm5-shaded", "3.18"), //
+            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "3.18"), //
             mavenBundle("org.apache.geronimo.specs", "geronimo-atinject_1.0_spec").versionAsInProject(),
 
             cdiProviderBundles(),
             paxCdiProviderAdapter(),
-            paxCdiProviderWebAdapter(),
+            paxCdiProviderUndertowAdapter(),
 
             systemProperty("org.osgi.service.http.port").value("8181"),
-            paxWebBundles(),
+            paxWebUndertowBundles(),
 
 
-            mavenBundle("org.apache.myfaces.core", "myfaces-api", "2.0.9"),
-            mavenBundle("org.apache.myfaces.core", "myfaces-impl", "2.0.9"),
             mavenBundle("commons-beanutils", "commons-beanutils", "1.8.3"),
             mavenBundle("commons-collections", "commons-collections", "3.2.1"),
             mavenBundle("org.apache.servicemix.bundles",
@@ -216,9 +219,8 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
                 "org.apache.servicemix.bundles.commons-httpclient", "3.1_7"),
             mavenBundle("commons-codec", "commons-codec", "1.6"),
             mavenBundle("org.slf4j", "jcl-over-slf4j", "1.6.0"),
-            mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.4.0"),
 
-            mavenBundle("org.slf4j", "slf4j-api").versionAsInProject(),
+            mavenBundle("org.slf4j", "slf4j-api", "1.7.2"),
             mavenBundle("ch.qos.logback", "logback-core").versionAsInProject(),
             mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject(),
 

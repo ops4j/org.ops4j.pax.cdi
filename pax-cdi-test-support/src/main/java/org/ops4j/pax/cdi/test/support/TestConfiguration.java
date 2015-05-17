@@ -173,6 +173,33 @@ public class TestConfiguration {
         }
     }
 
+    public static Option paxCdiProviderUndertowAdapter() {
+        switch (getCdiProvider()) {
+
+            case OWB15:
+                return composite(
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-servlet"),
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-undertow-openwebbeans"),
+                    mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
+                    mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject(),
+                    // needed by pax-cdi-web-openwebbeans
+                    mavenBundle("org.apache.geronimo.specs", "geronimo-jsp_2.2_spec", "1.2")
+                    );
+
+            case WELD2:
+                return composite(
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-servlet"),
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-undertow-weld"),
+                    mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec", "1.0"),
+                    // needed by pax-cdi-web-weld
+                    mavenBundle("org.apache.geronimo.specs", "geronimo-jsp_2.2_spec", "1.2")
+                    );
+
+            default:
+                throw new IllegalArgumentException("pax.cdi.provider unknown or null");
+        }
+    }
+
     public static Option paxCdiProviderJettyAdapter() {
         switch (getCdiProvider()) {
 
@@ -274,6 +301,29 @@ public class TestConfiguration {
             mavenBundle("org.eclipse.jetty", "jetty-security").version(JETTY_VERSION),
             mavenBundle("org.eclipse.jetty", "jetty-xml").version(JETTY_VERSION),
             mavenBundle("org.eclipse.jetty", "jetty-servlet").version(JETTY_VERSION));
+    }
+
+    public static Option paxWebUndertowBundles() {
+        return composite(
+            mavenBundle("org.ops4j.pax.tipi", "org.ops4j.pax.tipi.undertow.servlet", "1.0.15.1"),
+            mavenBundle("org.ops4j.pax.tipi", "org.ops4j.pax.tipi.undertow.core", "1.0.15.1"),
+            mavenBundle("org.ops4j.pax.tipi", "org.ops4j.pax.tipi.xnio.api", "3.2.2.2"),
+            mavenBundle("org.ops4j.pax.tipi", "org.ops4j.pax.tipi.xnio.nio", "3.2.2.2"),
+            mavenBundle("org.jboss.logging", "jboss-logging", "3.1.4.GA"),
+            mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
+            mavenBundle("javax.servlet", "javax.servlet-api", "3.1.0"),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.1"),
+            mavenBundle("org.apache.xbean", "xbean-finder", "4.1"),
+            mavenBundle("org.ow2.asm", "asm-all", "5.0.2"),
+            mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.8.0"),
+            mavenBundle("org.apache.felix", "org.apache.felix.eventadmin", "1.3.2"),
+
+
+            mavenBundle("org.ops4j.pax.web", "pax-web-extender", "5.0.0.M1"),
+            mavenBundle("org.ops4j.pax.web", "pax-web-spi", "5.0.0.M1"),
+            mavenBundle("org.ops4j.pax.web", "pax-web-descriptor", "5.0.0.M1"),
+            mavenBundle("org.ops4j.pax.web", "pax-web-jaas", "5.0.0.M1"),
+            mavenBundle("org.ops4j.pax.web", "pax-web-undertow", "5.0.0.M1"));
     }
 
     public static ProvisionOption<?> workspaceBundle(String groupId, String artifactId) {
