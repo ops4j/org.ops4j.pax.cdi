@@ -26,7 +26,10 @@
         <pax.jpa.version>0.3.0</pax.jpa.version>
         <pax.swissbox.version>1.8.1</pax.swissbox.version>
         <pax.url.version>2.4.1</pax.url.version>
-        <pax.web.version>4.0.2</pax.web.version>
+
+        <!-- NOTE: 4.0.2 breaks TCK, 4.1.x breaks ServletTest -->
+        <pax.web.version>4.0.0</pax.web.version>
+
         <slf4j.version>1.6.4</slf4j.version>
         <weld2.version>2.2.11.Final</weld2.version>
         <xbean.version>4.1</xbean.version>
