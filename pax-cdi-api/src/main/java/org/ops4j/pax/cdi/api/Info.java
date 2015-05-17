@@ -46,14 +46,14 @@ public class Info {
     private static final String JETTY_VERSION;
 
     /**
-     * True if Pax Web is a snapshot version.
-     */
-    private static boolean paxWebSnapshotVersion;
-
-    /**
      * Pax CDI version.
      */
     private static final String PAX_CDI_VERSION;
+
+    /**
+     * True if Pax Web is a snapshot version.
+     */
+    private static boolean paxWebSnapshotVersion;
 
     /**
      * True if Pax CDI is a snapshot version.
