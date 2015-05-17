@@ -60,10 +60,12 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
         ServletContext context = sce.getServletContext();
         CdiContainer cdiContainer = (CdiContainer) context.getAttribute(CDI_CONTAINER);
         try {
-        cdiContainer.start(context);
+            cdiContainer.start(context);
         }
+        // CHECKSTYLE:SKIP - this exception will not be logged otherwise
         catch (Exception exc) {
-            log.error("", exc);
+            log.error("cannot start OpenWebBeans CDI container", exc);
+            throw exc;
         }
 
         WebBeansContext webBeansContext = cdiContainer.unwrap(WebBeansContext.class);

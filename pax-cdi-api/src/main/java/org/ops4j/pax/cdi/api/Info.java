@@ -24,7 +24,7 @@ import java.util.Properties;
 /**
  * Provides version information about this release of Pax CDI.
  *
- * Fully static
+ * Utility class with static methods only.
  *
  * @author Harald Wellmann
  */
@@ -84,6 +84,13 @@ public class Info {
         JETTY_VERSION = jettyVersion;
     }
 
+    /**
+     * No instances should be made (does not make sense).
+     */
+    private Info() {
+
+    }
+
     private static String readProperty(Properties properties, String key) {
         String value = properties.getProperty(key);
         if (value == null) {
@@ -91,13 +98,6 @@ public class Info {
                 key + " missing in META-INF/pax-cdi-version.properties");
         }
         return value;
-
-    }
-
-    /**
-     * No instances should be made (does not make sense).
-     */
-    private Info() {
 
     }
 
