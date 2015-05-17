@@ -85,9 +85,6 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
         WeldCdiContainer container = new WeldCdiContainer(bundleContext.getBundle(),
             bundle, extensions);
         containers.put(bundle.getBundleId(), container);
-        for (CdiContainerListener listener : listeners) {
-            listener.postCreate(container);
-        }
         log.debug("Weld Container created");
         return container;
     }
@@ -104,10 +101,7 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
 
     @Override
     public void removeContainer(Bundle bundle) {
-        CdiContainer container = containers.remove(bundle.getBundleId());
-        for (CdiContainerListener listener : listeners) {
-            listener.preDestroy(container);
-        }
+        containers.remove(bundle.getBundleId());
     }
 
     @Override

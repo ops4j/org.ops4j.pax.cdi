@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import javax.servlet.ServletContextListener;
-
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.ops4j.pax.cdi.web.impl.CdiServletContainerInitializer;
@@ -43,17 +41,15 @@ import org.slf4j.LoggerFactory;
  * @author Harald Wellmann
  *
  */
-public abstract class AbstractWebAppDependencyManager implements CdiContainerListener {
+public abstract class AbstractWebAppDependencyManager implements CdiContainerListener, ServletContextListenerFactory {
 
     private static Logger log = LoggerFactory.getLogger(AbstractWebAppDependencyManager.class);
 
     private Map<Bundle, ServiceRegistration<WebAppDependencyHolder>> registrations = new HashMap<>();
 
-    protected abstract ServletContextListener getServletContextListener();
-
     private void register(Bundle bundle, CdiContainer cdiContainer) {
         CdiServletContainerInitializer initializer = new CdiServletContainerInitializer(
-            cdiContainer, getServletContextListener());
+            cdiContainer, this);
         WebAppDependencyHolder dependencyHolder = new CdiWebAppDependencyHolder(
             bundle.getBundleContext(), initializer);
         Dictionary<String, String> props = new Hashtable<String, String>();
@@ -91,6 +87,8 @@ public abstract class AbstractWebAppDependencyManager implements CdiContainerLis
 
     @Override
     public synchronized void preDestroy(CdiContainer container) {
-        unregister(container.getBundle());
+        if (container != null) {
+            unregister(container.getBundle());
+        }
     }
 }

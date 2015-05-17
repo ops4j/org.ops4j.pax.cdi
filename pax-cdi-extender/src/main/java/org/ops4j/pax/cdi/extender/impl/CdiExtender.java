@@ -62,12 +62,12 @@ import org.slf4j.LoggerFactory;
  *
  */
 @Component(immediate = true, service = { })
-public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper> {
+public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
 
     private static Logger log = LoggerFactory.getLogger(CdiExtender.class);
 
     private BundleContext context;
-    private BundleTracker<CdiContainerWrapper> bundleWatcher;
+    private BundleTracker<CdiContainer> bundleWatcher;
     private CdiContainerFactory factory;
 
     private CdiContainerListener webAdapter;
@@ -116,7 +116,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
     }
 
     @Override
-    public synchronized CdiContainerWrapper addingBundle(final Bundle bundle, BundleEvent event) {
+    public synchronized CdiContainer addingBundle(final Bundle bundle, BundleEvent event) {
         boolean wired = false;
         List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires(
             EXTENDER_CAPABILITY);
@@ -139,29 +139,30 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
     }
 
     @Override
-    public void modifiedBundle(Bundle bundle, BundleEvent event, CdiContainerWrapper object) {
+    public void modifiedBundle(Bundle bundle, BundleEvent event, CdiContainer object) {
         // We don't care about state changes
     }
 
     @Override
     public synchronized void removedBundle(Bundle bundle, BundleEvent event,
-        CdiContainerWrapper wrapper) {
-        CdiContainer container = wrapper.getCdiContainer();
+        CdiContainer container) {
         if (container != null) {
             synchronized (container) {
                 container.stop();
             }
         }
         factory.removeContainer(bundle);
+        if (webAdapter != null) {
+            webAdapter.preDestroy(container);
+        }
     }
 
-    private CdiContainerWrapper createContainer(Bundle bundle) {
+    private CdiContainer createContainer(Bundle bundle) {
         // check if this is a web bundle
         Dictionary<String, String> headers = bundle.getHeaders();
         String contextPath = headers.get("Web-ContextPath");
         boolean isWebBundle = (contextPath != null);
 
-        CdiContainerWrapper wrapper = new CdiContainerWrapper(bundle);
         CdiContainer container = null;
 
         // Web bundles require a web adapter.
@@ -174,7 +175,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
             // otherwise, create the CDI container, but don't start it until the servlet
             // context is available
             else {
-                container = doCreateContainer(bundle);
+                container = doCreateLazyContainer(bundle);
             }
         }
         // Standalone containers are started right now.
@@ -182,8 +183,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
             container = doCreateContainer(bundle);
             container.start(new Object());
         }
-        wrapper.setCdiContainer(container);
-        return wrapper;
+        return container;
     }
 
     private CdiContainer doCreateContainer(Bundle bundle) {
@@ -194,6 +194,14 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
         log.info("creating CDI container for bean bundle {} with extension bundles {}", bundle,
             extensions);
         return factory.createContainer(bundle, extensions);
+    }
+
+    private CdiContainer doCreateLazyContainer(Bundle bundle) {
+        DelegatingCdiContainer container = new DelegatingCdiContainer(factory, bundle);
+        if (webAdapter != null) {
+            webAdapter.postCreate(container);
+        }
+        return container;
     }
 
     /**
@@ -215,7 +223,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
     private void handleWebBundles() {
         factory.addListener(webAdapter);
         for (Bundle bundle : webBundles.values()) {
-            doCreateContainer(bundle);
+            doCreateLazyContainer(bundle);
         }
         webBundles.clear();
     }

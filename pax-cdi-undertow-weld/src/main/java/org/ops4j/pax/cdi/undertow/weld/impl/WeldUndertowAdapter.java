@@ -41,6 +41,6 @@ public class WeldUndertowAdapter extends AbstractWebCdiContainerListener {
      */
     @Override
     protected ServletContainerInitializer getServletContainerInitializer(CdiContainer cdiContainer) {
-        return new WeldServletContainerInitializer(cdiContainer, new WeldServletContextListener());
+        return new WeldServletContainerInitializer(cdiContainer);
     }
 }

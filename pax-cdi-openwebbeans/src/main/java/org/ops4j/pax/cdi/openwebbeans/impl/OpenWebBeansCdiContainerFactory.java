@@ -71,9 +71,6 @@ public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
         OpenWebBeansCdiContainer container = new OpenWebBeansCdiContainer(ownBundle,
             bundle, extensions);
         containers.put(bundle.getBundleId(), container);
-        for (CdiContainerListener listener : listeners) {
-            listener.postCreate(container);
-        }
         return container;
     }
 
@@ -89,10 +86,7 @@ public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
 
     @Override
     public void removeContainer(Bundle bundle) {
-        CdiContainer container = containers.remove(bundle.getBundleId());
-        for (CdiContainerListener listener : listeners) {
-            listener.preDestroy(container);
-        }
+        containers.remove(bundle.getBundleId());
     }
 
     @Override

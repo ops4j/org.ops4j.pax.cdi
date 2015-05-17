@@ -45,9 +45,8 @@ public class WeldServletContainerInitializer extends CdiServletContainerInitiali
      * @param servletContextListener
      *            servlet context listener
      */
-    public WeldServletContainerInitializer(CdiContainer cdiContainer,
-        ServletContextListener servletContextListener) {
-        super(cdiContainer, servletContextListener);
+    public WeldServletContainerInitializer(CdiContainer cdiContainer) {
+        super(cdiContainer, null);
     }
 
     @Override
@@ -56,5 +55,9 @@ public class WeldServletContainerInitializer extends CdiServletContainerInitiali
         Bundle bundle = cdiContainer.getBundle();
         String contextId = String.format("%s:%d", bundle.getSymbolicName(), bundle.getBundleId());
         ctx.setInitParameter(Container.CONTEXT_ID_KEY, contextId);
+    }
+
+    public ServletContextListener createServletContextListener() {
+        return new WeldServletContextListener();
     }
 }

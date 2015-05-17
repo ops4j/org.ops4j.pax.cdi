@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Harald Wellmann.
+ * Copyright 2015 Harald Wellmann.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.web.weld.impl;
+package org.ops4j.pax.cdi.web;
 
 import javax.servlet.ServletContextListener;
 
-import org.ops4j.pax.cdi.spi.CdiContainerListener;
-import org.ops4j.pax.cdi.web.AbstractWebAppDependencyManager;
-import org.osgi.service.component.annotations.Component;
 
-/**
- * Web adapter for Weld.
- *
- * @author Harald Wellmann
- *
- */
-@Component(immediate = true, property = "type=web", service = CdiContainerListener.class)
-public class WeldWebAdapter extends AbstractWebAppDependencyManager {
-
-    @Override
-    public ServletContextListener createServletContextListener() {
-        return new WeldServletContextListener();
-    }
+public interface ServletContextListenerFactory {
+    ServletContextListener createServletContextListener();
 }
