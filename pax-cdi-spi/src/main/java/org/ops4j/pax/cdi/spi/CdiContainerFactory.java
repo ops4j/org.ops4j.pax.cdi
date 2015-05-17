@@ -49,8 +49,7 @@ public interface CdiContainerFactory {
      * @param containerType
      * @return
      */
-    CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions,
-        CdiContainerType containerType);
+    CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions);
 
     /**
      * Gets the CDI container for the given bundle, or null if the bundle is not a bean bundle.

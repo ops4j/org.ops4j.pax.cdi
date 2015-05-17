@@ -34,9 +34,9 @@ import org.osgi.framework.Bundle;
  * <p>
  * Any bean bundle has its own CDI container. All these containers are completely isolated from each
  * other, except for publishing or injecting OSGi services wrapped in CDI beans.
- * 
+ *
  * @author Harald Wellmann
- * 
+ *
  */
 public interface CdiContainer {
 
@@ -50,23 +50,17 @@ public interface CdiContainer {
      * Stops the CDI container for the current bundle.
      */
     void stop();
-    
-    /**
-     * Returns the type of this container.
-     * @return
-     */
-    CdiContainerType getContainerType();
 
     /**
      * Gets the bundle hosting this CDI container.
-     * 
+     *
      * @return current bundle
      */
     Bundle getBundle();
 
     /**
      * Returns the {@link BeanManager} of the CDI container.
-     * 
+     *
      * @return
      */
     BeanManager getBeanManager();
@@ -74,7 +68,7 @@ public interface CdiContainer {
     /**
      * Returns the {@link Event} bean of the CDI container, which may be further specialized to fire
      * specific events.
-     * 
+     *
      * @return Event bean
      */
     <T> Event<T> getEvent();
@@ -82,7 +76,7 @@ public interface CdiContainer {
     /**
      * Returns the overall @{link Instance} of the CDI container, providing access to all bean
      * instances.
-     * 
+     *
      * @return Instance of container
      */
     <T> Instance<T> getInstance();
@@ -91,24 +85,24 @@ public interface CdiContainer {
      * Returns the context class loader used by this container. All bean classes are loaded from
      * this class loader. The {@link CdiContainerFactoryClient} must set the thread context class
      * loader to this loader before creating this container.
-     * 
+     *
      * @return context class loader associated to this container
      */
     ClassLoader getContextClassLoader();
-    
+
     /**
      * Return an implementation object wrapped by this container.
      * @param wrappedClass
      * @return
      */
     <T> T unwrap(Class<T> wrappedClass);
-    
+
     /**
      * Starts a context for the given scope.
      * @param scope CDI scope annotation
      */
     void startContext(Class<? extends Annotation> scope);
-    
+
     /**
      * Stops the current context for the given scope.
      * @param scope CDI scope annotation

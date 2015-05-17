@@ -29,7 +29,6 @@ import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.cdi.spi.CdiContainerListener;
-import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -82,9 +81,8 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
     }
 
     @Override
-    public CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions,
-        CdiContainerType containerType) {
-        WeldCdiContainer container = new WeldCdiContainer(containerType, bundleContext.getBundle(),
+    public CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions) {
+        WeldCdiContainer container = new WeldCdiContainer(bundleContext.getBundle(),
             bundle, extensions);
         containers.put(bundle.getBundleId(), container);
         for (CdiContainerListener listener : listeners) {

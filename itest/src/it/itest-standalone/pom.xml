@@ -562,7 +562,6 @@
                 <dependency>
                     <groupId>org.jboss.weld</groupId>
                     <artifactId>weld-osgi-bundle</artifactId>
-                    <version>${weld2.version}</version>
                     <scope>provided</scope>
                 </dependency>
 

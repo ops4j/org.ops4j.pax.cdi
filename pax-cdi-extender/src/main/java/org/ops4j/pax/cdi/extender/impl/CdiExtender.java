@@ -33,7 +33,6 @@ import javax.enterprise.inject.spi.CDIProvider;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.cdi.spi.CdiContainerListener;
-import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -45,8 +44,6 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventHandler;
 import org.osgi.util.tracker.BundleTracker;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
@@ -64,10 +61,8 @@ import org.slf4j.LoggerFactory;
  * @author Harald Wellmann
  *
  */
-@Component(immediate = true,
-    service = { EventHandler.class },
-    property = "event.topics=org/osgi/service/web/UNDEPLOYED")
-public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>, EventHandler {
+@Component(immediate = true, service = { })
+public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper> {
 
     private static Logger log = LoggerFactory.getLogger(CdiExtender.class);
 
@@ -164,14 +159,13 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
         // check if this is a web bundle
         Dictionary<String, String> headers = bundle.getHeaders();
         String contextPath = headers.get("Web-ContextPath");
-        CdiContainerType containerType = (contextPath == null) ? CdiContainerType.STANDALONE
-            : CdiContainerType.WEB;
+        boolean isWebBundle = (contextPath != null);
 
         CdiContainerWrapper wrapper = new CdiContainerWrapper(bundle);
         CdiContainer container = null;
 
         // Web bundles require a web adapter.
-        if (containerType == CdiContainerType.WEB) {
+        if (isWebBundle) {
             // If the adapter is not available, just remember the bundle
             if (webAdapter == null) {
                 log.debug("waiting for web adapter for {}", bundle);
@@ -180,26 +174,26 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
             // otherwise, create the CDI container, but don't start it until the servlet
             // context is available
             else {
-                container = doCreateContainer(bundle, containerType);
+                container = doCreateContainer(bundle);
             }
         }
         // Standalone containers are started right now.
         else {
-            container = doCreateContainer(bundle, containerType);
+            container = doCreateContainer(bundle);
             container.start(new Object());
         }
         wrapper.setCdiContainer(container);
         return wrapper;
     }
 
-    private CdiContainer doCreateContainer(Bundle bundle, CdiContainerType containerType) {
+    private CdiContainer doCreateContainer(Bundle bundle) {
         // Find extensions
         Set<Bundle> extensions = new HashSet<>();
         findExtensions(bundle, extensions);
 
         log.info("creating CDI container for bean bundle {} with extension bundles {}", bundle,
             extensions);
-        return factory.createContainer(bundle, extensions, containerType);
+        return factory.createContainer(bundle, extensions);
     }
 
     /**
@@ -221,7 +215,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
     private void handleWebBundles() {
         factory.addListener(webAdapter);
         for (Bundle bundle : webBundles.values()) {
-            doCreateContainer(bundle, CdiContainerType.WEB);
+            doCreateContainer(bundle);
         }
         webBundles.clear();
     }
@@ -259,21 +253,5 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainerWrapper>
     @Reference
     public synchronized void setCdiProvider(CDIProvider cdiProvider) {
         this.cdiProvider = cdiProvider;
-    }
-
-    @Override
-    public void handleEvent(Event event) {
-//        Long bundleId = (Long) event.getProperty("bundle.id");
-//        log.info("undeployed bundle [{}]", bundleId);
-//        Bundle bundle = context.getBundle(bundleId);
-//        if (bundle != null) {
-//            CdiContainer container = factory.getContainer(bundle);
-//            if (container != null) {
-//                synchronized (container) {
-//                    container.stop();
-//                }
-//            }
-//            factory.removeContainer(bundle);
-//        }
     }
 }

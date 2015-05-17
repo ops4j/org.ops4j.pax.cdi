@@ -263,6 +263,7 @@ public class TestConfiguration {
             mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard").version(
                 Info.getPaxWebVersion()),
             mavenBundle("org.ops4j.pax.web", "pax-web-jetty").version(Info.getPaxWebVersion()),
+            //mavenBundle("org.ops4j.pax.web", "pax-web-jsp").version(Info.getPaxWebVersion()),
             mavenBundle("org.ops4j.pax.web", "pax-web-runtime").version(Info.getPaxWebVersion()),
             mavenBundle("org.eclipse.jdt.core.compiler", "ecj").version("3.5.1"),
             mavenBundle("org.eclipse.jetty", "jetty-util").version(JETTY_VERSION),

@@ -36,7 +36,6 @@ import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
-import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.ops4j.pax.cdi.spi.DestroyedLiteral;
 import org.ops4j.pax.cdi.spi.InitializedLiteral;
 import org.ops4j.pax.cdi.spi.util.Exceptions;
@@ -71,8 +70,6 @@ public class WeldCdiContainer extends AbstractCdiContainer {
     /**
      * Construct a CDI container for the given extended bundle.
      *
-     * @param containerType
-     *            container type (web or standalone)
      * @param ownBundle
      *            bundle containing this class
      * @param bundle
@@ -80,9 +77,9 @@ public class WeldCdiContainer extends AbstractCdiContainer {
      * @param extensionBundles
      *            CDI extension bundles to be loaded by OpenWebBeans
      */
-    public WeldCdiContainer(CdiContainerType containerType, Bundle ownBundle, Bundle bundle,
+    public WeldCdiContainer(Bundle ownBundle, Bundle bundle,
         Collection<Bundle> extensionBundles) {
-        super(containerType, bundle, extensionBundles, Arrays.asList(ownBundle,
+        super(bundle, extensionBundles, Arrays.asList(ownBundle,
             FrameworkUtil.getBundle(Bootstrap.class)));
         log.debug("creating Weld CDI container for bundle {}", bundle);
     }
