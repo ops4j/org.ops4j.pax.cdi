@@ -33,15 +33,14 @@
     <feature name="pax-cdi-openwebbeans" description="OpenWebBeans CDI support" version="${project.version}"
         resolver="(obr)">
         <feature version="${project.version}">pax-cdi</feature>
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-validation_1.0_spec/1.1</bundle>
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-servlet_3.0_spec/1.0</bundle>
+        <bundle dependency="true">mvn:javax.validation/validation-api/1.1.0.Final</bundle>
+        <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/1.2</bundle>
+        <bundle dependency="true">mvn:javax.servlet/javax.servlet-api/3.1.0</bundle>
         <bundle dependency="true">mvn:org.apache.xbean/xbean-asm5-shaded/${xbean.version}</bundle>
         <bundle dependency="true">mvn:org.apache.xbean/xbean-finder-shaded/${xbean.version}</bundle>
         <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-spi/${openwebbeans15.version}</bundle>
         <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-impl/${openwebbeans15.version}</bundle>
         <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-el22/${openwebbeans15.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-osgi/${openwebbeans15.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-openwebbeans/${project.version}</bundle>
     </feature>
 
@@ -49,7 +48,7 @@
         resolver="(obr)">
         <feature version="${project.version}">pax-cdi</feature>
         <feature>war</feature>
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-servlet_3.0_spec/1.0</bundle>
+        <bundle dependency="true">mvn:javax.servlet/javax.servlet-api/3.1.0</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-web/${project.version}</bundle>
     </feature>
 
