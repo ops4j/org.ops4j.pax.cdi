@@ -165,7 +165,7 @@
 
                                 <dependency>
                                     <groupId>org.ops4j.pax.cdi.tck</groupId>
-                                    <artifactId>pax-cdi-tck11-porting</artifactId>
+                                    <artifactId>pax-cdi-tck-porting</artifactId>
                                     <version>${project.version}</version>
                                 </dependency>
 
