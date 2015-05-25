@@ -27,6 +27,7 @@
         <bundle dependency="true">mvn:org.jboss.weld/weld-osgi-bundle/${weld2.version}</bundle>
         <bundle>mvn:org.jboss.logging/jboss-logging/3.1.3.GA</bundle>
         <bundle>mvn:com.google.guava/guava/${guava.version}</bundle>
+        <bundle>mvn:org.jboss.classfilewriter/jboss-classfilewriter/1.1.1.Final</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-weld/${project.version}</bundle>
     </feature>
 
