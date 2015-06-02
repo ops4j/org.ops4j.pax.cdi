@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.ops4j.pax.cdi</groupId>
     <artifactId>pax-cdi-fragment</artifactId>
-    <version>0.12.0</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
   <groupId>org.ops4j.pax.cdi.fragment</groupId>
   <artifactId>pax-cdi-fragment-ds-jpa</artifactId>
