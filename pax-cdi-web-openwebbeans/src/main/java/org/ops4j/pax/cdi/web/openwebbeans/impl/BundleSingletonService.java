@@ -63,8 +63,6 @@ public class BundleSingletonService implements SingletonService<WebBeansContext>
                 String resource = "/META-INF/openwebbeans/standalone.properties";
                 if (bundle.getHeaders().get("Web-ContextPath") != null) {
                     resource = "/META-INF/openwebbeans/wab.properties";
-//                    initialServices.put(ContainerLifecycle.class, new WabContainerLifecycle());
-//                    initialServices.put(ContextsService.class, new WabContextsService());
                 }
 
                 try {
@@ -77,9 +75,7 @@ public class BundleSingletonService implements SingletonService<WebBeansContext>
                 webBeansContext = new WebBeansContext(initialServices, props);
                 singletonMap.put(bundleId, webBeansContext);
             }
-
             return webBeansContext;
-
         }
     }
 

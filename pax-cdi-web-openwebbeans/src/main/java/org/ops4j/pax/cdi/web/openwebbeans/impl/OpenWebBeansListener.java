@@ -50,7 +50,6 @@ import org.slf4j.LoggerFactory;
 public class OpenWebBeansListener implements ServletContextListener, ServletRequestListener,
     HttpSessionListener {
 
-
     private static Logger log = LoggerFactory.getLogger(OpenWebBeansListener.class);
 
     private static final String CDI_CONTAINER = "org.ops4j.pax.cdi.container";
@@ -58,8 +57,7 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
     private ContainerLifecycle lifecycle;
 
     @Override
-    public void contextInitialized(ServletContextEvent event)
-    {
+    public void contextInitialized(ServletContextEvent event) {
         ServletContext context = event.getServletContext();
         CdiContainer cdiContainer = (CdiContainer) context.getAttribute(CDI_CONTAINER);
         cdiContainer.start(event);
@@ -75,45 +73,40 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
         context.setAttribute(BeanManager.class.getName(), manager);
     }
 
-
     @Override
-    public void requestInitialized(ServletRequestEvent event)
-    {
-        try
-        {
-            log.debug("Starting a new request : [{}]", event == null ? "null" : event.getServletRequest().getRemoteAddr());
+    public void requestInitialized(ServletRequestEvent event) {
+        try {
+            log.debug("Starting a new request : [{}]", event == null ? "null" : event
+                .getServletRequest().getRemoteAddr());
 
             this.lifecycle.getContextService().startContext(RequestScoped.class, event);
 
             // we don't initialise the Session here but do it lazily if it gets requested
             // the first time. See OWB-457
         }
-        catch (Exception e)
-        {
-            log.error(
-                WebBeansLoggerFacade.constructMessage(OWBLogConst.ERROR_0019, event == null ? "null" : event.getServletRequest()));
+        catch (Exception e) {
+            log.error(WebBeansLoggerFacade.constructMessage(OWBLogConst.ERROR_0019,
+                event == null ? "null" : event.getServletRequest()));
             WebBeansUtil.throwRuntimeExceptions(e);
         }
     }
 
     @Override
-    public void sessionCreated(HttpSessionEvent event)
-    {
-        try
-        {
+    public void sessionCreated(HttpSessionEvent event) {
+        try {
             log.debug("Starting a session with session id : [{}]", event.getSession().getId());
-            this.lifecycle.getContextService().startContext(SessionScoped.class, event.getSession());
+            this.lifecycle.getContextService()
+                .startContext(SessionScoped.class, event.getSession());
         }
-        catch (Exception e)
-        {
-            log.error(WebBeansLoggerFacade.constructMessage(OWBLogConst.ERROR_0020, event.getSession()));
+        catch (Exception e) {
+            log.error(WebBeansLoggerFacade.constructMessage(OWBLogConst.ERROR_0020,
+                event.getSession()));
             WebBeansUtil.throwRuntimeExceptions(e);
         }
     }
 
     @Override
-    public void contextDestroyed(ServletContextEvent event)
-    {
+    public void contextDestroyed(ServletContextEvent event) {
         ServletContext context = event.getServletContext();
         context.removeAttribute(CDI_CONTAINER);
 
@@ -122,14 +115,13 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
     }
 
     @Override
-    public void requestDestroyed(ServletRequestEvent event)
-    {
-        log.debug("Destroying a request : [{}]", event == null ? "null" : event.getServletRequest().getRemoteAddr());
+    public void requestDestroyed(ServletRequestEvent event) {
+        log.debug("Destroying a request : [{}]", event == null ? "null" : event.getServletRequest()
+            .getRemoteAddr());
 
         // clean up the EL caches after each request
         ELContextStore elStore = ELContextStore.getInstance(false);
-        if (elStore != null)
-        {
+        if (elStore != null) {
             elStore.destroyELContextStore();
         }
 
@@ -138,27 +130,22 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
         this.cleanupRequestThreadLocals();
     }
 
-
     @Override
-    public void sessionDestroyed(HttpSessionEvent event)
-    {
+    public void sessionDestroyed(HttpSessionEvent event) {
         log.debug("Destroying a session with session id : [{}]", event.getSession().getId());
         boolean mustDestroy = ensureRequestScope();
 
         this.lifecycle.getContextService().endContext(SessionScoped.class, event.getSession());
 
-        if (mustDestroy)
-        {
+        if (mustDestroy) {
             requestDestroyed(null);
         }
     }
 
-    private boolean ensureRequestScope()
-    {
+    private boolean ensureRequestScope() {
         Context context = this.lifecycle.getContextService().getCurrentContext(RequestScoped.class);
 
-        if (context == null || !context.isActive())
-        {
+        if (context == null || !context.isActive()) {
             requestInitialized(null);
             return true;
         }
@@ -166,14 +153,12 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
     }
 
     /**
-     * Ensures that all ThreadLocals, which could have been set in this
-     * requests Thread, are removed in order to prevent memory leaks.
+     * Ensures that all ThreadLocals, which could have been set in this requests Thread, are removed
+     * in order to prevent memory leaks.
      */
-    private void cleanupRequestThreadLocals()
-    {
+    private void cleanupRequestThreadLocals() {
         ContextsService contextsService = this.lifecycle.getContextService();
-        if (contextsService != null)
-        {
+        if (contextsService != null) {
             contextsService.removeThreadLocals();
         }
     }
