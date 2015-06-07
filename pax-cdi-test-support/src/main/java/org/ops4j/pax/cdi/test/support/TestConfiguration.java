@@ -249,11 +249,11 @@ public class TestConfiguration {
 
     public static Option openWebBeans15Bundles() {
         return composite(
-            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.1"),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.3"),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-asm5-shaded", "4.1"), //
-            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.1"), //
+            mavenBundle("org.apache.xbean", "xbean-asm5-shaded", "4.3"), //
+            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.3"), //
             mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),
             mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec", "1.0"),
