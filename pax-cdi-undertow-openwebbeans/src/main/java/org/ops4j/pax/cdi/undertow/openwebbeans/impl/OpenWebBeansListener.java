@@ -97,6 +97,7 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
             // we don't initialise the Session here but do it lazily if it gets requested
             // the first time. See OWB-457
         }
+        // CHECKSTYLE:SKIP
         catch (Exception e) {
             log.error(WebBeansLoggerFacade.constructMessage(OWBLogConst.ERROR_0019,
                 event == null ? "null" : event.getServletRequest()));
@@ -111,6 +112,7 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
             this.lifecycle.getContextService()
                 .startContext(SessionScoped.class, event.getSession());
         }
+        // CHECKSTYLE:SKIP
         catch (Exception e) {
             log.error(WebBeansLoggerFacade.constructMessage(OWBLogConst.ERROR_0020,
                 event.getSession()));
