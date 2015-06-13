@@ -1,0 +1,104 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.ops4j.pax.cdi</groupId>
+        <artifactId>pax-cdi-samples</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <groupId>org.ops4j.pax.cdi.samples</groupId>
+    <artifactId>pax-cdi-sample8</artifactId>
+    <packaging>bundle</packaging>
+    
+    <name>OPS4J Pax CDI Sample8</name>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-security-module-api</artifactId>
+            <version>${deltaspike.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-security-module-impl</artifactId>
+            <version>${deltaspike.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.cdi</groupId>
+            <artifactId>pax-cdi-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-atinject_1.0_spec</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>org.ops4j.pax.cdi.sample8.service</Bundle-SymbolicName>
+                        <Import-Package>
+                            org.apache.deltaspike.security.api.authorization,
+                            org.apache.deltaspike.security.spi.authorization,
+                            org.apache.deltaspike.security.impl.extension,
+                            org.apache.deltaspike.security.impl.util,
+                            *
+                        </Import-Package>
+                        <Require-Capability>
+                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=pax-cdi-extension)(version&gt;=${version;==;${pax.cdi.osgi.version.clean}})(!(version&gt;=${version;=+;${pax.cdi.osgi.version.clean}})))",
+                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-security-module-impl))",
+                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-core-impl))",
+                            org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-core-api))",
+                            osgi.extender; filter:="(osgi.extender=pax.cdi)"
+                        </Require-Capability>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>versions</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>cleanVersions</goal>
+                        </goals>
+                        <configuration>
+                            <versions>
+                                <pax.cdi.osgi.version.clean>${project.version}</pax.cdi.osgi.version.clean>
+                            </versions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
