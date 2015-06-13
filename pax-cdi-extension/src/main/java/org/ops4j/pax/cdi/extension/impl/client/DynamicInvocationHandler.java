@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.cdi.extension.impl.client;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 
@@ -25,6 +26,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import org.ops4j.pax.cdi.extension.impl.compat.OsgiScopeUtils;
 import org.ops4j.pax.cdi.extension.impl.compat.ServiceObjectsWrapper;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
+import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
 import org.osgi.framework.ServiceReference;
 
@@ -64,7 +66,12 @@ public class DynamicInvocationHandler<S> extends AbstractServiceInvocationHandle
 
                 @Override
                 public Object call() throws Exception {
-                    return method.invoke(service, args);
+                    try {
+                        return method.invoke(service, args);
+                    }
+                    catch (InvocationTargetException exc) {
+                        throw Exceptions.unchecked(exc.getCause());
+                    }
                 }
             });
         serviceObjects.ungetService(service);
