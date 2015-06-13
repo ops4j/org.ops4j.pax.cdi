@@ -71,12 +71,14 @@ public class TransactionalTest {
             mavenBundle("org.apache.derby", "derby").versionAsInProject(),
             mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject(),
 
-            // unchanged DeltaSpike bundles
+            // DeltaSpike bundles
             mavenBundle("org.apache.deltaspike.core", "deltaspike-core-api").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.core", "deltaspike-core-impl").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-api").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-api").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-api").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-proxy-module-api").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-proxy-module-impl-asm5").versionAsInProject(),
 
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-impl").versionAsInProject(),
