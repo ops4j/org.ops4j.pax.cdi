@@ -37,7 +37,7 @@ public class OsgiProxyService implements ProxyServices {
 
     @Override
     public ClassLoader getClassLoader(Class<?> proxiedBeanType) {
-        return loader;
+        return proxiedBeanType.getClassLoader();
     }
 
     @Override
