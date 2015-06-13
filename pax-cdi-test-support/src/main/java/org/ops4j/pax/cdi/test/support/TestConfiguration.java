@@ -268,6 +268,7 @@ public class TestConfiguration {
     public static Option weld2Bundles() {
         return composite(
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-weld"),
+            mavenBundle("org.ops4j.pax.cdi", "pax-cdi-weld-fragment", Info.getPaxCdiVersion()).noStart(),
             mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.1"),
             mavenBundle("org.jboss.logging", "jboss-logging", "3.1.3.GA"),
             mavenBundle("org.jboss.classfilewriter", "jboss-classfilewriter", "1.1.1.Final"),

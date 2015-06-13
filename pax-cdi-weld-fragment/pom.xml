@@ -2,11 +2,11 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.ops4j.pax</groupId>
-        <artifactId>cdi</artifactId>
+        <groupId>org.ops4j.pax.cdi</groupId>
+        <artifactId>pax-cdi-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pax-cdi-parent</relativePath>
     </parent>
-    <groupId>org.ops4j.pax.cdi</groupId>
     <artifactId>pax-cdi-weld-fragment</artifactId>
     <packaging>bundle</packaging>
 
@@ -15,8 +15,7 @@
         <bundle.symbolicName>org.ops4j.pax.cdi.weld.fragment</bundle.symbolicName>
         <bundle.namespace>org.ops4j.pax.cdi.weld.fragment</bundle.namespace>
     </properties>
-
-
+    
     <build>
         <plugins>
             <plugin>
@@ -26,12 +25,10 @@
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Fragment-Host>org.jboss.weld.osgi-bundle</Fragment-Host>
-                        <Import-Package>
-                            org.jboss.weld.*, *
-                        </Import-Package>
-                        <Export-Package>
-                            org.jboss.weld.*
-                        </Export-Package>
+                        <_exportcontents>
+                            org.jboss.weld.interceptor.proxy;version="2.2",
+                            org.jboss.weld.interceptor.util.proxy;version="2.2"
+                        </_exportcontents>
                     </instructions>
                 </configuration>
             </plugin>

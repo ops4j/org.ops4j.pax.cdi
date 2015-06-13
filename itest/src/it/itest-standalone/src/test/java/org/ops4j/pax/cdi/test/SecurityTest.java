@@ -32,7 +32,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.cdi.sample8.service.SecuredClient;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
@@ -62,7 +61,6 @@ public class SecurityTest {
             // DeltaSpike bundles
             mavenBundle("org.apache.deltaspike.core", "deltaspike-core-api").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.core", "deltaspike-core-impl").versionAsInProject(),
-            mavenBundle("org.ops4j.pax.cdi", "pax-cdi-weld-fragment", Info.getPaxCdiVersion()).noStart(),
 
             // Uncomment this section and delete the next after upgrading to DS 1.4.2
             // mavenBundle("org.apache.deltaspike.modules", "deltaspike-security-module-api").versionAsInProject(),
