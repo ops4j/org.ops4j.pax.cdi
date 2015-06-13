@@ -139,7 +139,7 @@
 
         <dependency>
             <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample8-security</artifactId>
+            <artifactId>pax-cdi-sample8</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
