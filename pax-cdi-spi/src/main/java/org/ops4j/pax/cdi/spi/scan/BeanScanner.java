@@ -94,8 +94,8 @@ public class BeanScanner {
      * @return unmodifiable set
      */
     public Set<URL> getBeanDescriptors() {
-        // FIXME
-        return Collections.emptySet();
+        Set<URL> urls = new HashSet<>(filter.getBeanDescriptors());
+        return Collections.unmodifiableSet(urls);
     }
 
     /**

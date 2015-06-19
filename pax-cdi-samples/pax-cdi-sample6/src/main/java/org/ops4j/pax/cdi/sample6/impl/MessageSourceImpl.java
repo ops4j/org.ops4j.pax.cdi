@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Harald Wellmann.
+ * Copyright 2015 Harald Wellmann.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,13 @@
  */
 package org.ops4j.pax.cdi.sample6.impl;
 
-import javax.inject.Inject;
-
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
-import org.ops4j.pax.cdi.sample6.MessageProducer;
 import org.ops4j.pax.cdi.sample6.MessageSource;
 
-@OsgiServiceProvider
-public class MessageProducerImpl implements MessageProducer {
 
-    @Inject
-    private MessageSource source;
+public class MessageSourceImpl implements MessageSource {
 
     @Override
     public String getMessage() {
-        return source.getMessage();
+        return "Tertium non datur.";
     }
 }

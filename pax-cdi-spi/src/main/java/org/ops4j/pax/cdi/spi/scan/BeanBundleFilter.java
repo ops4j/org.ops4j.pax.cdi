@@ -18,8 +18,10 @@
 package org.ops4j.pax.cdi.spi.scan;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.ops4j.pax.cdi.spi.BeanBundles;
@@ -45,8 +47,9 @@ public class BeanBundleFilter implements BundleFilter {
                 return true;
             case NONE:
                 return false;
+            default:
+                throw new IllegalArgumentException(descriptor.getBeanDiscoveryMode().toString());
         }
-        return false;
     }
 
     public BeanDescriptor findDescriptor(Bundle providerBundle) {
@@ -84,5 +87,13 @@ public class BeanBundleFilter implements BundleFilter {
         Dictionary<String, String> headers = bundle.getHeaders();
         String contextPath = headers.get("Web-ContextPath");
         return (contextPath != null);
+    }
+
+    public List<URL> getBeanDescriptors() {
+        List<URL> urls = new ArrayList<>();
+        for (BeanDescriptor descriptor : descriptorMap.values()) {
+            urls.add(descriptor.getUrl());
+        }
+        return urls;
     }
 }
