@@ -31,7 +31,7 @@
         <pax.web.version>4.0.0</pax.web.version>
 
         <slf4j.version>1.6.4</slf4j.version>
-        <weld2.version>2.2.14-SNAPSHOT</weld2.version>
+        <weld2.version>2.2.13.Final</weld2.version>
         <xbean.version>4.3</xbean.version>
 
         <pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
