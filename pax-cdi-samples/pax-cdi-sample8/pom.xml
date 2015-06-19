@@ -68,6 +68,9 @@
                             org.apache.deltaspike.security.impl.util,
                             *
                         </Import-Package>
+                        <Require-Bundle>
+                            org.apache.deltaspike.core.deltaspike-core-impl
+                        </Require-Bundle>
                         <Require-Capability>
                             org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=pax-cdi-extension)(version&gt;=${version;==;${pax.cdi.osgi.version.clean}})(!(version&gt;=${version;=+;${pax.cdi.osgi.version.clean}})))",
                             org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-security-module-impl))",

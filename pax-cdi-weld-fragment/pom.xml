@@ -27,7 +27,8 @@
                         <Fragment-Host>org.jboss.weld.osgi-bundle</Fragment-Host>
                         <_exportcontents>
                             org.jboss.weld.interceptor.proxy;version="2.2",
-                            org.jboss.weld.interceptor.util.proxy;version="2.2"
+                            org.jboss.weld.interceptor.util.proxy;version="2.2",
+                            org.jboss.weld.xml;version="2.2"
                         </_exportcontents>
                     </instructions>
                 </configuration>

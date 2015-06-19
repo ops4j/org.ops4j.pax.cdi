@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Harald Wellmann.
+ * Copyright 2015 Harald Wellmann.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,18 +25,18 @@ import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
-import java.net.URL;
-import java.util.Set;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.xbean.finder.AnnotationFinder;
+import org.apache.xbean.finder.archive.Archive.Entry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.cdi.spi.scan.BeanDescriptor;
-import org.ops4j.pax.cdi.spi.scan.BeanDescriptorParser;
-import org.ops4j.pax.cdi.spi.scan.BeanDiscoveryMode;
-import org.ops4j.pax.cdi.spi.scan.BeanScanner;
-import org.ops4j.pax.cdi.spi.scan.DefaultBeanDescriptor;
+import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.spi.scan.BundleArchive;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -48,7 +48,7 @@ import org.osgi.framework.BundleContext;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class BeanScannerTest {
+public class BundleArchiveTest {
 
     @Inject
     private BundleContext bc;
@@ -63,31 +63,56 @@ public class BeanScannerTest {
 
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-api"),
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-spi"),
+            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-extender"),
+            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-extension"),
+            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample6"),
+            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
+            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-client"),
 
             mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
             mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(),
             mavenBundle("org.apache.xbean", "xbean-asm5-shaded").versionAsInProject(),
+            mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
             mavenBundle("javax.el", "javax.el-api", "3.0.0"),
             mavenBundle("javax.enterprise", "cdi-api").versionAsInProject());
     }
 
     @Test
-    public void archiveWithoutExtenderShouldBeEmpty() {
+    public void shouldFindClassFromEmbeddedJar() throws ClassNotFoundException, IOException {
         Bundle bundle = BundleUtils.getBundle(bc, "org.ops4j.pax.tinybundles");
         assertThat(bundle, is(notNullValue()));
 
-        BeanDescriptorParser parser = new BeanDescriptorParser() {
+        BundleArchive archive = new BundleArchive(bundle);
+        Iterator<Entry> it = archive.iterator();
+        while (it.hasNext()) {
+            String className = it.next().getName();
+            System.out.println(className);
+            assertThat(archive.getBytecode(className), is(notNullValue()));
+        }
+    }
 
-            @Override
-            public BeanDescriptor parse(URL beansXml) {
-                return new DefaultBeanDescriptor(null, BeanDiscoveryMode.ALL, "1.0");
-            }
-        };
+    @Test
+    public void shouldFindClassFromImportedPackage() throws ClassNotFoundException, IOException {
+        Bundle bundle = BundleUtils.getBundle(bc, "org.ops4j.pax.cdi.spi");
+        assertThat(bundle, is(notNullValue()));
 
-        BeanScanner scanner = new BeanScanner(bundle, parser);
-        scanner.scan();
-        Set<String> beanClasses = scanner.getBeanClasses();
-        assertThat(beanClasses.size(), is(0));
+        BundleArchive archive = new BundleArchive(bundle);
+        Iterator<Entry> it = archive.iterator();
+        while (it.hasNext()) {
+            System.out.println(it.next().getName());
+        }
+    }
+
+    @Test
+    public void shouldFindAnnotations() {
+        Bundle bundle = BundleUtils.getBundle(bc, "org.ops4j.pax.cdi.sample1.client");
+        assertThat(bundle, is(notNullValue()));
+
+        BundleArchive archive = new BundleArchive(bundle);
+        AnnotationFinder finder = new AnnotationFinder(archive);
+        List<Class<?>> classes = finder.findAnnotatedClasses(OsgiServiceProvider.class);
+        System.out.println(classes);
+        assertThat(classes.size(), is(3));
     }
 }
