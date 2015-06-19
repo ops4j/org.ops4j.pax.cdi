@@ -15,6 +15,8 @@
         <bundle dependency="true">mvn:org.ops4j.pax.swissbox/pax-swissbox-core/${pax.swissbox.version}</bundle>
         <bundle dependency="true">mvn:org.ops4j.base/ops4j-base/${ops4j.base.version}</bundle>
         <bundle dependency="true">mvn:org.apache.xbean/xbean-bundleutils/${xbean.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.xbean/xbean-asm5-shaded/${xbean.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.xbean/xbean-finder-shaded/${xbean.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-api/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-spi/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-extension/${project.version}</bundle>
@@ -29,6 +31,7 @@
         <bundle>mvn:com.google.guava/guava/${guava.version}</bundle>
         <bundle>mvn:org.jboss.classfilewriter/jboss-classfilewriter/1.1.1.Final</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-weld/${project.version}</bundle>
+        <bundle start="false">mvn:org.ops4j.pax.cdi/pax-cdi-weld-fragment/${project.version}</bundle>
     </feature>
 
     <feature name="pax-cdi-openwebbeans" description="OpenWebBeans CDI support" version="${project.version}"
@@ -37,8 +40,6 @@
         <bundle dependency="true">mvn:javax.validation/validation-api/1.1.0.Final</bundle>
         <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/1.2</bundle>
         <bundle dependency="true">mvn:javax.servlet/javax.servlet-api/3.1.0</bundle>
-        <bundle dependency="true">mvn:org.apache.xbean/xbean-asm5-shaded/${xbean.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.xbean/xbean-finder-shaded/${xbean.version}</bundle>
         <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-spi/${openwebbeans15.version}</bundle>
         <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-impl/${openwebbeans15.version}</bundle>
         <bundle dependency="true">mvn:org.apache.openwebbeans/openwebbeans-el22/${openwebbeans15.version}</bundle>
