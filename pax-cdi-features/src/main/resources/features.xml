@@ -31,7 +31,6 @@
         <bundle>mvn:com.google.guava/guava/${guava.version}</bundle>
         <bundle>mvn:org.jboss.classfilewriter/jboss-classfilewriter/1.1.1.Final</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-weld/${project.version}</bundle>
-        <bundle start="false">mvn:org.ops4j.pax.cdi/pax-cdi-weld-fragment/${project.version}</bundle>
     </feature>
 
     <feature name="pax-cdi-openwebbeans" description="OpenWebBeans CDI support" version="${project.version}"
@@ -94,7 +93,6 @@
         <bundle dependency="true">mvn:org.ops4j.pax.jdbc/pax-jdbc/${pax.jdbc.version}</bundle>
         <bundle>mvn:org.apache.deltaspike.modules/deltaspike-jpa-module-api/${deltaspike.version}</bundle>
         <bundle>mvn:org.apache.deltaspike.modules/deltaspike-jpa-module-impl/${deltaspike.version}</bundle>
-        <bundle>mvn:org.ops4j.pax.cdi.fragment/pax-cdi-fragment-ds-jpa/${project.version}</bundle>
     </feature>
 
     <feature name="deltaspike-partial-bean" description="Apache Deltaspike partial bean support" version="${deltaspike.version}"
