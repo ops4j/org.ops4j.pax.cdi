@@ -21,7 +21,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
@@ -108,7 +107,7 @@ public class SingleBundleTest {
     public void checkBeanManager() {
         assertNotNull(container.getBeanManager());
         assertNotNull(beanManager);
-        assertSame(beanManager, container.getBeanManager());
+        assertThat(beanManager, is(container.getBeanManager()));
     }
 
     @Test
