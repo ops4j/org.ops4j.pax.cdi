@@ -63,16 +63,18 @@ public class ServiceEventBridge implements ServiceListener {
             createServiceObjectsWrapper(bundleContext, serviceReference);
         Object service = serviceObjects.getService();
 
-        try {
-            Class klass = service.getClass();
-            event.select(klass, qualifier).fire(service);
+        if (service != null) {
+            try {
+                Class klass = service.getClass();
+                event.select(klass, qualifier).fire(service);
 
-            TypeLiteral literal = new ParameterizedTypeLiteral(ServiceCdiEvent.class, klass);
-            ServiceCdiEvent cdiEvent = new ServiceCdiEvent(serviceReference, service);
-            event.select(literal, qualifier).fire(cdiEvent);
-        }
-        finally {
-            serviceObjects.ungetService(service);
+                TypeLiteral literal = new ParameterizedTypeLiteral(ServiceCdiEvent.class, klass);
+                ServiceCdiEvent cdiEvent = new ServiceCdiEvent(serviceReference, service);
+                event.select(literal, qualifier).fire(cdiEvent);
+            }
+            finally {
+                serviceObjects.ungetService(service);
+            }
         }
     }
 
