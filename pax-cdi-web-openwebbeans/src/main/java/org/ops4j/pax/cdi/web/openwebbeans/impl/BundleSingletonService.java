@@ -25,8 +25,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.webbeans.config.WebBeansContext;
-import org.apache.webbeans.spi.ContainerLifecycle;
-import org.apache.webbeans.spi.ContextsService;
 import org.apache.webbeans.spi.SingletonService;
 import org.apache.webbeans.util.Asserts;
 import org.ops4j.pax.cdi.spi.util.Exceptions;
@@ -65,8 +63,6 @@ public class BundleSingletonService implements SingletonService<WebBeansContext>
                 String resource = "/META-INF/openwebbeans/standalone.properties";
                 if (bundle.getHeaders().get("Web-ContextPath") != null) {
                     resource = "/META-INF/openwebbeans/wab.properties";
-                    initialServices.put(ContainerLifecycle.class, new WabContainerLifecycle());
-                    initialServices.put(ContextsService.class, new WabContextsService());
                 }
 
                 try {
@@ -79,9 +75,7 @@ public class BundleSingletonService implements SingletonService<WebBeansContext>
                 webBeansContext = new WebBeansContext(initialServices, props);
                 singletonMap.put(bundleId, webBeansContext);
             }
-
             return webBeansContext;
-
         }
     }
 

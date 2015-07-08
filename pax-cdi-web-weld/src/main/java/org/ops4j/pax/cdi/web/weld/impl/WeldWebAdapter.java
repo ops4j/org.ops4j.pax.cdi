@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Component;
 public class WeldWebAdapter extends AbstractWebAppDependencyManager {
 
     @Override
-    protected ServletContextListener getServletContextListener() {
+    public ServletContextListener createServletContextListener() {
         return new WeldServletContextListener();
     }
 }

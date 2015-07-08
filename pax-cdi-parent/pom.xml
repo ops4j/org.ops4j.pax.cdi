@@ -13,11 +13,12 @@
     <name>OPS4J Pax CDI Parent POM</name>
 
     <properties>
-        <deltaspike.version>1.3.0</deltaspike.version>
+        <deltaspike.version>1.4.2-SNAPSHOT</deltaspike.version>
         <guava.version>13.0.1</guava.version>
         <jersey.version>1.13</jersey.version>
+        <jetty.version>9.0.7.v20131107</jetty.version>
         <logback.version>1.0.0</logback.version>
-        <openwebbeans15.version>1.5.0</openwebbeans15.version>
+        <openwebbeans15.version>1.6.1</openwebbeans15.version>
         <openjpa.version>2.2.0</openjpa.version>
         <ops4j.base.version>1.5.0</ops4j.base.version>
         <pax.exam.version>4.5.0</pax.exam.version>
@@ -25,10 +26,13 @@
         <pax.jpa.version>0.3.0</pax.jpa.version>
         <pax.swissbox.version>1.8.1</pax.swissbox.version>
         <pax.url.version>2.4.1</pax.url.version>
+
+        <!-- NOTE: 4.0.2 breaks TCK, 4.1.x breaks ServletTest -->
         <pax.web.version>4.0.0</pax.web.version>
+
         <slf4j.version>1.6.4</slf4j.version>
-        <weld2.version>2.2.11.Final</weld2.version>
-        <xbean.version>4.1</xbean.version>
+        <weld2.version>2.2.14.Final</weld2.version>
+        <xbean.version>4.3</xbean.version>
 
         <pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
     </properties>

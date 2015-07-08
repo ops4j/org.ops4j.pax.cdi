@@ -34,8 +34,6 @@ import org.osgi.service.component.annotations.Component;
 @Component(immediate = true, property = "type=web", service = CdiContainerListener.class)
 public class OpenWebBeansWebAdapter extends AbstractWebAppDependencyManager {
 
-    private ServletContextListener listener = new OpenWebBeansListener();
-
     /**
      * Called by the OSGi framework when this bundle is activated. Registers a custom
      * singleton service.
@@ -46,7 +44,7 @@ public class OpenWebBeansWebAdapter extends AbstractWebAppDependencyManager {
     }
 
     @Override
-    public ServletContextListener getServletContextListener() {
-        return listener;
+    public ServletContextListener createServletContextListener() {
+        return new OpenWebBeansListener();
     }
 }

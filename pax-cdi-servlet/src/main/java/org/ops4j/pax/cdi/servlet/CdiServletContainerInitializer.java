@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author Harald Wellmann
  *
  */
-public class CdiServletContainerInitializer implements ServletContainerInitializer {
+public abstract class CdiServletContainerInitializer implements ServletContainerInitializer {
 
     private static Logger log = LoggerFactory.getLogger(CdiServletContainerInitializer.class);
 
@@ -64,6 +64,8 @@ public class CdiServletContainerInitializer implements ServletContainerInitializ
     public void onStartup(Set<Class<?>> classes, ServletContext ctx) throws ServletException {
         log.info("storing CdiContainer in ServletContext for [{}]", cdiContainer.getBundle());
         ctx.setAttribute("org.ops4j.pax.cdi.container", cdiContainer);
-        ctx.addListener(servletContextListener);
+        ctx.addListener(createServletContextListener());
     }
+
+    public abstract ServletContextListener createServletContextListener();
 }

@@ -167,9 +167,12 @@ public class ComponentDescriptor<S> extends AbstractLifecycle {
 
     @Override
     protected void onStop() {
-        listener.onComponentUnsatisfied(this);
-        for (ComponentDependency<S, ?> dependency : dependencies) {
-            dependency.stop();
+        if (isSatisfied()) {
+            listener.onComponentUnsatisfied(this);
+            for (ComponentDependency<S, ?> dependency : dependencies) {
+                dependency.stop();
+            }
+            serviceRegistration.unregister();
         }
     }
 }

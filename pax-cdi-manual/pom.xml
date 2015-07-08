@@ -7,7 +7,6 @@
         <relativePath>../pax-cdi-parent</relativePath>
     </parent>
 
-    <groupId>org.ops4j.pax.cdi</groupId>
     <artifactId>pax-cdi-manual</artifactId>
     <packaging>war</packaging>
     
@@ -34,10 +33,31 @@
                             </attributes>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>output-pdf</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceHighlighter>coderay</sourceHighlighter>
+                            <backend>pdf</backend>
+                            <attributes>
+                                <toc />
+                            </attributes>
+                        </configuration>
+                    </execution>
                 </executions>
                 <configuration>
                     <headerFooter>true</headerFooter>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctorj-pdf</artifactId>
+                        <version>1.5.0-alpha.6</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

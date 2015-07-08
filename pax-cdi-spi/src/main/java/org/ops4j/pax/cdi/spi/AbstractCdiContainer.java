@@ -47,7 +47,6 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     private static Logger log = LoggerFactory.getLogger(AbstractCdiContainer.class);
 
     private Bundle bundle;
-    private CdiContainerType containerType;
     private ServiceRegistration<CdiContainer> cdiContainerReg;
     private ServiceRegistration<BeanManager> beanManagerReg;
     private boolean started;
@@ -72,9 +71,8 @@ public abstract class AbstractCdiContainer implements CdiContainer {
      */
     private BundleClassLoader contextClassLoader;
 
-    protected AbstractCdiContainer(CdiContainerType containerType, Bundle bundle,
+    protected AbstractCdiContainer(Bundle bundle,
         Collection<Bundle> extensionBundles, Collection<Bundle> additionalBundles) {
-        this.containerType = containerType;
         this.bundle = bundle;
         this.extensionBundles = extensionBundles;
         this.additionalBundles = additionalBundles;
@@ -181,10 +179,5 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     @Override
     public Bundle getBundle() {
         return bundle;
-    }
-
-    @Override
-    public CdiContainerType getContainerType() {
-        return containerType;
     }
 }

@@ -18,11 +18,11 @@
 package org.ops4j.pax.cdi.openwebbeans.impl;
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
+import org.apache.webbeans.config.WebBeansContext;
+import org.apache.webbeans.spi.BeanArchiveService;
 import org.apache.webbeans.spi.ScannerService;
 import org.apache.xbean.osgi.bundle.util.BundleUtils;
 import org.ops4j.pax.cdi.spi.scan.BeanScanner;
@@ -43,14 +43,6 @@ public class BundleScannerService implements ScannerService {
     private BeanScanner scanner;
     private Bundle bundle;
     private Set<Class<?>> beanClasses;
-    private Map<String, Set<String>> classAnnotations;
-
-    /**
-     * Creates a new scanner service.
-     */
-    public BundleScannerService() {
-        classAnnotations = new HashMap<String, Set<String>>();
-    }
 
     @Override
     public void init(Object object) {
@@ -59,8 +51,10 @@ public class BundleScannerService implements ScannerService {
 
     @Override
     public void scan() {
+        BeanArchiveService archiveService = WebBeansContext.getInstance().getBeanArchiveService();
+        OpenWebBeansParser parser = new OpenWebBeansParser(archiveService);
         bundle = BundleUtils.getContextBundle(true);
-        scanner = new BeanScanner(bundle);
+        scanner = new BeanScanner(bundle, parser);
         scanner.scan();
     }
 
@@ -69,7 +63,6 @@ public class BundleScannerService implements ScannerService {
         scanner = null;
         bundle = null;
         beanClasses = null;
-        classAnnotations.clear();
     }
 
     @Override

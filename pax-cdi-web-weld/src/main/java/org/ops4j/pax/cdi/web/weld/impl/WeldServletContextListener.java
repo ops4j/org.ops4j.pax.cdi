@@ -80,6 +80,7 @@ public class WeldServletContextListener extends ForwardingServletListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
+        log.info("servlet context destroyed");
         cdiContainer.stop();
         sce.getServletContext().removeAttribute(JettyDecorator.INJECTOR_KEY);
 

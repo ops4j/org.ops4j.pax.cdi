@@ -17,14 +17,20 @@
  */
 package org.ops4j.pax.cdi.sample6.impl;
 
+import javax.inject.Inject;
+
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.sample6.MessageProducer;
+import org.ops4j.pax.cdi.sample6.MessageSource;
 
 @OsgiServiceProvider
 public class MessageProducerImpl implements MessageProducer {
 
+    @Inject
+    private MessageSource source;
+
     @Override
     public String getMessage() {
-        return "Quod erat demonstrandum.";
+        return source.getMessage();
     }
 }

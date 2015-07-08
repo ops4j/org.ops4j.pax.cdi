@@ -24,7 +24,7 @@ import java.util.Properties;
 /**
  * Provides version information about this release of Pax CDI.
  *
- * Fully static
+ * Utility class with static methods only.
  *
  * @author Harald Wellmann
  */
@@ -41,14 +41,19 @@ public class Info {
     private static final String PAX_WEB_VERSION;
 
     /**
-     * True if Pax Web is a snapshot version.
+     * Jetty version.
      */
-    private static boolean paxWebSnapshotVersion;
+    private static final String JETTY_VERSION;
 
     /**
      * Pax CDI version.
      */
     private static final String PAX_CDI_VERSION;
+
+    /**
+     * True if Pax Web is a snapshot version.
+     */
+    private static boolean paxWebSnapshotVersion;
 
     /**
      * True if Pax CDI is a snapshot version.
@@ -58,21 +63,15 @@ public class Info {
     static {
         String paxCdiVersion = "";
         String paxWebVersion = "";
+        String jettyVersion = "";
         try {
             InputStream is = Info.class.getResourceAsStream("/META-INF/pax-cdi-version.properties");
             if (is != null) {
                 Properties properties = new Properties();
                 properties.load(is);
-                paxCdiVersion = properties.getProperty("pax.cdi.version");
-                if (paxCdiVersion == null) {
-                    throw new IllegalStateException(
-                        "pax.cdi.version missing in META-INF/pax-cdi-version.properties");
-                }
-                paxWebVersion = properties.getProperty("pax.web.version");
-                if (paxWebVersion == null) {
-                    throw new IllegalStateException(
-                        "pax.web.version missing in META-INF/pax-web-version.properties");
-                }
+                paxCdiVersion = readProperty(properties, "pax.cdi.version");
+                paxWebVersion = readProperty(properties, "pax.web.version");
+                jettyVersion = readProperty(properties, "jetty.version");
             }
         }
         catch (IOException exc) {
@@ -82,12 +81,23 @@ public class Info {
         paxCdiSnapshotVersion = paxCdiVersion.endsWith(SNAPSHOT);
         PAX_WEB_VERSION = paxWebVersion;
         paxWebSnapshotVersion = paxWebVersion.endsWith(SNAPSHOT);
+        JETTY_VERSION = jettyVersion;
     }
 
     /**
      * No instances should be made (does not make sense).
      */
     private Info() {
+
+    }
+
+    private static String readProperty(Properties properties, String key) {
+        String value = properties.getProperty(key);
+        if (value == null) {
+            throw new IllegalStateException(
+                key + " missing in META-INF/pax-cdi-version.properties");
+        }
+        return value;
 
     }
 
@@ -116,6 +126,15 @@ public class Info {
      */
     public static String getPaxWebVersion() {
         return PAX_WEB_VERSION;
+    }
+
+    /**
+     * Discovers the Jetty version. If version cannot be determined returns an empty string.
+     *
+     * @return Jetty version
+     */
+    public static String getJettyVersion() {
+        return JETTY_VERSION;
     }
 
     /**

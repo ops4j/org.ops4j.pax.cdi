@@ -37,10 +37,10 @@ public class WeldUndertowAdapter extends AbstractWebCdiContainerListener {
     /**
      * Provides a servlet container initializer for the given CDI container.
      * @param cdiContainer CDI container of bean bundle
-     * @return servlet container initializier
+     * @return servlet container initializer
      */
     @Override
     protected ServletContainerInitializer getServletContainerInitializer(CdiContainer cdiContainer) {
-        return new WeldServletContainerInitializer(cdiContainer, new WeldServletContextListener());
+        return new WeldServletContainerInitializer(cdiContainer);
     }
 }

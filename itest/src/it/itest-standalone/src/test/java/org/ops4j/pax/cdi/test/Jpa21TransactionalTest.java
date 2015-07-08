@@ -92,6 +92,8 @@ public class Jpa21TransactionalTest {
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-api").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-api").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-data-module-api").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-proxy-module-api").versionAsInProject(),
+            mavenBundle("org.apache.deltaspike.modules", "deltaspike-proxy-module-impl-asm5").versionAsInProject(),
 
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-jpa-module-impl").versionAsInProject(),
             mavenBundle("org.apache.deltaspike.modules", "deltaspike-partial-bean-module-impl").versionAsInProject(),

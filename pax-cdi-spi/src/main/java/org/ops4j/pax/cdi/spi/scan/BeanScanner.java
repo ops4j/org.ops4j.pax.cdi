@@ -17,30 +17,29 @@
  */
 package org.ops4j.pax.cdi.spi.scan;
 
-import static org.ops4j.pax.cdi.api.Constants.CDI_EXTENSION_CAPABILITY;
-import static org.osgi.framework.Constants.BUNDLE_CLASSPATH;
-import static org.osgi.framework.wiring.BundleRevision.BUNDLE_NAMESPACE;
-import static org.osgi.framework.wiring.BundleRevision.PACKAGE_NAMESPACE;
-
-import java.io.IOException;
 import java.net.URL;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
-import org.ops4j.pax.cdi.spi.BeanBundles;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.NormalScope;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Model;
+import javax.enterprise.inject.Stereotype;
+
+import org.apache.xbean.finder.AnnotationFinder;
+import org.apache.xbean.finder.AnnotationFinder.AnnotationInfo;
+import org.apache.xbean.finder.AnnotationFinder.ClassInfo;
+import org.ops4j.pax.cdi.api.BundleScoped;
+import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.PrototypeScoped;
+import org.ops4j.pax.cdi.api.SingletonScoped;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.wiring.BundleCapability;
-import org.osgi.framework.wiring.BundleWire;
-import org.osgi.framework.wiring.BundleWiring;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Scans a bundle for candidate managed bean classes. The scanner only looks at bundle entries but
@@ -57,32 +56,27 @@ import org.slf4j.LoggerFactory;
  */
 public class BeanScanner {
 
-    private static final String CLASS_EXT = ".class";
+    private static Set<String> beanDefiningAnnotations;
 
-    private static final String[] BEAN_DESCRIPTOR_PATHS = new String[]  {
-      "META-INF/beans.xml",
-      "WEB-INF/beans.xml"
-    };
+    private BeanBundleFilter filter;
+    private BundleArchive archive;
+    private Set<String> beanClasses = new HashSet<>();
+    private BeanAnnotationFinder finder;
 
-    private static Logger log = LoggerFactory.getLogger(BeanScanner.class);
+    static {
+        beanDefiningAnnotations = new HashSet<String>();
+        for (Class<?> klass : Arrays.asList(Dependent.class, RequestScoped.class,
+            ConversationScoped.class, SessionScoped.class, ApplicationScoped.class,
+            javax.interceptor.Interceptor.class, javax.decorator.Decorator.class, Model.class,
+            NormalScope.class, Stereotype.class, BundleScoped.class, PrototypeScoped.class,
+            SingletonScoped.class, OsgiServiceProvider.class)) {
+            beanDefiningAnnotations.add(klass.getName());
+        }
+    }
 
-    private Bundle bundle;
-
-    private Set<URL> beanDescriptors;
-    private Set<String> beanClasses;
-
-    private Set<String> scannedPackages;
-
-    /**
-     * Constructs a bean scanner for the given bundle.
-     *
-     * @param bundle
-     *            bundle to be scanned
-     */
-    public BeanScanner(Bundle bundle) {
-        this.bundle = bundle;
-        this.beanDescriptors = new HashSet<>();
-        this.beanClasses = new TreeSet<>();
+    public BeanScanner(Bundle bundle, BeanDescriptorParser parser) {
+        this.filter = new BeanBundleFilter(parser);
+        this.archive = new BundleArchive(bundle, filter);
     }
 
     /**
@@ -100,183 +94,42 @@ public class BeanScanner {
      * @return unmodifiable set
      */
     public Set<URL> getBeanDescriptors() {
-        return Collections.unmodifiableSet(beanDescriptors);
+        Set<URL> urls = new HashSet<>(filter.getBeanDescriptors());
+        return Collections.unmodifiableSet(urls);
     }
 
     /**
      * Scans the given bundle and all imports for bean classes.
      */
     public void scan() {
-        scannedPackages = new HashSet<String>();
-        scanOwnBundle();
-        scanImportedPackages();
-        scanWiredBundles(BUNDLE_NAMESPACE, true);
-        scanWiredBundles(CDI_EXTENSION_CAPABILITY, false);
-        logBeanClasses();
-    }
-
-    private void logBeanClasses() {
-        if (!log.isDebugEnabled()) {
-            return;
-        }
-        log.debug("candidate bean classes for bundle [{}]:", bundle);
-        for (String klass : beanClasses) {
-            log.debug("    {}", klass);
-        }
-    }
-
-    private void scanOwnBundle() {
-        findBeanDescriptors();
-
-        String[] classPathElements;
-
-        String bundleClassPath = bundle.getHeaders().get(BUNDLE_CLASSPATH);
-        if (bundleClassPath == null) {
-            classPathElements = new String[] { "/" };
-        }
-        else {
-            classPathElements = bundleClassPath.split(",");
-        }
-
-        for (String cp : classPathElements) {
-            String classPath = cp;
-            if (classPath.equals(".")) {
-                classPath = "/";
-            }
-
-            if (classPath.endsWith(".jar") || classPath.endsWith(".zip")) {
-                scanZip(classPath);
-            }
-            else {
-                scanDirectory(classPath);
+        finder = new BeanAnnotationFinder(archive);
+        for (String className : finder.getAnnotatedClassNames()) {
+            if (isBeanClass(className)) {
+                beanClasses.add(className);
             }
         }
     }
 
-    private void findBeanDescriptors() {
-        for (String path : BEAN_DESCRIPTOR_PATHS) {
-            URL url = bundle.getEntry(path);
-            if (url != null) {
-                beanDescriptors.add(url);
-                return;
+    private boolean isBeanClass(String className) {
+        Bundle provider = archive.getProvider(className);
+        BeanDescriptor descriptor = filter.findDescriptor(provider);
+        if (descriptor.getBeanDiscoveryMode().equals(BeanDiscoveryMode.ANNOTATED)) {
+            ClassInfo classInfo = finder.getClassInfo(className);
+            return isBeanAnnotatedClass(classInfo);
+        }
+        return true;
+    }
+
+    protected boolean isBeanAnnotatedClass(ClassInfo classInfo) {
+        for (AnnotationFinder.AnnotationInfo annotationInfo : classInfo.getAnnotations()) {
+            if (isBeanAnnotation(annotationInfo)) {
+                return true;
             }
         }
+        return false;
     }
 
-    private void scanDirectory(String classPath) {
-        Enumeration<URL> e = bundle.findEntries(classPath, "*.class", true);
-        while (e != null && e.hasMoreElements()) {
-            URL url = e.nextElement();
-            String klass = toClassName(classPath, url);
-            beanClasses.add(klass);
-        }
-    }
-
-    private void scanZip(String zipName) {
-        URL zipEntry = bundle.getEntry(zipName);
-        if (zipEntry == null) {
-            return;
-        }
-        try (ZipInputStream in = new ZipInputStream(zipEntry.openStream())) {
-            ZipEntry entry;
-            while ((entry = in.getNextEntry()) != null) {
-                String name = entry.getName();
-                if (name.endsWith(CLASS_EXT)) {
-                    beanClasses.add(toClassName("", name));
-                }
-            }
-        }
-        catch (IOException exc) {
-            log.warn("error scanning zip file " + zipName, exc);
-        }
-    }
-
-    private String toClassName(String classPath, URL url) {
-        return toClassName(classPath, url.getFile());
-    }
-
-    private String toClassName(String classPath, String file) {
-        String klass = null;
-        String[] parts = file.split("!");
-        if (parts.length > 1) {
-            klass = parts[1];
-        }
-        else {
-            klass = file;
-        }
-        if (klass.charAt(0) == '/') {
-            klass = klass.substring(1);
-        }
-
-        String prefix = classPath;
-        if (classPath.length() > 1) {
-            if (classPath.charAt(0) == '/') {
-                prefix = classPath.substring(1);
-            }
-            assert klass.startsWith(prefix);
-            int startIndex = prefix.length();
-            if (!prefix.endsWith("/")) {
-                startIndex++;
-            }
-            klass = klass.substring(startIndex);
-        }
-
-        klass = klass.replace("/", ".").replace(".class", "");
-        log.trace("file = {}, class = {}", file, klass);
-        return klass;
-    }
-
-    private void scanImportedPackages() {
-        BundleWiring wiring = bundle.adapt(BundleWiring.class);
-        List<BundleWire> wires = wiring.getRequiredWires(PACKAGE_NAMESPACE);
-        for (BundleWire wire : wires) {
-            log.debug("scanning imported package [{}]", wire);
-            scanForClasses(wire);
-        }
-    }
-
-    private void scanForClasses(BundleWire wire) {
-        BundleWiring wiring = wire.getProviderWiring();
-        Bundle providerBundle = wiring.getBundle();
-        if (!BeanBundles.isBeanBundle(providerBundle)) {
-            return;
-        }
-        scanExportedPackage(wiring, wire.getCapability());
-    }
-
-    private void scanExportedPackage(BundleWiring wiring, BundleCapability capability) {
-        String pkg = (String) capability.getAttributes().get(PACKAGE_NAMESPACE);
-        if (scannedPackages.contains(pkg)) {
-            return;
-        }
-
-        log.debug("scanning exported package [{}]", pkg);
-        scannedPackages.add(pkg);
-        Collection<String> entries = wiring.listResources(toPath(pkg), "*.class",
-            BundleWiring.LISTRESOURCES_LOCAL);
-        for (String entry : entries) {
-            beanClasses.add(toClassName("", entry));
-        }
-    }
-
-    private String toPath(String pkg) {
-        return pkg.replaceAll("\\.", "/");
-    }
-
-    private void scanWiredBundles(String namespace, boolean onlyBeanBundles) {
-        BundleWiring wiring = bundle.adapt(BundleWiring.class);
-        List<BundleWire> wires = wiring.getRequiredWires(namespace);
-        for (BundleWire wire : wires) {
-            BundleWiring providerWiring = wire.getProviderWiring();
-            Bundle providerBundle = providerWiring.getBundle();
-            if (!onlyBeanBundles || BeanBundles.isBeanBundle(providerBundle)) {
-                log.debug("scanning bundle [{}] wired for namespace [{}]", providerBundle, namespace);
-                List<BundleCapability> capabilities = providerWiring
-                    .getCapabilities(PACKAGE_NAMESPACE);
-                for (BundleCapability pkgCapability : capabilities) {
-                    scanExportedPackage(providerWiring, pkgCapability);
-                }
-            }
-        }
+    private boolean isBeanAnnotation(AnnotationInfo annotationInfo) {
+        return beanDefiningAnnotations.contains(annotationInfo.getName());
     }
 }

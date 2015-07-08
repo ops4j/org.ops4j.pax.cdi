@@ -28,7 +28,6 @@ import org.apache.webbeans.config.WebBeansContext;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.cdi.spi.CdiContainerListener;
-import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.osgi.framework.Bundle;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -67,15 +66,11 @@ public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
     }
 
     @Override
-    public CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions,
-        CdiContainerType containerType) {
+    public CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions) {
         Bundle ownBundle = componentContext.getBundleContext().getBundle();
-        OpenWebBeansCdiContainer container = new OpenWebBeansCdiContainer(containerType, ownBundle,
+        OpenWebBeansCdiContainer container = new OpenWebBeansCdiContainer(ownBundle,
             bundle, extensions);
         containers.put(bundle.getBundleId(), container);
-        for (CdiContainerListener listener : listeners) {
-            listener.postCreate(container);
-        }
         return container;
     }
 
@@ -91,10 +86,7 @@ public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
 
     @Override
     public void removeContainer(Bundle bundle) {
-        CdiContainer container = containers.remove(bundle.getBundleId());
-        for (CdiContainerListener listener : listeners) {
-            listener.preDestroy(container);
-        }
+        containers.remove(bundle.getBundleId());
     }
 
     @Override

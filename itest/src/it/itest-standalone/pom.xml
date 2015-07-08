@@ -145,6 +145,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample8</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
             <artifactId>pax-cdi-extension</artifactId>
             <version>${project.version}</version>
@@ -569,7 +576,6 @@
                 <dependency>
                     <groupId>org.jboss.weld</groupId>
                     <artifactId>weld-osgi-bundle</artifactId>
-                    <version>${weld2.version}</version>
                     <scope>provided</scope>
                 </dependency>
 

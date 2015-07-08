@@ -36,7 +36,6 @@ import org.apache.webbeans.config.WebBeansContext;
 import org.apache.webbeans.spi.ContainerLifecycle;
 import org.apache.webbeans.spi.ContextsService;
 import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
-import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
@@ -68,8 +67,6 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
     /**
      * Construct a CDI container for the given extended bundle.
      *
-     * @param containerType
-     *            type of CDI container (web or standalone)
      * @param ownBundle
      *            bundle containing this class
      * @param extendedBundle
@@ -77,9 +74,9 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
      * @param extensionBundles
      *            CDI extension bundles to be loaded by OpenWebBeans
      */
-    public OpenWebBeansCdiContainer(CdiContainerType containerType, Bundle ownBundle,
+    public OpenWebBeansCdiContainer(Bundle ownBundle,
         Bundle extendedBundle, Collection<Bundle> extensionBundles) {
-        super(containerType, extendedBundle, extensionBundles, Collections.singletonList(ownBundle));
+        super(extendedBundle, extensionBundles, Collections.singletonList(ownBundle));
         log.debug("creating OpenWebBeans CDI container for bundle {}", extendedBundle);
     }
 

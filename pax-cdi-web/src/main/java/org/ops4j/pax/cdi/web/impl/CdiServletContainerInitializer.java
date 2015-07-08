@@ -25,6 +25,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 
 import org.ops4j.pax.cdi.spi.CdiContainer;
+import org.ops4j.pax.cdi.web.ServletContextListenerFactory;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ public class CdiServletContainerInitializer implements ServletContainerInitializ
 
     private CdiContainer cdiContainer;
 
-    private ServletContextListener servletContextListener;
+    private ServletContextListenerFactory servletContextListener;
 
     /**
      * Creates a servlet container initializer for the given CDI container and the given context
@@ -56,7 +57,7 @@ public class CdiServletContainerInitializer implements ServletContainerInitializ
      *            servlet context listener
      */
     public CdiServletContainerInitializer(CdiContainer cdiContainer,
-        ServletContextListener servletContextListener) {
+        ServletContextListenerFactory servletContextListener) {
         this.cdiContainer = cdiContainer;
         this.servletContextListener = servletContextListener;
     }
@@ -71,6 +72,6 @@ public class CdiServletContainerInitializer implements ServletContainerInitializ
         ctx.setInitParameter("WELD_CONTEXT_ID_KEY", contextId);
 
         ctx.setAttribute("org.ops4j.pax.cdi.container", cdiContainer);
-        ctx.addListener(servletContextListener);
+        ctx.addListener(servletContextListener.createServletContextListener());
     }
 }
