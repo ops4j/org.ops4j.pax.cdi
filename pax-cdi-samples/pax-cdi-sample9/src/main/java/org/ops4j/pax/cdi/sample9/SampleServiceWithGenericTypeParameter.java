@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.sample8;
+package org.ops4j.pax.cdi.sample9;
 
 /**
  * A service interface with a generic type parameter

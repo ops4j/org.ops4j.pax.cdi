@@ -29,7 +29,7 @@
         <module>pax-cdi-sample7-service-impl101</module>
         <module>pax-cdi-sample7-service-impl102</module>
         <module>pax-cdi-sample7-client-dynamic</module>
-        <module>pax-cdi-sample8</module>
+        <module>pax-cdi-sample9</module>
     </modules>
 
 </project>

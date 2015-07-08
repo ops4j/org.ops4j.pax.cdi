@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.sample8.impl;
+package org.ops4j.pax.cdi.sample9.impl;
 
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
-import org.ops4j.pax.cdi.sample8.SampleServiceWithGenericTypeParameter;
+import org.ops4j.pax.cdi.sample9.SampleServiceWithGenericTypeParameter;
 
 /**
  * A sample implementation of {@link SampleServiceWithGenericTypeParameter}, which gets registered as an OSGi

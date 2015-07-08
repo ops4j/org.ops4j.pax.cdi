@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.cdi.sample8.SampleServiceWithGenericTypeParameter;
+import org.ops4j.pax.cdi.sample9.SampleServiceWithGenericTypeParameter;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
@@ -47,7 +47,7 @@ public class ParameterizedTypeSupportTest {
     public Option[] config() {
         return options(
                 regressionDefaults(),
-                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample8"),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample9"),
                 paxCdiProviderAdapter(),
                 cdiProviderBundles());
     }
