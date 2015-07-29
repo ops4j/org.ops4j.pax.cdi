@@ -120,8 +120,7 @@ public class TransactionalTest {
                     "Require-Capability=org.ops4j.pax.cdi.extension; filter:=\"(extension=pax-cdi-extension)\", "
                     + "osgi.extender; filter:=\"(osgi.extender=pax.cdi)\""),
 
-            mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec")
-                .versionAsInProject(),
+            mavenBundle("javax.servlet", "javax.servlet-api").versionAsInProject(),
             mavenBundle("org.apache.geronimo.specs", "geronimo-jta_1.1_spec").versionAsInProject(),
 
             // Sample bundles

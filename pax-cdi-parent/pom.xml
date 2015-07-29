@@ -25,12 +25,16 @@
         <pax.jpa.version>0.3.0</pax.jpa.version>
         <pax.swissbox.version>1.8.0</pax.swissbox.version>
         <pax.url.version>2.2.0</pax.url.version>
-        <pax.web.version>4.1.2</pax.web.version>
+        <pax.web.version>4.2.0-SNAPSHOT</pax.web.version>
         <slf4j.version>1.6.4</slf4j.version>
         <weld.api.version>1.2.0.Beta1</weld.api.version>
         <weld.version>1.2.0.Beta1</weld.version>
         <weld2.version>2.2.12.Final</weld2.version>
         <xbean.version>4.1</xbean.version>
+        
+        <servlet.spec.groupId>javax.servlet</servlet.spec.groupId>
+		<servlet.spec.artifactId>javax.servlet-api</servlet.spec.artifactId>
+		<servlet.spec.version>3.1.0</servlet.spec.version>
 
         <pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
     </properties>
@@ -146,11 +150,12 @@
                 <version>1.0-alpha-1</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-servlet_3.0_spec</artifactId>
-                <version>1.0</version>
-            </dependency>
+			<dependency>
+				<groupId>${servlet.spec.groupId}</groupId>
+				<artifactId>${servlet.spec.artifactId}</artifactId>
+				<version>${servlet.spec.version}</version>
+				<scope>provided</scope>
+			</dependency>
 
             <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
