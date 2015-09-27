@@ -25,7 +25,7 @@
         <pax.jdbc.version>0.5.0</pax.jdbc.version>
         <pax.jpa.version>0.3.0</pax.jpa.version>
         <pax.swissbox.version>1.8.2</pax.swissbox.version>
-        <pax.url.version>2.4.1</pax.url.version>
+        <pax.url.version>2.4.2</pax.url.version>
 
         <!-- NOTE: 4.0.2 breaks TCK, 4.1.x breaks ServletTest -->
         <pax.web.version>4.0.0</pax.web.version>
