@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.ops4j.pax.cdi.sample1.IceCreamService;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
@@ -40,6 +41,9 @@ public class PaxCdiWeldTest {
 
     @Inject
     private CdiContainerFactory factory;
+
+    @Inject
+    private IceCreamService iceCreamService;
 
     @Configuration
     public Option[] config() {
@@ -52,5 +56,6 @@ public class PaxCdiWeldTest {
     @Test
     public void test() throws Exception {
         assertThat(factory, is(notNullValue()));
+        assertThat(iceCreamService, is(notNullValue()));
     }
 }
