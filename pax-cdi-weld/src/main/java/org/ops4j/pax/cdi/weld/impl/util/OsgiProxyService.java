@@ -33,17 +33,17 @@ import org.ops4j.pax.cdi.spi.util.Exceptions;
  */
 public class OsgiProxyService implements ProxyServices {
 
-    private ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    private final ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
     @Override
     public ClassLoader getClassLoader(Class<?> proxiedBeanType) {
-        return proxiedBeanType.getClassLoader();
+        return loader;
     }
 
     @Override
     public Class<?> loadBeanClass(final String className) {
         try {
-            return (Class<?>) AccessController.doPrivileged(new LoadClass(className));
+            return AccessController.doPrivileged(new LoadClass(className));
         }
         catch (PrivilegedActionException pae) {
             throw Exceptions.unchecked(pae);
@@ -55,16 +55,16 @@ public class OsgiProxyService implements ProxyServices {
         // empty
     }
 
-    private class LoadClass implements PrivilegedExceptionAction<Object> {
+    private class LoadClass implements PrivilegedExceptionAction<Class<?>> {
 
-        private String className;
+        private final String className;
 
         private LoadClass(String className) {
             this.className = className;
         }
 
         @Override
-        public Object run() throws ClassNotFoundException  {
+        public Class<?> run() throws ClassNotFoundException {
             return Class.forName(className, true, loader);
         }
     }
