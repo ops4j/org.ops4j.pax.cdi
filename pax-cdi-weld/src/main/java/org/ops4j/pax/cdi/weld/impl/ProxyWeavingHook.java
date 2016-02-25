@@ -84,7 +84,7 @@ public class ProxyWeavingHook implements WeavingHook {
         if (candidate.getSymbolicName().equals(Constants.CDI_EXTENSION_CAPABILITY)) {
             return true;
         }
-        List<BundleWire> wires = candidate.adapt(BundleWiring.class).getRequiredWires(
+        List<BundleWire> wires = candidate.adapt(BundleWiring.class).getProvidedWires(
             Constants.CDI_EXTENSION_CAPABILITY);
         return !wires.isEmpty();
     }
