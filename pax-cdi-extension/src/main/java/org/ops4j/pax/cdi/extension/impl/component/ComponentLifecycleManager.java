@@ -18,20 +18,19 @@
 
 package org.ops4j.pax.cdi.extension.impl.component;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
-
 import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.Properties;
@@ -208,10 +207,15 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
         String[] typeNames = new String[closure.size()];
         int i = 0;
         for (Type type : closure) {
-            Class<?> c = (Class<?>) type;
-            if (c.isInterface()) {
-                typeNames[i] = c.getName();
-                i++;
+            if (type instanceof ParameterizedType) {
+                type = ((ParameterizedType) type).getRawType();
+            }
+            if (type instanceof Class) {
+                Class<?> c = (Class<?>) type;
+                if (c.isInterface()) {
+                    typeNames[i] = c.getName();
+                    i++;
+                }
             }
         }
         if (i == 0) {
