@@ -402,7 +402,7 @@
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>http://download.eclipse.org/equinox/drops/R-Luna-201406061215/org.eclipse.equinox.console_1.1.0.v20140131-1639.jar</url>
+                            <url>http://archive.eclipse.org/equinox/drops/R-Luna-201406061215/org.eclipse.equinox.console_1.1.0.v20140131-1639.jar</url>
                             <outputFileName>org.eclipse.equinox.console.jar</outputFileName>
                         </configuration>
                     </execution>
