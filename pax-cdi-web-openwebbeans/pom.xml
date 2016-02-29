@@ -14,7 +14,7 @@
     <properties>
         <bundle.symbolicName>org.ops4j.pax.cdi.web.openwebbeans</bundle.symbolicName>
         <bundle.namespace>org.ops4j.pax.cdi.web.openwebbeans</bundle.namespace>
-		<jetty.version>9.2.10.v20150310</jetty.version>
+        <jetty.version>9.0.7.v20131107</jetty.version>
     </properties>
 
     <dependencies>

@@ -101,15 +101,4 @@ public class JettyDecorator implements ServletContextHandler.Decorator {
     public void destroyListenerInstance(EventListener listener) {
         getInjector().destroy(listener);
     }
-
-	@Override
-	public <T> T decorate(T o) {
-		getInjector().inject(o);
-		return o;
-	}
-
-	@Override
-	public void destroy(Object o) {
-		getInjector().destroy(o);
-	}
 }
