@@ -39,7 +39,7 @@
     <appender-ref ref="TEST_LOG"/>
   </root>
   <logger name="org.ops4j.pax.exam" level="INFO"/> 
-  <logger name="org.ops4j.pax.cdi" level="INFO"/> 
+  <logger name="org.ops4j.pax.cdi" level="DEBUG"/>
   <logger name="org.apache.webbeans" level="INFO"/> 
   <logger name="org.jboss.weld" level="INFO"/>
   

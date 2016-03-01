@@ -20,15 +20,8 @@ package org.ops4j.pax.cdi.test.karaf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.exam.CoreOptions.composite;
-import static org.ops4j.pax.exam.CoreOptions.maven;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.propagateSystemProperty;
-import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-import static org.ops4j.pax.exam.CoreOptions.when;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.configureConsole;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
+import static org.ops4j.pax.exam.CoreOptions.*;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
 
 import java.io.File;
 
@@ -36,9 +29,11 @@ import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.exam.ConfigurationManager;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.karaf.options.KarafDistributionOption;
+import org.ops4j.pax.exam.karaf.options.LogLevelOption;
 import org.ops4j.pax.exam.karaf.options.configs.CustomProperties;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.options.MavenUrlReference;
+import org.ops4j.pax.exam.util.PathUtils;
 
 public class RegressionConfiguration {
     public static final MavenUrlReference PAX_CDI_FEATURES = maven().groupId("org.ops4j.pax.cdi")
@@ -66,6 +61,12 @@ public class RegressionConfiguration {
             configureConsole().ignoreLocalConsole(),
             KarafDistributionOption.keepRuntimeFolder(),
 
+            KarafDistributionOption.logLevel(LogLevelOption.LogLevel.INFO),
+
+            when(isDebug()).useOptions(
+              KarafDistributionOption.debugConfiguration("5005", true)
+            ),
+
             when(isEquinox()).useOptions(
                 editConfigurationFilePut(CustomProperties.KARAF_FRAMEWORK, "equinox"),
                 propagateSystemProperty("pax.exam.framework"),
@@ -76,6 +77,10 @@ public class RegressionConfiguration {
 
     private static File unpackDirFile(String unpackDir) {
         return unpackDir == null ? null : new File(unpackDir);
+    }
+
+    public static boolean isDebug() {
+        return "true".equals(System.getProperty("pax.exam.debug"));
     }
 
     public static boolean isEquinox() {
