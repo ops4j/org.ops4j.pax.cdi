@@ -14,7 +14,6 @@
 
     <properties>
         <deltaspike.version>1.4.2</deltaspike.version>
-        <guava.version>13.0.1</guava.version>
         <jersey.version>1.13</jersey.version>
         <jetty.version>9.0.7.v20131107</jetty.version>
         <logback.version>1.0.0</logback.version>
@@ -31,7 +30,7 @@
         <pax.web.version>4.0.0</pax.web.version>
 
         <slf4j.version>1.6.4</slf4j.version>
-        <weld2.version>2.3.1.Final</weld2.version>
+        <weld2.version>2.3.3.Final</weld2.version>
         <xbean.version>4.3</xbean.version>
 
         <pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
@@ -291,12 +290,6 @@
                 <groupId>org.codehaus.plexus</groupId>
                 <artifactId>plexus-utils</artifactId>
                 <version>3.0.17</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
             </dependency>
 
         </dependencies>

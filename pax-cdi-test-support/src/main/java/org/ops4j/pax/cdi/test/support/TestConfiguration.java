@@ -274,7 +274,7 @@ public class TestConfiguration {
             mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.3"),
             mavenBundle("org.jboss.logging", "jboss-logging", "3.3.0.Final"),
             mavenBundle("org.jboss.classfilewriter", "jboss-classfilewriter", "1.1.2.Final"),
-            mavenBundle("com.google.guava", "guava", "13.0.1"),
+            mavenBundle("com.google.guava", "guava", "18.0"),
             mavenBundle("javax.enterprise", "cdi-api").versionAsInProject(),
             mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
