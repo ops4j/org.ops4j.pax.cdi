@@ -45,11 +45,13 @@ public class PaxCdiWeldTest {
     @Filter(value = "(flavour=hazelnut)")
     private IceCreamService iceCreamService;
 
-    @Configuration public Option[] config() {
+    @Configuration
+    public Option[] config() {
         return options(regressionDefaults(), features(PAX_CDI_FEATURES, "pax-cdi-weld"), SAMPLE1);
     }
 
-    @Test public void test() throws Exception {
+    @Test
+    public void test() throws Exception {
         assertThat(factory, is(notNullValue()));
         assertThat(iceCreamService, is(notNullValue()));
         assertThat(iceCreamService.getFlavour(), is("Hazelnut"));
