@@ -17,17 +17,6 @@
  */
 package org.ops4j.pax.cdi.test.karaf.weld;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.PAX_CDI_FEATURES;
-import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.SAMPLE1;
-import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.regressionDefaults;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
-
-import javax.inject.Inject;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
@@ -35,6 +24,16 @@ import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.util.Filter;
+
+import javax.inject.Inject;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.*;
+import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
 
 @RunWith(PaxExam.class)
 public class PaxCdiWeldTest {
@@ -43,19 +42,16 @@ public class PaxCdiWeldTest {
     private CdiContainerFactory factory;
 
     @Inject
+    @Filter(value = "(flavour=hazelnut)")
     private IceCreamService iceCreamService;
 
-    @Configuration
-    public Option[] config() {
-        return options( 
-            regressionDefaults(),
-            features(PAX_CDI_FEATURES, "pax-cdi-weld"),
-            SAMPLE1);
+    @Configuration public Option[] config() {
+        return options(regressionDefaults(), features(PAX_CDI_FEATURES, "pax-cdi-weld"), SAMPLE1);
     }
 
-    @Test
-    public void test() throws Exception {
+    @Test public void test() throws Exception {
         assertThat(factory, is(notNullValue()));
         assertThat(iceCreamService, is(notNullValue()));
+        assertThat(iceCreamService.getFlavour(), is("Hazelnut"));
     }
 }
