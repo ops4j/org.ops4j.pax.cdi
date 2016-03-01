@@ -81,8 +81,8 @@ public class TestConfiguration {
                 START_LEVEL_SYSTEM_BUNDLES),
 
             mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
-            mavenBundle("org.apache.xbean", "xbean-asm5-shaded", "4.3"), //
-            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.3"), //
+            mavenBundle("org.apache.xbean", "xbean-asm5-shaded", "4.4"), //
+            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.4"), //
 
             // Set logback configuration via system property.
             // This way, both the driver and the container use the same configuration
@@ -251,11 +251,11 @@ public class TestConfiguration {
 
     public static Option openWebBeans15Bundles() {
         return composite(
-            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.3"),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.4"),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-impl").versionAsInProject(),
             mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-asm5-shaded", "4.3"), //
-            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.3"), //
+            mavenBundle("org.apache.xbean", "xbean-asm5-shaded", "4.4"), //
+            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.4"), //
             mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),
             mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec", "1.0"),
@@ -271,7 +271,7 @@ public class TestConfiguration {
         return composite(
             workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-weld"),
             mavenBundle("org.ops4j.pax.cdi", "pax-cdi-weld-fragment", Info.getPaxCdiVersion()).noStart(),
-            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.3"),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.4"),
             mavenBundle("org.jboss.logging", "jboss-logging", "3.3.0.Final"),
             mavenBundle("org.jboss.classfilewriter", "jboss-classfilewriter", "1.1.2.Final"),
             mavenBundle("com.google.guava", "guava", "18.0"),
@@ -284,9 +284,9 @@ public class TestConfiguration {
 
     public static Option paxWebBundles() {
         return composite(
-            mavenBundle("org.apache.xbean", "xbean-asm5-shaded", "3.18"), //
-            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "3.18"), //
-            mavenBundle("org.apache.xbean", "xbean-bundleutils", "3.18"),
+            mavenBundle("org.apache.xbean", "xbean-asm5-shaded", "4.4"), //
+            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.4"), //
+            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.4"),
             mavenBundle("org.ops4j.pax.web", "pax-web-spi").version(Info.getPaxWebVersion()),
             mavenBundle("org.ops4j.pax.web", "pax-web-api").version(Info.getPaxWebVersion()),
             mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version(Info.getPaxWebVersion())
@@ -316,8 +316,8 @@ public class TestConfiguration {
             mavenBundle("org.jboss.logging", "jboss-logging", "3.3.0.Final"),
             mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             mavenBundle("javax.servlet", "javax.servlet-api", "3.1.0"),
-            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.1"),
-            mavenBundle("org.apache.xbean", "xbean-finder", "4.1"),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.4"),
+            mavenBundle("org.apache.xbean", "xbean-finder", "4.4"),
             mavenBundle("org.ow2.asm", "asm-all", "5.0.2"),
             mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.8.0"),
             mavenBundle("org.apache.felix", "org.apache.felix.eventadmin", "1.3.2"),
