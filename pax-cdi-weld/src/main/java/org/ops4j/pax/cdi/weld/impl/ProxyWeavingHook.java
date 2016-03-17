@@ -33,15 +33,22 @@ import org.slf4j.LoggerFactory;
 /**
  * A weaving hook which adds a dynamic package import for managed bean proxies for all
  * classes from bean bundles.
+ * <p/>
+ * This is actually only required for proxying bean types with the default visibility
+ * modifier (i.e. package-private). In that case, we must used the same defining
+ * classloader as that of the bean type otherwise IllegalAccessError is thrown and there
+ * seems to be no obvious way to do proper adaptation of the classloader in case the bean
+ * type closure spans multiple bundles to add Weld proxy mixin classes.
+ *
+ * @see org.ops4j.pax.cdi.weld.impl.util.OsgiProxyService
  *
  * @author Harald Wellmann
  */
-public class ProxyWeavingHook implements WeavingHook {
+class ProxyWeavingHook implements WeavingHook {
 
     private static Logger log = LoggerFactory.getLogger(ProxyWeavingHook.class);
 
-    private Map<Bundle, Boolean> bundleMap = new WeakHashMap<Bundle, Boolean>();
-
+    private final Map<Bundle, Boolean> bundleMap = new WeakHashMap<>();
 
     @Override
     public void weave(WovenClass wovenClass) {
