@@ -34,6 +34,9 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.configuration.spi.ExternalConfiguration;
+import org.jboss.weld.configuration.spi.helpers.ExternalConfigurationBuilder;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
 import org.ops4j.pax.cdi.spi.DestroyedLiteral;
@@ -109,6 +112,13 @@ public class WeldCdiContainer extends AbstractCdiContainer {
         BeanDeploymentArchive beanDeploymentArchive = deployment.getBeanDeploymentArchive();
 
         String contextId = getBundle().getSymbolicName() + ":" + getBundle().getBundleId();
+
+        ExternalConfigurationBuilder configurationBuilder = new ExternalConfigurationBuilder()
+            // Use relaxed construction by default
+            .add(ConfigurationKey.RELAXED_CONSTRUCTION.get(), true);
+        deployment.getServices()
+            .add(ExternalConfiguration.class, configurationBuilder.build());
+
         bootstrap.startContainer(contextId, OsgiEnvironment.getInstance(), deployment);
         bootstrap.startInitialization();
         bootstrap.deployBeans();
