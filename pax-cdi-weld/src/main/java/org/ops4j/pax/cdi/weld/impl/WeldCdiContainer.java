@@ -32,6 +32,9 @@ import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.configuration.spi.ExternalConfiguration;
+import org.jboss.weld.configuration.spi.helpers.ExternalConfigurationBuilder;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
@@ -111,6 +114,13 @@ public class WeldCdiContainer extends AbstractCdiContainer {
 
         pause();
         String contextId = getBundle().getSymbolicName() + ":" + getBundle().getBundleId();
+
+        ExternalConfigurationBuilder configurationBuilder = new ExternalConfigurationBuilder()
+            // Use relaxed construction by default
+            .add(ConfigurationKey.RELAXED_CONSTRUCTION.get(), true);
+        deployment.getServices()
+            .add(ExternalConfiguration.class, configurationBuilder.build());
+
         bootstrap.startContainer(contextId, OsgiEnvironment.getInstance(), deployment);
         // Add the ProxyServices service: we rely on the BeanManager to use its annotated
         // types cache to discover type closures which is required for proxied beans
