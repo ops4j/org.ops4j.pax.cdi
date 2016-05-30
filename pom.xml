@@ -28,7 +28,6 @@
         <module>pax-cdi-spi</module>
         <module>pax-cdi-openwebbeans</module>
 
-        <module>pax-cdi-api2</module>
         <module>pax-cdi-extension2</module>
 
         <module>pax-cdi-samples</module>

@@ -45,7 +45,7 @@
 
         <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
-            <artifactId>pax-cdi-api2</artifactId>
+            <artifactId>pax-cdi-api</artifactId>
             <version>${project.version}</version>
         </dependency>
 

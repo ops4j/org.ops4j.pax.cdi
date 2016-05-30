@@ -31,7 +31,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Specifies that if a new service appears, it should be injected
  * immediately.
  *
- * Applies on @Reference injection points.
+ * Applies on @Inject @Service injection points.
  */
 @Qualifier
 @Target({METHOD, FIELD, PARAMETER, TYPE})
