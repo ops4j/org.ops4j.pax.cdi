@@ -62,7 +62,7 @@ public class Filters {
         return filter;
     }
 
-    public static List<String> getSubFilters(Collection<Annotation> annotations) {
+    public static List<String> getSubFilters(Iterable<Annotation> annotations) {
         List<String> filters = new ArrayList<>();
         for (Annotation annotation : annotations) {
             if (annotation instanceof Filter) {

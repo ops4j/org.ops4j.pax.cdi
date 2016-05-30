@@ -102,6 +102,16 @@ public abstract class AbstractCdiContainer implements CdiContainer {
         }
     }
 
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
     private <S> void unregister(ServiceRegistration<S> registration) {
         if (registration != null) {
             try {

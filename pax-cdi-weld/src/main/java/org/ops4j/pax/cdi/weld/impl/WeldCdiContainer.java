@@ -23,6 +23,7 @@ import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Event;
@@ -67,6 +68,8 @@ public class WeldCdiContainer extends AbstractCdiContainer {
 
     private Object environment;
 
+    private AtomicInteger pauses = new AtomicInteger();
+
     /**
      * Construct a CDI container for the given extended bundle.
      *
@@ -88,11 +91,12 @@ public class WeldCdiContainer extends AbstractCdiContainer {
     protected void doStart(Object start) {
         this.environment = start;
         try {
-            doWithClassLoader(getContextClassLoader(), new Callable<BeanManager>() {
+            doWithClassLoader(getContextClassLoader(), new Callable<Object>() {
 
                 @Override
-                public BeanManager call() throws Exception {
-                    return createBeanManager();
+                public Object call() throws Exception {
+                    createBeanManager();
+                    return null;
                 }
             });
         }
@@ -102,21 +106,46 @@ public class WeldCdiContainer extends AbstractCdiContainer {
         }
     }
 
-    private BeanManager createBeanManager() {
+    private void createBeanManager() {
         bootstrap = new WeldBootstrap();
         BundleDeployment deployment = new BundleDeployment(getBundle(), bootstrap,
             getContextClassLoader());
         BeanDeploymentArchive beanDeploymentArchive = deployment.getBeanDeploymentArchive();
 
+        pause();
         String contextId = getBundle().getSymbolicName() + ":" + getBundle().getBundleId();
         bootstrap.startContainer(contextId, OsgiEnvironment.getInstance(), deployment);
         bootstrap.startInitialization();
         bootstrap.deployBeans();
         bootstrap.validateBeans();
-        bootstrap.endInitialization();
         manager = bootstrap.getManager(beanDeploymentArchive);
-        manager.fireEvent(environment, InitializedLiteral.APPLICATION);
-        return manager;
+        resume();
+    }
+
+    @Override
+    public void pause() {
+        pauses.incrementAndGet();
+    }
+
+    @Override
+    public void resume() {
+        if (pauses.decrementAndGet() == 0) {
+            try {
+                doWithClassLoader(getContextClassLoader(), new Callable<Object>() {
+
+                    @Override
+                    public Object call() throws Exception {
+                        bootstrap.endInitialization();
+                        manager.fireEvent(environment, InitializedLiteral.APPLICATION);
+                        return null;
+                    }
+                });
+            }
+            // CHECKSTYLE:SKIP
+            catch (Exception exc) {
+                throw Exceptions.unchecked(exc);
+            }
+        }
     }
 
     @Override

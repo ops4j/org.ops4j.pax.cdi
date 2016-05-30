@@ -50,6 +50,7 @@ import java.util.UUID;
 import org.ops4j.pax.cdi.api2.BundleScoped;
 import org.ops4j.pax.cdi.api2.Component;
 import org.ops4j.pax.cdi.api2.Config;
+import org.ops4j.pax.cdi.api2.Global;
 import org.ops4j.pax.cdi.api2.PrototypeScoped;
 import org.ops4j.pax.cdi.api2.Service;
 import org.ops4j.pax.cdi.api2.SingletonScoped;
@@ -72,6 +73,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public class OsgiExtension implements Extension {
 
     private ComponentRegistry componentRegistry;
+    private GlobalDescriptor global;
 
     public OsgiExtension() {
     }
@@ -80,8 +82,13 @@ public class OsgiExtension implements Extension {
         return componentRegistry;
     }
 
+    public <T> Bean<T> globalDependency(Class<T> clazz, Set<Annotation> qualifiers) {
+        return global.addInjectionPoint(clazz, qualifiers);
+    }
+
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager manager) {
         componentRegistry = new ComponentRegistry(manager, BundleContextHolder.getBundleContext());
+        global = new GlobalDescriptor(componentRegistry);
         event.addAnnotatedType(manager.createAnnotatedType(EventBridge.class));
         event.addAnnotatedType(manager.createAnnotatedType(BundleContextProducer.class));
     }
@@ -116,7 +123,9 @@ public class OsgiExtension implements Extension {
             if (ip.getAnnotated().isAnnotationPresent(Service.class)
                     || ip.getAnnotated().isAnnotationPresent(Component.class)
                     || ip.getAnnotated().isAnnotationPresent(Config.class)) {
-                if (descriptor == null) {
+                if (ip.getAnnotated().isAnnotationPresent(Global.class)) {
+                    global.addInjectionPoint(ip);
+                } else if (descriptor == null) {
                     event.addDefinitionError(new IllegalArgumentException(
                             "Beans with @Service, @Component or @Config injection points " +
                                     "should be annotated with @Component"));
@@ -152,13 +161,18 @@ public class OsgiExtension implements Extension {
             if (annotated.isAnnotationPresent(Service.class)
                     || annotated.isAnnotationPresent(Component.class)
                     || annotated.isAnnotationPresent(Config.class)) {
+//                if (annotated.isAnnotationPresent(Global.class)) {
+//                    continue;
+//                }
                 event.setInjectionTarget(new DelegatingInjectionTarget<T>(event.getInjectionTarget()) {
                     @Override
                     public void inject(T instance, CreationalContext<T> ctx) {
                         super.inject(instance, ctx);
                         for (InjectionPoint injectionPoint : getInjectionPoints()) {
                             ComponentDescriptor descriptor = componentRegistry.getDescriptor(injectionPoint.getBean());
-                            descriptor.inject(instance, injectionPoint);
+                            if (descriptor != null) {
+                                descriptor.inject(instance, injectionPoint);
+                            }
                         }
                     }
                 });
@@ -203,7 +217,7 @@ public class OsgiExtension implements Extension {
         event.addContext(new SingletonContext());
         event.addContext(new BundleContext(componentRegistry));
         event.addContext(new PrototypeContext(componentRegistry));
-        componentRegistry.preStart(event);
+        componentRegistry.preStart(event, global);
     }
 
     public void applicationScopeInitialized(@Observes @Initialized(ApplicationScoped.class) Object init) {

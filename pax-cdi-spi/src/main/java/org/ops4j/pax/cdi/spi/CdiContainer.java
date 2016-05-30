@@ -108,4 +108,14 @@ public interface CdiContainer {
      * @param scope CDI scope annotation
      */
     void stopContext(Class<? extends Annotation> scope);
+
+    /**
+     * Used to delay the startup of the CdiContainer
+     */
+    void pause();
+
+    /**
+     * Used to resume the startup of the CdiContainer
+     */
+    void resume();
 }

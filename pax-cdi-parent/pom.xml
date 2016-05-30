@@ -298,6 +298,12 @@
                 <version>3.0.17</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.utils</artifactId>
+                <version>1.8.0</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

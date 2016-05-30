@@ -23,7 +23,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -31,13 +30,19 @@ public class SimpleBean<T> implements Bean<T> {
 
     private final Class clazz;
     private final Class<? extends Annotation> scope;
-    private final InjectionPoint injectionPoint;
     private final Supplier<T> supplier;
+    private final Set<Type> types;
+    private final Set<Annotation> qualifiers;
 
-    public SimpleBean(Class clazz, Class<? extends Annotation> scope, InjectionPoint injectionPoint, Supplier<T> supplier) {
+    public SimpleBean(Class clazz, Class<? extends Annotation> scope, InjectionPoint ip, Supplier<T> supplier) {
+        this(clazz, scope, Collections.singleton(ip.getType()), ip.getQualifiers(), supplier);
+    }
+
+    public SimpleBean(Class clazz, Class<? extends Annotation> scope, Set<Type> types, Set<Annotation> qualifiers, Supplier<T> supplier) {
         this.clazz = clazz;
         this.scope = scope;
-        this.injectionPoint = injectionPoint;
+        this.types = Collections.unmodifiableSet(types);
+        this.qualifiers = Collections.unmodifiableSet(qualifiers);
         this.supplier = supplier;
     }
 
@@ -58,12 +63,12 @@ public class SimpleBean<T> implements Bean<T> {
 
     @Override
     public Set<Type> getTypes() {
-        return Collections.singleton(injectionPoint.getType());
+        return types;
     }
 
     @Override
     public Set<Annotation> getQualifiers() {
-        return new HashSet<>(injectionPoint.getQualifiers());
+        return qualifiers;
     }
 
     @Override

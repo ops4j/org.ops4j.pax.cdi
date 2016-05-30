@@ -68,20 +68,16 @@ import org.ops4j.pax.cdi.extension2.support.Types;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.ComponentContext;
 
-public class ComponentDescriptor extends ComponentMetadata {
+public class ComponentDescriptor extends AbstractDescriptor {
 
     private final Bean<Object> bean;
-    private final ComponentRegistry registry;
     private final Map<InjectionPoint, Supplier<Object>> instanceSuppliers = new HashMap<>();
     private final ThreadLocal<ComponentContext> context = new ThreadLocal<>();
     private final List<Bean<?>> producers = new ArrayList<>();
 
-    private boolean m_immediate;
-
     public ComponentDescriptor(Bean<Object> bean, ComponentRegistry registry) {
-        super(DSVersion.DS13);
+        super(registry);
         this.bean = bean;
-        this.registry = registry;
 
         boolean immediate = false;
         boolean hasService = false;
@@ -345,16 +341,6 @@ public class ComponentDescriptor extends ComponentMetadata {
                 throw new RuntimeException(exc);
             }
         }
-    }
-
-    @Override
-    public void setImmediate(boolean immediate) {
-        m_immediate = immediate;
-    }
-
-    @Override
-    public boolean isImmediate() {
-        return m_immediate;
     }
 
     @Override

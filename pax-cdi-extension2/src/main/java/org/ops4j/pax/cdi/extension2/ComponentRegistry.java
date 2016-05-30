@@ -20,6 +20,7 @@ package org.ops4j.pax.cdi.extension2;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionPoint;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
@@ -75,20 +76,20 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.ComponentException;
 import org.osgi.service.log.LogService;
+import org.slf4j.LoggerFactory;
 
 
 public class ComponentRegistry implements ComponentActivator, SimpleLogger {
 
     private final BeanManager beanManager;
     private final BundleContext bundleContext;
-    private final Map<Bean<?>, ComponentDescriptor> descriptors = new HashMap<>();
+    private final Map<Bean<?>, AbstractDescriptor> descriptors = new HashMap<>();
 
     private final List<ComponentHolder<?>> holders = new ArrayList<>();
     private final Map<String, ComponentHolder<?>> holdersByName = new HashMap<>();
     private final Map<String, Set<ComponentHolder<?>>> holdersByPid = new HashMap<>();
     ConfigAdminTracker configAdminTracker;
 
-    private final AtomicBoolean m_active = new AtomicBoolean(false);
     private final ScrConfiguration m_configuration = new ScrConfigurationImpl();
     private final Map<String, ListenerInfo> listenerMap = new HashMap<>();
     private final Map<ExtendedServiceListener, ServiceListener> privateListeners = new HashMap<>();
@@ -97,6 +98,7 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
     private final ConcurrentMap<Long, RegionConfigurationSupport> bundleToRcsMap = new ConcurrentHashMap<>();
     private final Executor m_componentActor = Executors.newSingleThreadExecutor();
 
+    private final AtomicBoolean started = new AtomicBoolean();
 
     public ComponentRegistry(BeanManager beanManager, BundleContext bundleContext) {
         this.beanManager = beanManager;
@@ -107,51 +109,57 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
         return beanManager;
     }
 
-    public void preStart(AfterBeanDiscovery event) {
+    public void preStart(AfterBeanDiscovery event, GlobalDescriptor global) {
         descriptors.values().stream()
-                .map(ComponentDescriptor::getProducers)
+                .map(AbstractDescriptor::getProducers)
                 .flatMap(Collection::stream)
                 .forEach(event::addBean);
+        global.validate(this);
+        global.pauseIfNeeded();
+        ComponentHolder<?> h = new CdiComponentHolder<>(this, global);
+        h.enableComponents(false);
+        global.getProducers().forEach(event::addBean);
     }
 
     public void start() {
-        if (m_active.compareAndSet(false, true)) {
-
-            for (ComponentDescriptor d : descriptors.values()) {
-                d.validate(this);
-                ComponentHolder<?> h = new CdiComponentHolder<>(this, d);
-                holders.add(h);
-            }
-
-            for (ComponentHolder<?> h : holders) {
-                if (holdersByName.put(h.getComponentMetadata().getName(), h) != null) {
-                    throw new ComponentException("The component name '{0}" + h.getComponentMetadata().getName() + "' has already been registered.");
-                }
-            }
-            for (ComponentHolder<?> h : holders) {
-                for (String pid : h.getComponentMetadata().getConfigurationPid()) {
-                    holdersByPid.computeIfAbsent(pid, s -> new HashSet()).add(h);
-                }
-            }
-
-            ConfigAdminTracker tracker = null;
-            for (ComponentHolder<?> holder : holders) {
-                if (!holder.getComponentMetadata().isConfigurationIgnored()) {
-                    tracker = new ConfigAdminTracker(this);
-                    break;
-                }
-            }
-            configAdminTracker = tracker;
-
-            holders.forEach(h -> {
-                try {
-                    h.enableComponents(false);
-                } catch (RuntimeException e) {
-                    h.disableComponents(false);
-                    throw e;
-                }
-            });
+        if (!started.compareAndSet(false, true)) {
+            return;
         }
+
+        for (AbstractDescriptor d : descriptors.values()) {
+            d.validate(this);
+            ComponentHolder<?> h = new CdiComponentHolder<>(this, d);
+            holders.add(h);
+        }
+
+        for (ComponentHolder<?> h : holders) {
+            if (holdersByName.put(h.getComponentMetadata().getName(), h) != null) {
+                throw new ComponentException("The component name '{0}" + h.getComponentMetadata().getName() + "' has already been registered.");
+            }
+        }
+        for (ComponentHolder<?> h : holders) {
+            for (String pid : h.getComponentMetadata().getConfigurationPid()) {
+                holdersByPid.computeIfAbsent(pid, s -> new HashSet()).add(h);
+            }
+        }
+
+        ConfigAdminTracker tracker = null;
+        for (ComponentHolder<?> holder : holders) {
+            if (!holder.getComponentMetadata().isConfigurationIgnored()) {
+                tracker = new ConfigAdminTracker(this);
+                break;
+            }
+        }
+        configAdminTracker = tracker;
+
+        holders.forEach(h -> {
+            try {
+                h.enableComponents(false);
+            } catch (RuntimeException e) {
+                h.disableComponents(false);
+                throw e;
+            }
+        });
     }
 
     public ComponentDescriptor addComponent(Bean<Object> component) {
@@ -169,12 +177,12 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
     }
 
     public ComponentDescriptor getDescriptor(Bean<?> component) {
-        return descriptors.get(component);
+        return (ComponentDescriptor) descriptors.get(component);
     }
 
     @Override
     public boolean isActive() {
-        return m_active.get();
+        return true;
     }
 
     @Override
@@ -616,7 +624,7 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
     }
 
     private static <S> S doCreate(AbstractComponentManager<S> manager, ComponentContextImpl<S> componentContext, Consumer<ComponentContextImpl<S>> setter) {
-        ComponentDescriptor descriptor = (ComponentDescriptor) manager.getComponentMetadata();
+        AbstractDescriptor descriptor = (AbstractDescriptor) manager.getComponentMetadata();
         S s = (S) descriptor.activate(componentContext);
 
         componentContext.setImplementationObject( s );
@@ -640,7 +648,7 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
     }
 
     private static <S> void doDestroy(AbstractComponentManager<S> manager, ComponentContextImpl<S> componentContext) {
-        ComponentDescriptor descriptor = (ComponentDescriptor) manager.getComponentMetadata();
+        AbstractDescriptor descriptor = (AbstractDescriptor) manager.getComponentMetadata();
         descriptor.deactivate(componentContext);
     }
 

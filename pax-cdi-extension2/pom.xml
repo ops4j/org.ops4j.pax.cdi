@@ -118,6 +118,13 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>3.4</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -134,7 +141,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            !*
+                            org.ops4j.pax.cdi.extension2.api
                         </Export-Package>
                         <Private-Package>
                             org.apache.felix.scr.*,

@@ -67,4 +67,9 @@ public class DelegatingInjectionPoint implements InjectionPoint {
     public boolean isTransient() {
         return delegate.isTransient();
     }
+
+    @Override
+    public String toString() {
+        return getAnnotated().toString();
+    }
 }

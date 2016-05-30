@@ -122,4 +122,14 @@ public class DelegatingCdiContainer implements CdiContainer {
     public void stopContext(Class<? extends Annotation> scope) {
         delegate.stopContext(scope);
     }
+
+    @Override
+    public void pause() {
+        delegate.pause();
+    }
+
+    @Override
+    public void resume() {
+        delegate.resume();
+    }
 }
