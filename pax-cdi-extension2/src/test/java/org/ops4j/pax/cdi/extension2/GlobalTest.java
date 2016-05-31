@@ -16,27 +16,15 @@
  */
 package org.ops4j.pax.cdi.extension2;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
-import java.lang.annotation.Annotation;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.easymock.EasyMock;
-import org.junit.Assert;
 import org.junit.Test;
-import org.ops4j.pax.cdi.api2.Component;
 import org.ops4j.pax.cdi.api2.Global;
 import org.ops4j.pax.cdi.api2.Immediate;
 import org.ops4j.pax.cdi.api2.Service;
-import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
-import org.osgi.framework.Bundle;
 
 public class GlobalTest extends AbstractTest {
 
