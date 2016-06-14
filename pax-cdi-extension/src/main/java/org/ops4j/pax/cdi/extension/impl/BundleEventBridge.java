@@ -75,7 +75,7 @@ public class BundleEventBridge implements BundleTrackerCustomizer<Void> {
             return null;
         }
         log.debug("adding bundle {} {}", bundle);
-        Event<BundleCdiEvent> childEvent = select(bundleEvent);
+        Event<BundleCdiEvent> childEvent = select(bundle, bundleEvent);
         childEvent.fire(new BundleCdiEvent(bundle, bundleEvent));
         return null;
     }
@@ -85,14 +85,16 @@ public class BundleEventBridge implements BundleTrackerCustomizer<Void> {
      * @return
      */
     @SuppressWarnings("serial")
-    private Event<BundleCdiEvent> select(BundleEvent bundleEvent) {
+    private Event<BundleCdiEvent> select(Bundle bundle, BundleEvent bundleEvent) {
         if (bundleEvent != null) {
             switch (bundleEvent.getType()) {
-                case BundleEvent.STARTED:
+                case BundleEvent.STARTING:
+                    // case BundleEvent.STARTED:
                     return event.select(new AnnotationLiteral<BundleStarted>() {
                     });
 
-                case BundleEvent.STOPPED:
+                    // case BundleEvent.STOPPED:
+                case BundleEvent.STOPPING:
                     return event.select(new AnnotationLiteral<BundleStopped>() {
                     });
 
@@ -101,19 +103,31 @@ public class BundleEventBridge implements BundleTrackerCustomizer<Void> {
             }
         }
         else {
-            return event;
+            switch (bundle.getState()) {
+                case Bundle.ACTIVE:
+                    return event.select(new AnnotationLiteral<BundleStarted>() {
+                    });
+
+                case Bundle.RESOLVED:
+                    return event.select(new AnnotationLiteral<BundleStopped>() {
+                    });
+
+                default:
+                    return event;
+            }
+
         }
     }
 
     @Override
     public void modifiedBundle(Bundle bundle, BundleEvent bundleEvent, Void object) {
-        Event<BundleCdiEvent> childEvent = select(bundleEvent);
+        Event<BundleCdiEvent> childEvent = select(bundle, bundleEvent);
         childEvent.fire(new BundleCdiEvent(bundle, bundleEvent));
     }
 
     @Override
     public void removedBundle(Bundle bundle, BundleEvent bundleEvent, Void object) {
-        Event<BundleCdiEvent> childEvent = select(bundleEvent);
+        Event<BundleCdiEvent> childEvent = select(bundle, bundleEvent);
         childEvent.fire(new BundleCdiEvent(bundle, bundleEvent));
     }
 }
