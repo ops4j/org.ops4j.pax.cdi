@@ -22,6 +22,7 @@ import static org.ops4j.pax.cdi.spi.BeanBundles.findExtensions;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
@@ -106,6 +107,11 @@ public class DelegatingCdiContainer implements CdiContainer {
     @Override
     public ClassLoader getContextClassLoader() {
         return delegate.getContextClassLoader();
+    }
+
+    @Override
+    public <V> V doWithClassLoader(Callable<V> callable) throws Exception {
+        return delegate.doWithClassLoader(callable);
     }
 
     @Override

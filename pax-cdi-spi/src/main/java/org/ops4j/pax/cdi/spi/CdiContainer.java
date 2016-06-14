@@ -18,6 +18,7 @@
 package org.ops4j.pax.cdi.spi;
 
 import java.lang.annotation.Annotation;
+import java.util.concurrent.Callable;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
@@ -118,4 +119,9 @@ public interface CdiContainer {
      * Used to resume the startup of the CdiContainer
      */
     void resume();
+
+    /**
+     * Execute in the context of the CDI container classloader
+     */
+    <V> V doWithClassLoader(Callable<V> callable) throws Exception;
 }

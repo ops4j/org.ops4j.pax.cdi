@@ -17,8 +17,6 @@
  */
 package org.ops4j.pax.cdi.weld.impl;
 
-import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoader;
-
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
@@ -91,7 +89,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
     protected void doStart(Object start) {
         this.environment = start;
         try {
-            doWithClassLoader(getContextClassLoader(), new Callable<Object>() {
+            doWithClassLoader(new Callable<Object>() {
 
                 @Override
                 public Object call() throws Exception {
@@ -131,7 +129,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
     public void resume() {
         if (pauses.decrementAndGet() == 0) {
             try {
-                doWithClassLoader(getContextClassLoader(), new Callable<Object>() {
+                doWithClassLoader(new Callable<Object>() {
 
                     @Override
                     public Object call() throws Exception {
@@ -151,7 +149,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
     @Override
     public void doStop() {
         try {
-            doWithClassLoader(getContextClassLoader(), new Callable<Object>() {
+            doWithClassLoader(new Callable<Object>() {
 
                 @Override
                 public Object call() throws Exception {

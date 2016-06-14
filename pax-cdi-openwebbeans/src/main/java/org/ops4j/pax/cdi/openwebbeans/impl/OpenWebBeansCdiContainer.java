@@ -17,8 +17,6 @@
  */
 package org.ops4j.pax.cdi.openwebbeans.impl;
 
-import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoader;
-
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
@@ -89,7 +87,7 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
      */
     private WebBeansContext createWebBeansContext(final Object environment) {
         try {
-            return doWithClassLoader(getContextClassLoader(), new Callable<WebBeansContext>() {
+            return doWithClassLoader(new Callable<WebBeansContext>() {
 
                 @Override
                 public WebBeansContext call() throws Exception {
@@ -119,7 +117,7 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
     @Override
     protected void doStop() {
         try {
-            doWithClassLoader(getContextClassLoader(), new Callable<Void>() {
+            doWithClassLoader(new Callable<Void>() {
 
                 @Override
                 public Void call() throws Exception {

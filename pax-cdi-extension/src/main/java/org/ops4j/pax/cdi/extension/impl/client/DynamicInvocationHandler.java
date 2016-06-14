@@ -27,7 +27,6 @@ import org.ops4j.pax.cdi.extension.impl.compat.OsgiScopeUtils;
 import org.ops4j.pax.cdi.extension.impl.compat.ServiceObjectsWrapper;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.ops4j.pax.cdi.spi.util.Exceptions;
-import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
 import org.osgi.framework.ServiceReference;
 
 /**
@@ -61,8 +60,7 @@ public class DynamicInvocationHandler<S> extends AbstractServiceInvocationHandle
         ServiceObjectsWrapper<S> serviceObjects = OsgiScopeUtils.createServiceObjectsWrapper(
             bundleContext, serviceRef);
         final S service = serviceObjects.getService();
-        Object result = ContextClassLoaderUtils.doWithClassLoader(
-            cdiContainer.getContextClassLoader(), new Callable<Object>() {
+        Object result = cdiContainer.doWithClassLoader(new Callable<Object>() {
 
                 @Override
                 public Object call() throws Exception {

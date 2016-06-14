@@ -27,7 +27,6 @@ import org.ops4j.pax.cdi.extension.impl.compat.OsgiScopeUtils;
 import org.ops4j.pax.cdi.extension.impl.compat.ServiceObjectsWrapper;
 import org.ops4j.pax.cdi.extension.impl.util.InjectionPointOsgiUtils;
 import org.ops4j.pax.cdi.spi.util.Exceptions;
-import org.ops4j.pax.swissbox.core.ContextClassLoaderUtils;
 import org.osgi.framework.ServiceException;
 import org.osgi.framework.ServiceReference;
 
@@ -67,8 +66,7 @@ public class StaticInvocationHandler<S> extends AbstractServiceInvocationHandler
     public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
 
         if (serviceRef != null) {
-            return ContextClassLoaderUtils.doWithClassLoader(
-                cdiContainer.getContextClassLoader(), new Callable<Object>() {
+            return cdiContainer.doWithClassLoader(new Callable<Object>() {
 
                     @Override
                     public Object call() throws Exception {

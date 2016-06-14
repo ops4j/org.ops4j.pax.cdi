@@ -17,8 +17,6 @@
  */
 package org.ops4j.pax.cdi.spi;
 
-import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoader;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
@@ -147,9 +145,21 @@ public abstract class AbstractCdiContainer implements CdiContainer {
         return contextClassLoader;
     }
 
+    public <V> V doWithClassLoader(final Callable<V> callable) throws Exception {
+        Thread currentThread = Thread.currentThread();;
+        ClassLoader prevTccl = currentThread.getContextClassLoader();
+        try {
+            currentThread.setContextClassLoader( getContextClassLoader() );
+            return callable.call();
+        }
+        finally {
+            currentThread.setContextClassLoader(prevTccl);
+        }
+    }
+
     private void finishStartup() {
         try {
-            cdiContainerReg = doWithClassLoader(getContextClassLoader(),
+            cdiContainerReg = doWithClassLoader(
                 new Callable<ServiceRegistration<CdiContainer>>() {
 
                     @Override
