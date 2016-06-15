@@ -24,11 +24,13 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.swissbox.tracker.ServiceLookup;
+import org.ops4j.pax.cdi.api.ServiceLookupException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +63,7 @@ public class InjectionPointOsgiUtils {
         Class<?> klass = (Class<?>) serviceType;
         String filter = getFilter(klass, os);
         BundleContext bc = getBundleContext(ip);
-        return ServiceLookup.getServiceReference(bc, klass.getName(), getTimeout(os), filter);
+        return getServiceReference(bc, klass.getName(), getTimeout(os), filter);
     }
 
     private static int getTimeout(OsgiService os) {
@@ -156,7 +158,7 @@ public class InjectionPointOsgiUtils {
      *             when the class is not from an OSGi bundle
      */
     public static BundleContext getBundleContext(Class<?> klass) {
-        BundleContext bc = null;
+        BundleContext bc;
         try {
             BundleReference bundleRef = BundleReference.class.cast(klass.getClassLoader());
             bc = bundleRef.getBundle().getBundleContext();
@@ -167,4 +169,54 @@ public class InjectionPointOsgiUtils {
         }
         return bc;
     }
+
+    /**
+     * Returns a service reference matching the given criteria.
+     *
+     * @param bc bundle context for accessing the OSGi registry
+     * @param className name of class implemented or extended by the service
+     * @param timeout maximum wait period in milliseconds
+     * @param filter LDAP filter to be matched by the service. The class name will be added to the
+     *        filter.
+     * @return matching service reference (not null)
+     * @throws ServiceLookupException
+     */
+    public static ServiceReference getServiceReference( BundleContext bc, String className,
+                                                        long timeout,
+                                                        String filter )
+    {
+        ServiceTracker<?,?> tracker = null;
+        try
+        {
+            // Create filter
+            StringBuilder builder = new StringBuilder( "(&(objectClass=" );
+            builder.append( className );
+            builder.append( ')' );
+            if( filter != null )
+            {
+                builder.append( filter );
+            }
+            builder.append( ')' );
+            // Create tracker
+            tracker = new ServiceTracker<>( bc, bc.createFilter(builder.toString()), null);
+            tracker.open();
+            Object svc = tracker.waitForService( timeout );
+            if( svc == null )
+            {
+                throw new ServiceLookupException( "gave up waiting for service " + className );
+            }
+            return tracker.getServiceReference();
+        }
+        catch ( InvalidSyntaxException | InterruptedException exc )
+        {
+            throw new ServiceLookupException( exc );
+        }
+        finally
+        {
+            if (tracker != null) {
+                tracker.close();
+            }
+        }
+    }
+
 }
