@@ -56,6 +56,9 @@ public class Exceptions {
      * @return syntactically, a runtime exception (but never actually returns)
      */
     public static RuntimeException unchecked(Throwable exc) {
+        if (exc instanceof Error) {
+            throw (Error) exc;
+        }
         Exceptions.<RuntimeException> adapt(exc);
         return null;
     }
