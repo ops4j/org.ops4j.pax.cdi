@@ -172,7 +172,12 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
 
         for (AbstractDescriptor d : descriptors.values()) {
             d.validate(this);
-            ComponentHolder<?> h = new CdiComponentHolder<>(this, d);
+            ComponentHolder<?> h;
+            if (OsgiScopeUtils.hasPrototypeScope(bundleContext)) {
+                h = new CdiComponentHolder6<>(this, d);
+            } else {
+                h = new CdiComponentHolder<>(this, d);
+            }
             holders.add(h);
         }
 
