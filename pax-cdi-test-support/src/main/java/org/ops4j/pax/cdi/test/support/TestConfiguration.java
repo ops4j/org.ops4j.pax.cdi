@@ -80,6 +80,7 @@ public class TestConfiguration {
             mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject().startLevel(
                 START_LEVEL_SYSTEM_BUNDLES),
 
+            mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.6.0"),
             mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
             mavenBundle("org.apache.xbean", "xbean-asm5-shaded", "4.4"), //
             mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.4"), //

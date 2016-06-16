@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Harald Wellmann.
+ * Copyright 2016 Guillaume Nodet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,28 +17,24 @@
  */
 package org.ops4j.pax.cdi.api;
 
-import java.lang.annotation.Documented;
+import javax.inject.Qualifier;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * An annotation defining a single property for OSGi service registration. To be used as
- * a member of {@link Properties} in combination with {@link OsgiServiceProvider}.
- * 
- * @author Harald Wellmann
+ * Meta-annotation to define custom service attributes.
+ * Such attributes will be used as service properties
+ * when exposing an OSGi service, or to filter those services
+ * when injecting a service.
  */
-@Target({ /* none */ })
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface Property {
+@Qualifier
+@Retention(RUNTIME)
+public @interface Attribute {
 
-    /** Property name. */
-    String name();
+    /**
+     * Service property name
+     */
+    String value() default "";
 
-    /** Property value. */
-    String value();
-
-    /** Property type. */
-    String type() default "String";
 }

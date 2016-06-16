@@ -42,7 +42,6 @@ import org.osgi.framework.Bundle;
 @Typed()
 public class BundleScopeContext implements AlterableContext {
 
-    private Map<Contextual<?>, SingletonScopeContextEntry<?>> serviceBeans = new ConcurrentHashMap<>();
     private BeanManager beanManager;
 
     private ThreadLocal<Bundle> clientBundle;
@@ -78,7 +77,7 @@ public class BundleScopeContext implements AlterableContext {
         T instance = component.create(creationalContext);
         serviceBean = new SingletonScopeContextEntry(component, instance,
             beanMap.getCreationalContext());
-        serviceBeans.put(component, serviceBean);
+        beanMap.put(component, serviceBean);
 
         return instance;
     }
@@ -124,7 +123,15 @@ public class BundleScopeContext implements AlterableContext {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void destroy(Contextual<?> component) {
-        SingletonScopeContextEntry serviceBean = serviceBeans.get(component);
+        Bundle bundle = getClientBundle();
+        if (bundle == null) {
+            throw new ContextNotActiveException();
+        }
+        BeanMap beanMap = beanMaps.get(bundle);
+        if (beanMap == null) {
+            throw new ContextNotActiveException();
+        }
+        SingletonScopeContextEntry serviceBean = beanMap.remove(component);
         if (serviceBean != null) {
             Object instance = serviceBean.getContextualInstance();
             CreationalContext cc = serviceBean.getCreationalContext();

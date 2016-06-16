@@ -85,7 +85,7 @@ public class SingletonScopeContext implements AlterableContext {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void destroy(Contextual<?> component) {
-        SingletonScopeContextEntry serviceBean = serviceBeans.get(component);
+        SingletonScopeContextEntry serviceBean = serviceBeans.remove(component);
         if (serviceBean != null) {
             Object instance = serviceBean.getContextualInstance();
             serviceBean.getBean().destroy(instance, serviceBean.getCreationalContext());

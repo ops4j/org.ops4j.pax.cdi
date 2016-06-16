@@ -23,8 +23,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.ops4j.pax.cdi.extension.impl.component.ComponentRegistry;
-import org.ops4j.pax.cdi.spi.BeanBundles;
-import org.osgi.framework.Bundle;
+import org.ops4j.pax.cdi.extension.impl.component2.BundleContextHolder;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -36,8 +35,6 @@ import org.osgi.framework.BundleContext;
 @ApplicationScoped
 class BundleContextProducer {
 
-    private BundleContext bundleContext;
-
     @Inject
     private OsgiExtension extension;
 
@@ -47,11 +44,7 @@ class BundleContextProducer {
      */
     @Produces
     BundleContext getBundleContext() {
-        if (bundleContext == null) {
-            Bundle bundle = BeanBundles.getBundle(Thread.currentThread().getContextClassLoader());
-            bundleContext = bundle.getBundleContext();
-        }
-        return bundleContext;
+        return BundleContextHolder.getBundleContext();
     }
 
     /**

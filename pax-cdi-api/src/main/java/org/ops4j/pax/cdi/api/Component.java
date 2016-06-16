@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Harald Wellmann.
+ * Copyright 2016 Guillaume Nodet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,28 +17,20 @@
  */
 package org.ops4j.pax.cdi.api;
 
-import java.lang.annotation.Documented;
+import javax.inject.Qualifier;
+import javax.inject.Scope;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * An annotation defining a single property for OSGi service registration. To be used as
- * a member of {@link Properties} in combination with {@link OsgiServiceProvider}.
- * 
- * @author Harald Wellmann
- */
-@Target({ /* none */ })
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface Property {
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-    /** Property name. */
-    String name();
+@Target({METHOD, FIELD, PARAMETER, TYPE})
+@Retention(RUNTIME)
+@Qualifier
+public @interface Component {
 
-    /** Property value. */
-    String value();
-
-    /** Property type. */
-    String type() default "String";
 }

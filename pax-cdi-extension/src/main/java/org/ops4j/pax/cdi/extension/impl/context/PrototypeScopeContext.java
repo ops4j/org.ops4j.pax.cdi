@@ -76,7 +76,7 @@ public class PrototypeScopeContext implements AlterableContext {
     @Override
     public void destroy(Contextual<?> component) {
         Object instance = getService();
-        CreationalContext<Object> cc = (CreationalContext<Object>) instanceMap.get(instance);
+        CreationalContext<Object> cc = (CreationalContext<Object>) instanceMap.remove(instance);
         if (cc != null) {
             ((Contextual<Object>) component).destroy(instance, cc);
         }

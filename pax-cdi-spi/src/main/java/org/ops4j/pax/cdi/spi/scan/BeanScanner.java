@@ -36,8 +36,10 @@ import org.apache.xbean.finder.AnnotationFinder;
 import org.apache.xbean.finder.AnnotationFinder.AnnotationInfo;
 import org.apache.xbean.finder.AnnotationFinder.ClassInfo;
 import org.ops4j.pax.cdi.api.BundleScoped;
+import org.ops4j.pax.cdi.api.Component;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.PrototypeScoped;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.api.SingletonScoped;
 import org.osgi.framework.Bundle;
 
@@ -70,10 +72,7 @@ public class BeanScanner {
             javax.interceptor.Interceptor.class, javax.decorator.Decorator.class, Model.class,
             NormalScope.class, Stereotype.class, BundleScoped.class, PrototypeScoped.class,
             SingletonScoped.class, OsgiServiceProvider.class,
-                org.ops4j.pax.cdi.api2.BundleScoped.class, org.ops4j.pax.cdi.api2.PrototypeScoped.class,
-                org.ops4j.pax.cdi.api2.SingletonScoped.class,
-                org.ops4j.pax.cdi.api2.Component.class,
-                org.ops4j.pax.cdi.api2.Service.class)) {
+            Component.class, Service.class)) {
             beanDefiningAnnotations.add(klass.getName());
         }
     }

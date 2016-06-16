@@ -56,7 +56,6 @@ public class BeanBundleImpl {
      */
     public void onInitialized(@Observes ContainerInitialized event) {
         log.debug("onInitialized {}", bundleContext.getBundle());
-        serviceEventBridge.start();
         componentLifecycleManager.start();
     }
 
@@ -67,6 +66,5 @@ public class BeanBundleImpl {
     public void onDestroy() {
         log.debug("onDestroy {}", bundleContext.getBundle());
         componentLifecycleManager.stop();
-        serviceEventBridge.stop();
     }
 }
