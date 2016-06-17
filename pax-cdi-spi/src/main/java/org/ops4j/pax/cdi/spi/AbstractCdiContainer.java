@@ -26,9 +26,9 @@ import java.util.concurrent.Callable;
 
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.apache.xbean.osgi.bundle.util.BundleClassLoader;
 import org.apache.xbean.osgi.bundle.util.DelegatingBundle;
 import org.ops4j.pax.cdi.spi.util.Exceptions;
-import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -67,7 +67,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
      * loader delegates to the bundle class loaders of the extended bundle, its extension bundle and
      * any required additional bundles.
      */
-    private BundleClassLoader contextClassLoader;
+    private ClassLoader contextClassLoader;
 
     protected AbstractCdiContainer(Bundle bundle,
         Collection<Bundle> extensionBundles, Collection<Bundle> additionalBundles) {
@@ -80,7 +80,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     public synchronized void start(Object environment) {
         if (!started) {
             log.info("Starting CDI container for bundle {}", getBundle());
-            buildContextClassLoader();
+            contextClassLoader = buildContextClassLoader();
             BeanBundles.addBundle(getContextClassLoader(), getBundle());
             doStart(environment);
             finishStartup();
@@ -128,16 +128,14 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     /**
      * Builds the composite class loader for the given bundle, also including the bundle containing
      * this class and all extension bundles.
-     *
-     * @param bundle
      */
-    protected void buildContextClassLoader() {
+    protected ClassLoader buildContextClassLoader() {
         List<Bundle> delegateBundles = new ArrayList<>();
         delegateBundles.add(bundle);
         delegateBundles.addAll(additionalBundles);
         delegateBundles.addAll(extensionBundles);
         DelegatingBundle delegatingBundle = new DelegatingBundle(delegateBundles);
-        contextClassLoader = new BundleClassLoader(delegatingBundle);
+        return new BundleClassLoader(delegatingBundle);
     }
 
     @Override
