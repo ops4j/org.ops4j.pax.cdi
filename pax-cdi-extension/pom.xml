@@ -155,6 +155,7 @@
                             org.apache.felix.scr.impl.helper,
                             org.apache.felix.scr.impl.manager,
                             org.apache.felix.scr.impl.metadata,
+                            org.ops4j.pax.swissbox.lifecycle,
                             org.ops4j.pax.cdi.extension.impl.*
                         </Private-Package>
                         <Provide-Capability>
