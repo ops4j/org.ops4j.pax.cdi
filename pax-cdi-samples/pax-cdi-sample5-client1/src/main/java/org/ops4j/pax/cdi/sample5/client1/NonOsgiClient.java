@@ -20,14 +20,19 @@ package org.ops4j.pax.cdi.sample5.client1;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.ops4j.pax.cdi.api.Component;
+import org.ops4j.pax.cdi.api.Filter;
+import org.ops4j.pax.cdi.api.Immediate;
 import org.ops4j.pax.cdi.api.OsgiService;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample5.Client;
 
-@ApplicationScoped
+@Component @Immediate
 public class NonOsgiClient {
 
     @Inject
-    @OsgiService(filter = "(name=client11)", dynamic = false)
+    @Service
+    @Filter("(name=client11)")
     private Client client11;
 
 

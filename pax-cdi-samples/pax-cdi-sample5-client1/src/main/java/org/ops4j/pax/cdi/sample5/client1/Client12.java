@@ -19,41 +19,45 @@ package org.ops4j.pax.cdi.sample5.client1;
 
 import javax.inject.Inject;
 
+import org.ops4j.pax.cdi.api.Component;
+import org.ops4j.pax.cdi.api.Immediate;
 import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.Properties;
 import org.ops4j.pax.cdi.api.Property;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample5.BundleScopedService;
 import org.ops4j.pax.cdi.sample5.Client;
 import org.ops4j.pax.cdi.sample5.PrototypeScopedService;
 import org.ops4j.pax.cdi.sample5.SingletonScopedService;
 
-@OsgiServiceProvider
+@Component
+@Service
 @Properties(@Property(name = "name", value = "client12"))
 public class Client12 implements Client {
 
     @Inject
-    @OsgiService
+    @Service
     private SingletonScopedService singletonScopedService1;
 
     @Inject
-    @OsgiService
+    @Service
     private SingletonScopedService singletonScopedService2;
 
     @Inject
-    @OsgiService
+    @Service
     private BundleScopedService bundleScopedService1;
 
     @Inject
-    @OsgiService
+    @Service
     private BundleScopedService bundleScopedService2;
 
     @Inject
-    @OsgiService
+    @Service
     private PrototypeScopedService prototypeScopedService1;
 
     @Inject
-    @OsgiService
+    @Service
     private PrototypeScopedService prototypeScopedService2;
 
     @Override

@@ -18,11 +18,14 @@
 package org.ops4j.pax.cdi.sample5.impl;
 
 import org.ops4j.pax.cdi.api.BundleScoped;
+import org.ops4j.pax.cdi.api.Component;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample5.BundleScopedService;
 
 
-@OsgiServiceProvider
+@Component
+@Service
 @BundleScoped
 public class BundleScopedServiceImpl extends AbstractInstanceCountedService implements BundleScopedService {
 

@@ -19,6 +19,7 @@ package org.ops4j.pax.cdi.extension.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
@@ -59,6 +60,7 @@ import org.ops4j.pax.cdi.extension.impl.component2.ComponentDescriptor;
 import org.ops4j.pax.cdi.extension.impl.component2.ComponentRegistry;
 import org.ops4j.pax.cdi.extension.impl.component2.GlobalDescriptor;
 import org.ops4j.pax.cdi.extension.impl.component2.BundleContextHolder;
+import org.ops4j.pax.cdi.extension.impl.osgi.Registry;
 import org.ops4j.pax.cdi.extension.impl.support.DelegatingBeanAttributes;
 import org.ops4j.pax.cdi.extension.impl.support.DelegatingInjectionPoint;
 import org.ops4j.pax.cdi.extension.impl.support.DelegatingInjectionTarget;
@@ -192,6 +194,11 @@ public class OsgiExtension2 implements Extension {
 
     public void applicationScopeInitialized(@Observes @Initialized(ApplicationScoped.class) Object init) {
         componentRegistry.start();
+        Registry.getInstance().register(componentRegistry);
+    }
+
+    public void applicationScopeDestroyed(@Observes @Destroyed(ApplicationScoped.class) Object destroy) {
+        Registry.getInstance().unregister(componentRegistry);
     }
 
     @Target({METHOD, FIELD, PARAMETER, TYPE})

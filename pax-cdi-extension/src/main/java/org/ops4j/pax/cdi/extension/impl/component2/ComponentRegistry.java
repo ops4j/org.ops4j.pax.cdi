@@ -432,6 +432,16 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
         return componentHoldersUsingPid;
     }
 
+    public List<ComponentHolder<?>> getComponentHolders() {
+        synchronized (holdersByName) {
+            return new ArrayList<>(holdersByName.values());
+        }
+    }
+
+    public ComponentHolder<?> getComponentHolder(String name) {
+        return holdersByName.get(name);
+    }
+
     public Collection<ComponentHolder<?>> getComponentHoldersByName(String name) {
         if (name == null) {
             return holders;
