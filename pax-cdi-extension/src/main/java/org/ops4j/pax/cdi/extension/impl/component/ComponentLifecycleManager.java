@@ -18,6 +18,7 @@
 
 package org.ops4j.pax.cdi.extension.impl.component;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,7 +27,6 @@ import java.util.Hashtable;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -175,22 +175,33 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
             return;
         }
 
-        Class<?> klass = bean.getBeanClass();
-        AnnotatedType<?> annotatedType = beanManager.createAnnotatedType(klass);
-        OsgiServiceProvider provider = annotatedType.getAnnotation(OsgiServiceProvider.class);
+        OsgiServiceProvider provider = find(OsgiServiceProvider.class, bean.getQualifiers());
 
-        String[] typeNames;
-        if (provider.classes().length == 0) {
-            typeNames = getTypeNamesForBeanTypes(bean);
-        }
-        else {
-            typeNames = getTypeNamesForClasses(provider.classes());
-        }
+        if (provider != null) {
+            String[] typeNames;
+            if (provider.classes().length == 0) {
+                typeNames = getTypeNamesForBeanTypes(bean);
+            }
+            else {
+                typeNames = getTypeNamesForClasses(provider.classes());
+            }
 
-        Dictionary<String, Object> props = createProperties(klass, service);
-        log.debug("publishing service {}, props = {}", typeNames[0], props);
-        ServiceRegistration<?> reg = bundleContext.registerService(typeNames, service, props);
-        descriptor.setServiceRegistration(reg);
+            // todo: This will not fetch the properties correctly for a producer method
+            Properties properties = bean.getBeanClass().getAnnotation(Properties.class);
+            Dictionary<String, Object> props = createProperties(properties);
+            log.debug("publishing service {}, props = {}", typeNames[0], props);
+            ServiceRegistration<?> reg = bundleContext.registerService(typeNames, service, props);
+            descriptor.setServiceRegistration(reg);
+        }
+    }
+
+    private <T extends Annotation> T  find(Class<T> annotationType, Iterable<Annotation> qualifiers) {
+        for (Annotation qualifier : qualifiers ) {
+            if (annotationType.isInstance(qualifier)) {
+                return (T) qualifier;
+            }
+        }
+        return null;
     }
 
     private <S> void unregisterService(Bean<S> bean, Object service,
@@ -231,8 +242,7 @@ public class ComponentLifecycleManager implements ComponentDependencyListener {
         return typeNames;
     }
 
-    private Dictionary<String, Object> createProperties(Class<?> klass, Object service) {
-        Properties props = klass.getAnnotation(Properties.class);
+    private Dictionary<String, Object> createProperties(Properties props) {
         if (props == null) {
             return null;
         }
