@@ -58,6 +58,6 @@ public class GreeterProducerTest {
 
     @Test
     public void checkInjection() throws InvalidSyntaxException {
-        assertEquals(greeter.sayHello(), "Bark!");
+        assertEquals(greeter.sayHello(), "Hello!");
     }
 }
