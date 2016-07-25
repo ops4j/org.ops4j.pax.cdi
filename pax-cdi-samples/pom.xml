@@ -24,6 +24,7 @@
         <module>pax-cdi-sample5-client1</module>
         <module>pax-cdi-sample5-client2</module>
         <module>pax-cdi-sample6</module>
+        <module>pax-cdi-sample-osgi-provider-producer-method</module>
     </modules>
 
 </project>
