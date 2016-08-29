@@ -34,6 +34,7 @@ import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.api.Info;
@@ -55,6 +56,7 @@ import com.sun.jersey.api.client.WebResource;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
+@Ignore
 public class WebBeanBundleLifecycleTest {
 
     @Inject

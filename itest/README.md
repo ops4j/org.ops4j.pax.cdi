@@ -10,4 +10,4 @@ To run a single combination of CDI implementation / OSGi container run e.g.:
 
 or
 
-> mvn verify -Pmatrix,owb15,equinox
+> mvn verify -Pmatrix,owb1,equinox

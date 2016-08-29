@@ -246,17 +246,19 @@ class DelegatingBundle implements Bundle {
     }
     
     public void addBundle(Bundle b) {
-        bundles.add(b);
-        reset();
+        if (bundles.add(b)) {
+            reset();
+        }
     }
 
     public void removeBundle(Bundle b) {
-        bundles.remove(b);
-        reset();
+        if (bundles.remove(b)) {
+            reset();
+        }
     }
 
     public URL getResource(String name) {
-        URL resource = null;
+        URL resource;
         if (resourceCache == null) {
             resource = findResource(name);
         }

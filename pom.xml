@@ -41,7 +41,6 @@
         <module>pax-cdi-undertow-openwebbeans</module>
         <module>pax-cdi-undertow-weld</module>
         <module>pax-cdi-manual</module>
-        <module>pax-cdi-weld-fragment</module>
     </modules>
 
     <profiles>

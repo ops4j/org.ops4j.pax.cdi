@@ -26,7 +26,6 @@ import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.util.Types;
 import org.ops4j.pax.cdi.spi.util.Exceptions;
-import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -85,7 +84,6 @@ public class OsgiProxyService implements ProxyServices {
             // span multiple bundles and add then to list of the delegating bundles.
             // We use the bean managed to leverage its annotated types cache.
             for (Class<?> type : Types.getRawTypes(manager.createAnnotatedType(proxiedBeanType).getTypeClosure())) {
-                // TODO: do not add if already there
                 Bundle bundle = FrameworkUtil.getBundle(type);
                 if (bundle != null) {
                     delegate.addBundle(bundle);

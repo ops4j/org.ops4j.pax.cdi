@@ -75,7 +75,7 @@
         <dependency>
             <groupId>org.apache.openwebbeans</groupId>            
             <artifactId>openwebbeans-el22</artifactId>
-            <version>${openwebbeans15.version}</version>
+            <version>${openwebbeans1.version}</version>
         </dependency>
 
         <dependency>

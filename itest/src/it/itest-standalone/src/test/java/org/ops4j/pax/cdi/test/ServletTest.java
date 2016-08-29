@@ -36,6 +36,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.api.Info;
@@ -56,6 +57,7 @@ import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
+@Ignore
 public class ServletTest {
 
     @Inject

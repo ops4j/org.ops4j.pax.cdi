@@ -14,9 +14,9 @@
     <name>OPS4J Pax CDI 1.2 Integration Tests on Karaf</name>
 
     <properties>
-        <karaf.version>3.0.6</karaf.version>
-        <!-- Version packaged with Karaf 3.0.6-->
-        <felix.version>4.2.1</felix.version>
+        <karaf.version>4.0.5</karaf.version>
+        <!-- Version packaged with Karaf 4.0.5-->
+        <felix.version>5.4.0</felix.version>
     </properties>
 
     <dependencies>
@@ -248,7 +248,8 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <forkMode>always</forkMode>
+                    <forkCount>1</forkCount>
+                    <reuseFork>false</reuseFork>
                     <runOrder>alphabetical</runOrder>
                     <systemPropertyVariables>
                         <java.util.logging.config.file>src/test/resources/logging.properties</java.util.logging.config.file>
@@ -292,12 +293,12 @@
             </dependencies>
         </profile>
         <profile>
-            <id>owb15</id>
+            <id>owb1</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <pax.cdi.provider>owb15</pax.cdi.provider>
+                <pax.cdi.provider>owb1</pax.cdi.provider>
                 <pax.cdi.provider.name>owb</pax.cdi.provider.name>
             </properties>
             <dependencies>

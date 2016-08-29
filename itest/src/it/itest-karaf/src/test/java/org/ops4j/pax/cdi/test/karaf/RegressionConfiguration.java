@@ -40,7 +40,7 @@ public class RegressionConfiguration {
         .artifactId("pax-cdi-features").type("xml").classifier("features").version(Info.getPaxCdiVersion());
 
     public static final MavenUrlReference PAX_WEB_FEATURES = maven().groupId("org.ops4j.pax.web")
-        .artifactId("pax-web-features").type("xml").classifier("features").version("4.0.0");
+        .artifactId("pax-web-features").type("xml").classifier("features").version("6.0.0-SNAPSHOT");
 
     public static final Option SAMPLE1 = mavenBundle().groupId("org.ops4j.pax.cdi.samples")
         .artifactId("pax-cdi-sample1").versionAsInProject();

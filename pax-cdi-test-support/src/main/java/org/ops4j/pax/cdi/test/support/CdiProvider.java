@@ -20,7 +20,7 @@ package org.ops4j.pax.cdi.test.support;
 
 public enum CdiProvider {
 
-    OWB15,
+    OWB1,
     WELD2,
 
 }

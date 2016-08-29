@@ -19,6 +19,7 @@ package org.ops4j.pax.cdi.weld.impl;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.hooks.weaving.WeavingHook;
 
 /**
@@ -29,17 +30,19 @@ import org.osgi.framework.hooks.weaving.WeavingHook;
  */
 public class Activator implements BundleActivator {
 
+    private ServiceRegistration<WeavingHook> registration;
+
     /**
      * Starts this bundle and registers a weaving hook for Weld proxies.
      */
     @Override
     public void start(BundleContext context) throws Exception {
         ProxyWeavingHook weavingHook = new ProxyWeavingHook();
-        context.registerService(WeavingHook.class, weavingHook, null);
+        registration = context.registerService(WeavingHook.class, weavingHook, null);
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        // not used
+        registration.unregister();
     }
 }

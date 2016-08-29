@@ -471,7 +471,8 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <forkMode>always</forkMode>
+                    <forkCount>1</forkCount>
+                    <reuseFork>false</reuseFork>
                     <runOrder>alphabetical</runOrder>
                     <systemPropertyVariables>
                         <java.util.logging.config.file>src/test/resources/logging.properties</java.util.logging.config.file>
@@ -512,31 +513,31 @@
             </dependencies>
         </profile>
         <profile>
-            <id>owb15</id>
+            <id>owb1</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <pax.cdi.provider>owb15</pax.cdi.provider>
+                <pax.cdi.provider>owb1</pax.cdi.provider>
             </properties>
             <dependencies>
 
                 <dependency>
                     <groupId>org.apache.openwebbeans</groupId>
                     <artifactId>openwebbeans-web</artifactId>
-                    <version>${openwebbeans15.version}</version>
+                    <version>${openwebbeans1.version}</version>
                 </dependency>
                 
                 <dependency>
                     <groupId>org.apache.openwebbeans</groupId>
                     <artifactId>openwebbeans-impl</artifactId>
-                    <version>${openwebbeans15.version}</version>
+                    <version>${openwebbeans1.version}</version>
                 </dependency>
                 
                 <dependency>
                     <groupId>org.apache.openwebbeans</groupId>
                     <artifactId>openwebbeans-spi</artifactId>
-                    <version>${openwebbeans15.version}</version>
+                    <version>${openwebbeans1.version}</version>
                 </dependency>
                 
                 <dependency>

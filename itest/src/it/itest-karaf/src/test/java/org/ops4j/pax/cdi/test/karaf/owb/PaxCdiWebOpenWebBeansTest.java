@@ -22,6 +22,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.PAX_CDI_FEATURES;
 import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.PAX_WEB_FEATURES;
+import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.SAMPLE1;
 import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.SAMPLE1_WEB;
 import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.regressionDefaults;
 import static org.ops4j.pax.exam.CoreOptions.options;
@@ -46,8 +47,9 @@ public class PaxCdiWebOpenWebBeansTest {
     public Option[] config() {
         return options(
             regressionDefaults(),
-            features(PAX_WEB_FEATURES, "war"),
+            features(PAX_WEB_FEATURES, "pax-http"),
             features(PAX_CDI_FEATURES, "pax-cdi-web-openwebbeans"),
+            SAMPLE1,
             SAMPLE1_WEB);
     }
 

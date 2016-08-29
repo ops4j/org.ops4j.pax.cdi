@@ -31,6 +31,7 @@ import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
 import javax.inject.Inject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample2.service.LibraryServiceClient;
@@ -43,6 +44,7 @@ import org.ops4j.pax.jpa.sample1.model.Author;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
+@Ignore("See DELTASPIKE-1200")
 public class Jpa21TransactionalTest {
 
     private static final String HIBERNATE_VERSION = "4.3.5.Final";
@@ -83,7 +85,7 @@ public class Jpa21TransactionalTest {
             mavenBundle("org.ops4j.pax.jpa", "pax-jpa").versionAsInProject().startLevel(2),
             mavenBundle("org.ops4j.pax.jdbc", "pax-jdbc").versionAsInProject(),
             mavenBundle("org.apache.derby", "derby").versionAsInProject(),
-            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject(),
+//            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject(),
 
 
             // DeltaSpike

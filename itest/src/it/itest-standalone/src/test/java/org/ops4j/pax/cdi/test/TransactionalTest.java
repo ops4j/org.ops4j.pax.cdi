@@ -29,6 +29,7 @@ import static org.ops4j.pax.exam.CoreOptions.options;
 
 import javax.inject.Inject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample2.service.LibraryServiceClient;
@@ -41,6 +42,7 @@ import org.ops4j.pax.jpa.sample1.model.Author;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
+@Ignore("See DELTASPIKE-1200")
 public class TransactionalTest {
 
     @Inject

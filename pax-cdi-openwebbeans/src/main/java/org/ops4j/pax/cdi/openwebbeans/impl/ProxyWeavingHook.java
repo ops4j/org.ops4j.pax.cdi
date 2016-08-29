@@ -40,13 +40,14 @@ public class ProxyWeavingHook implements WeavingHook {
 
     private static Logger log = LoggerFactory.getLogger(ProxyWeavingHook.class);
 
-    private Map<Bundle, Boolean> bundleMap = new WeakHashMap<Bundle, Boolean>();
+    private Map<BundleWiring, Boolean> bundleMap = new WeakHashMap<>();
 
 
     @Override
     public void weave(WovenClass wovenClass) {
-        Bundle bundle = wovenClass.getBundleWiring().getBundle();
-        Boolean seen = bundleMap.get(bundle);
+        BundleWiring wiring = wovenClass.getBundleWiring();
+        Bundle bundle = wiring.getBundle();
+        Boolean seen = bundleMap.get(wiring);
         if (seen != null) {
             return;
         }
@@ -56,7 +57,7 @@ public class ProxyWeavingHook implements WeavingHook {
             wovenClass.getDynamicImports().add("org.apache.webbeans.*");
             requiresWeaving = true;
         }
-        bundleMap.put(bundle, requiresWeaving);
+        bundleMap.put(wiring, requiresWeaving);
     }
 
     /**

@@ -96,7 +96,6 @@ public class OsgiExtension2 implements Extension {
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager manager) {
         componentRegistry = new ComponentRegistry(manager, BundleContextHolder.getBundleContext());
         global = new GlobalDescriptor(componentRegistry);
-        event.addAnnotatedType(manager.createAnnotatedType(BundleContextProducer.class));
     }
 
     public <T> void processBeanAttributes(@Observes ProcessBeanAttributes<T> event) {

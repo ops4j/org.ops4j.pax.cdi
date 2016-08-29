@@ -15,9 +15,9 @@
     <properties>
         <deltaspike.version>1.4.2</deltaspike.version>
         <jersey.version>1.13</jersey.version>
-        <jetty.version>9.0.7.v20131107</jetty.version>
+        <jetty.version>9.3.11.v20160721</jetty.version>
         <logback.version>1.0.0</logback.version>
-        <openwebbeans15.version>1.6.1</openwebbeans15.version>
+        <openwebbeans1.version>1.6.3</openwebbeans1.version>
         <openjpa.version>2.2.0</openjpa.version>
         <ops4j.base.version>1.5.0</ops4j.base.version>
         <pax.exam.version>4.5.0</pax.exam.version>
@@ -26,11 +26,10 @@
         <pax.swissbox.version>1.8.2</pax.swissbox.version>
         <pax.url.version>2.4.2</pax.url.version>
 
-        <!-- NOTE: 4.0.2 breaks TCK, 4.1.x breaks ServletTest -->
-        <pax.web.version>4.0.0</pax.web.version>
+        <pax.web.version>6.0.0-SNAPSHOT</pax.web.version>
 
         <slf4j.version>1.6.4</slf4j.version>
-        <weld2.version>2.3.3.Final</weld2.version>
+        <weld2.version>2.3.5.Final</weld2.version>
         <xbean.version>4.4</xbean.version>
 
         <pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
@@ -234,19 +233,19 @@
             <dependency>
                 <groupId>org.apache.openwebbeans</groupId>
                 <artifactId>openwebbeans-spi</artifactId>
-                <version>${openwebbeans15.version}</version>
+                <version>${openwebbeans1.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.openwebbeans</groupId>
                 <artifactId>openwebbeans-impl</artifactId>
-                <version>${openwebbeans15.version}</version>
+                <version>${openwebbeans1.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.openwebbeans</groupId>
                 <artifactId>openwebbeans-web</artifactId>
-                <version>${openwebbeans15.version}</version>
+                <version>${openwebbeans1.version}</version>
             </dependency>
 
             <dependency>
@@ -392,6 +391,10 @@
                             <version>${project.version}</version>
                         </dependency>
                     </dependencies>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.19.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>

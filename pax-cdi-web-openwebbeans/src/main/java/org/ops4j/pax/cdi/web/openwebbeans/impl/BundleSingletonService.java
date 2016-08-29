@@ -27,8 +27,6 @@ import java.util.Properties;
 import org.apache.webbeans.config.WebBeansContext;
 import org.apache.webbeans.spi.SingletonService;
 import org.apache.webbeans.util.Asserts;
-import org.ops4j.pax.cdi.spi.util.Exceptions;
-import org.ops4j.pax.swissbox.core.BundleClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleReference;
 import org.slf4j.Logger;
@@ -69,7 +67,7 @@ public class BundleSingletonService implements SingletonService<WebBeansContext>
                     props.load(getClass().getResourceAsStream(resource));
                 }
                 catch (IOException exc) {
-                    throw Exceptions.unchecked(exc);
+                    throw unchecked(exc);
                 }
 
                 webBeansContext = new WebBeansContext(initialServices, props);
@@ -105,13 +103,6 @@ public class BundleSingletonService implements SingletonService<WebBeansContext>
      * @return bundle
      */
     private Bundle toBundle(Object key) {
-        // workaround for weird context class loader from Pax Web 3.1.1
-        if (key instanceof BundleClassLoader) {
-            BundleClassLoader bcl = (BundleClassLoader) key;
-            if (bcl.getParent() instanceof BundleReference) {
-                return BundleReference.class.cast(bcl.getParent()).getBundle();
-            }
-        }
         if (key instanceof BundleReference) {
             return BundleReference.class.cast(key).getBundle();
         }
@@ -119,4 +110,15 @@ public class BundleSingletonService implements SingletonService<WebBeansContext>
         log.error("classloader {} does not implement BundleReference", key);
         return null;
     }
+
+    private static RuntimeException unchecked(Throwable exc) {
+        BundleSingletonService.<RuntimeException>adapt(exc);
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends Exception> void adapt(Throwable exc) throws T {
+        throw (T) exc;
+    }
+
 }

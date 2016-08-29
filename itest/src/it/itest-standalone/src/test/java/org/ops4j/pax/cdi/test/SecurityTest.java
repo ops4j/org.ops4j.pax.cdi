@@ -27,6 +27,7 @@ import static org.ops4j.pax.exam.CoreOptions.options;
 import javax.inject.Inject;
 
 import org.apache.deltaspike.security.api.authorization.AccessDeniedException;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -40,6 +41,7 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
+@Ignore("See DELTASPIKE-1200")
 public class SecurityTest {
 
     @Rule
@@ -54,8 +56,6 @@ public class SecurityTest {
             regressionDefaults(),
             paxCdiProviderAdapter(),
             cdiProviderBundles(),
-
-            mavenBundle("org.osgi", "org.osgi.enterprise").versionAsInProject(),
 
             // DeltaSpike bundles
             mavenBundle("org.apache.deltaspike.core", "deltaspike-core-api").versionAsInProject(),

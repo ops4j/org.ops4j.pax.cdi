@@ -45,16 +45,16 @@
                         </configuration>
                         <executions>
                             <execution>
-                                <id>equinox-owb15</id>
+                                <id>equinox-owb1</id>
                                 <goals>
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
                                     <profiles>
                                         <profile>equinox</profile>
-                                        <profile>owb15</profile>
+                                        <profile>owb1</profile>
                                     </profiles>
-                                    <cloneProjectsTo>${project.build.directory}/equinox-owb15</cloneProjectsTo>
+                                    <cloneProjectsTo>${project.build.directory}/equinox-owb1</cloneProjectsTo>
                                 </configuration>
                             </execution>
                             <execution>
@@ -71,16 +71,16 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>felix-owb15</id>
+                                <id>felix-owb1</id>
                                 <goals>
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
                                     <profiles>
                                         <profile>felix</profile>
-                                        <profile>owb15</profile>
+                                        <profile>owb1</profile>
                                     </profiles>
-                                    <cloneProjectsTo>${project.build.directory}/felix-owb15</cloneProjectsTo>
+                                    <cloneProjectsTo>${project.build.directory}/felix-owb1</cloneProjectsTo>
                                 </configuration>
                             </execution>
                             <execution>

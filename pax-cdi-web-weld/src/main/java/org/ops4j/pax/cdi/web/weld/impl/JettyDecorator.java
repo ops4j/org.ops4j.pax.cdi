@@ -17,16 +17,11 @@
  */
 package org.ops4j.pax.cdi.web.weld.impl;
 
-import java.util.EventListener;
-
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 
 import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.Decorator;
 import org.ops4j.pax.cdi.spi.Injector;
 
 /**
@@ -36,7 +31,8 @@ import org.ops4j.pax.cdi.spi.Injector;
  * @author Harald Wellmann
  *
  */
-public class JettyDecorator implements ServletContextHandler.Decorator {
+public class JettyDecorator implements Decorator {
+
     public static final String INJECTOR_KEY = "org.ops4j.pax.cdi.injector";
 
     private ServletContext servletContext;
@@ -58,7 +54,7 @@ public class JettyDecorator implements ServletContextHandler.Decorator {
             ContextHandler handler = cc.getContextHandler();
             if (handler instanceof ServletContextHandler) {
                 ServletContextHandler sch = (ServletContextHandler) handler;
-                sch.addDecorator(new JettyDecorator(context));
+                sch.getObjectFactory().addDecorator(new JettyDecorator(context));
             }
         }
     }
@@ -72,49 +68,6 @@ public class JettyDecorator implements ServletContextHandler.Decorator {
             }
         }
         return injector;
-    }
-
-    @Override
-    public <T extends Filter> T decorateFilterInstance(T filter) {
-        getInjector().inject(filter);
-        return filter;
-    }
-
-    @Override
-    public <T extends Servlet> T decorateServletInstance(T servlet) {
-        getInjector().inject(servlet);
-        return servlet;
-    }
-
-    @Override
-    public <T extends EventListener> T decorateListenerInstance(T listener) {
-        getInjector().inject(listener);
-        return listener;
-    }
-
-    @Override
-    public void decorateFilterHolder(FilterHolder filter) {
-        // not used
-    }
-
-    @Override
-    public void decorateServletHolder(ServletHolder servlet) {
-        // not used
-    }
-
-    @Override
-    public void destroyServletInstance(Servlet servlet) {
-        getInjector().destroy(servlet);
-    }
-
-    @Override
-    public void destroyFilterInstance(Filter filter) {
-        getInjector().destroy(filter);
-    }
-
-    @Override
-    public void destroyListenerInstance(EventListener listener) {
-        getInjector().destroy(listener);
     }
 
     public <T> T decorate(T target) {

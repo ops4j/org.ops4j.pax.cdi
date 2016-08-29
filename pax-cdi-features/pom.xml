@@ -22,7 +22,18 @@
     </description>
 
     <properties>
+        <dependency.karaf.version>4.0.4</dependency.karaf.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.karaf.features</groupId>
+            <artifactId>framework</artifactId>
+            <version>${dependency.karaf.version}</version>
+            <type>kar</type>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <resources>
@@ -55,6 +66,44 @@
                         <goals>
                             <goal>resources</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.karaf.tooling</groupId>
+                <artifactId>karaf-maven-plugin</artifactId>
+                <version>${dependency.karaf.version}</version>
+                <executions>
+                    <execution>
+                        <id>verify</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>mvn:org.apache.karaf.features/framework/${dependency.karaf.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.apache.karaf.features/standard/${dependency.karaf.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.ops4j.pax.web/pax-web-features/${pax.web.version}/xml/features</descriptor>
+                                <descriptor>file:${project.build.directory}/classes/features.xml</descriptor>
+                            </descriptors>
+                            <distribution>org.apache.karaf.features:framework</distribution>
+                            <javase>1.8</javase>
+                            <framework>
+                                <feature>framework</feature>
+                            </framework>
+                            <features>
+                                <feature>pax-cdi</feature>
+                                <feature>pax-cdi-weld</feature>
+                                <feature>pax-cdi-openwebbeans</feature>
+                                <feature>pax-cdi-web</feature>
+                                <feature>pax-cdi-web-weld</feature>
+                                <feature>pax-cdi-web-openwebbeans</feature>
+                                <feature>deltaspike-*</feature>
+                            </features>
+                            <verifyTransitive>false</verifyTransitive>
+                            <ignoreMissingConditions>true</ignoreMissingConditions>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
