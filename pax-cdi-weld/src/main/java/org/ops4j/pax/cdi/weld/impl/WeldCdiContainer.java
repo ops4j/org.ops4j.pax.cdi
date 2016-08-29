@@ -18,8 +18,8 @@
 package org.ops4j.pax.cdi.weld.impl;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -31,16 +31,16 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.bootstrap.WeldBootstrap;
-import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.spi.ProxyServices;
 import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
 import org.ops4j.pax.cdi.spi.DestroyedLiteral;
 import org.ops4j.pax.cdi.spi.InitializedLiteral;
 import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.ops4j.pax.cdi.weld.impl.bda.BundleDeployment;
+import org.ops4j.pax.cdi.weld.impl.util.OsgiProxyService;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,8 +80,7 @@ public class WeldCdiContainer extends AbstractCdiContainer {
      */
     public WeldCdiContainer(Bundle ownBundle, Bundle bundle,
         Collection<Bundle> extensionBundles) {
-        super(bundle, extensionBundles, Arrays.asList(ownBundle,
-            FrameworkUtil.getBundle(Bootstrap.class)));
+        super(bundle, extensionBundles, Collections.singletonList(ownBundle));
         log.debug("creating Weld CDI container for bundle {}", bundle);
     }
 
@@ -113,6 +112,13 @@ public class WeldCdiContainer extends AbstractCdiContainer {
         pause();
         String contextId = getBundle().getSymbolicName() + ":" + getBundle().getBundleId();
         bootstrap.startContainer(contextId, OsgiEnvironment.getInstance(), deployment);
+        // Add the ProxyServices service: we rely on the BeanManager to use its annotated
+        // types cache to discover type closures which is required for proxied beans
+        // whose type closures span multiple bundles
+        deployment.getServices()
+            .add(ProxyServices.class, new OsgiProxyService(
+                bootstrap.getManager(beanDeploymentArchive), getContextClassLoader()));
+
         bootstrap.startInitialization();
         bootstrap.deployBeans();
         bootstrap.validateBeans();

@@ -29,10 +29,8 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.serialization.spi.ProxyServices;
 import org.ops4j.pax.cdi.spi.scan.BeanScanner;
 import org.ops4j.pax.cdi.weld.impl.WeldParser;
-import org.ops4j.pax.cdi.weld.impl.util.OsgiProxyService;
 import org.osgi.framework.Bundle;
 
 /**
@@ -59,16 +57,13 @@ public class BundleDeployment implements CDI11Deployment {
      *            extended bundle class loader covering the required extensions
      */
     public BundleDeployment(Bundle bundle, Bootstrap bootstrap, ClassLoader extensionClassLoader) {
-
         serviceRegistry = new SimpleServiceRegistry();
-        serviceRegistry.add(ProxyServices.class, new OsgiProxyService());
         extensions = bootstrap.loadExtensions(extensionClassLoader);
 
-        createBeanDeploymentArchive(bundle, bootstrap, extensionClassLoader);
+        createBeanDeploymentArchive(bundle, extensionClassLoader);
     }
 
-    private void createBeanDeploymentArchive(Bundle bundle, Bootstrap bootstrap,
-        ClassLoader extensionClassLoader) {
+    private void createBeanDeploymentArchive(Bundle bundle, ClassLoader extensionClassLoader) {
         WeldParser parser = new WeldParser();
         BeanScanner scanner = new BeanScanner(bundle, parser);
         scanner.scan();
