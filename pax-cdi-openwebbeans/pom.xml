@@ -86,6 +86,7 @@
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Bundle-Activator>${bundle.namespace}.impl.Activator</Bundle-Activator>
                         <Import-Package>
+                            org.apache.webbeans*;version="[1.5,2)",
                             org.apache.xbean*;version="[3.18,5)",
                             org.slf4j;version="[1.6,2)";resolution:=optional,
                             *

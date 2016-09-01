@@ -124,7 +124,7 @@ public class TestConfiguration {
         switch (getCdiProvider()) {
 
             case OWB1:
-                return openWebBeans16Bundles();
+                return openWebBeans1Bundles();
 
             case WELD2:
                 return weld2Bundles();
@@ -262,7 +262,7 @@ public class TestConfiguration {
         );
     }
 
-    public static Option openWebBeans16Bundles() {
+    public static Option openWebBeans1Bundles() {
         return composite(
             paxCdiCoreBundles(),
             mavenBundle("javax.validation", "validation-api", "1.1.0.Final"),
