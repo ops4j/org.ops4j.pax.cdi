@@ -154,7 +154,7 @@ public class TestConfiguration {
             case OWB1:
                 return composite(
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web"),
-                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web-openwebbeans"),
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-openwebbeans"),
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-web").versionAsInProject(),
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").versionAsInProject(),
                     // needed by pax-cdi-web-openwebbeans
@@ -164,7 +164,7 @@ public class TestConfiguration {
             case WELD2:
                 return composite(
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web"),
-                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-web-weld"),
+                    workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-jetty-weld"),
                     mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec", "1.0"),
                     // needed by pax-cdi-web-weld
                     mavenBundle("org.apache.geronimo.specs", "geronimo-jsp_2.2_spec", "1.2")
@@ -294,7 +294,7 @@ public class TestConfiguration {
             mavenBundle("org.ops4j.pax.web", "pax-web-extender-war").version(Info.getPaxWebVersion()).startLevel(10),
             mavenBundle("org.ops4j.pax.web", "pax-web-extender-whiteboard").version(Info.getPaxWebVersion()),
             mavenBundle("org.ops4j.pax.web", "pax-web-jetty").version(Info.getPaxWebVersion()),
-            mavenBundle("org.ops4j.pax.web", "pax-web-descriptor").version(Info.getPaxWebVersion()),
+            //mavenBundle("org.ops4j.pax.web", "pax-web-descriptor").version(Info.getPaxWebVersion()),
             //mavenBundle("org.ops4j.pax.web", "pax-web-jsp").version(Info.getPaxWebVersion()),
             mavenBundle("org.ops4j.pax.web", "pax-web-runtime").version(Info.getPaxWebVersion()),
             mavenBundle("org.eclipse.jdt.core.compiler", "ecj").version("3.5.1"),

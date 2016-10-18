@@ -300,7 +300,7 @@
 
                 <dependency>
                     <groupId>org.ops4j.pax.cdi</groupId>
-                    <artifactId>pax-cdi-web-openwebbeans</artifactId>
+                    <artifactId>pax-cdi-jetty-openwebbeans</artifactId>
                     <version>${project.version}</version>
                     <scope>provided</scope>
                 </dependency>
@@ -326,7 +326,7 @@
 
                 <dependency>
                     <groupId>org.ops4j.pax.cdi</groupId>
-                    <artifactId>pax-cdi-web-weld</artifactId>
+                    <artifactId>pax-cdi-jetty-weld</artifactId>
                     <version>${project.version}</version>
                     <scope>provided</scope>
                 </dependency>

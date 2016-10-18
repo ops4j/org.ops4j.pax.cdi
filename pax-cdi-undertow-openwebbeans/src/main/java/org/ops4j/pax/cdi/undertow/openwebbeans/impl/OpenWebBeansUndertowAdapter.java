@@ -17,12 +17,11 @@
  */
 package org.ops4j.pax.cdi.undertow.openwebbeans.impl;
 
-import javax.servlet.ServletContainerInitializer;
+import javax.servlet.ServletContextListener;
 
 import org.apache.webbeans.config.WebBeansFinder;
-import org.ops4j.pax.cdi.servlet.AbstractWebCdiContainerListener;
-import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerListener;
+import org.ops4j.pax.cdi.web.AbstractWebAppDependencyManager;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
@@ -32,8 +31,8 @@ import org.osgi.service.component.annotations.Component;
  * @author Harald Wellmann
  *
  */
-@Component(immediate = true, property = "type=web", service = CdiContainerListener.class)
-public class OpenWebBeansUndertowAdapter extends AbstractWebCdiContainerListener {
+@Component(immediate = true, service = CdiContainerListener.class)
+public class OpenWebBeansUndertowAdapter extends AbstractWebAppDependencyManager {
 
     /**
      * Called by the OSGi framework when this bundle is activated. Registers a custom
@@ -45,7 +44,8 @@ public class OpenWebBeansUndertowAdapter extends AbstractWebCdiContainerListener
     }
 
     @Override
-    protected ServletContainerInitializer getServletContainerInitializer(CdiContainer cdiContainer) {
-        return new OpenWebBeansServletContainerInitializer(cdiContainer);
+    public ServletContextListener createServletContextListener() {
+        return new OpenWebBeansListener();
     }
+
 }

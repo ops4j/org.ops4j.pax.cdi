@@ -37,13 +37,12 @@
         <conditional>
             <condition>pax-cdi-web</condition>
             <condition>pax-http-jetty</condition>
-            <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-web-weld/${project.version}</bundle>
+            <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-jetty-weld/${project.version}</bundle>
         </conditional>
         <conditional>
             <condition>pax-cdi-web</condition>
             <condition>pax-http-undertow</condition>
             <bundle dependency="true">mvn:javax.el/javax.el-api/3.0.0</bundle>
-            <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-servlet/${project.version}</bundle>
             <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-undertow-weld/${project.version}</bundle>
         </conditional>
     </feature>
@@ -64,13 +63,12 @@
             <condition>pax-cdi-web</condition>
             <condition>pax-http-jetty</condition>
             <bundle>mvn:org.apache.openwebbeans/openwebbeans-web/${openwebbeans1.version}</bundle>
-            <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-web-openwebbeans/${project.version}</bundle>
+            <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-jetty-openwebbeans/${project.version}</bundle>
         </conditional>
         <conditional>
             <condition>pax-cdi-web</condition>
             <condition>pax-http-undertow</condition>
             <bundle>mvn:org.apache.openwebbeans/openwebbeans-web/${openwebbeans1.version}</bundle>
-            <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-servlet/${project.version}</bundle>
             <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-undertow-openwebbeans/${project.version}</bundle>
         </conditional>
     </feature>

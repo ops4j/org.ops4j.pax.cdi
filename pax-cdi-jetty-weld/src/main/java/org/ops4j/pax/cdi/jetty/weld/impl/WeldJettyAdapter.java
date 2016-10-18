@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Harald Wellmann.
+ * Copyright 2012 Harald Wellmann.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.undertow.weld.impl;
+package org.ops4j.pax.cdi.jetty.weld.impl;
 
 import javax.servlet.ServletContextListener;
 
@@ -24,18 +24,16 @@ import org.ops4j.pax.cdi.web.AbstractWebAppDependencyManager;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * Pax CDI Adapter for Weld using the Undertow servlet container. This adapter provides
- * a servlet container initializer to be picked up by Undertow.
+ * Web adapter for Weld.
  *
  * @author Harald Wellmann
  *
  */
-@Component(service = CdiContainerListener.class)
-public class WeldUndertowAdapter extends AbstractWebAppDependencyManager {
+@Component(immediate = true, service = CdiContainerListener.class)
+public class WeldJettyAdapter extends AbstractWebAppDependencyManager {
 
     @Override
     public ServletContextListener createServletContextListener() {
-        return new WeldServletContextListener();
+        return new WeldListener();
     }
-
 }

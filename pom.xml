@@ -33,13 +33,12 @@
         <module>pax-cdi-api</module>
         <module>pax-cdi-weld</module>
         <module>pax-cdi-web</module>
-        <module>pax-cdi-web-weld</module>
-        <module>pax-cdi-web-openwebbeans</module>
-        <module>pax-cdi-test-support</module>
-        <module>pax-cdi-servlet</module>
+        <module>pax-cdi-jetty-weld</module>
+        <module>pax-cdi-jetty-openwebbeans</module>
         <module>pax-cdi-undertow-openwebbeans</module>
         <module>pax-cdi-undertow-weld</module>
         <module>pax-cdi-features</module>
+        <module>pax-cdi-test-support</module>
         <module>pax-cdi-manual</module>
     </modules>
 

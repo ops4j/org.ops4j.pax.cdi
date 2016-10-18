@@ -211,7 +211,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainer> {
      * @param listener
      *            web adapter
      */
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, target = "(type=web)")
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC)
     public synchronized void setWebAdapter(CdiContainerListener listener) {
         log.debug("adding web adapter");
         this.webAdapter = listener;

@@ -432,7 +432,7 @@ Web bean bundles are enabled by the joint forces of Pax Web, Pax CDI and a CDI p
 OpenWebBeans or Weld. In addition to the Pax CDI bundles listed above, you need to provision
 
 *    pax-cdi-web
-*    pax-cdi-web-openwebbeans or pax-cdi-web-weld
+*    pax-cdi-openwebbeans or pax-cdi-weld
 
 `pax-cdi-web` has a compile-time dependency on Pax Web, by implementing the `WebAppDependencyHolder` 
 interface provided by Pax Web (since 3.0.0.M1). Pax Web has no compile-time or run-time 
