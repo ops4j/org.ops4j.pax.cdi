@@ -124,6 +124,15 @@
             </roles>
             <timezone>UTC+1</timezone>
         </developer>
+        <developer>
+            <id>gnodet</id>
+            <name>Guillaume Nodet</name>
+            <email>gnodet@gmail.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>UTC+1</timezone>
+        </developer>
     </developers>
 
 </project>
