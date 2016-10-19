@@ -26,7 +26,7 @@
         <pax.swissbox.version>1.8.2</pax.swissbox.version>
         <pax.url.version>2.4.2</pax.url.version>
 
-        <pax.web.version>4.4.0-SNAPSHOT</pax.web.version>
+        <pax.web.version>4.4.0</pax.web.version>
 
         <slf4j.version>1.6.4</slf4j.version>
         <weld2.version>2.3.5.Final</weld2.version>
