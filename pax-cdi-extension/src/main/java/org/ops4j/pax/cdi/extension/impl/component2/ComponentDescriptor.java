@@ -149,7 +149,8 @@ public class ComponentDescriptor extends AbstractDescriptor {
             addAllClasses(serviceMetadata, bean.getBeanClass());
             getProperties().put(PrivateRegistryWrapper.PRIVATE, true);
         }
-        if (bean.getScope() == PrototypeScoped.class) {
+        if (bean.getScope() == PrototypeScoped.class
+                || bean.getScope() == Dependent.class) {
             serviceMetadata.setScope("prototype");
         } else if (bean.getScope() == BundleScoped.class) {
             serviceMetadata.setScope("bundle");
@@ -168,6 +169,10 @@ public class ComponentDescriptor extends AbstractDescriptor {
         getProperties().put(ComponentDescriptor.class.getName(), this);
         getProperties().put(ComponentRegistry.class.getName(), registry);
         setService(serviceMetadata);
+    }
+
+    public Bean<Object> getBean() {
+        return bean;
     }
 
     private void addAllClasses(ServiceMetadata serviceMetadata, Class<?> beanClass) {

@@ -121,16 +121,24 @@ public class OsgiExtension2 implements Extension {
         @SuppressWarnings("unchecked")
         Bean<Object> bean = (Bean) event.getBean();
         ComponentDescriptor descriptor = null;
-        if (event.getAnnotated().isAnnotationPresent(Component.class)) {
+        if (event.getAnnotated().isAnnotationPresent(Component.class)
+                || event.getAnnotated().isAnnotationPresent(Service.class)) {
+            if (!event.getAnnotated().isAnnotationPresent(Component.class)
+                && !event.getAnnotated().isAnnotationPresent(Global.class)) {
+                event.addDefinitionError(new IllegalArgumentException(
+                        "Beans annotated with @Service " +
+                                "should be annotated with @Component or @Global"));
+            }
             descriptor = componentRegistry.addComponent(bean);
         }
         for (InjectionPoint ip : event.getBean().getInjectionPoints()) {
             if (ip.getAnnotated().isAnnotationPresent(Service.class)
                     || ip.getAnnotated().isAnnotationPresent(Component.class)
                     || ip.getAnnotated().isAnnotationPresent(Config.class)) {
-                if (ip.getAnnotated().isAnnotationPresent(Global.class)) {
+                if (ip.getAnnotated().isAnnotationPresent(Global.class)
+                        || event.getAnnotated().isAnnotationPresent(Global.class)) {
                     global.addGlobalInjectionPoint(ip);
-                } else if (descriptor == null) {
+                } else if (!event.getAnnotated().isAnnotationPresent(Component.class)) {
                     event.addDefinitionError(new IllegalArgumentException(
                             "Beans with @Service, @Component or @Config injection points " +
                                     "should be annotated with @Component"));

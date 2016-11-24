@@ -26,7 +26,7 @@ import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 
-public class GlobalTest extends AbstractTest {
+public class GlobalReferenceTest extends AbstractTest {
 
     @Test
     public void test() throws Exception {

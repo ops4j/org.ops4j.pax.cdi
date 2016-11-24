@@ -40,12 +40,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 import org.ops4j.pax.cdi.spi.ContainerInitialized;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.Constants;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.*;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
 import org.osgi.service.cm.Configuration;
@@ -97,6 +92,16 @@ public abstract class AbstractTest {
         ServiceReference<T> ref = getBundleContext().getServiceReference(clazz);
         if (ref != null) {
             return getBundleContext().getService(ref);
+        } else {
+            return null;
+        }
+    }
+
+    protected <T> T getPrototype(Class<T> clazz) {
+        ServiceReference<T> ref = getBundleContext().getServiceReference(clazz);
+        if (ref != null) {
+            ServiceObjects<T> so = getBundleContext().getServiceObjects(ref);
+            return so.getService();
         } else {
             return null;
         }
