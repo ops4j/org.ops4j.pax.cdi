@@ -20,20 +20,14 @@ package org.ops4j.pax.cdi.weld.impl;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
-import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,13 +37,11 @@ import org.slf4j.LoggerFactory;
  * @author Harald Wellmann
  *
  */
-@Component
 public class WeldCdiContainerFactory implements CdiContainerFactory {
 
     private Logger log = LoggerFactory.getLogger(WeldCdiContainerFactory.class);
 
     private Map<Long, CdiContainer> containers = new HashMap<Long, CdiContainer>();
-    private List<CdiContainerListener> listeners = new CopyOnWriteArrayList<CdiContainerListener>();
     private BundleContext bundleContext;
 
     /**
@@ -58,7 +50,6 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
      * @param bc
      *            bundle context of this bundle
      */
-    @Activate
     public void activate(BundleContext bc) {
         this.bundleContext = bc;
         SingletonProvider.initialize(new RegistrySingletonProvider());
@@ -66,11 +57,7 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
 
     /**
      * Called by the OSGi framework when this bundle is stopped. Resets the singleton provider.
-     *
-     * @param bc
-     *            bundle context of this bundle
      */
-    @Deactivate
     public void deactivate() {
         SingletonProvider.reset();
     }
@@ -104,13 +91,4 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
         containers.remove(bundle.getBundleId());
     }
 
-    @Override
-    public void addListener(CdiContainerListener listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void removeListener(CdiContainerListener listener) {
-        listeners.remove(listener);
-    }
 }

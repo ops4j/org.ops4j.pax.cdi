@@ -212,13 +212,13 @@ public class ComponentDescriptor extends AbstractDescriptor {
 
         if (cfg != null) {
             if (ref != null) {
-                throw new IllegalArgumentException("Only one of @Service or @Config can be set on injection point");
+                throw new IllegalArgumentException("Only one of @Service or @Config can be set on injection point: " + injectionPoint);
             }
             if (multiple) {
-                throw new IllegalArgumentException("Illegal use of Instance<?> on configuration: " + clazz.getName());
+                throw new IllegalArgumentException("Illegal use of Instance<?> on configuration: " + clazz.getName() + ": " + injectionPoint);
             }
             if (!clazz.isAnnotation()) {
-                throw new IllegalArgumentException("Configuration class should be an annotation: " + clazz.getName());
+                throw new IllegalArgumentException("Configuration class should be an annotation: " + clazz.getName() + ": " + injectionPoint);
             }
             Config config = injectionPoint.getAnnotated().getAnnotation(Config.class);
             String pid = config.pid().isEmpty() ? clazz.getName() : config.pid();
@@ -279,7 +279,7 @@ public class ComponentDescriptor extends AbstractDescriptor {
     protected Object getService(final InjectionPoint injectionPoint, boolean isInstance, boolean dynamic) {
         final ComponentContext cc = context.get();
         if (cc == null) {
-            throw new IllegalStateException("Can not obtain @Component instance");
+            throw new IllegalStateException("Can not obtain @Component instance: " + injectionPoint);
         }
         if (dynamic && isInstance) {
             Iterable<Object> iterable = new Iterable<Object>() {

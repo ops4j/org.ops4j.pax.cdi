@@ -38,6 +38,7 @@ import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.enterprise.inject.spi.ProcessObserverMethod;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Qualifier;
+import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -60,6 +61,9 @@ import org.ops4j.pax.cdi.extension.impl.component2.ComponentDescriptor;
 import org.ops4j.pax.cdi.extension.impl.component2.ComponentRegistry;
 import org.ops4j.pax.cdi.extension.impl.component2.GlobalDescriptor;
 import org.ops4j.pax.cdi.extension.impl.component2.BundleContextHolder;
+import org.ops4j.pax.cdi.extension.impl.context.BundleScopeContext;
+import org.ops4j.pax.cdi.extension.impl.context.PrototypeScopeContext;
+import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
 import org.ops4j.pax.cdi.extension.impl.osgi.Registry;
 import org.ops4j.pax.cdi.extension.impl.support.DelegatingBeanAttributes;
 import org.ops4j.pax.cdi.extension.impl.support.DelegatingInjectionPoint;
@@ -96,23 +100,47 @@ public class OsgiExtension2 implements Extension {
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager manager) {
         componentRegistry = new ComponentRegistry(manager, BundleContextHolder.getBundleContext());
         global = new GlobalDescriptor(componentRegistry);
+
+        event.addAnnotatedType(manager.createAnnotatedType(BundleEventBridge.class));
+        event.addAnnotatedType(manager.createAnnotatedType(ServiceEventBridge.class));
+        event.addAnnotatedType(manager.createAnnotatedType(BundleContextProducer.class));
+        event.addScope(SingletonScoped.class, false, false);
     }
 
     public <T> void processBeanAttributes(@Observes ProcessBeanAttributes<T> event) {
-        if (event.getAnnotated().isAnnotationPresent(Component.class)) {
+        if (event.getAnnotated().isAnnotationPresent(Component.class)
+                || event.getAnnotated().isAnnotationPresent(Global.class)) {
             BeanAttributes<T> attr = event.getBeanAttributes();
             Class<? extends Annotation> scope = attr.getScope();
             if (scope == SingletonScoped.class || scope == BundleScoped.class || scope == PrototypeScoped.class) {
                 // nothing
-            } else if (scope == Dependent.class){
+            } else if (scope == Singleton.class) {
                 event.setBeanAttributes(new DelegatingBeanAttributes<T>(attr) {
                     @Override
                     public Class<? extends Annotation> getScope() {
                         return SingletonScoped.class;
                     }
                 });
+            } else if (scope == Dependent.class) {
+                if (event.getAnnotated().isAnnotationPresent(Global.class)) {
+                    // @Global defaults to @PrototypeScoped
+                    event.setBeanAttributes(new DelegatingBeanAttributes<T>(attr) {
+                        @Override
+                        public Class<? extends Annotation> getScope() {
+                            return PrototypeScoped.class;
+                        }
+                    });
+                } else {
+                    // @Component defaults to @SingletonScoped
+                    event.setBeanAttributes(new DelegatingBeanAttributes<T>(attr) {
+                        @Override
+                        public Class<? extends Annotation> getScope() {
+                            return SingletonScoped.class;
+                        }
+                    });
+                }
             } else {
-                event.addDefinitionError(new IllegalArgumentException("Unsupported scope " + scope.getSimpleName()));
+                event.addDefinitionError(new IllegalArgumentException("Unsupported scope " + scope.getSimpleName() + ": " + event.getAnnotated()));
             }
         }
     }
@@ -124,10 +152,10 @@ public class OsgiExtension2 implements Extension {
         if (event.getAnnotated().isAnnotationPresent(Component.class)
                 || event.getAnnotated().isAnnotationPresent(Service.class)) {
             if (!event.getAnnotated().isAnnotationPresent(Component.class)
-                && !event.getAnnotated().isAnnotationPresent(Global.class)) {
+                    && !event.getAnnotated().isAnnotationPresent(Global.class)) {
                 event.addDefinitionError(new IllegalArgumentException(
                         "Beans annotated with @Service " +
-                                "should be annotated with @Component or @Global"));
+                                "should be annotated with @Component or @Global: " + event.getAnnotated()));
             }
             descriptor = componentRegistry.addComponent(bean);
         }
@@ -137,15 +165,19 @@ public class OsgiExtension2 implements Extension {
                     || ip.getAnnotated().isAnnotationPresent(Config.class)) {
                 if (ip.getAnnotated().isAnnotationPresent(Global.class)
                         || event.getAnnotated().isAnnotationPresent(Global.class)) {
-                    global.addGlobalInjectionPoint(ip);
+                    try {
+                        global.addGlobalInjectionPoint(ip);
+                    } catch (IllegalArgumentException e) {
+                        event.addDefinitionError(e);
+                    }
                 } else if (!event.getAnnotated().isAnnotationPresent(Component.class)) {
                     event.addDefinitionError(new IllegalArgumentException(
                             "Beans with @Service, @Component or @Config injection points " +
-                                    "should be annotated with @Component"));
+                                    "should be annotated with @Component: " + event.getAnnotated()));
                 } else {
                     try {
                         descriptor.addInjectionPoint(ip);
-                    } catch (IllegalStateException e) {
+                    } catch (IllegalArgumentException e) {
                         event.addDefinitionError(e);
                     }
                 }
@@ -197,6 +229,14 @@ public class OsgiExtension2 implements Extension {
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event) {
         componentRegistry.preStart(event, global);
+
+        BeanManager beanManager = componentRegistry.getBeanManager();
+        SingletonScopeContext serviceContext = new SingletonScopeContext(beanManager);
+        event.addContext(serviceContext);
+        BundleScopeContext bundleScopeContext = new BundleScopeContext(beanManager);
+        event.addContext(bundleScopeContext);
+        PrototypeScopeContext prototypeScopeContext = new PrototypeScopeContext(beanManager);
+        event.addContext(prototypeScopeContext);
     }
 
     public void applicationScopeInitialized(@Observes @Initialized(ApplicationScoped.class) Object init) {
@@ -206,6 +246,7 @@ public class OsgiExtension2 implements Extension {
 
     public void applicationScopeDestroyed(@Observes @Destroyed(ApplicationScoped.class) Object destroy) {
         Registry.getInstance().unregister(componentRegistry);
+        componentRegistry.stop();
     }
 
     @Target({METHOD, FIELD, PARAMETER, TYPE})

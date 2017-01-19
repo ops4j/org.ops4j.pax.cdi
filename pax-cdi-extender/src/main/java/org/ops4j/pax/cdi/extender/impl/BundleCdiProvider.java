@@ -30,15 +30,15 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * Implements a {@link CDIProvider} which returns the CDI container of the current bundle,
  * if the bundle is a bean bundle.
- * 
- * @author Harald Wellmann
- *
  */
-@Component
-public class BundleCdiProvider implements CDIProvider {
+class BundleCdiProvider implements CDIProvider {
     
     
-    private CdiContainerFactory cdiContainerFactory;
+    private final CdiContainerFactory cdiContainerFactory;
+
+    BundleCdiProvider(CdiContainerFactory cdiContainerFactory) {
+        this.cdiContainerFactory = cdiContainerFactory;
+    }
 
     @Override
     public CDI<Object> getCDI() {
@@ -51,16 +51,7 @@ public class BundleCdiProvider implements CDIProvider {
             return null;
         }
         
-        return new BundleCdi<Object>(container);
-    }
-
-    
-    /**
-     * @param cdiContainerFactory the cdiContainerFactory to set
-     */
-    @Reference
-    public void setCdiContainerFactory(CdiContainerFactory cdiContainerFactory) {
-        this.cdiContainerFactory = cdiContainerFactory;
+        return new BundleCdi<>(container);
     }
 
 }

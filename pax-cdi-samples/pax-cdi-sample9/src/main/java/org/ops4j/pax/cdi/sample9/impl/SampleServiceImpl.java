@@ -15,7 +15,8 @@
  */
 package org.ops4j.pax.cdi.sample9.impl;
 
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.Component;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample9.SampleServiceWithGenericTypeParameter;
 
 /**
@@ -24,7 +25,7 @@ import org.ops4j.pax.cdi.sample9.SampleServiceWithGenericTypeParameter;
  *
  * @author Florian Brunner (puce77)
  */
-@OsgiServiceProvider
+@Service @Component
 public class SampleServiceImpl implements SampleServiceWithGenericTypeParameter<Object> {
 
     @Override

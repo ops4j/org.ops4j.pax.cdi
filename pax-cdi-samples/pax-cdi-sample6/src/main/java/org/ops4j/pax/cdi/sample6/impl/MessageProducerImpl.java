@@ -19,11 +19,12 @@ package org.ops4j.pax.cdi.sample6.impl;
 
 import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.Component;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample6.MessageProducer;
 import org.ops4j.pax.cdi.sample6.MessageSource;
 
-@OsgiServiceProvider
+@Service @Component
 public class MessageProducerImpl implements MessageProducer {
 
     @Inject

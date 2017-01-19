@@ -18,10 +18,6 @@
 
 package org.ops4j.pax.cdi.spi;
 
-import static org.ops4j.pax.cdi.api.Constants.CDI_EXTENDER;
-import static org.ops4j.pax.cdi.api.Constants.CDI_EXTENSION_CAPABILITY;
-import static org.ops4j.pax.cdi.api.Constants.EXTENDER_CAPABILITY;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +27,8 @@ import java.util.Set;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
+
+import static org.ops4j.pax.cdi.spi.Constants.*;
 
 /**
  * Registry for bean bundles.
@@ -143,13 +141,16 @@ public class BeanBundles {
      *            set of found extension bundles.
      */
     public static void findExtensions(Bundle bundle, Set<Bundle> extensions) {
-        List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires(
-            CDI_EXTENSION_CAPABILITY);
+        List<BundleWire> wires = bundle.adapt(BundleWiring.class).getRequiredWires(null);
         if (wires != null) {
             for (BundleWire wire : wires) {
-                Bundle b = wire.getProviderWiring().getBundle();
-                extensions.add(b);
-                findExtensions(b, extensions);
+                String ns = wire.getCapability().getNamespace();
+                if (CDI_EXTENSION_CAPABILITY.equals(ns)
+                    || PAX_CDI_EXTENSION_CAPABILITY.equals(ns)) {
+                    Bundle b = wire.getProviderWiring().getBundle();
+                    extensions.add(b);
+                    findExtensions(b, extensions);
+                }
             }
         }
     }

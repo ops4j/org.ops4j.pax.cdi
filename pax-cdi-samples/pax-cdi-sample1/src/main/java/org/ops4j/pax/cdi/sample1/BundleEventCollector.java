@@ -22,7 +22,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.Global;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.api.event.BundleCdiEvent;
 
 
@@ -30,7 +31,7 @@ import org.ops4j.pax.cdi.api.event.BundleCdiEvent;
  * @author Harald Wellmann
  *
  */
-@OsgiServiceProvider
+@Service @Global
 public class BundleEventCollector {
     
     @Inject

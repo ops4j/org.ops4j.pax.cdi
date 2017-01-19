@@ -53,9 +53,9 @@
                     <instructions>
                         <Bundle-SymbolicName>org.ops4j.pax.cdi.sample1</Bundle-SymbolicName>
                         <Require-Capability>
-                            org.ops4j.pax.cdi.extension;
-                            filter:="(&amp;(extension=pax-cdi-extension)(version&gt;=${version;==;${pax.cdi.osgi.version.clean}})(!(version&gt;=${version;=+;${pax.cdi.osgi.version.clean}})))",
-                            osgi.extender; filter:="(osgi.extender=pax.cdi)"
+                            osgi.cdi.extension;
+                            filter:="(&amp;(osgi.cdi.extension=pax-cdi-extension)(version&gt;=${version;==;${pax.cdi.osgi.version.clean}})(!(version&gt;=${version;=+;${pax.cdi.osgi.version.clean}})))",
+                            osgi.extender; filter:="(osgi.extender=osgi.cdi)"
                         </Require-Capability>
                     </instructions>
                 </configuration>

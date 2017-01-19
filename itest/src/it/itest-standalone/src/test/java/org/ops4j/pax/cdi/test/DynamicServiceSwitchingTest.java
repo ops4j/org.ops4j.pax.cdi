@@ -122,18 +122,18 @@ public class DynamicServiceSwitchingTest {
         InterruptedException {
         Bundle serviceBundle = getBundle(rank);
         serviceBundle.stop();
-        while (serviceBundle.getState() != Bundle.RESOLVED) {
-            Thread.sleep(100);
-        }
+//        while (serviceBundle.getState() != Bundle.RESOLVED) {
+//            Thread.sleep(100);
+//        }
     }
 
     private void startRankedService(int rank) throws InvalidSyntaxException, BundleException,
         InterruptedException {
         Bundle serviceBundle = getBundle(rank);
         serviceBundle.start();
-        while (serviceBundle.getState() != Bundle.ACTIVE) {
-            Thread.sleep(100);
-        }
+//        while (serviceBundle.getState() != Bundle.ACTIVE) {
+//            Thread.sleep(100);
+//        }
     }
 
     private Bundle getBundle(int rank) {

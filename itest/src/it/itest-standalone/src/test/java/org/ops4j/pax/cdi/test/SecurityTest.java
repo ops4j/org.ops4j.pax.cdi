@@ -73,9 +73,9 @@ public class SecurityTest {
 //                .instructions(
 //                    "overwrite=merge",
 //                    "Bundle-SymbolicName=org.apache.deltaspike.modules.deltaspike-security-module-impl",
-//                    "Provide-Capability=org.ops4j.pax.cdi.extension;extension=\"deltaspike-security-module-impl\"",
-//                    "Require-Capability=org.ops4j.pax.cdi.extension; filter:=\"(extension=pax-cdi-extension)\", "
-//                    + "osgi.extender; filter:=\"(osgi.extender=pax.cdi)\""),
+//                    "Provide-Capability=osgi.cdi.extension;osgi.cdi.extension=\"deltaspike-security-module-impl\"",
+//                    "Require-Capability=osgi.cdi.extension; filter:=\"(osgi.cdi.extension=pax-cdi-extension)\", "
+//                    + "osgi.extender; filter:=\"(osgi.extender=osgi.cdi)\""),
 
             // Sample bundles
             workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample8"));

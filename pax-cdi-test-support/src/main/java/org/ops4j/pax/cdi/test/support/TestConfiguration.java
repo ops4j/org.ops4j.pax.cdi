@@ -35,7 +35,6 @@ import java.util.Properties;
 import java.util.ServiceLoader;
 
 import org.ops4j.lang.Ops4jException;
-import org.ops4j.pax.cdi.api.Info;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.options.ProvisionOption;
 import org.ops4j.pax.exam.util.PathUtils;

@@ -30,7 +30,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * Expose or retrieves a component to/from the OSGi registry.
  *
- * Applies on @Component.
+ * Applies on beans annotated with {@link Component} or {@link Global}
+ * to expose the bean as a service, or an an injection point to inject
+ * an OSGi service from the registry.
  */
 @Qualifier
 @Target({METHOD, FIELD, PARAMETER, TYPE})

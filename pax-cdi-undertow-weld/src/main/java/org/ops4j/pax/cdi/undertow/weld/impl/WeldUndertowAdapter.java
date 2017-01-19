@@ -19,7 +19,7 @@ package org.ops4j.pax.cdi.undertow.weld.impl;
 
 import javax.servlet.ServletContextListener;
 
-import org.ops4j.pax.cdi.spi.CdiContainerListener;
+import org.ops4j.pax.cdi.spi.CdiWebAdapter;
 import org.ops4j.pax.cdi.web.AbstractWebAppDependencyManager;
 import org.osgi.service.component.annotations.Component;
 
@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Harald Wellmann
  *
  */
-@Component(service = CdiContainerListener.class)
+@Component(service = CdiWebAdapter.class)
 public class WeldUndertowAdapter extends AbstractWebAppDependencyManager {
 
     @Override

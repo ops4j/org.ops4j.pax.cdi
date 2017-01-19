@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.api;
+package org.ops4j.pax.cdi.spi;
 
 /**
  * Constants used in the PAX CDI API.
@@ -28,7 +28,7 @@ public class Constants {
     /**
      * Value of the {@link #EXTENDER_CAPABILITY}, denoting the PAX CDI extender.
      */
-    public static final String CDI_EXTENDER = "pax.cdi";
+    public static final String CDI_EXTENDER = "osgi.cdi";
 
     /**
      * Namespace of OSGi extender capability. In OSGi 5.0.0 or higher, this is defined by
@@ -40,7 +40,9 @@ public class Constants {
      * Namespace of Pax CDI extension capability. Each portable CDI extension must provide a
      * capability in this namespace to be considered by Pax CDI.
      */
-    public static final String CDI_EXTENSION_CAPABILITY = "org.ops4j.pax.cdi.extension";
+    public static final String CDI_EXTENSION_CAPABILITY = "osgi.cdi.extension";
+
+    public static final String PAX_CDI_EXTENSION_CAPABILITY = "org.ops4j.pax.cdi.extension";
 
     /**
      * Hidden constructor of utility class.

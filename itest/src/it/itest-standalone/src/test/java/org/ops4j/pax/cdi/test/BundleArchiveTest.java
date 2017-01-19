@@ -35,7 +35,7 @@ import org.apache.xbean.finder.AnnotationFinder;
 import org.apache.xbean.finder.archive.Archive.Entry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.spi.scan.BundleArchive;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
@@ -111,8 +111,8 @@ public class BundleArchiveTest {
 
         BundleArchive archive = new BundleArchive(bundle);
         AnnotationFinder finder = new AnnotationFinder(archive);
-        List<Class<?>> classes = finder.findAnnotatedClasses(OsgiServiceProvider.class);
+        List<Class<?>> classes = finder.findAnnotatedClasses(Service.class);
         System.out.println(classes);
-        assertThat(classes.size(), is(3));
+        assertThat(classes.size(), is(2));
     }
 }

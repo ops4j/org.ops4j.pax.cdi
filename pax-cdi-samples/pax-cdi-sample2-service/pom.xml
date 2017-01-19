@@ -98,7 +98,7 @@
                             org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-jpa-module-impl))",
                             org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-core-impl))",
                             org.ops4j.pax.cdi.extension; filter:="(&amp;(extension=deltaspike-core-api))",
-                            osgi.extender; filter:="(osgi.extender=pax.cdi)"
+                            osgi.extender; filter:="(osgi.extender=osgi.cdi)"
                         </Require-Capability>
                     </instructions>
                 </configuration>

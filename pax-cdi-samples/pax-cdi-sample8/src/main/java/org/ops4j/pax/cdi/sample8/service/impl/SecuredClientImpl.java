@@ -19,16 +19,15 @@ package org.ops4j.pax.cdi.sample8.service.impl;
 
 import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample8.service.SecuredClient;
 import org.ops4j.pax.cdi.sample8.service.SecuredService;
 
-@OsgiServiceProvider
+@Service
 public class SecuredClientImpl implements SecuredClient {
 
     @Inject
-    @OsgiService
+    @Service
     private SecuredService service;
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Harald Wellmann.
+ * Copyright 2012 Harald Wellmann.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Management of OSGi service components and dependencies.
- */
-package org.ops4j.pax.cdi.extension.impl.component;
+package org.ops4j.pax.cdi.spi;
 
+/**
+ * CDI Web Adapter.
+ */
+public interface CdiWebAdapter {
+
+    /**
+     * Invoked when a new container has been created but not yet started.
+     * @param container a CDI container
+     */
+    void postCreate(CdiContainer container);
+
+    /**
+     * Invoked when a new container has been stopped but not yet destroyed.
+     * @param container a CDI container
+     */
+    void preDestroy(CdiContainer container);
+}

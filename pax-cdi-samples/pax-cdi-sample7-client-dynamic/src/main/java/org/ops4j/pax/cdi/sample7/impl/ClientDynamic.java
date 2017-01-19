@@ -17,8 +17,7 @@ package org.ops4j.pax.cdi.sample7.impl;
 
 import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.*;
 import org.ops4j.pax.cdi.sample7.api.RankedService;
 import org.ops4j.pax.cdi.sample7.api.RankedServiceClient;
 
@@ -28,11 +27,11 @@ import org.ops4j.pax.cdi.sample7.api.RankedServiceClient;
  * @author Martin Schäfer.
  *
  */
-@OsgiServiceProvider
+@Service @Global
 public class ClientDynamic implements RankedServiceClient {
 
     @Inject
-    @OsgiService(required = false, dynamic = true, timeout = 100)
+    @Service @Optional @Dynamic @Greedy
     private RankedService rankedService;
 
     @Override

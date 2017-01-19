@@ -167,7 +167,9 @@
                         </Private-Package>
                         <Provide-Capability>
                             org.ops4j.pax.cdi.extension; extension=pax-cdi-extension;
-                            version:Version=${version;====;${replace;${project.version};-;.}}
+                                version:Version=${version;====;${replace;${project.version};-;.}},
+                            osgi.cdi.extension; osgi.cdi.extension=pax-cdi-extension;
+                                version:Version=${version;====;${replace;${project.version};-;.}}
                         </Provide-Capability>
                         <Bundle-Activator>
                             org.ops4j.pax.cdi.extension.impl.osgi.Activator

@@ -61,7 +61,6 @@ import org.apache.felix.scr.impl.manager.ServiceFactoryComponentManager;
 import org.apache.felix.scr.impl.manager.SingleComponentManager;
 import org.apache.felix.scr.impl.metadata.ComponentMetadata;
 import org.apache.felix.scr.impl.metadata.TargetedPID;
-import org.ops4j.pax.cdi.extension.impl.compat.OsgiScopeUtils;
 import org.ops4j.pax.cdi.extension.impl.support.Consumer;
 import org.ops4j.pax.cdi.extension.impl.support.PrivateRegistryWrapper;
 import org.osgi.framework.Bundle;
@@ -119,12 +118,7 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
         }
         global.validate(this);
         global.pauseIfNeeded();
-        ComponentHolder<?> h;
-        if (OsgiScopeUtils.hasPrototypeScope(bundleContext)) {
-            h = new CdiComponentHolder6<>(this, global);
-        } else {
-            h = new CdiComponentHolder<>(this, global);
-        }
+        ComponentHolder<?> h = new CdiComponentHolder<>(this, global);
         h.enableComponents(false);
         for (Bean<?> bean : global.getProducers()) {
             event.addBean(bean);
@@ -172,12 +166,7 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
 
         for (AbstractDescriptor d : descriptors.values()) {
             d.validate(this);
-            ComponentHolder<?> h;
-            if (OsgiScopeUtils.hasPrototypeScope(bundleContext)) {
-                h = new CdiComponentHolder6<>(this, d);
-            } else {
-                h = new CdiComponentHolder<>(this, d);
-            }
+            ComponentHolder<?> h = new CdiComponentHolder<>(this, d);
             holders.add(h);
         }
 
@@ -213,6 +202,15 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
                 h.disableComponents(false);
                 throw e;
             }
+        }
+    }
+
+    public void stop() {
+        int reason = bundleContext.getBundle().getState() == Bundle.STOPPING
+                ? ComponentConstants.DEACTIVATION_REASON_BUNDLE_STOPPED
+                : ComponentConstants.DEACTIVATION_REASON_DISPOSED;
+        for (ComponentHolder<?> h : holders) {
+            h.disposeComponents(reason);
         }
     }
 
@@ -619,21 +617,9 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
         }
 
         protected AbstractComponentManager<S> createPrototypeComponentManager(ComponentMethods componentMethods) {
-            throw new IllegalStateException("prototype scope not supported");
-        }
-
-    }
-
-    private static class CdiComponentHolder6<S> extends CdiComponentHolder<S> {
-
-        public CdiComponentHolder6(ComponentActivator activator, ComponentMetadata metadata) {
-            super(activator, metadata);
-        }
-
-        @Override
-        protected AbstractComponentManager<S> createPrototypeComponentManager(ComponentMethods componentMethods) {
             return new CdiPrototypeComponentManager<>(this, componentMethods);
         }
+
     }
 
     private static class EmptyMethods implements ComponentMethods, ReferenceMethods, ReferenceMethod {

@@ -88,10 +88,12 @@
                             *
                         </Import-Package>
                         <Provide-Capability>
-                            osgi.extender; osgi.extender="pax.cdi";
-                            version:Version=${version;====;${replace;${project.version};-;.}}
+                            osgi.extender; osgi.extender="osgi.cdi"; uses:="org.osgi.service.cdi,javax.enterprise.inject.spi"; version:Version="1.0",
+                            osgi.extender; osgi.extender="pax.cdi"; uses:="org.osgi.service.cdi,javax.enterprise.inject.spi"; version:Version="1.0"
                         </Provide-Capability>
-                        <_dsannotations>*</_dsannotations>
+                        <Bundle-Activator>
+                            org.ops4j.pax.cdi.extender.impl.Activator
+                        </Bundle-Activator>
                     </instructions>
                 </configuration>
             </plugin>

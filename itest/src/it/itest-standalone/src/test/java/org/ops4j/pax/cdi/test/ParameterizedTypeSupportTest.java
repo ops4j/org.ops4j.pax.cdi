@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.cdi.api.OsgiService;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample9.SampleServiceWithGenericTypeParameter;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
@@ -40,7 +40,7 @@ public class ParameterizedTypeSupportTest {
 
 
     @Inject
-    @OsgiService
+    @Service
     private SampleServiceWithGenericTypeParameter<Object> sampleService;
 
     @Configuration

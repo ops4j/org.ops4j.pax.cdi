@@ -19,7 +19,6 @@ package org.ops4j.pax.cdi.test.karaf.weld;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.ops4j.pax.exam.Configuration;
@@ -44,7 +43,7 @@ public class PaxCdiWeldTest {
 
     @Inject
     @Filter(value = "(flavour=chocolate)")
-    //@OsgiService(filter = "flavour=chocolate")
+    //@Service(filter = "flavour=chocolate")
     private IceCreamService iceCreamService;
 
     @Configuration

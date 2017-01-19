@@ -42,11 +42,7 @@ import java.util.function.Supplier;
 
 import org.apache.felix.scr.impl.metadata.ReferenceMetadata;
 import org.apache.felix.scr.impl.metadata.ServiceMetadata;
-import org.ops4j.pax.cdi.api.Component;
-import org.ops4j.pax.cdi.api.Config;
-import org.ops4j.pax.cdi.api.Greedy;
-import org.ops4j.pax.cdi.api.Optional;
-import org.ops4j.pax.cdi.api.Service;
+import org.ops4j.pax.cdi.api.*;
 import org.ops4j.pax.cdi.extension.impl.support.Filters;
 import org.ops4j.pax.cdi.extension.impl.support.IterableInstance;
 import org.ops4j.pax.cdi.extension.impl.support.PrivateRegistryWrapper;
@@ -204,10 +200,10 @@ public class GlobalDescriptor extends AbstractDescriptor {
             clazz = (Class) type;
         }
         if (multiple) {
-            throw new IllegalArgumentException("@Global Instance<?> not supported");
+            throw new IllegalArgumentException("@Global Instance<?> not supported: " + injectionPoint);
         }
         if (cfg != null) {
-            throw new IllegalArgumentException("@Config @Global not supported");
+            throw new IllegalArgumentException("@Config @Global not supported: " + injectionPoint);
         }
         else {
             List<String> subFilters = Filters.getSubFilters(injectionPoint.getAnnotated().getAnnotations());
@@ -218,20 +214,21 @@ public class GlobalDescriptor extends AbstractDescriptor {
 
             boolean optional = injectionPoint.getAnnotated().isAnnotationPresent(Optional.class);
             boolean greedy = injectionPoint.getAnnotated().isAnnotationPresent(Greedy.class);
+            final boolean dynamic = injectionPoint.getAnnotated().isAnnotationPresent(Dynamic.class);
 
             ReferenceMetadata reference = new ReferenceMetadata();
             reference.setName(injectionPoint.getAnnotated().toString());
             reference.setInterface(clazz.getName());
             reference.setTarget(filter);
             reference.setCardinality(optional ? "0..1" : "1..1");
-            reference.setPolicy("static");
+            reference.setPolicy(dynamic ? "dynamic" : "static");
             reference.setPolicyOption(greedy ? "greedy" : "reluctant");
             addDependency(reference);
 
             Supplier<Object> supplier = new Supplier<Object>() {
                 @Override
                 public Object get() {
-                    return GlobalDescriptor.this.getService(injectionPoint, multiple, false);
+                    return GlobalDescriptor.this.getService(injectionPoint, multiple, dynamic);
                 }
             };
             Bean<?> bean = new SimpleBean<>(clazz, Dependent.class, injectionPoint, supplier);

@@ -19,15 +19,17 @@ package org.ops4j.pax.cdi.sample6.impl;
 
 import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.Component;
+import org.ops4j.pax.cdi.api.Dynamic;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample6.MessageConsumer;
 import org.ops4j.pax.cdi.sample6.MessageProducer;
 
-@OsgiServiceProvider
+@Service @Component
 public class MessageConsumerImpl implements MessageConsumer {
 
-    @Inject @OsgiService(dynamic = true)
+    @Inject
+    @Service @Dynamic
     private MessageProducer producer;
 
     @Override

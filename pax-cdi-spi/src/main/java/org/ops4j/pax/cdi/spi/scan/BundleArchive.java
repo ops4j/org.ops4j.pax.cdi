@@ -17,27 +17,15 @@
  */
 package org.ops4j.pax.cdi.spi.scan;
 
-import static org.osgi.framework.Constants.BUNDLE_CLASSPATH;
-import static org.osgi.framework.wiring.BundleRevision.BUNDLE_NAMESPACE;
-import static org.osgi.framework.wiring.BundleRevision.PACKAGE_NAMESPACE;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import org.apache.xbean.finder.archive.Archive;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.wiring.BundleCapability;
-import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,12 +35,9 @@ public class BundleArchive implements Archive {
     private static Logger log = LoggerFactory.getLogger(BundleArchive.class);
 
     private static final String CLASS_EXT = ".class";
-    private static final String CLASS_PATTERN = "*" + CLASS_EXT;
 
     private Bundle bundle;
     private Map<String, Entry> entries;
-    private HashSet<String> scannedPackages;
-
     private BundleFilter filter;
 
     private static class BundleArchiveEntry implements Entry {
@@ -126,10 +111,17 @@ public class BundleArchive implements Archive {
     @Override
     public Iterator<Entry> iterator() {
         entries = new HashMap<>();
-        scannedPackages = new HashSet<String>();
-        scanOwnBundle();
-        scanImportedPackages();
-        scanWiredBundles(BUNDLE_NAMESPACE);
+        for (String name : bundle.adapt(BundleWiring.class).listResources(
+                "/", "*.class",
+                BundleWiring.LISTRESOURCES_LOCAL | BundleWiring.LISTRESOURCES_RECURSE))
+        {
+            String klass = toClassName("", name);
+            if (filter.accept(bundle, klass)) {
+                URL url = bundle.getResource(name);
+                BundleArchiveEntry archiveEntry = new BundleArchiveEntry(bundle, url, klass);
+                entries.put(klass, archiveEntry);
+            }
+        }
         return entries.values().iterator();
     }
 
@@ -153,72 +145,6 @@ public class BundleArchive implements Archive {
             return null;
         }
         return entry.getProvider();
-    }
-
-    private void scanOwnBundle() {
-        String[] classPathElements;
-
-        String bundleClassPath = bundle.getHeaders().get(BUNDLE_CLASSPATH);
-        if (bundleClassPath == null) {
-            classPathElements = new String[] { "/" };
-        }
-        else {
-            classPathElements = bundleClassPath.split(",");
-        }
-
-        for (String cp : classPathElements) {
-            String classPath = cp;
-            if (classPath.equals(".")) {
-                classPath = "/";
-            }
-
-            if (classPath.endsWith(".jar") || classPath.endsWith(".zip")) {
-                scanZip(classPath);
-            }
-            else {
-                scanDirectory(classPath);
-            }
-        }
-    }
-
-    private void scanDirectory(String classPath) {
-        Enumeration<URL> e = bundle.findEntries(classPath, CLASS_PATTERN, true);
-        while (e != null && e.hasMoreElements()) {
-            URL url = e.nextElement();
-            String klass = toClassName(classPath, url);
-            if (filter.accept(bundle, klass)) {
-                BundleArchiveEntry entry = new BundleArchiveEntry(bundle, url, klass);
-                entries.put(klass, entry);
-            }
-        }
-    }
-
-    private void scanZip(String zipName) {
-        URL zipEntry = bundle.getEntry(zipName);
-        if (zipEntry == null) {
-            return;
-        }
-        try (ZipInputStream in = new ZipInputStream(zipEntry.openStream())) {
-            ZipEntry entry;
-            while ((entry = in.getNextEntry()) != null) {
-                String name = entry.getName();
-                if (name.endsWith(CLASS_EXT)) {
-                    String klass = toClassName("", name);
-                    if (filter.accept(bundle, klass)) {
-                        URL url = new URL("jar:" + zipEntry.toExternalForm() + "!/" + name);
-                        BundleArchiveEntry archiveEntry = new BundleArchiveEntry(bundle, url, klass);
-                        entries.put(klass, archiveEntry);
-                    }
-                }
-            }
-        }
-        catch (IOException exc) {
-            log.warn("error scanning zip file " + zipName, exc);
-        }
-    }
-
-    private String toClassName(String classPath, URL url) {
-        return toClassName(classPath, url.getFile());
     }
 
     private String toClassName(String classPath, String file) {
@@ -252,56 +178,4 @@ public class BundleArchive implements Archive {
         return klass;
     }
 
-    private void scanImportedPackages() {
-        BundleWiring wiring = bundle.adapt(BundleWiring.class);
-        List<BundleWire> wires = wiring.getRequiredWires(PACKAGE_NAMESPACE);
-        for (BundleWire wire : wires) {
-            log.debug("scanning imported package [{}]", wire);
-            scanForClasses(wire);
-        }
-    }
-
-    private void scanForClasses(BundleWire wire) {
-        BundleWiring wiring = wire.getProviderWiring();
-        scanExportedPackage(wiring, wire.getCapability());
-    }
-
-    private void scanExportedPackage(BundleWiring wiring, BundleCapability capability) {
-        String pkg = (String) capability.getAttributes().get(PACKAGE_NAMESPACE);
-        if (scannedPackages.contains(pkg)) {
-            return;
-        }
-
-        log.debug("scanning exported package [{}]", pkg);
-        scannedPackages.add(pkg);
-        Collection<String> resources = wiring.listResources(toPath(pkg), CLASS_PATTERN,
-            BundleWiring.LISTRESOURCES_LOCAL);
-        Bundle owner = wiring.getBundle();
-        for (String resource : resources) {
-            String klass = toClassName("", resource);
-            if (filter.accept(owner, klass)) {
-                BundleArchiveEntry archiveEntry = new BundleArchiveEntry(owner,
-                    owner.getEntry(resource), klass);
-                entries.put(klass, archiveEntry);
-            }
-        }
-    }
-
-    private String toPath(String pkg) {
-        return pkg.replaceAll("\\.", "/");
-    }
-
-    private void scanWiredBundles(String namespace) {
-        BundleWiring wiring = bundle.adapt(BundleWiring.class);
-        List<BundleWire> wires = wiring.getRequiredWires(namespace);
-        for (BundleWire wire : wires) {
-            BundleWiring providerWiring = wire.getProviderWiring();
-            Bundle providerBundle = providerWiring.getBundle();
-            log.debug("scanning bundle [{}] wired for namespace [{}]", providerBundle, namespace);
-            List<BundleCapability> capabilities = providerWiring.getCapabilities(PACKAGE_NAMESPACE);
-            for (BundleCapability pkgCapability : capabilities) {
-                scanExportedPackage(providerWiring, pkgCapability);
-            }
-        }
-    }
 }

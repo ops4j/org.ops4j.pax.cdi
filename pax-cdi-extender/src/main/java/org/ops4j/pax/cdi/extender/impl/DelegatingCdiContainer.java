@@ -61,8 +61,7 @@ public class DelegatingCdiContainer implements CdiContainer {
         Set<Bundle> extensions = new HashSet<>();
         findExtensions(bundle, extensions);
 
-        log.info("creating CDI container for bean bundle {} with extension bundles {}", bundle,
-            extensions);
+        log.info("creating CDI container for bean bundle {} with extension bundles {}", bundle, extensions);
         delegate = factory.createContainer(bundle, extensions);
         delegate.start(environment);
     }

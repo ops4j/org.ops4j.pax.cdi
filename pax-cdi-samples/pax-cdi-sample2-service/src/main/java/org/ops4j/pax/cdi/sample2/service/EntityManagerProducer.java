@@ -22,12 +22,12 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.ops4j.pax.cdi.api.OsgiService;
+import org.ops4j.pax.cdi.api.Service;
 
 
 public class EntityManagerProducer {
     
-    @Inject @OsgiService
+    @Inject @Service
     private EntityManagerFactory emf;
     
     @Produces

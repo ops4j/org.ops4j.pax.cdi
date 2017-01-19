@@ -28,7 +28,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.ops4j.pax.cdi.api.OsgiService;
+import org.ops4j.pax.cdi.api.Dynamic;
+import org.ops4j.pax.cdi.api.Filter;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
 
 @WebServlet(urlPatterns = "/ice")
@@ -37,11 +39,11 @@ public class IceCreamServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Inject
-    @OsgiService(filter = "(flavour=chocolate)")
+    @Service @Filter("(flavour=chocolate)")
     private IceCreamService chocolate;
 
     @Inject
-    @OsgiService(timeout = 2000, dynamic = true)
+    @Service @Dynamic
     private Instance<IceCreamService> iceCreamServices;
 
     @Override

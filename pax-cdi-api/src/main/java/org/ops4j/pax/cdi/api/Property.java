@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 
 /**
  * An annotation defining a single property for OSGi service registration. To be used as
- * a member of {@link Properties} in combination with {@link OsgiServiceProvider}.
+ * a member of {@link Properties} in combination with {@link Service}.
  * 
  * @author Harald Wellmann
  */

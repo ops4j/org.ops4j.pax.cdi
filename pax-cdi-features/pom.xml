@@ -22,7 +22,7 @@
     </description>
 
     <properties>
-        <dependency.karaf.version>4.0.4</dependency.karaf.version>
+        <dependency.karaf.version>4.0.7</dependency.karaf.version>
     </properties>
 
     <dependencies>

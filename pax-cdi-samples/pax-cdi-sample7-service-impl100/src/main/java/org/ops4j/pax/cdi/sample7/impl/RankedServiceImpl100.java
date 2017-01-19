@@ -15,7 +15,7 @@
  */
 package org.ops4j.pax.cdi.sample7.impl;
 
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.*;
 import org.ops4j.pax.cdi.sample7.api.RankedService;
 
 /**
@@ -24,7 +24,10 @@ import org.ops4j.pax.cdi.sample7.api.RankedService;
  * @author Martin Schäfer.
  *
  */
-@OsgiServiceProvider(ranking = RankedServiceImpl100.RANKING)
+@Service @Component
+@Properties({
+        @Property(name = "service.ranking", value = "" + RankedServiceImpl100.RANKING, type = "Integer")
+})
 public class RankedServiceImpl100 implements RankedService {
 
     static final int RANKING = 100;

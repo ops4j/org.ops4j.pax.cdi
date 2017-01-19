@@ -47,7 +47,7 @@ public class GlobalPrototypeServiceTest extends AbstractTest {
         Assert.assertNotSame(hello2, hello);
     }
 
-    @Global @Service @Dependent
+    @Global @Service
     public static class Hello {
 
         static final AtomicInteger created = new AtomicInteger();

@@ -18,14 +18,15 @@
 
 package org.ops4j.pax.cdi.sample3;
 
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.Component;
+import org.ops4j.pax.cdi.api.Service;
 
 
 /**
  * @author Harald Wellmann
  *
  */
-@OsgiServiceProvider
+@Service @Component
 public class EnglishGreeter implements Greeter {
 
     @Override

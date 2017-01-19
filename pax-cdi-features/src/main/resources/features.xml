@@ -9,7 +9,6 @@
     </feature>
 
     <feature name="pax-cdi-core" hidden="true" version="${project.version}">
-        <feature>scr</feature>
         <bundle dependency="true">mvn:javax.interceptor/javax.interceptor-api/1.2</bundle>
         <bundle dependency="true">mvn:javax.annotation/javax.annotation-api/1.2</bundle>
         <bundle dependency="true">mvn:javax.enterprise/cdi-api/1.2</bundle>

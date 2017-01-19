@@ -4,6 +4,6 @@ Bundle-SymbolicName: PAX-CDI-TCK-PROBE
 DynamicImport-Package: *
 Web-ContextPath: /probe
 Pax-ManagedBeans: WEB-INF/beans.xml
-Require-Capability: org.ops4j.pax.cdi.extension; filter:="(&(extension=p
- ax-cdi-extension))",osgi.extender; filter:="(osgi.extender=pax.cdi)"
-Provide-Capability: org.ops4j.pax.cdi.extension; extension=tck
+Require-Capability: osgi.cdi.extension; filter:="(&(osgi.cdi.extension=p
+ ax-cdi-extension))",osgi.extender; filter:="(osgi.extender=osgi.cdi)"
+Provide-Capability: osgi.cdi.extension; osgi.cdi.extension=tck

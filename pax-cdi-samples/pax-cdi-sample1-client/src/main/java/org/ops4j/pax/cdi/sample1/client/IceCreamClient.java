@@ -28,22 +28,21 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.ops4j.pax.cdi.api.*;
 import org.ops4j.pax.cdi.api.event.ServiceAdded;
 import org.ops4j.pax.cdi.api.event.ServiceCdiEvent;
 import org.ops4j.pax.cdi.api.event.ServiceRemoved;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
 
-@OsgiServiceProvider
+@Service @Component @Immediate @SingletonScoped
 public class IceCreamClient {
 
     @Inject
-    @OsgiService(timeout = 2000, dynamic = true, filter = "(flavour=chocolate)")
+    @Service @Dynamic @Filter("(flavour=chocolate)")
     private IceCreamService iceCreamService;
 
     @Inject
-    @OsgiService(timeout = 2000, dynamic = true)
+    @Service @Dynamic
     private Instance<IceCreamService> iceCreamServices;
 
     private List<String> events = new ArrayList<>();

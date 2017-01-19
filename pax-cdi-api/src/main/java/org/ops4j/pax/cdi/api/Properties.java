@@ -29,7 +29,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation to be used in combination with {@link OsgiServiceProvider} to define the properties
+ * An annotation to be used in combination with {@link Service} to define the properties
  * used for service registration.
  *
  * @author Harald Wellmann

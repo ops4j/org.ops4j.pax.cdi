@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.UUID;
 
-import org.ops4j.pax.cdi.extension.impl.OsgiExtension;
 import org.ops4j.pax.cdi.extension.impl.OsgiExtension2;
 import org.ops4j.pax.cdi.extension.impl.component2.BundleContextHolder;
 import org.jboss.weld.environment.se.Weld;
@@ -72,10 +71,10 @@ public abstract class AbstractTest {
 
     @After
     public void tearDown() throws BundleException {
-        framework.stop();
         for (WeldContainer weld : welds) {
             weld.close();
         }
+        framework.stop();
         welds.clear();
     }
 
@@ -142,7 +141,7 @@ public abstract class AbstractTest {
                 .containerId(id)
                 .disableDiscovery()
                 .beanClasses(classes)
-                .extensions(new OsgiExtension(), new OsgiExtension2())
+                .extensions(new OsgiExtension2())
                 .initialize();
         weld.getBeanManager().fireEvent(new ContainerInitialized());
         welds.add(weld);

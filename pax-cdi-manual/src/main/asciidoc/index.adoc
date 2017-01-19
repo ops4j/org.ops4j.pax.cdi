@@ -305,7 +305,7 @@ are declared in special bundle manifest headers. Pax CDI uses the capability con
 
 Each bean bundle must require the CDI extender capability:
 
- Require-Capability : osgi.extender; filter:="(osgi.extender=pax.cdi)"
+ Require-Capability : osgi.extender; filter:="(osgi.extender=osgi.cdi)"
 
 This capability is provided by the `pax-cdi-extender` which uses the OSGi extender pattern to 
 CDI-enable other bundles. The bean bundle will fail to resolve if there is no bundle providing 
@@ -321,7 +321,7 @@ The marker manifest header `Pax-ManagedBeans` is deprecated since Pax CDI 0.4.0.
 A portable CDI extension bundle must provide a CDI extension capability to be considered by 
 the OSGI CDI extender:
 
- Provide-Capability : org.ops4j.pax.cdi.extension; extension=foo
+ Provide-Capability : osgi.cdi.extension; osgi.cdi.extension=foo
 
 The value of the extension attribute should be any suitable logical name, preferably not the 
 bundle symbolic name.
@@ -343,7 +343,7 @@ Pax CDI itself provides a portable CDI extension for publishing and consuming OS
 means of CDI annotations. A bean bundle wishing to use this extension must require the 
 following extension capability:
 
- Require-Capability : org.ops4j.pax.cdi.extension; filter:="(extension=pax-cdi-extension)"
+ Require-Capability : osgi.cdi.extension; filter:="(osgi.cdi.extension=pax-cdi-extension)"
 
 Note that it is perfectly legal for a bean bundle not to use this extension. In this case the 
 bean bundle only uses CDI internally or contributes CDI beans to other bundles which import 

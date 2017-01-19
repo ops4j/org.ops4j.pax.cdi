@@ -20,8 +20,6 @@ package org.ops4j.pax.cdi.sample5.client1;
 import javax.inject.Inject;
 
 import org.ops4j.pax.cdi.api.Component;
-import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.Properties;
 import org.ops4j.pax.cdi.api.Property;
 import org.ops4j.pax.cdi.api.Service;

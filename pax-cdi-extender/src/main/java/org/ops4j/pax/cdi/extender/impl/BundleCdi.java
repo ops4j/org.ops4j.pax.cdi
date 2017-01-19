@@ -35,7 +35,7 @@ import org.ops4j.pax.cdi.spi.CdiContainer;
 
  * @author Harald Wellmann
  */
-public class BundleCdi<T> extends CDI<T> {
+class BundleCdi<T> extends CDI<T> {
 
     private CdiContainer container;
 
@@ -45,7 +45,7 @@ public class BundleCdi<T> extends CDI<T> {
      * @param container
      *            Pax CDI container
      */
-    public BundleCdi(CdiContainer container) {
+    BundleCdi(CdiContainer container) {
         this.container = container;
     }
 
@@ -107,7 +107,7 @@ public class BundleCdi<T> extends CDI<T> {
     /**
      * Disposes the PAX CDI provider. Must be called when the Pax CDI extender is stopped.
      */
-    public static void dispose() {
+    static void dispose() {
         configuredProvider = null;
     }
 }

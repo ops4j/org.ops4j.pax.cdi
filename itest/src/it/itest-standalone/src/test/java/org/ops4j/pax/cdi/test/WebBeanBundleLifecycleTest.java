@@ -37,7 +37,7 @@ import javax.servlet.ServletContext;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.cdi.api.Info;
+import org.ops4j.pax.cdi.test.support.Info;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;

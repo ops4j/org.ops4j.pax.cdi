@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.cdi.weld.impl;
 
+import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -31,6 +32,9 @@ import org.osgi.framework.hooks.weaving.WeavingHook;
 public class Activator implements BundleActivator {
 
     private ServiceRegistration<WeavingHook> registration;
+    private ServiceRegistration<CdiContainerFactory> factoryRegistration;
+
+    private WeldCdiContainerFactory factory = new WeldCdiContainerFactory();
 
     /**
      * Starts this bundle and registers a weaving hook for Weld proxies.
@@ -39,10 +43,14 @@ public class Activator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
         ProxyWeavingHook weavingHook = new ProxyWeavingHook();
         registration = context.registerService(WeavingHook.class, weavingHook, null);
+        factory.activate(context);
+        factoryRegistration = context.registerService(CdiContainerFactory.class, factory, null);
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
         registration.unregister();
+        factoryRegistration.unregister();
+        factory.deactivate();
     }
 }

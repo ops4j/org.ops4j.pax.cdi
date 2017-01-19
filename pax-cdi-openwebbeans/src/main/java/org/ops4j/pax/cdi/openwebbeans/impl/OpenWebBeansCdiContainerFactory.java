@@ -17,21 +17,16 @@
  */
 package org.ops4j.pax.cdi.openwebbeans.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.webbeans.config.WebBeansContext;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
-import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.osgi.framework.Bundle;
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
+import org.osgi.framework.BundleContext;
 
 /**
  * {@link CdiContainerFactory} implementation based on Apache OpenWebBeans.
@@ -39,12 +34,10 @@ import org.osgi.service.component.annotations.Component;
  * @author Harald Wellmann
  *
  */
-@Component
 public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
 
     private Map<Long, CdiContainer> containers = new HashMap<Long, CdiContainer>();
-    private List<CdiContainerListener> listeners = new ArrayList<CdiContainerListener>();
-    private ComponentContext componentContext;
+    private BundleContext bundleContext;
 
     public OpenWebBeansCdiContainerFactory() {
     }
@@ -52,12 +45,11 @@ public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
     /**
      * Called by the service component runtime when this component gets activated.
      *
-     * @param cc
-     *            component context
+     * @param context
+     *            bundle context
      */
-    @Activate
-    public void activate(ComponentContext cc) {
-        this.componentContext = cc;
+    public void activate(BundleContext context) {
+        this.bundleContext = context;
     }
 
     @Override
@@ -67,7 +59,7 @@ public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
 
     @Override
     public CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions) {
-        Bundle ownBundle = componentContext.getBundleContext().getBundle();
+        Bundle ownBundle = bundleContext.getBundle();
         OpenWebBeansCdiContainer container = new OpenWebBeansCdiContainer(ownBundle,
             bundle, extensions);
         containers.put(bundle.getBundleId(), container);
@@ -89,13 +81,4 @@ public class OpenWebBeansCdiContainerFactory implements CdiContainerFactory {
         containers.remove(bundle.getBundleId());
     }
 
-    @Override
-    public void addListener(CdiContainerListener listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void removeListener(CdiContainerListener listener) {
-        listeners.remove(listener);
-    }
 }

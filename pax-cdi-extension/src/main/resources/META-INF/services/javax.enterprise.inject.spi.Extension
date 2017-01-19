@@ -1,3 +1,2 @@
-org.ops4j.pax.cdi.extension.impl.OsgiExtension
 org.ops4j.pax.cdi.extension.impl.OsgiExtension2
 org.ops4j.pax.cdi.extension.api.OsgiExtension

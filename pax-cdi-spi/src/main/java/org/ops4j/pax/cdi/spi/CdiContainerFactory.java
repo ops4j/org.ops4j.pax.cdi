@@ -46,7 +46,6 @@ public interface CdiContainerFactory {
      *            a bundle to be extended with a CDI container
      * @param extensions
      *            the collection of extension bundles
-     * @param containerType
      * @return
      */
     CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions);
@@ -83,19 +82,4 @@ public interface CdiContainerFactory {
      */
     String getProviderName();
 
-    /**
-     * Adds a listener for CDI container events.
-     *
-     * @param listener
-     *            CDI container listener
-     */
-    void addListener(CdiContainerListener listener);
-
-    /**
-     * Removes a listener for CDI container events.
-     *
-     * @param listener
-     *            CDI container listener
-     */
-    void removeListener(CdiContainerListener listener);
 }

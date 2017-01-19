@@ -19,7 +19,7 @@ package org.ops4j.pax.cdi.jetty.weld.impl;
 
 import javax.servlet.ServletContextListener;
 
-import org.ops4j.pax.cdi.spi.CdiContainerListener;
+import org.ops4j.pax.cdi.spi.CdiWebAdapter;
 import org.ops4j.pax.cdi.web.AbstractWebAppDependencyManager;
 import org.osgi.service.component.annotations.Component;
 
@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Harald Wellmann
  *
  */
-@Component(immediate = true, service = CdiContainerListener.class)
+@Component(immediate = true, service = CdiWebAdapter.class)
 public class WeldJettyAdapter extends AbstractWebAppDependencyManager {
 
     @Override

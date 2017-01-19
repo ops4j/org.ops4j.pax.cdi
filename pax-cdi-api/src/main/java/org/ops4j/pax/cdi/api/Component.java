@@ -28,6 +28,18 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+/**
+ * Defines the bean has OSGi managed and allows exposing it as a
+ * service or injecting OSGi service references.
+ *
+ * CDI beans that needs interaction with the OSGi registry
+ * have to be annotated with the {@link Component} or
+ * {@link Global} annotation.  The {@link Component} defines
+ * a bean which is managed individually, whereas a bean annotated
+ * with {@link Global} will have a lifecycle tied to the CDI container.
+ *
+ * @see Global
+ */
 @Target({METHOD, FIELD, PARAMETER, TYPE})
 @Retention(RUNTIME)
 @Qualifier

@@ -18,7 +18,6 @@
 package org.ops4j.pax.cdi.sample5.impl;
 
 import org.ops4j.pax.cdi.api.Component;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.ops4j.pax.cdi.api.PrototypeScoped;
 import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample5.PrototypeScopedService;

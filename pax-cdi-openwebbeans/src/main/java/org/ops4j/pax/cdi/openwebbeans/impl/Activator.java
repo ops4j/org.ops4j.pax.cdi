@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.cdi.openwebbeans.impl;
 
+import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.hooks.weaving.WeavingHook;
@@ -36,6 +37,9 @@ public class Activator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
         ProxyWeavingHook weavingHook = new ProxyWeavingHook();
         context.registerService(WeavingHook.class, weavingHook, null);
+        OpenWebBeansCdiContainerFactory factory = new OpenWebBeansCdiContainerFactory();
+        factory.activate(context);
+        context.registerService(CdiContainerFactory.class, factory, null);
     }
 
     @Override

@@ -18,8 +18,6 @@
  */
 package org.ops4j.pax.cdi.extension.impl;
 
-import static org.ops4j.pax.cdi.extension.impl.compat.OsgiScopeUtils.createServiceObjectsWrapper;
-
 import java.lang.annotation.Annotation;
 
 import javax.annotation.PostConstruct;
@@ -35,17 +33,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.ops4j.pax.cdi.api.event.ServiceCdiEvent;
-import org.ops4j.pax.cdi.extension.impl.compat.ServiceObjectsWrapper;
 import org.ops4j.pax.cdi.extension.impl.support.Filters;
 import org.ops4j.pax.cdi.extension.impl.util.ParameterizedTypeLiteral;
 import org.ops4j.pax.cdi.extension.impl.util.ServiceAddedLiteral;
 import org.ops4j.pax.cdi.extension.impl.util.ServiceRemovedLiteral;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Filter;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 
 /**
  * Maps OSGi service events to CDI events. Fires events qualified with {@code ServiceAdded} or
@@ -79,8 +71,9 @@ public class ServiceEventBridge implements ServiceListener {
         }
 
         ServiceReference serviceReference = serviceEvent.getServiceReference();
-        ServiceObjectsWrapper serviceObjects =
-            createServiceObjectsWrapper(bundleContext, serviceReference);
+        ServiceObjects serviceObjects =
+                bundleContext.getServiceObjects(serviceReference);
+
         Object service = serviceObjects.getService();
 
         try {

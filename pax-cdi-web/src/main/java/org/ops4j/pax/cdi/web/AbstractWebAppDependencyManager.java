@@ -23,7 +23,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.ops4j.pax.cdi.spi.CdiContainer;
-import org.ops4j.pax.cdi.spi.CdiContainerListener;
+import org.ops4j.pax.cdi.spi.CdiWebAdapter;
 import org.ops4j.pax.cdi.web.impl.CdiServletContainerInitializer;
 import org.ops4j.pax.cdi.web.impl.CdiWebAppDependencyHolder;
 import org.ops4j.pax.web.service.WebAppDependencyHolder;
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @author Harald Wellmann
  *
  */
-public abstract class AbstractWebAppDependencyManager implements CdiContainerListener, ServletContextListenerFactory {
+public abstract class AbstractWebAppDependencyManager implements CdiWebAdapter, ServletContextListenerFactory {
 
     private static Logger log = LoggerFactory.getLogger(AbstractWebAppDependencyManager.class);
 

@@ -1,4 +1,4 @@
 overwrite = merge
-Provide-Capability: org.ops4j.pax.cdi.extension; extension="deltaspike-data-module-impl"
-Require-Capability: org.ops4j.pax.cdi.extension; filter:="(extension=pax-cdi-extension)"
+Provide-Capability: osgi.cdi.extension; osgi.cdi.extension="deltaspike-data-module-impl"
+Require-Capability: osgi.cdi.extension; filter:="(osgi.cdi.extension=pax-cdi-extension)"
 Import-Package: javax.peristence*;version="[1.1,3)", *
