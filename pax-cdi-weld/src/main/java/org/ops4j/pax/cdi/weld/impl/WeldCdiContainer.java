@@ -117,7 +117,8 @@ public class WeldCdiContainer extends AbstractCdiContainer {
 
         ExternalConfigurationBuilder configurationBuilder = new ExternalConfigurationBuilder()
             // Use relaxed construction by default
-            .add(ConfigurationKey.RELAXED_CONSTRUCTION.get(), true);
+            .add(ConfigurationKey.RELAXED_CONSTRUCTION.get(), true)
+            .add(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), false);
         deployment.getServices()
             .add(ExternalConfiguration.class, configurationBuilder.build());
 
