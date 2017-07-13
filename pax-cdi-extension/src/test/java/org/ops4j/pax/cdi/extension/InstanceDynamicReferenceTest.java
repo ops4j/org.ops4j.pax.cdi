@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 import org.ops4j.pax.cdi.api.Component;
 import org.ops4j.pax.cdi.api.Dynamic;
@@ -45,23 +44,13 @@ public class InstanceDynamicReferenceTest extends AbstractTest {
         Assert.assertEquals(0, Hello.destroyed.get());
         Assert.assertNull(Hello.instance.get());
 
-        ServiceRegistration<MyService> registration1 = register(MyService.class, new MyService() {
-            @Override
-            public String hello() {
-                return "Hello 1 !!";
-            }
-        });
+        ServiceRegistration<MyService> registration1 = register(MyService.class, () -> "Hello 1 !!");
 
         Assert.assertEquals(1, Hello.created.get());
         Assert.assertEquals(0, Hello.destroyed.get());
         Assert.assertEquals("Hello 1 !!", Hello.instance.get().sayHelloWorld());
 
-        ServiceRegistration<MyService> registration2 = register(MyService.class, new MyService() {
-            @Override
-            public String hello() {
-                return "Hello 2 !!";
-            }
-        });
+        ServiceRegistration<MyService> registration2 = register(MyService.class, () -> "Hello 2 !!");
 
         Assert.assertEquals(1, Hello.created.get());
         Assert.assertEquals(0, Hello.destroyed.get());
@@ -112,12 +101,7 @@ public class InstanceDynamicReferenceTest extends AbstractTest {
 
         public String sayHelloWorld() {
             final List<String> strings = new ArrayList<>();
-            service.forEach(new Consumer<MyService>() {
-                @Override
-                public void accept(MyService s) {
-                    strings.add(s.hello());
-                }
-            });
+            service.forEach(s -> strings.add(s.hello()));
             Collections.sort(strings); // TODO: ordering ?
             return String.join("\n", strings);
         }

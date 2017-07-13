@@ -37,12 +37,7 @@ public class ServiceEventTest extends AbstractTest {
         Assert.assertEquals(0, ServiceEventReceiver.added.get());
         Assert.assertEquals(0, ServiceEventReceiver.removed.get());
 
-        ServiceRegistration<MyService> registration1 = register(MyService.class, new MyService() {
-            @Override
-            public String hello() {
-                return "Hello 1 !!";
-            }
-        });
+        ServiceRegistration<MyService> registration1 = register(MyService.class, () -> "Hello 1 !!");
 
         Assert.assertEquals(1, ServiceEventReceiver.added.get());
         Assert.assertEquals(0, ServiceEventReceiver.removed.get());

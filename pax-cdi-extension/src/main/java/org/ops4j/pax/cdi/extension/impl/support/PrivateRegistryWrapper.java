@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -124,12 +123,7 @@ public class PrivateRegistryWrapper implements BundleContext {
     }
 
     private void removePrivateServiceListener(ServiceListener listener) {
-        final Iterator<ListenerInfo> each = listeners.iterator();
-        while (each.hasNext()) {
-            if (each.next().listener == listener) {
-                each.remove();
-            }
-        }
+        listeners.removeIf(listenerInfo -> listenerInfo.listener == listener);
     }
 
     private <S> ServiceRegistration<S> registerPrivate(String[] clazzes, Object svc, Dictionary<String, ?> properties) {

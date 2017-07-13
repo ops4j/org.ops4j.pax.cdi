@@ -23,9 +23,7 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
@@ -116,7 +114,7 @@ public class GlobalDescriptor extends AbstractDescriptor {
 
         @Override
         public Set<Type> getTypeClosure() {
-            return Collections.<Type>singleton(type);
+            return Collections.singleton(type);
         }
 
         @Override
@@ -225,12 +223,7 @@ public class GlobalDescriptor extends AbstractDescriptor {
             reference.setPolicyOption(greedy ? "greedy" : "reluctant");
             addDependency(reference);
 
-            Supplier<Object> supplier = new Supplier<Object>() {
-                @Override
-                public Object get() {
-                    return GlobalDescriptor.this.getService(injectionPoint, multiple, dynamic);
-                }
-            };
+            Supplier<Object> supplier = () -> GlobalDescriptor.this.getService(injectionPoint, multiple, dynamic);
             Bean<?> bean = new SimpleBean<>(clazz, Dependent.class, injectionPoint, supplier);
             producers.add(bean);
             instanceSuppliers.put(injectionPoint, supplier);
@@ -248,37 +241,27 @@ public class GlobalDescriptor extends AbstractDescriptor {
             throw new IllegalStateException("Can not obtain @Component instance");
         }
         if (dynamic && isInstance) {
-            Iterable<Object> iterable = new Iterable<Object>() {
-                @Override
-                public Iterator<Object> iterator() {
-                    return new Iterator<Object>() {
-                        final Object[] services = cc.locateServices(injectionPoint.toString());
-                        int idx;
-                        public boolean hasNext() {
-                            return services != null && idx < services.length;
-                        }
-                        public Object next() {
-                            return services[idx++];
-                        }
-                    };
+            Iterable<Object> iterable = () -> new Iterator<Object>() {
+                final Object[] services = cc.locateServices(injectionPoint.toString());
+                int idx;
+                public boolean hasNext() {
+                    return services != null && idx < services.length;
+                }
+                public Object next() {
+                    return services[idx++];
                 }
             };
             return new IterableInstance<>(iterable);
         }
         else if (isInstance) {
             final Object[] services = cc.locateServices(injectionPoint.toString());
-            Iterable<Object> iterable = new Iterable<Object>() {
-                @Override
-                public Iterator<Object> iterator() {
-                    return new Iterator<Object>() {
-                        int idx;
-                        public boolean hasNext() {
-                            return services != null && idx < services.length;
-                        }
-                        public Object next() {
-                            return services[idx++];
-                        }
-                    };
+            Iterable<Object> iterable = () -> new Iterator<Object>() {
+                int idx;
+                public boolean hasNext() {
+                    return services != null && idx < services.length;
+                }
+                public Object next() {
+                    return services[idx++];
                 }
             };
             return new IterableInstance<>(iterable);
@@ -287,12 +270,9 @@ public class GlobalDescriptor extends AbstractDescriptor {
             Class<Object> clazz = Types.getRawType(injectionPoint.getType());
             ClassLoader cl = registry.getBundleContext().getBundle().adapt(BundleWiring.class).getClassLoader();
             return Proxy.newProxyInstance(cl, new Class[]{ clazz },
-                    new InvocationHandler() {
-                        @Override
-                        public Object invoke(Object p, Method method, Object[] args) throws Throwable {
-                            Object t = cc.locateService(injectionPoint.toString());
-                            return t != null ? method.invoke(t, args) : null;
-                        }
+                    (p, method, args) -> {
+                        Object t = cc.locateService(injectionPoint.toString());
+                        return t != null ? method.invoke(t, args) : null;
                     });
         }
         else {
@@ -313,15 +293,13 @@ public class GlobalDescriptor extends AbstractDescriptor {
     }
 
     public void deactivate(ComponentContext cc) {
-        new Thread() {
-            public void run() {
-                if (container != null) {
-                    context = null;
-                    container.stop();
-                    container.start(new Object());
-                }
+        new Thread(() -> {
+            if (container != null) {
+                context = null;
+                container.stop();
+                container.start(new Object());
             }
-        }.start();
+        }).start();
     }
 
 }

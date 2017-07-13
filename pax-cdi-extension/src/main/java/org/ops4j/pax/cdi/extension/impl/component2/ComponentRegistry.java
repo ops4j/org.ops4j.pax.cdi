@@ -177,11 +177,7 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
         }
         for (ComponentHolder<?> h : holders) {
             for (String pid : h.getComponentMetadata().getConfigurationPid()) {
-                Set<ComponentHolder<?>> set = holdersByPid.get(pid);
-                if (set == null) {
-                    set = new HashSet<>();
-                    holdersByPid.put(pid, set);
-                }
+                Set<ComponentHolder<?>> set = holdersByPid.computeIfAbsent(pid, k -> new HashSet<>());
                 set.add(h);
             }
         }
@@ -264,11 +260,7 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
         if (serviceReference.getProperty(ComponentConstants.COMPONENT_NAME) == null || serviceReference.getProperty(ComponentConstants.COMPONENT_ID) == null) {
             return;
         }
-        List<Entry> dependencyManagers = m_missingDependencies.get(serviceReference);
-        if (dependencyManagers == null) {
-            dependencyManagers = new ArrayList<>();
-            m_missingDependencies.put(serviceReference, dependencyManagers);
-        }
+        List<Entry> dependencyManagers = m_missingDependencies.computeIfAbsent(serviceReference, k -> new ArrayList<>());
         dependencyManagers.add(new Entry(dependencyManager, trackingCount));
     }
 
@@ -359,18 +351,12 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
                                    final ExtendedServiceListener<ExtendedServiceEvent> listener) {
         if (eventFilter != null && eventFilter.toString().contains(PrivateRegistryWrapper.PRIVATE)) {
             synchronized (privateListeners) {
-                ServiceListener l = new ServiceListener() {
-                    @Override
-                    public void serviceChanged(ServiceEvent event) {
-                        listener.serviceChanged(new ExtendedServiceEvent(event));
-                    }
-                };
+                ServiceListener l = event -> listener.serviceChanged(new ExtendedServiceEvent(event));
                 privateListeners.put(listener, l);
                 try {
                     bundleContext.addServiceListener(l, "(&" + classNameFilter + eventFilter.toString() + ")");
                 } catch (InvalidSyntaxException e) {
-                    throw (IllegalArgumentException) new IllegalArgumentException(
-                            "invalid class name filter").initCause(e);
+                    throw new IllegalArgumentException("invalid class name filter", e);
                 }
             }
             return;
@@ -386,8 +372,7 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
                 try {
                     bundleContext.addServiceListener(listenerInfo, classNameFilter);
                 } catch (InvalidSyntaxException e) {
-                    throw (IllegalArgumentException) new IllegalArgumentException(
-                            "invalid class name filter").initCause(e);
+                    throw new IllegalArgumentException("invalid class name filter", e);
                 }
             }
         }
@@ -446,7 +431,7 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
         }
         ComponentHolder<?> componentHolder = holdersByName.get(name);
         if (componentHolder != null) {
-            return Collections.<ComponentHolder<?>>singletonList(componentHolder);
+            return Collections.singletonList(componentHolder);
         }
         return Collections.emptyList();
     }
@@ -683,12 +668,7 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
             super(container, componentMethods);
         }
         protected S createImplementationObject(Bundle usingBundle, final SetImplementationObject<S> setter, ComponentContextImpl<S> componentContext) {
-            return doCreate(this, componentContext, new Consumer<ComponentContextImpl<S>>() {
-                @Override
-                public void accept(ComponentContextImpl<S> cc) {
-                    setter.presetComponentContext(cc);
-                }
-            });
+            return doCreate(this, componentContext, setter::presetComponentContext);
         }
         protected void disposeImplementationObject(ComponentContextImpl<S> componentContext, int reason) {
             doDestroy(this, componentContext);
@@ -701,12 +681,7 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
         }
         protected S createImplementationObject(Bundle usingBundle, final SetImplementationObject<S> setter, ComponentContextImpl<S> componentContext) {
 
-            return doCreate(this, componentContext, new Consumer<ComponentContextImpl<S>>() {
-                @Override
-                public void accept(ComponentContextImpl<S> cc) {
-                    setter.presetComponentContext(cc);
-                }
-            });
+            return doCreate(this, componentContext, setter::presetComponentContext);
         }
         protected void disposeImplementationObject(ComponentContextImpl<S> componentContext, int reason) {
             doDestroy(this, componentContext);
@@ -718,12 +693,7 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
             super(container, componentMethods);
         }
         protected S createImplementationObject(Bundle usingBundle, final SetImplementationObject<S> setter, ComponentContextImpl<S> componentContext) {
-            return doCreate(this, componentContext, new Consumer<ComponentContextImpl<S>>() {
-                @Override
-                public void accept(ComponentContextImpl<S> cc) {
-                    setter.presetComponentContext(cc);
-                }
-            });
+            return doCreate(this, componentContext, setter::presetComponentContext);
         }
         protected void disposeImplementationObject(ComponentContextImpl<S> componentContext, int reason) {
             doDestroy(this, componentContext);

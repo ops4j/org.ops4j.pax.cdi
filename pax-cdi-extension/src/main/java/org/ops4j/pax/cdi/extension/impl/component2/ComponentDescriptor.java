@@ -27,7 +27,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
@@ -227,12 +226,8 @@ public class ComponentDescriptor extends AbstractDescriptor {
             setConfigurationPolicy(optional ? ComponentMetadata.CONFIGURATION_POLICY_OPTIONAL : ComponentMetadata.CONFIGURATION_POLICY_REQUIRE);
             setConfigurationPid(new String[]{ pid });
 
-            producers.add(new SimpleBean<>(clazz, Dependent.class, injectionPoint, new Supplier<Object>() {
-                @Override
-                public Object get() {
-                    return ComponentDescriptor.this.createConfig(clazz);
-                }
-            }));
+            Supplier<Object> supplier = () -> ComponentDescriptor.this.createConfig(clazz);
+            producers.add(new SimpleBean<>(clazz, Dependent.class, injectionPoint, supplier));
         }
         else {
             List<String> subFilters = Filters.getSubFilters(injectionPoint.getAnnotated().getAnnotations());
@@ -254,12 +249,7 @@ public class ComponentDescriptor extends AbstractDescriptor {
             reference.setPolicyOption(greedy ? "greedy" : "reluctant");
             addDependency(reference);
 
-            Supplier<Object> supplier = new Supplier<Object>() {
-                @Override
-                public Object get() {
-                    return ComponentDescriptor.this.getService(injectionPoint, multiple, dynamic);
-                }
-            };
+            Supplier<Object> supplier = () -> ComponentDescriptor.this.getService(injectionPoint, multiple, dynamic);
             producers.add(new SimpleBean<>(clazz, Dependent.class, injectionPoint, supplier));
             instanceSuppliers.put(injectionPoint, supplier);
         }
@@ -271,7 +261,10 @@ public class ComponentDescriptor extends AbstractDescriptor {
 
     @SuppressWarnings("unchecked")
     protected Object createConfig(Class<?> clazz) {
-        ComponentContext cc = context.get();
+        final ComponentContext cc = context.get();
+        if (cc == null) {
+            throw new IllegalStateException("Can not obtain @Component instance");
+        }
         Map<String, Object> cfg = (Map) cc.getProperties();
         return Configurable.create(clazz, cfg != null ? cfg : new Hashtable<>());
     }
@@ -282,41 +275,27 @@ public class ComponentDescriptor extends AbstractDescriptor {
             throw new IllegalStateException("Can not obtain @Component instance: " + injectionPoint);
         }
         if (dynamic && isInstance) {
-            Iterable<Object> iterable = new Iterable<Object>() {
-                @Override
-                public Iterator<Object> iterator() {
-                    return new Iterator<Object>() {
-                        final Object[] services = cc.locateServices(injectionPoint.toString());
-                        int idx;
-
-                        public boolean hasNext() {
-                            return services != null && idx < services.length;
-                        }
-
-                        public Object next() {
-                            return services[idx++];
-                        }
-                    };
+            Iterable<Object> iterable = () -> new Iterator<Object>() {
+                final Object[] services = cc.locateServices(injectionPoint.toString());
+                int idx;
+                public boolean hasNext() {
+                    return services != null && idx < services.length;
+                }
+                public Object next() {
+                    return services[idx++];
                 }
             };
             return new IterableInstance<>(iterable);
         }
         else if (isInstance) {
             final Object[] services = cc.locateServices(injectionPoint.toString());
-            Iterable<Object> iterable = new Iterable<Object>() {
-                @Override
-                public Iterator<Object> iterator() {
-                    return new Iterator<Object>() {
-                        int idx;
-
-                        public boolean hasNext() {
-                            return services != null && idx < services.length;
-                        }
-
-                        public Object next() {
-                            return services[idx++];
-                        }
-                    };
+            Iterable<Object> iterable = () -> new Iterator<Object>() {
+                int idx;
+                public boolean hasNext() {
+                    return services != null && idx < services.length;
+                }
+                public Object next() {
+                    return services[idx++];
                 }
             };
             return new IterableInstance<>(iterable);
@@ -325,12 +304,9 @@ public class ComponentDescriptor extends AbstractDescriptor {
             Class<Object> clazz = Types.getRawType(injectionPoint.getType());
             ClassLoader cl = registry.getBundleContext().getBundle().adapt(BundleWiring.class).getClassLoader();
             return Proxy.newProxyInstance(cl, new Class[]{ clazz },
-                    new InvocationHandler() {
-                        @Override
-                        public Object invoke(Object p, Method method, Object[] args) throws Throwable {
-                            Object t = cc.locateService(injectionPoint.toString());
-                            return t != null ? method.invoke(t, args) : null;
-                        }
+                    (p, method, args) -> {
+                        Object t = cc.locateService(injectionPoint.toString());
+                        return t != null ? method.invoke(t, args) : null;
                     });
         }
         else {

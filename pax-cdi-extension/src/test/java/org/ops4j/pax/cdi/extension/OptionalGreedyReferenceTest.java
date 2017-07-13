@@ -42,12 +42,7 @@ public class OptionalGreedyReferenceTest extends AbstractTest {
         Assert.assertNotNull(Hello.instance.get());
         Assert.assertNull(Hello.instance.get().service);
 
-        ServiceRegistration<MyService> registration = register(MyService.class, new MyService() {
-            @Override
-            public String hello() {
-                return "Hello world !!";
-            }
-        });
+        ServiceRegistration<MyService> registration = register(MyService.class, () -> "Hello world !!");
 
         Assert.assertEquals(2, Hello.created.get());
         Assert.assertEquals(1, Hello.destroyed.get());

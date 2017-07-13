@@ -37,12 +37,7 @@ public class MandatoryIndirectReferenceTest extends AbstractTest {
         Assert.assertEquals(0, Hello.created.get());
         Assert.assertEquals(0, Hello.destroyed.get());
 
-        ServiceRegistration<MyService> registration = register(MyService.class, new MyService() {
-            @Override
-            public String hello() {
-                return "Hello world !!";
-            }
-        });
+        ServiceRegistration<MyService> registration = register(MyService.class, () -> "Hello world !!");
 
         Assert.assertEquals(1, Hello.created.get());
         Assert.assertEquals(0, Hello.destroyed.get());

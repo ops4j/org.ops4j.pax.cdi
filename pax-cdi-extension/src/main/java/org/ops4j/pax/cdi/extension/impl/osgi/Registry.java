@@ -163,7 +163,7 @@ public class Registry implements CdiOsgiRuntime {
 
     private Map<String, Object> deepCopy(ServiceReference<?> source) {
         String[] keys = source.getPropertyKeys();
-        HashMap<String, Object> result = new HashMap<String, Object>(keys.length);
+        HashMap<String, Object> result = new HashMap<>(keys.length);
         for (String key : keys) {
             result.put(key, convert(source.getProperty(key)));
         }
@@ -197,8 +197,7 @@ public class Registry implements CdiOsgiRuntime {
         if (type == String.class) return true;
         if (type == Boolean.class) return true;
         if (Number.class.isAssignableFrom(type)) return true;
-        if (DTO.class.isAssignableFrom(type)) return true;
-        return false;
+        return DTO.class.isAssignableFrom(type);
     }
 
     private ReferenceDTO[] refsToDTO(List<ReferenceMetadata> dependencies) {
@@ -274,7 +273,7 @@ public class Registry implements CdiOsgiRuntime {
     }
 
     private UnsatisfiedReferenceDTO[] unsatisfiedRefManagersToDTO(List<? extends ReferenceManager<?, ?>> referenceManagers) {
-        List<UnsatisfiedReferenceDTO> dtos = new ArrayList<UnsatisfiedReferenceDTO>();
+        List<UnsatisfiedReferenceDTO> dtos = new ArrayList<>();
         for (ReferenceManager<?, ?> ref : referenceManagers) {
             if (!ref.isSatisfied()) {
                 UnsatisfiedReferenceDTO dto = new UnsatisfiedReferenceDTO();

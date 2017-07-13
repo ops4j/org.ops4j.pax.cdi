@@ -39,23 +39,13 @@ public class MandatoryDynamicReferenceTest extends AbstractTest {
         Assert.assertEquals(0, Hello.created.get());
         Assert.assertEquals(0, Hello.destroyed.get());
 
-        ServiceRegistration<MyService> registration1 = register(MyService.class, new MyService() {
-            @Override
-            public String hello() {
-                return "Hello 1 !!";
-            }
-        });
+        ServiceRegistration<MyService> registration1 = register(MyService.class, () -> "Hello 1 !!");
 
         Assert.assertEquals(1, Hello.created.get());
         Assert.assertEquals(0, Hello.destroyed.get());
         Assert.assertEquals("Hello 1 !!", Hello.instance.get().sayHelloWorld());
 
-        ServiceRegistration<MyService> registration2 = register(MyService.class, new MyService() {
-            @Override
-            public String hello() {
-                return "Hello 2 !!";
-            }
-        }, 1);
+        ServiceRegistration<MyService> registration2 = register(MyService.class, () -> "Hello 2 !!", 1);
 
         Assert.assertEquals(1, Hello.created.get());
         Assert.assertEquals(0, Hello.destroyed.get());

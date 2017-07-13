@@ -37,22 +37,12 @@ public class MandatoryNonGreedyReferenceTest extends AbstractTest {
         Assert.assertEquals(0, Hello.created.get());
         Assert.assertEquals(0, Hello.destroyed.get());
 
-        ServiceRegistration<MyService> registration1 = register(MyService.class, new MyService() {
-            @Override
-            public String hello() {
-                return "Hello world !!";
-            }
-        });
+        ServiceRegistration<MyService> registration1 = register(MyService.class, () -> "Hello world !!");
 
         Assert.assertEquals(1, Hello.created.get());
         Assert.assertEquals(0, Hello.destroyed.get());
 
-        ServiceRegistration<MyService> registration2 = register(MyService.class, new MyService() {
-            @Override
-            public String hello() {
-                return "Hello world !!";
-            }
-        }, -1);
+        ServiceRegistration<MyService> registration2 = register(MyService.class, () -> "Hello world !!", -1);
 
         Assert.assertEquals(1, Hello.created.get());
         Assert.assertEquals(0, Hello.destroyed.get());
