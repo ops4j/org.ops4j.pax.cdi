@@ -18,7 +18,6 @@
 package org.ops4j.pax.cdi.api;
 
 import javax.inject.Qualifier;
-import javax.inject.Scope;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 

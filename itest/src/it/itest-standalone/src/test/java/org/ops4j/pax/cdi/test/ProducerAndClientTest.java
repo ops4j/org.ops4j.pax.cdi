@@ -17,21 +17,10 @@
  */
 package org.ops4j.pax.cdi.test;
 
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
@@ -45,9 +34,17 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.exam.util.Filter;
 
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class ProducerAndClientTest {
+public class ProducerAndClientTest extends AbstractControlledTestBase {
 
     @Inject
     private CdiContainerFactory containerFactory;
@@ -60,17 +57,18 @@ public class ProducerAndClientTest {
     @Filter("(flavour=hazelnut)")
     private IceCreamService iceCreamService;
 
-
     @Configuration
     public Option[] config() {
-        return options(
-            regressionDefaults(),
+        return combine(
+                baseConfigure(),
+//                regressionDefaults(),
 
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-client"),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-client"),
 
-            paxCdiProviderAdapter(),
-            cdiProviderBundles());
+                paxCdiProviderAdapter(),
+                cdiProviderBundles()
+        );
     }
 
     @Test

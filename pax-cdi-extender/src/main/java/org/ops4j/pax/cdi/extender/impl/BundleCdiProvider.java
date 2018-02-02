@@ -24,15 +24,12 @@ import org.ops4j.pax.cdi.spi.BeanBundles;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.osgi.framework.Bundle;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * Implements a {@link CDIProvider} which returns the CDI container of the current bundle,
  * if the bundle is a bean bundle.
  */
 class BundleCdiProvider implements CDIProvider {
-    
     
     private final CdiContainerFactory cdiContainerFactory;
 

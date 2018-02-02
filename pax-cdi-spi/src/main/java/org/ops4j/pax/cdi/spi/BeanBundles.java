@@ -28,7 +28,10 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 
-import static org.ops4j.pax.cdi.spi.Constants.*;
+import static org.ops4j.pax.cdi.spi.Constants.CDI_EXTENDER;
+import static org.ops4j.pax.cdi.spi.Constants.CDI_EXTENSION_CAPABILITY;
+import static org.ops4j.pax.cdi.spi.Constants.EXTENDER_CAPABILITY;
+import static org.ops4j.pax.cdi.spi.Constants.PAX_CDI_EXTENSION_CAPABILITY;
 
 /**
  * Registry for bean bundles.
@@ -122,8 +125,6 @@ public class BeanBundles {
     /**
      * Gets the bean bundle correspsonding to the current thread context class loader.
      *
-     * @param cl
-     *            class loader
      * @return bean bundle associated to TCCL, or null
      */
     public static synchronized Bundle getCurrentBundle() {

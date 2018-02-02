@@ -17,22 +17,8 @@
  */
 package org.ops4j.pax.cdi.test;
 
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderWebAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxWebBundles;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.propagateSystemProperty;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
 
 import org.junit.Test;
@@ -47,9 +33,21 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.exam.util.Filter;
 
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderJettyAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxWebBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.propagateSystemProperty;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class NoWabWebContainerTest {
+public class NoWabWebContainerTest extends AbstractControlledTestBase {
 
     @Inject
     private CdiContainerFactory containerFactory;
@@ -60,26 +58,28 @@ public class NoWabWebContainerTest {
 
     @Configuration
     public Option[] config() {
-        return options(
-            regressionDefaults(),
+        return combine(
+                baseConfigure(),
+//                regressionDefaults(),
 
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-client"),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-client"),
 
-            paxCdiProviderAdapter(),
-            paxCdiProviderWebAdapter(),
-            cdiProviderBundles(),
+                paxCdiProviderAdapter(),
+                paxCdiProviderJettyAdapter(),
+                cdiProviderBundles(),
 
-            propagateSystemProperty("org.osgi.service.http.port"),
-            paxWebBundles(),
+                propagateSystemProperty("org.osgi.service.http.port"),
+                paxWebBundles(),
 
-            mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
-            mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
-            mavenBundle("com.sun.jersey.contribs", "jersey-apache-client").version("1.13"),
-            mavenBundle("org.apache.servicemix.bundles",
-                "org.apache.servicemix.bundles.commons-httpclient", "3.1_7"),
-            mavenBundle("commons-codec", "commons-codec", "1.6"),
-            mavenBundle("org.slf4j", "jcl-over-slf4j", "1.6.0"));
+                mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
+                mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
+                mavenBundle("com.sun.jersey.contribs", "jersey-apache-client").version("1.13"),
+                mavenBundle("org.apache.servicemix.bundles",
+                        "org.apache.servicemix.bundles.commons-httpclient", "3.1_7"),
+                mavenBundle("commons-codec", "commons-codec", "1.6"),
+                mavenBundle("org.slf4j", "jcl-over-slf4j", "1.6.0")
+        );
     }
 
     @Test

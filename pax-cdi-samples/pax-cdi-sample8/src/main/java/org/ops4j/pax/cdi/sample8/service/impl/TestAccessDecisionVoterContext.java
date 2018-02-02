@@ -18,7 +18,6 @@
 package org.ops4j.pax.cdi.sample8.service.impl;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Specializes;
 
 import org.apache.deltaspike.security.impl.authorization.DefaultAccessDecisionVoterContext;
 
@@ -29,8 +28,12 @@ import org.apache.deltaspike.security.impl.authorization.DefaultAccessDecisionVo
  * @author Harald Wellmann
  *
  */
-@Specializes
+//@Specializes
 @ApplicationScoped
 public class TestAccessDecisionVoterContext extends DefaultAccessDecisionVoterContext {
+
+    public TestAccessDecisionVoterContext() {
+        System.out.println();
+    }
 
 }

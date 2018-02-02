@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.openwebbeans.impl;
+package org.ops4j.pax.cdi.openwebbeans;
 
 import java.net.URL;
 import java.util.HashSet;
@@ -25,6 +25,7 @@ import org.apache.webbeans.config.WebBeansContext;
 import org.apache.webbeans.spi.BeanArchiveService;
 import org.apache.webbeans.spi.ScannerService;
 import org.apache.xbean.osgi.bundle.util.BundleUtils;
+import org.ops4j.pax.cdi.openwebbeans.impl.OpenWebBeansParser;
 import org.ops4j.pax.cdi.spi.scan.BeanScanner;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;

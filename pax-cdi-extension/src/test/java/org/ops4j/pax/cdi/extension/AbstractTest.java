@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.UUID;
 
+import org.junit.rules.TestName;
 import org.ops4j.pax.cdi.extension.impl.OsgiExtension2;
 import org.ops4j.pax.cdi.extension.impl.component2.BundleContextHolder;
 import org.jboss.weld.environment.se.Weld;
@@ -44,11 +45,18 @@ import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractTest {
 
+    public static Logger LOG = LoggerFactory.getLogger(AbstractTest.class);
+
     @Rule
     public TemporaryFolder cache;
+
+    @Rule
+    public TestName testName = new TestName();
 
     Framework framework;
     List<WeldContainer> welds = new ArrayList<>();
@@ -76,6 +84,16 @@ public abstract class AbstractTest {
         }
         framework.stop();
         welds.clear();
+    }
+
+    @Before
+    public void beforeEach() {
+        LOG.info("\n\t========== Running {}.{}() ==========", getClass().getName(), testName.getMethodName());
+    }
+
+    @After
+    public void afterEach() {
+        LOG.info("\n\t========== Finished {}.{}() ==========", getClass().getName(), testName.getMethodName());
     }
 
     protected BundleContext getBundleContext() {

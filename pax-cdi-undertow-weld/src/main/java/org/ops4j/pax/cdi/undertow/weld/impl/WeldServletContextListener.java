@@ -35,6 +35,8 @@ import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.ops4j.pax.cdi.web.ServletContextListenerFactory.CDI_CONTAINER_ATTRIBUTE;
+
 /**
  * Servlet context listener which starts the CDI container based on Weld, once the servlet context
  * is ready.
@@ -61,7 +63,7 @@ public class WeldServletContextListener extends ForwardingServletListener {
     public void contextInitialized(ServletContextEvent sce) {
 
         ServletContext context = sce.getServletContext();
-        cdiContainer = (CdiContainer) context.getAttribute("org.ops4j.pax.cdi.container");
+        cdiContainer = (CdiContainer) context.getAttribute(CDI_CONTAINER_ATTRIBUTE);
 
         Bundle bundle = cdiContainer.getBundle();
         String contextId = String.format("%s:%d", bundle.getSymbolicName(), bundle.getBundleId());

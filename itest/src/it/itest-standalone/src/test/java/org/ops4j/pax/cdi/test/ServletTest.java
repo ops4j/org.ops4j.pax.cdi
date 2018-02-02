@@ -17,31 +17,21 @@
  */
 package org.ops4j.pax.cdi.test;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderWebAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxWebBundles;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.client.apache.ApacheHttpClient;
+import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
+import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.cdi.test.support.Info;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
+import org.ops4j.pax.cdi.test.support.Info;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -49,15 +39,23 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.exam.util.Filter;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.client.apache.ApacheHttpClient;
-import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
-import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.cdi.test.AbstractControlledTestBase.baseConfigure;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderJettyAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxWebBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import static org.ops4j.pax.exam.OptionUtils.combine;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-@Ignore
 public class ServletTest {
 
     @Inject
@@ -76,32 +74,33 @@ public class ServletTest {
 
     @Configuration
     public Option[] config() {
-        return options(
-            regressionDefaults(),
+        return combine(
+                baseConfigure(),
+//                regressionDefaults(),
 
-            // doesn't work for WABs
-            // workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-samples/pax-cdi-sample1-web"),
+                // doesn't work for WABs
+                // workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-samples/pax-cdi-sample1-web"),
 
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
-            mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", Info.getPaxCdiVersion()),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
+                mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", Info.getPaxCdiVersion()),
 
-            cdiProviderBundles(),
-            paxCdiProviderAdapter(),
-            paxCdiProviderWebAdapter(),
+                cdiProviderBundles(),
+                paxCdiProviderAdapter(),
+                paxCdiProviderJettyAdapter(),
 
-            // Pax Web
+                // Pax Web
 
-            systemProperty("org.osgi.service.http.port").value(httpPort),
-            paxWebBundles(),
+                systemProperty("org.osgi.service.http.port").value(httpPort),
+                paxWebBundles(),
 
-            mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
-            mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
-            mavenBundle("com.sun.jersey.contribs", "jersey-apache-client").version("1.13"),
-            mavenBundle("org.apache.servicemix.bundles",
-                "org.apache.servicemix.bundles.commons-httpclient", "3.1_7"),
-            mavenBundle("commons-codec", "commons-codec", "1.6"),
-            mavenBundle("org.slf4j", "jcl-over-slf4j", "1.6.0"));
-
+                mavenBundle("com.sun.jersey", "jersey-core").version("1.13"),
+                mavenBundle("com.sun.jersey", "jersey-client").version("1.13"),
+                mavenBundle("com.sun.jersey.contribs", "jersey-apache-client").version("1.13"),
+                mavenBundle("org.apache.servicemix.bundles",
+                        "org.apache.servicemix.bundles.commons-httpclient", "3.1_7"),
+                mavenBundle("commons-codec", "commons-codec", "1.6"),
+                mavenBundle("org.slf4j", "jcl-over-slf4j", "1.6.0")
+        );
     }
 
     @Before
@@ -188,6 +187,7 @@ public class ServletTest {
     }
 
     @Test
+    @Ignore("Can't inject @WebServlet annotated instances, created by pax-web")
     public void checkOsgiServiceInjection() {
         Client client = Client.create();
         WebResource contextRoot = client.resource(String.format("http://localhost:%s/sample1", httpPort));

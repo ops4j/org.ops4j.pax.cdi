@@ -38,6 +38,7 @@ import org.jboss.weld.configuration.spi.helpers.ExternalConfigurationBuilder;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
+import org.ops4j.pax.cdi.spi.CdiClassLoaderBuilderCustomizer;
 import org.ops4j.pax.cdi.spi.DestroyedLiteral;
 import org.ops4j.pax.cdi.spi.InitializedLiteral;
 import org.ops4j.pax.cdi.spi.util.Exceptions;
@@ -218,6 +219,9 @@ public class WeldCdiContainer extends AbstractCdiContainer {
         }
         if (wrappedClass.isAssignableFrom(BeanManagerImpl.class)) {
             return wrappedClass.cast(manager);
+        }
+        if (wrappedClass.isAssignableFrom(CdiClassLoaderBuilderCustomizer.class)) {
+            return wrappedClass.cast(this);
         }
         return null;
     }

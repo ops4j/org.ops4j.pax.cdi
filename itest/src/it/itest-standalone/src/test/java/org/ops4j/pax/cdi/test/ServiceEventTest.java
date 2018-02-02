@@ -15,17 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.test.osgi6;
-
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
+package org.ops4j.pax.cdi.test;
 
 import javax.inject.Inject;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample5.Client;
@@ -38,14 +31,14 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.exam.util.Filter;
 import org.osgi.framework.BundleContext;
 
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.exam.OptionUtils.combine;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-@Ignore
-public class ServiceEventTest {
-
-    @Inject
-    private BundleContext bc;
+public class ServiceEventTest extends AbstractControlledTestBase {
 
     @Inject
     @Filter(value = "(name=client11)")
@@ -65,14 +58,16 @@ public class ServiceEventTest {
 
     @Configuration
     public Option[] config() {
-        return options(
-            regressionDefaults(),
+        return combine(
+                baseConfigure(),
+//                regressionDefaults(),
 
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample5"),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample5-client1"),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample5-client2"),
-            paxCdiProviderAdapter(),
-            cdiProviderBundles());
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample5"),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample5-client1"),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample5-client2"),
+                paxCdiProviderAdapter(),
+                cdiProviderBundles()
+        );
     }
 
     @Test

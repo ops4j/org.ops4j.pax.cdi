@@ -34,6 +34,7 @@ import org.apache.webbeans.config.WebBeansContext;
 import org.apache.webbeans.spi.ContainerLifecycle;
 import org.apache.webbeans.spi.ContextsService;
 import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
+import org.ops4j.pax.cdi.spi.CdiClassLoaderBuilderCustomizer;
 import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
@@ -170,6 +171,9 @@ public class OpenWebBeansCdiContainer extends AbstractCdiContainer {
         }
         if (wrappedClass.isAssignableFrom(ContainerLifecycle.class)) {
             return wrappedClass.cast(lifecycle);
+        }
+        if (wrappedClass.isAssignableFrom(CdiClassLoaderBuilderCustomizer.class)) {
+            return wrappedClass.cast(this);
         }
         return null;
     }

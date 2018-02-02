@@ -18,10 +18,12 @@
 package org.ops4j.pax.cdi.sample8.service.impl;
 
 import org.apache.deltaspike.security.api.authorization.Secured;
+import org.ops4j.pax.cdi.api.Component;
 import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample8.service.SecuredService;
 
 @Service
+@Component
 @Secured(TestAccessDecisionVoter.class)
 public class SecuredServiceImpl implements SecuredService {
 

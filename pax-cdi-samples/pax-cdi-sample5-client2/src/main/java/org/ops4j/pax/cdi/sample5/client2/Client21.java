@@ -25,6 +25,7 @@ import org.ops4j.pax.cdi.sample5.Client;
 import org.ops4j.pax.cdi.sample5.PrototypeScopedService;
 import org.ops4j.pax.cdi.sample5.SingletonScopedService;
 
+@Component
 @Service
 @Properties(@Property(name = "name", value = "client21"))
 public class Client21 implements Client {

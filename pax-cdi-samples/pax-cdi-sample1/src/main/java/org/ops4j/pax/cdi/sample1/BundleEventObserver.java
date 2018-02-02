@@ -27,7 +27,7 @@ import javax.enterprise.event.Observes;
 import org.ops4j.pax.cdi.api.event.BundleCdiEvent;
 import org.ops4j.pax.cdi.api.event.BundleStarted;
 import org.ops4j.pax.cdi.api.event.BundleStopped;
-
+import org.osgi.framework.Bundle;
 
 /**
  * @author Harald Wellmann
@@ -39,6 +39,18 @@ public class BundleEventObserver {
     private List<BundleCdiEvent> bundleStartedEvents = new ArrayList<BundleCdiEvent>();
     private List<BundleCdiEvent> bundleStoppedEvents = new ArrayList<BundleCdiEvent>();
     
+    public void bundleInitialEvent(@Observes BundleCdiEvent event) {
+        if (event.getBundleEvent() == null) {
+            // means this comes from tracking initial bundles
+            int state = event.getBundle().getState();
+            if (state == Bundle.ACTIVE || state == Bundle.STARTING) {
+                bundleStartedEvents.add(event);
+            } else if (state == Bundle.STOPPING) {
+                bundleStoppedEvents.add(event);
+            }
+        }
+    }
+
     public void bundleStarted(@Observes @BundleStarted BundleCdiEvent event) {
         bundleStartedEvents.add(event);
     }

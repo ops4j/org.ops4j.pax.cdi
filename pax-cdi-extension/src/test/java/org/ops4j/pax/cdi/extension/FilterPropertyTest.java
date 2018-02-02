@@ -17,6 +17,7 @@
 package org.ops4j.pax.cdi.extension;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -60,6 +61,10 @@ public class FilterPropertyTest extends AbstractTest {
             instance.set(this);
         }
 
+        @PreDestroy
+        public void destroy() {
+            instance.set(null);
+        }
     }
 
     @Service @Component @Properties({ @Property(name = "myattribute", value = "1")})

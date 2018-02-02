@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.cdi.web.impl;
 
+import java.util.Collection;
 import java.util.Set;
 
 import javax.servlet.ServletContainerInitializer;
@@ -24,11 +25,16 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 
+import org.ops4j.pax.cdi.spi.CdiClassLoaderBuilderCustomizer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
+import org.ops4j.pax.cdi.spi.CdiClassLoaderBuilder;
 import org.ops4j.pax.cdi.web.ServletContextListenerFactory;
+import org.ops4j.pax.web.service.spi.util.ResourceDelegatingBundleClassLoader;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.ops4j.pax.cdi.web.ServletContextListenerFactory.CDI_CONTAINER_ATTRIBUTE;
 
 /**
  * A {@link ServletContainerInitializer} which stores the CDI container in the servlet context and
@@ -71,7 +77,28 @@ public class CdiServletContainerInitializer implements ServletContainerInitializ
         String contextId = String.format("%s:%d", bundle.getSymbolicName(), bundle.getBundleId());
         ctx.setInitParameter("WELD_CONTEXT_ID_KEY", contextId);
 
-        ctx.setAttribute("org.ops4j.pax.cdi.container", cdiContainer);
+        CdiClassLoaderBuilderCustomizer customizer = cdiContainer.unwrap(CdiClassLoaderBuilderCustomizer.class);
+        if (customizer != null) {
+            customizer.setCdiClassLoaderBuilder(new PaxWebClassLoaderBuilder());
+        }
+
+        ctx.setAttribute(CDI_CONTAINER_ATTRIBUTE, cdiContainer);
         ctx.addListener(servletContextListener.createServletContextListener());
     }
+
+    /**
+     * In pax-web environment, we want to use already created "resource delegating" class loader
+     */
+    private static class PaxWebClassLoaderBuilder implements CdiClassLoaderBuilder {
+        @Override
+        public ClassLoader buildContextClassLoader(Object environment, Bundle beanArchive, Collection<Bundle> extensionBundles, Collection<Bundle> additionalBundles) {
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            if (cl instanceof ResourceDelegatingBundleClassLoader) {
+                additionalBundles.forEach(((ResourceDelegatingBundleClassLoader) cl)::addBundle);
+                return cl;
+            }
+            return null;
+        }
+    }
+
 }

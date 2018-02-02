@@ -20,16 +20,12 @@ package org.ops4j.pax.cdi.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.OptionUtils.combine;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import org.apache.xbean.finder.AnnotationFinder;
 import org.apache.xbean.finder.archive.Archive.Entry;
@@ -44,38 +40,24 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.swissbox.core.BundleUtils;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class BundleArchiveTest {
-
-    @Inject
-    private BundleContext bc;
+public class BundleArchiveTest extends AbstractControlledTestBase {
 
     @Configuration
     public Option[] config() {
-        return options(
-            regressionDefaults(),
+        return combine(
+                baseConfigure(),
+//                regressionDefaults(),
 
-            // This is a bundle with embedded JARs on the bundle classpath
-            mavenBundle("org.ops4j.pax.tinybundles", "tinybundles", "1.0.0"),
+                // This is a bundle with embedded JARs on the bundle classpath
+                mavenBundle("org.ops4j.pax.tinybundles", "tinybundles", "2.1.1"),
+                mavenBundle("biz.aQute.bnd", "bndlib", "2.4.0"),
 
-            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-api"),
-            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-spi"),
-            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-extender"),
-            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-extension"),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample6"),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-client"),
-
-            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-asm5-shaded").versionAsInProject(),
-            mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
-            mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
-            mavenBundle("javax.el", "javax.el-api", "3.0.0"),
-            mavenBundle("javax.enterprise", "cdi-api").versionAsInProject());
+                mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1").versionAsInProject(),
+                mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-client").versionAsInProject()
+        );
     }
 
     @Test

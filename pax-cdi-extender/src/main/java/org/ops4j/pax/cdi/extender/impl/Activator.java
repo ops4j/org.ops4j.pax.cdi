@@ -29,12 +29,14 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(final BundleContext context) throws Exception {
+        // tracker that transforms CdiContainerFactory into CdiExtender instances
         tracker = new ServiceTracker<>(context, CdiContainerFactory.class, new ServiceTrackerCustomizer<CdiContainerFactory, CdiExtender>() {
             @Override
             public CdiExtender addingService(ServiceReference<CdiContainerFactory> reference) {
                 CdiContainerFactory factory = context.getService(reference);
                 CdiExtender extender = new CdiExtender(context, factory);
                 if (tracker.getService() == null) {
+                    // start only first tracked (just after addingService() returns) extender
                     extender.start();
                 }
                 return extender;
@@ -45,9 +47,10 @@ public class Activator implements BundleActivator {
             @Override
             public void removedService(ServiceReference<CdiContainerFactory> reference, CdiExtender extender) {
                 extender.stop();
-                extender = tracker.getService();
-                if (extender != null) {
-                    extender.start();
+                CdiExtender anotherExtender = tracker.getService();
+                if (anotherExtender != null) {
+                    // possibly start another tracked extender
+                    anotherExtender.start();
                 }
             }
         });

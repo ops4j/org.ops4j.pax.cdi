@@ -28,6 +28,8 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.ops4j.pax.cdi.spi.CdiClassLoaderBuilder;
+import org.ops4j.pax.cdi.spi.CdiClassLoaderBuilderCustomizer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.osgi.framework.Bundle;
@@ -43,13 +45,19 @@ import org.slf4j.LoggerFactory;
  * @author Harald Wellmann
  *
  */
-public class DelegatingCdiContainer implements CdiContainer {
+public class DelegatingCdiContainer implements CdiContainer, CdiClassLoaderBuilderCustomizer {
 
     private static Logger log = LoggerFactory.getLogger(DelegatingCdiContainer.class);
 
     private CdiContainerFactory factory;
     private Bundle bundle;
     private CdiContainer delegate;
+
+    /**
+     * We may configure an external builder that'll create context ClassLoader instead of
+     * building our own.
+     */
+    private CdiClassLoaderBuilder builder;
 
     public DelegatingCdiContainer(CdiContainerFactory factory, Bundle bundle) {
         this.factory = factory;
@@ -63,6 +71,14 @@ public class DelegatingCdiContainer implements CdiContainer {
 
         log.info("creating CDI container for bean bundle {} with extension bundles {}", bundle, extensions);
         delegate = factory.createContainer(bundle, extensions);
+
+        if (builder != null) {
+            CdiClassLoaderBuilderCustomizer customizer = delegate.unwrap(CdiClassLoaderBuilderCustomizer.class);
+            if (customizer != null) {
+                customizer.setCdiClassLoaderBuilder(builder);
+            }
+        }
+
         delegate.start(environment);
     }
 
@@ -115,6 +131,9 @@ public class DelegatingCdiContainer implements CdiContainer {
 
     @Override
     public <T> T unwrap(Class<T> wrappedClass) {
+        if (wrappedClass.isAssignableFrom(CdiClassLoaderBuilderCustomizer.class)) {
+            return wrappedClass.cast(this);
+        }
         return delegate.unwrap(wrappedClass);
     }
 
@@ -137,4 +156,10 @@ public class DelegatingCdiContainer implements CdiContainer {
     public void resume() {
         delegate.resume();
     }
+
+    @Override
+    public void setCdiClassLoaderBuilder(CdiClassLoaderBuilder builder) {
+        this.builder = builder;
+    }
+
 }

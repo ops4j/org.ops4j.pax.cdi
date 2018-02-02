@@ -18,25 +18,27 @@
 package org.ops4j.pax.cdi.test;
 
 import javax.inject.Inject;
-import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample9.SampleServiceWithGenericTypeParameter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
 import org.ops4j.pax.exam.Configuration;
-import static org.ops4j.pax.exam.CoreOptions.options;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 
+import static org.junit.Assert.assertNotNull;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class ParameterizedTypeSupportTest {
+public class ParameterizedTypeSupportTest extends AbstractControlledTestBase {
 
 
     @Inject
@@ -45,11 +47,15 @@ public class ParameterizedTypeSupportTest {
 
     @Configuration
     public Option[] config() {
-        return options(
-                regressionDefaults(),
+        return combine(
+                baseConfigure(),
+//                regressionDefaults(),
+
                 workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample9"),
+
                 paxCdiProviderAdapter(),
-                cdiProviderBundles());
+                cdiProviderBundles()
+        );
     }
 
     @Test

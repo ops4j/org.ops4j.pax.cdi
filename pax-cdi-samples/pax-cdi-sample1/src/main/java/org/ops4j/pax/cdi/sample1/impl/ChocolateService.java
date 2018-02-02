@@ -24,6 +24,7 @@ import org.ops4j.pax.cdi.sample1.IceCreamService;
 @Chocolate
 @Service @Component
 @Properties(@Property(name = "flavour", value = "chocolate"))
+@Immediate
 public class ChocolateService implements IceCreamService {
 
     public ChocolateService() {

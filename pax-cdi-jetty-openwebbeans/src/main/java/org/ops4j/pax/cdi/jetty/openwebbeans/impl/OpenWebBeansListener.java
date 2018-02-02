@@ -41,6 +41,8 @@ import org.ops4j.pax.cdi.spi.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.ops4j.pax.cdi.web.ServletContextListenerFactory.CDI_CONTAINER_ATTRIBUTE;
+
 /**
  * Servlet context listener for starting and stopping the OpenWebBeans CDI container.
  *
@@ -52,14 +54,12 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
 
     private static Logger log = LoggerFactory.getLogger(OpenWebBeansListener.class);
 
-    private static final String CDI_CONTAINER = "org.ops4j.pax.cdi.container";
-
     private ContainerLifecycle lifecycle;
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
         ServletContext context = event.getServletContext();
-        CdiContainer cdiContainer = (CdiContainer) context.getAttribute(CDI_CONTAINER);
+        CdiContainer cdiContainer = (CdiContainer) context.getAttribute(CDI_CONTAINER_ATTRIBUTE);
         cdiContainer.start(event);
 
         WebBeansContext webBeansContext = cdiContainer.unwrap(WebBeansContext.class);
@@ -110,7 +110,7 @@ public class OpenWebBeansListener implements ServletContextListener, ServletRequ
     @Override
     public void contextDestroyed(ServletContextEvent event) {
         ServletContext context = event.getServletContext();
-        context.removeAttribute(CDI_CONTAINER);
+        context.removeAttribute(CDI_CONTAINER_ATTRIBUTE);
 
         // just to be sure that we didn't lazily create anything...
         cleanupRequestThreadLocals();

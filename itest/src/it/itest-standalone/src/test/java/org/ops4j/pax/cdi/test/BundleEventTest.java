@@ -17,17 +17,7 @@
  */
 package org.ops4j.pax.cdi.test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-
 import java.util.List;
-
 import javax.inject.Inject;
 
 import org.junit.Ignore;
@@ -40,11 +30,22 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.cdi.test.AbstractControlledTestBase.baseConfigure;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.exam.OptionUtils.combine;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-@Ignore("synchronization issues between bundle and CDI lifecycle")
+//@Ignore("synchronization issues between bundle and CDI lifecycle")
 public class BundleEventTest {
 
     @Inject
@@ -52,13 +53,15 @@ public class BundleEventTest {
 
     @Configuration
     public Option[] config() {
-        return options(
-            regressionDefaults(),
+        return combine(
+                baseConfigure(),
+//                regressionDefaults(),
 
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
-            
-            paxCdiProviderAdapter(),            
-            cdiProviderBundles());
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
+
+                paxCdiProviderAdapter(),
+                cdiProviderBundles()
+        );
     }
 
     @Test
@@ -67,8 +70,13 @@ public class BundleEventTest {
         assertThat(events.isEmpty(), is(false));
         for (BundleCdiEvent event : collector.getBundleStartedEvents()) {
             assertThat(event.getBundle(), is(notNullValue()));
-            assertThat(event.getBundleEvent().getBundle(), is(event.getBundle()));
-            assertThat(event.getBundleEvent().getType(), is(BundleEvent.STARTED));
+            if (event.getBundleEvent() != null) {
+                assertThat(event.getBundleEvent().getBundle(), is(event.getBundle()));
+                assertThat(event.getBundleEvent().getType(), is(BundleEvent.STARTED));
+            } else {
+                // event comes from tracking initial bundles and there's no BundleEvent associated
+                assertThat(event.getBundle().getState(), is(Bundle.ACTIVE));
+            }
         }
     }
 }

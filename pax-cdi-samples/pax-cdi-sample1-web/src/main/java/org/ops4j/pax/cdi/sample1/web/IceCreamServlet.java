@@ -28,18 +28,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.ops4j.pax.cdi.api.Component;
 import org.ops4j.pax.cdi.api.Dynamic;
 import org.ops4j.pax.cdi.api.Filter;
+import org.ops4j.pax.cdi.api.Immediate;
 import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
 
 @WebServlet(urlPatterns = "/ice")
+@Component @Immediate
 public class IceCreamServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
     @Inject
-    @Service @Filter("(flavour=chocolate)")
+    @Service @Dynamic @Filter("(flavour=chocolate)")
     private IceCreamService chocolate;
 
     @Inject

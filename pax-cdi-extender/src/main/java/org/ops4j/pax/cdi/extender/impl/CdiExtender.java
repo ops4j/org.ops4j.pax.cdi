@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Implements the PAX CDI extender capability. This extender depends on a {@link CDIProvider}, a
- * {@link CdiContainerFactory} and and optional CDI web adapter, represented by a
+ * {@link CdiContainerFactory} and an optional CDI web adapter, represented by a
  * {@link CdiWebAdapter} with the property {@code type} set to {@code web}.
  * <p>
  * The extender creates a CDI container for each bean bundle. For web beans bundles, the CDI
@@ -56,7 +56,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author Guillaume Nodet
  * @author Harald Wellmann
- *
  */
 public class CdiExtender implements BundleTrackerCustomizer<CdiContainer>,
                                     ServiceTrackerCustomizer<CdiWebAdapter, CdiWebAdapter> {
@@ -78,6 +77,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainer>,
     }
 
     synchronized void start() {
+        // set JVM (or at least javax.enterprise:cdi-api revision) wide CDI Provider
         CDI.setCDIProvider(cdiProvider);
         log.info("starting CDI extender {}", context.getBundle().getSymbolicName());
         this.listenerTracker = new ServiceTracker<>(context, CdiWebAdapter.class, this);
@@ -90,7 +90,7 @@ public class CdiExtender implements BundleTrackerCustomizer<CdiContainer>,
         BundleCdi.dispose();
         log.info("stopping CDI extender {}", context.getBundle().getSymbolicName());
         bundleWatcher.close();
-        this.listenerTracker.close();
+        listenerTracker.close();
     }
 
     @Override

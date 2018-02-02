@@ -17,20 +17,8 @@
  */
 package org.ops4j.pax.cdi.test;
 
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-
 import java.util.Dictionary;
 import java.util.Hashtable;
-
 import javax.inject.Inject;
 
 import org.junit.Test;
@@ -46,30 +34,37 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.ops4j.pax.swissbox.tracker.ServiceLookup;
 import org.ops4j.pax.swissbox.tracker.ServiceLookupException;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.exam.OptionUtils.combine;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerMethod.class)
-public class ComponentLifecycleTest {
-
-    @Inject
-    private BundleContext bc;
+public class ComponentLifecycleTest extends AbstractControlledTestBase {
 
     @Inject
     private IceCreamClient client;
 
     @Configuration
     public Option[] config() {
-        return options(
-            regressionDefaults(),
+        return combine(
+                baseConfigure(),
+//                regressionDefaults(),
 
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-client"),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-client"),
 
-            paxCdiProviderAdapter(),
-            cdiProviderBundles());
-
+                paxCdiProviderAdapter(),
+                cdiProviderBundles()
+        );
     }
 
     @Test(expected = ServiceLookupException.class)

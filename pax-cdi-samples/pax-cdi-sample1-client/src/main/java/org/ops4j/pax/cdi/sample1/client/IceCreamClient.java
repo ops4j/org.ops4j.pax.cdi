@@ -47,14 +47,15 @@ public class IceCreamClient {
 
     private List<String> events = new ArrayList<>();
 
+    // we may be in trouble when this even is sent to us before reaching pax-cdi extension...
 
-    public void onInit(@Observes @Initialized(ApplicationScoped.class) Object object) {
-        events.add("initialized application scope");
-    }
-
-    public void onShutdown(@Observes @Destroyed(ApplicationScoped.class) Object object) {
-        events.add("destroyed application scope");
-    }
+//    public void onInit(@Observes @Initialized(ApplicationScoped.class) Object object) {
+//        events.add("initialized application scope");
+//    }
+//
+//    public void onShutdown(@Observes @Destroyed(ApplicationScoped.class) Object object) {
+//        events.add("destroyed application scope");
+//    }
 
     public void onInit(@Observes @ServiceAdded BeanManager manager) {
         events.add("registered BeanManager");

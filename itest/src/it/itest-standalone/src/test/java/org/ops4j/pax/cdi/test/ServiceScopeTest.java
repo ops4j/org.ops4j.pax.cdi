@@ -15,19 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.test.osgi6;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
+package org.ops4j.pax.cdi.test;
 
 import java.util.HashSet;
-
 import javax.inject.Inject;
 
 import org.junit.Ignore;
@@ -41,11 +31,18 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.exam.util.Filter;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.exam.OptionUtils.combine;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-@Ignore
-public class ServiceScopeTest {
+public class ServiceScopeTest extends AbstractControlledTestBase {
 
     @Inject
     @Filter(value = "(name=client11)")
@@ -65,14 +62,16 @@ public class ServiceScopeTest {
 
     @Configuration
     public Option[] config() {
-        return options(
-            regressionDefaults(),
+        return combine(
+                baseConfigure(),
+//                regressionDefaults(),
 
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample5").startLevel(90),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample5-client1").startLevel(90),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample5-client2").startLevel(90),
-            paxCdiProviderAdapter(),
-            cdiProviderBundles());
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample5").startLevel(19),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample5-client1").startLevel(19),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample5-client2").startLevel(19),
+                paxCdiProviderAdapter(),
+                cdiProviderBundles()
+        );
     }
 
     @Test

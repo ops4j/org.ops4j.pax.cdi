@@ -19,7 +19,13 @@ package org.ops4j.pax.cdi.web;
 
 import javax.servlet.ServletContextListener;
 
-
 public interface ServletContextListenerFactory {
+
+    /**
+     * Key for {@link javax.servlet.ServletContext} attribute to hold {@link org.ops4j.pax.cdi.spi.CdiContainer}
+     */
+    String CDI_CONTAINER_ATTRIBUTE = "org.ops4j.pax.cdi.container";
+
     ServletContextListener createServletContextListener();
+
 }

@@ -15,15 +15,6 @@
  */
 package org.ops4j.pax.cdi.test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-
 import javax.inject.Inject;
 
 import org.junit.Test;
@@ -40,22 +31,34 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.cdi.test.AbstractControlledTestBase.baseConfigure;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class RankingPropertyTest {
+public class RankingPropertyTest extends AbstractControlledTestBase {
 
     @Inject
     private CdiContainerFactory containerFactory;
 
-    @Inject
-    private BundleContext bc;
-
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-api"),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-service-impl100"),
-            paxCdiProviderAdapter(), cdiProviderBundles());
+        return combine(
+                baseConfigure(),
+//                regressionDefaults(),
+
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-api"),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-service-impl100"),
+
+                paxCdiProviderAdapter(), cdiProviderBundles()
+        );
     }
 
     @Test

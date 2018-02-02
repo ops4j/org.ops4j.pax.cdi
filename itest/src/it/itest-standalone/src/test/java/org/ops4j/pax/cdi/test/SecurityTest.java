@@ -17,13 +17,6 @@
  */
 package org.ops4j.pax.cdi.test;
 
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-
 import javax.inject.Inject;
 
 import org.apache.deltaspike.security.api.authorization.AccessDeniedException;
@@ -39,10 +32,21 @@ import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
+import static org.ops4j.pax.exam.Constants.START_LEVEL_TEST_BUNDLE;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-@Ignore("See DELTASPIKE-1200")
-public class SecurityTest {
+@Ignore("Almost works, but WindowBeanHolder is required and it's working with @SessionScope. See also DELTASPIKE-1200")
+public class SecurityTest extends AbstractControlledTestBase {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -52,17 +56,29 @@ public class SecurityTest {
 
     @Configuration
     public Option[] config() {
-        return options(
-            regressionDefaults(),
-            paxCdiProviderAdapter(),
-            cdiProviderBundles(),
+        return combine(
+                baseConfigure(),
+//                regressionDefaults(),
 
-            // DeltaSpike bundles
-            mavenBundle("org.apache.deltaspike.core", "deltaspike-core-api").versionAsInProject(),
-            mavenBundle("org.apache.deltaspike.core", "deltaspike-core-impl").versionAsInProject(),
+                paxCdiProviderAdapter(),
+                cdiProviderBundles(),
 
-            mavenBundle("org.apache.deltaspike.modules", "deltaspike-security-module-api").versionAsInProject(),
-            mavenBundle("org.apache.deltaspike.modules", "deltaspike-security-module-impl").versionAsInProject(),
+                mavenBundle("org.ops4j.pax.url", "pax-url-commons").versionAsInProject().startLevel(START_LEVEL_SYSTEM_BUNDLES),
+                mavenBundle("org.ops4j.pax.url", "pax-url-wrap").versionAsInProject().startLevel(START_LEVEL_SYSTEM_BUNDLES),
+                mavenBundle("biz.aQute.bnd", "bndlib", "2.4.0").startLevel(START_LEVEL_SYSTEM_BUNDLES),
+                mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-bnd").versionAsInProject().startLevel(START_LEVEL_SYSTEM_BUNDLES),
+                mavenBundle("org.ops4j.pax.swissbox", "pax-swissbox-property").versionAsInProject().startLevel(START_LEVEL_SYSTEM_BUNDLES),
+
+                // DeltaSpike bundles
+                wrappedBundle(mavenBundle("org.apache.deltaspike.core", "deltaspike-core-api").versionAsInProject())
+                        .instructions(
+                                "overwrite=merge",
+                                "DynamicImport-Package=org.apache.deltaspike.*"
+                        ).startLevel(START_LEVEL_TEST_BUNDLE),
+                mavenBundle("org.apache.deltaspike.core", "deltaspike-core-impl").versionAsInProject(),
+
+                mavenBundle("org.apache.deltaspike.modules", "deltaspike-security-module-api").versionAsInProject(),
+                mavenBundle("org.apache.deltaspike.modules", "deltaspike-security-module-impl").versionAsInProject(),
 
 //            wrappedBundle(mavenBundle("org.apache.deltaspike.modules", "deltaspike-security-module-api")
 //                .versionAsInProject())
@@ -77,8 +93,9 @@ public class SecurityTest {
 //                    "Require-Capability=osgi.cdi.extension; filter:=\"(osgi.cdi.extension=pax-cdi-extension)\", "
 //                    + "osgi.extender; filter:=\"(osgi.extender=osgi.cdi)\""),
 
-            // Sample bundles
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample8"));
+                // Sample bundles
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample8")
+        );
     }
 
     @Test

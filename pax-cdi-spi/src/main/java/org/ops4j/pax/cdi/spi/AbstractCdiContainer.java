@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Harald Wellmann
  */
-public abstract class AbstractCdiContainer implements CdiContainer {
+public abstract class AbstractCdiContainer implements CdiContainer, CdiClassLoaderBuilderCustomizer {
 
     private static Logger log = LoggerFactory.getLogger(AbstractCdiContainer.class);
 
@@ -69,6 +69,12 @@ public abstract class AbstractCdiContainer implements CdiContainer {
      */
     private ClassLoader contextClassLoader;
 
+    /**
+     * We may configure an external builder that'll create {@link #contextClassLoader} instead of
+     * building our own.
+     */
+    private CdiClassLoaderBuilder builder;
+
     protected AbstractCdiContainer(Bundle bundle,
         Collection<Bundle> extensionBundles, Collection<Bundle> additionalBundles) {
         this.bundle = bundle;
@@ -80,7 +86,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     public synchronized void start(Object environment) {
         if (!started) {
             log.info("Starting CDI container for bundle {}", getBundle());
-            contextClassLoader = buildContextClassLoader();
+            contextClassLoader = buildContextClassLoader(environment);
             BeanBundles.addBundle(getContextClassLoader(), getBundle());
             doStart(environment);
             finishStartup();
@@ -129,13 +135,27 @@ public abstract class AbstractCdiContainer implements CdiContainer {
      * Builds the composite class loader for the given bundle, also including the bundle containing
      * this class and all extension bundles.
      */
-    protected ClassLoader buildContextClassLoader() {
+    protected ClassLoader buildContextClassLoader(Object environment) {
         List<Bundle> delegateBundles = new ArrayList<>();
         delegateBundles.add(bundle);
         delegateBundles.addAll(additionalBundles);
         delegateBundles.addAll(extensionBundles);
+
+        if (builder != null) {
+            // in pax-web we may already have necessary classloader - possibly without
+            // "additionalBundles"
+            ClassLoader cl = builder.buildContextClassLoader(environment, bundle, extensionBundles, additionalBundles);
+            if (cl != null) {
+                log.info("Using provided contextClassLoader: {}", cl);
+                return cl;
+            }
+        }
+
+        // fallback to creating xbean classloader
         DelegatingBundle delegatingBundle = new DelegatingBundle(delegateBundles);
-        return new BundleClassLoader(delegatingBundle);
+        BundleClassLoader classLoader = new BundleClassLoader(delegatingBundle);
+        log.info("Using default contextClassLoader: {}", classLoader);
+        return classLoader;
     }
 
     @Override
@@ -144,7 +164,7 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     }
 
     public <V> V doWithClassLoader(final Callable<V> callable) throws Exception {
-        Thread currentThread = Thread.currentThread();;
+        Thread currentThread = Thread.currentThread();
         ClassLoader prevTccl = currentThread.getContextClassLoader();
         try {
             currentThread.setContextClassLoader( getContextClassLoader() );
@@ -198,4 +218,10 @@ public abstract class AbstractCdiContainer implements CdiContainer {
     public Bundle getBundle() {
         return bundle;
     }
+
+    @Override
+    public void setCdiClassLoaderBuilder(CdiClassLoaderBuilder builder) {
+        this.builder = builder;
+    }
+
 }

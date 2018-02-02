@@ -17,22 +17,10 @@
  */
 package org.ops4j.pax.cdi.test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-
-import java.net.URL;
 import java.util.Set;
-
-import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.cdi.spi.scan.BeanDescriptor;
 import org.ops4j.pax.cdi.spi.scan.BeanDescriptorParser;
 import org.ops4j.pax.cdi.spi.scan.BeanDiscoveryMode;
 import org.ops4j.pax.cdi.spi.scan.BeanScanner;
@@ -44,32 +32,27 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.swissbox.core.BundleUtils;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.OptionUtils.combine;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class BeanScannerTest {
-
-    @Inject
-    private BundleContext bc;
+public class BeanScannerTest extends AbstractControlledTestBase {
 
     @Configuration
     public Option[] config() {
-        return options(
-            regressionDefaults(),
+        return combine(
+                baseConfigure(),
+//                regressionDefaults(),
 
-            // This is a bundle with embedded JARs on the bundle classpath
-            mavenBundle("org.ops4j.pax.tinybundles", "tinybundles", "1.0.0"),
-
-            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-api"),
-            workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-spi"),
-
-            mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(),
-            mavenBundle("org.apache.xbean", "xbean-asm5-shaded").versionAsInProject(),
-            mavenBundle("javax.interceptor", "javax.interceptor-api", "1.2"),
-            mavenBundle("javax.el", "javax.el-api", "3.0.0"),
-            mavenBundle("javax.enterprise", "cdi-api").versionAsInProject());
+                // This is a bundle with embedded JARs on the bundle classpath
+                mavenBundle("org.ops4j.pax.tinybundles", "tinybundles", "2.1.1"),
+                mavenBundle("biz.aQute.bnd", "bndlib", "2.4.0")
+        );
     }
 
     @Test
@@ -77,13 +60,7 @@ public class BeanScannerTest {
         Bundle bundle = BundleUtils.getBundle(bc, "org.ops4j.pax.tinybundles");
         assertThat(bundle, is(notNullValue()));
 
-        BeanDescriptorParser parser = new BeanDescriptorParser() {
-
-            @Override
-            public BeanDescriptor parse(URL beansXml) {
-                return new DefaultBeanDescriptor(null, BeanDiscoveryMode.ALL, "1.0");
-            }
-        };
+        BeanDescriptorParser parser = beansXml -> new DefaultBeanDescriptor(null, BeanDiscoveryMode.ALL, "1.0");
 
         BeanScanner scanner = new BeanScanner(bundle, parser);
         scanner.scan();

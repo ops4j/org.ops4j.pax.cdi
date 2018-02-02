@@ -32,6 +32,8 @@ import org.ops4j.pax.cdi.spi.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.ops4j.pax.cdi.web.ServletContextListenerFactory.CDI_CONTAINER_ATTRIBUTE;
+
 /**
  * Servlet context listener for starting and stopping the Weld CDI container.
  *
@@ -58,7 +60,7 @@ public class WeldListener extends ForwardingServletListener {
 
         ServletContext context = sce.getServletContext();
         cdiContainer = (CdiContainer) context
-            .getAttribute("org.ops4j.pax.cdi.container");
+            .getAttribute(CDI_CONTAINER_ATTRIBUTE);
         cdiContainer.start(context);
         WeldManager manager = cdiContainer.unwrap(WeldManager.class);
 
@@ -66,6 +68,8 @@ public class WeldListener extends ForwardingServletListener {
         context.setAttribute(JettyDecorator.INJECTOR_KEY, injector);
         JettyDecorator.process(context);
         log.info("registered Jetty decorator for JSR-299 injection");
+
+        context.setAttribute("org.ops4j.pax.cdi.BeanManager", cdiContainer.getBeanManager());
 
         JspFactory jspFactory = JspFactory.getDefaultFactory();
         if (jspFactory != null) {

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.openwebbeans.impl;
+package org.ops4j.pax.cdi.openwebbeans;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<features name="org.ops4j.pax.cdi-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<features name="org.ops4j.pax.cdi-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.5.0">
 
     <feature name="pax-cdi" description="Provide CDI support" version="${project.version}">
         <feature version="${project.version}" dependency="true">pax-cdi-weld</feature>
@@ -12,11 +32,8 @@
         <bundle dependency="true">mvn:javax.interceptor/javax.interceptor-api/1.2</bundle>
         <bundle dependency="true">mvn:javax.annotation/javax.annotation-api/1.2</bundle>
         <bundle dependency="true">mvn:javax.enterprise/cdi-api/1.2</bundle>
-        <bundle dependency="true">mvn:org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0</bundle>
+        <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
         <bundle dependency="true">mvn:javax.el/javax.el-api/3.0.0</bundle>
-        <bundle dependency="true">mvn:org.apache.xbean/xbean-bundleutils/${xbean.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.xbean/xbean-asm5-shaded/${xbean.version}</bundle>
-        <bundle dependency="true">mvn:org.apache.xbean/xbean-finder-shaded/${xbean.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-api/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-spi/${project.version}</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-extension/${project.version}</bundle>
@@ -24,33 +41,31 @@
     </feature>
 
     <feature name="pax-cdi-weld" description="Weld CDI 1.2 support" version="${project.version}">
+        <feature version="${project.version}">pax-cdi</feature>
         <feature version="${project.version}">pax-cdi-core</feature>
+        <bundle dependency="true">mvn:org.apache.xbean/xbean-bundleutils/${xbean.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.xbean/xbean-asm6-shaded/${xbean.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.xbean/xbean-finder-shaded/${xbean.version}</bundle>
         <bundle dependency="true">mvn:org.jboss.weld/weld-osgi-bundle/${weld2.version}</bundle>
         <bundle dependency="true">mvn:org.jboss.logging/jboss-logging/3.3.0.Final</bundle>
-        <bundle dependency="true">mvn:com.google.guava/guava/18.0</bundle>
+        <!--<bundle dependency="true">mvn:com.google.guava/guava/18.0</bundle>-->
         <bundle dependency="true">mvn:org.jboss.classfilewriter/jboss-classfilewriter/1.1.2.Final</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-weld/${project.version}</bundle>
         <capability>
             pax.cdi.provider;provider:=weld
         </capability>
-        <conditional>
-            <condition>pax-cdi-web</condition>
-            <condition>pax-http-jetty</condition>
-            <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-jetty-weld/${project.version}</bundle>
-        </conditional>
-        <conditional>
-            <condition>pax-cdi-web</condition>
-            <condition>pax-http-undertow</condition>
-            <bundle dependency="true">mvn:javax.el/javax.el-api/3.0.0</bundle>
-            <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-undertow-weld/${project.version}</bundle>
-        </conditional>
     </feature>
 
     <feature name="pax-cdi-openwebbeans" description="OpenWebBeans CDI support" version="${project.version}">
+        <feature version="${project.version}">pax-cdi</feature>
         <feature version="${project.version}">pax-cdi-core</feature>
+        <bundle dependency="true">mvn:org.apache.xbean/xbean-bundleutils/${xbean44.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.xbean/xbean-asm5-shaded/${xbean44.version}</bundle>
+        <bundle dependency="true">mvn:org.apache.xbean/xbean-finder-shaded/${xbean44.version}</bundle>
         <bundle dependency="true">mvn:javax.validation/validation-api/1.1.0.Final</bundle>
         <bundle dependency="true">mvn:javax.transaction/javax.transaction-api/1.2</bundle>
         <bundle dependency="true">mvn:javax.servlet/javax.servlet-api/3.1.0</bundle>
+        <bundle dependency="true">mvn:org.apache.xbean/xbean-asm5-shaded/${xbean44.version}</bundle>
         <bundle>mvn:org.apache.openwebbeans/openwebbeans-spi/${openwebbeans1.version}</bundle>
         <bundle>mvn:org.apache.openwebbeans/openwebbeans-impl/${openwebbeans1.version}</bundle>
         <bundle>mvn:org.apache.openwebbeans/openwebbeans-el22/${openwebbeans1.version}</bundle>
@@ -58,23 +73,11 @@
         <capability>
             pax.cdi.provider;provider:=openwebbeans
         </capability>
-        <conditional>
-            <condition>pax-cdi-web</condition>
-            <condition>pax-http-jetty</condition>
-            <bundle>mvn:org.apache.openwebbeans/openwebbeans-web/${openwebbeans1.version}</bundle>
-            <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-jetty-openwebbeans/${project.version}</bundle>
-        </conditional>
-        <conditional>
-            <condition>pax-cdi-web</condition>
-            <condition>pax-http-undertow</condition>
-            <bundle>mvn:org.apache.openwebbeans/openwebbeans-web/${openwebbeans1.version}</bundle>
-            <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-undertow-openwebbeans/${project.version}</bundle>
-        </conditional>
     </feature>
 
     <feature name="pax-cdi-web" description="Web CDI support" version="${project.version}">
-        <feature version="${project.version}">pax-cdi</feature>
-        <feature>pax-war</feature>
+        <feature dependency="true" version="${project.version}">pax-cdi</feature>
+        <feature dependency="true">pax-web-core</feature>
         <bundle dependency="true">mvn:javax.servlet/javax.servlet-api/3.1.0</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-web/${project.version}</bundle>
     </feature>
@@ -84,9 +87,29 @@
         <feature version="${project.version}">pax-cdi-weld</feature>
     </feature>
 
+    <feature name="pax-cdi-web-weld-undertow" description="Weld Web CDI / Undertow support" version="${project.version}">
+        <feature  version="${project.version}">pax-cdi-web-weld</feature>
+        <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-undertow-weld/${project.version}</bundle>
+    </feature>
+
+    <feature name="pax-cdi-web-weld-jetty" description="Weld Web CDI / Jetty support" version="${project.version}">
+        <feature version="${project.version}">pax-cdi-web-weld</feature>
+        <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-jetty-weld/${project.version}</bundle>
+    </feature>
+
     <feature name="pax-cdi-web-openwebbeans" description="OpenWebBeans Web CDI support" version="${project.version}">
-        <feature version="${project.version}">pax-cdi-web</feature>
+        <feature dependency="true" version="${project.version}">pax-cdi-web</feature>
         <feature version="${project.version}">pax-cdi-openwebbeans</feature>
+        <conditional>
+            <condition>pax-http-jetty</condition>
+            <bundle>mvn:org.apache.openwebbeans/openwebbeans-web/${openwebbeans1.version}</bundle>
+            <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-jetty-openwebbeans/${project.version}</bundle>
+        </conditional>
+        <conditional>
+            <condition>pax-http-undertow</condition>
+            <bundle>mvn:org.apache.openwebbeans/openwebbeans-web/${openwebbeans1.version}</bundle>
+            <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-undertow-openwebbeans/${project.version}</bundle>
+        </conditional>
     </feature>
 
     <feature name="deltaspike-core" description="Apache Deltaspike core support" version="${deltaspike.version}">

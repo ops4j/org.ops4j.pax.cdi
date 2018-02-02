@@ -69,13 +69,13 @@ public class OsgiProxyService implements ProxyServices {
             // imports for the corresponding packages.
             return proxiedBeanType.getClassLoader();
         }
-        else if (Extension.class.isAssignableFrom(proxiedBeanType)) {
-            // It happens that extensions often declare package-private or public methods
-            // whose return type is package-private hence forcing to define the corresponding
-            // proxy classes in the same defining classloaders as those of the extension types
-            // otherwise IllegalAccessError is thrown.
-            return proxiedBeanType.getClassLoader();
-        }
+//        else if (Extension.class.isAssignableFrom(proxiedBeanType)) {
+//            // It happens that extensions often declare package-private or public methods
+//            // whose return type is package-private hence forcing to define the corresponding
+//            // proxy classes in the same defining classloaders as those of the extension types
+//            // otherwise IllegalAccessError is thrown.
+//            return proxiedBeanType.getClassLoader();
+//        }
         // TODO: it may be necessary to iterate over the whole list of proxied methods from
         // the type closure and check for package-private or public methods whose parameters
         // or return type are package-private.

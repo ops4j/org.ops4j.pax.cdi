@@ -17,15 +17,6 @@
  */
 package org.ops4j.pax.cdi.test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
@@ -48,23 +39,32 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerMethod.class)
-public class ExtenderLifecyleTest {
+public class ExtenderLifecyleTest extends AbstractControlledTestBase {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    @Inject
-    private BundleContext bc;
-
     @Configuration
     public Option[] config() {
-        return options(
-            regressionDefaults(),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
-            paxCdiProviderAdapter(),
-            cdiProviderBundles());
+        return combine(
+                baseConfigure(),
+//                regressionDefaults(),
+
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
+
+                paxCdiProviderAdapter(),
+                cdiProviderBundles()
+        );
     }
 
     @Test

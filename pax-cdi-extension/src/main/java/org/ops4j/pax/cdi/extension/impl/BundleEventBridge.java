@@ -18,7 +18,12 @@
 
 package org.ops4j.pax.cdi.extension.impl;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
@@ -38,8 +43,8 @@ import org.slf4j.LoggerFactory;
  * Wraps OSGi bundle events in as {@link BundleCdiEvent} and fires them as CDI events.
  *
  * @author Harald Wellmann
- *
  */
+@ApplicationScoped
 public class BundleEventBridge implements BundleTrackerCustomizer<Void> {
 
     private static Logger log = LoggerFactory.getLogger(BundleEventBridge.class);
@@ -55,6 +60,7 @@ public class BundleEventBridge implements BundleTrackerCustomizer<Void> {
     /**
      * Starts the bundle tracker.
      */
+    @PostConstruct
     public void start() {
         int stateMask = Bundle.INSTALLED | Bundle.UNINSTALLED | Bundle.STARTING
             | Bundle.STOPPING | Bundle.RESOLVED | Bundle.ACTIVE;
@@ -65,6 +71,7 @@ public class BundleEventBridge implements BundleTrackerCustomizer<Void> {
     /**
      * Stops the bundle tracker.
      */
+    @PreDestroy
     public void stop() {
         bundleTracker.close();
     }
@@ -116,4 +123,9 @@ public class BundleEventBridge implements BundleTrackerCustomizer<Void> {
         Event<BundleCdiEvent> childEvent = select(bundleEvent);
         childEvent.fire(new BundleCdiEvent(bundle, bundleEvent));
     }
+
+    // Force the instantation of this bean
+    public void applicationScopeInitialized(@Observes @Initialized(ApplicationScoped.class) Object init) {
+    }
+
 }

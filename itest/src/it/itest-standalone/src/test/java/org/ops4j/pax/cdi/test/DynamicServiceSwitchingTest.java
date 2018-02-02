@@ -15,14 +15,6 @@
  */
 package org.ops4j.pax.cdi.test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-
 import javax.inject.Inject;
 
 import org.junit.Rule;
@@ -42,9 +34,17 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.InvalidSyntaxException;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
+import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerMethod.class)
-public class DynamicServiceSwitchingTest {
+public class DynamicServiceSwitchingTest extends AbstractControlledTestBase {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -60,13 +60,18 @@ public class DynamicServiceSwitchingTest {
 
     @Configuration
     public Option[] config() {
-        return options(regressionDefaults(),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-api"),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-service-impl100"),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-service-impl101"),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-service-impl102"),
-            workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-client-dynamic"),
-            paxCdiProviderAdapter(), cdiProviderBundles());
+        return combine(
+                baseConfigure(),
+//                regressionDefaults(),
+
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-api"),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-service-impl100"),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-service-impl101"),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-service-impl102"),
+                workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample7-client-dynamic"),
+
+                paxCdiProviderAdapter(), cdiProviderBundles()
+        );
     }
 
     @Test

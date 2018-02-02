@@ -15,11 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.openwebbeans.impl;
+package org.ops4j.pax.cdi.openwebbeans;
 
 import java.util.List;
 
 import org.apache.webbeans.spi.LoaderService;
+import org.ops4j.pax.cdi.openwebbeans.SafeServiceLoader;
 
 /**
  * Implements {@link LoaderService} for OSGi bundles.

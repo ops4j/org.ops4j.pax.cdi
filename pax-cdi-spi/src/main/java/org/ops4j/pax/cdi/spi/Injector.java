@@ -79,7 +79,8 @@ public class Injector {
         AnnotatedType<T> type = beanManager.createAnnotatedType(klass);
         InjectionTargetFactory<T> itFactory = beanManager.getInjectionTargetFactory(type);
         InjectionTarget<T> it = itFactory.createInjectionTarget(null);
-        return getWrapper(klass).wrap(it);
+        return it;
+//        return getWrapper(klass).wrap(it);
     }
 
     @SuppressWarnings("unchecked")

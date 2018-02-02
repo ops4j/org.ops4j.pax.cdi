@@ -44,6 +44,7 @@ public interface CdiContainer {
     /**
      * Starts the CDI container for the current bundle.
      * @param environment implementation dependent environment for the container, maybe null.
+     * OpenWebBeans passes {@code ServletContextEvent} object and Weld passes {@code ServletContext}.
      */
     void start(Object environment);
 
@@ -84,7 +85,7 @@ public interface CdiContainer {
 
     /**
      * Returns the context class loader used by this container. All bean classes are loaded from
-     * this class loader. The {@link CdiContainerFactoryClient} must set the thread context class
+     * this class loader. The {@link CdiContainerFactory} must set the thread context class
      * loader to this loader before creating this container.
      *
      * @return context class loader associated to this container
