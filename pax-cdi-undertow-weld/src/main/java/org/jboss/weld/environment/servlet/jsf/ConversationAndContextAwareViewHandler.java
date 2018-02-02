@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.undertow.weld.impl;
+package org.jboss.weld.environment.servlet.jsf;
 
 import javax.faces.application.ViewHandler;
 import javax.faces.context.FacesContext;

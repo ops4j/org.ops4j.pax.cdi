@@ -1,10 +1,32 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.ops4j.pax.cdi</groupId>
-        <version>1.0.0-SNAPSHOT</version>
         <artifactId>pax-cdi-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath>../../../../pax-cdi-parent</relativePath>
     </parent>
 
@@ -13,142 +35,57 @@
 
     <name>OPS4J Pax CDI Standalone Integration Tests</name>
 
-    <description>These tests use a stand-alone OSGi 4.3 framework (as opposed to Karaf).</description>
-
-    <properties>
-        <felix.version>5.6.1</felix.version>
-    </properties>
+    <description>These tests use a stand-alone OSGi 5.x framework (as opposed to Karaf).</description>
 
     <dependencies>
 
         <dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>jersey-apache-client</artifactId>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Using logback for test itself (before running OSGi) to not conflict with pax-logging-log4j2 -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <scope>test</scope>
         </dependency>
 
+        <!-- PAX CDI dependencies -->
 
         <dependency>
-            <groupId>org.ops4j.pax.cdi</groupId>
-            <artifactId>pax-cdi-extender</artifactId>
-            <version>${project.version}</version>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
-            <groupId>org.ops4j.pax.cdi</groupId>
-            <artifactId>pax-cdi-test-support</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi</groupId>
-            <artifactId>pax-cdi-weld</artifactId>
-            <version>${project.version}</version>
+            <groupId>javax.interceptor</groupId>
+            <artifactId>javax.interceptor-api</artifactId>
             <scope>provided</scope>
         </dependency>
-
-
         <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample1</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample1-client</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample3</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample3-client</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample5</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample5-client1</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample5-client2</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample6</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample7-api</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample7-service-impl100</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample9</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample8</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi</groupId>
-            <artifactId>pax-cdi-extension</artifactId>
-            <version>${project.version}</version>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -157,7 +94,6 @@
             <artifactId>xbean-bundleutils</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-finder-shaded</artifactId>
@@ -166,38 +102,202 @@
 
         <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
-            <artifactId>pax-cdi-openwebbeans</artifactId>
+            <artifactId>pax-cdi-extender</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.cdi</groupId>
+            <artifactId>pax-cdi-extension</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.cdi</groupId>
+            <artifactId>pax-cdi-test-support</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.cdi</groupId>
+            <artifactId>pax-cdi-weld</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.ops4j.pax.cdi</groupId>-->
+            <!--<artifactId>pax-cdi-openwebbeans</artifactId>-->
+            <!--<version>${project.version}</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.ops4j.pax.cdi</groupId>
+            <artifactId>pax-cdi-web</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.web</groupId>
+            <artifactId>pax-web-jsp</artifactId>
+            <version>${pax.web.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
+        <!-- PAX CDI samples -->
+
+        <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample1</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample1-client</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample3</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample3-client</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample5</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample5-client1</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample5-client2</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample6</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample7-api</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample7-service-impl100</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample9</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample8</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.cdi.samples</groupId>
+            <artifactId>pax-cdi-sample2-service</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- PAX EXAM dependencies -->
+
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>
+            <version>1_2</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.url</groupId>
+            <artifactId>pax-url-aether</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.url</groupId>
+            <artifactId>pax-url-link</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-junit4</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-invoker-junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-container-native</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-inject</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-extender-service</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-link-mvn</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
 
+        <!-- Other dependencies -->
+
         <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-container-native</artifactId>
-            <scope>test</scope>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-apache-client</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-link-mvn</artifactId>
+            <groupId>org.ops4j.pax.url</groupId>
+            <artifactId>pax-url-wrap</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.url</groupId>
+            <artifactId>pax-url-commons</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -206,90 +306,39 @@
             <artifactId>pax-swissbox-tracker</artifactId>
             <scope>provided</scope>
         </dependency>
-
-
         <dependency>
-            <groupId>org.ops4j.pax.url</groupId>
-            <artifactId>pax-url-aether</artifactId>
-            <scope>test</scope>
+            <groupId>org.ops4j.pax.swissbox</groupId>
+            <artifactId>pax-swissbox-bnd</artifactId>
+            <scope>provided</scope>
         </dependency>
-
         <dependency>
-            <groupId>org.ops4j.pax.url</groupId>
-            <artifactId>pax-url-wrap</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jul-to-slf4j</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-atinject_1.0_spec</artifactId>
+            <groupId>org.ops4j.pax.swissbox</groupId>
+            <artifactId>pax-swissbox-property</artifactId>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.2</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jta_1.1_spec</artifactId>
+            <groupId>commons-pool</groupId>
+            <artifactId>commons-pool</artifactId>
+            <version>1.6</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-validation_1.0_spec</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.interceptor</groupId>
-            <artifactId>javax.interceptor-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi</groupId>
-            <artifactId>pax-cdi-web</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- for debugging -->
-        <dependency>
-            <groupId>org.ops4j.pax.web</groupId>
-            <artifactId>pax-web-extender-war</artifactId>
-            <version>${pax.web.version}</version>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
             <scope>provided</scope>
         </dependency>
 
@@ -301,23 +350,10 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
             <version>10.8.2.2</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.cdi.samples</groupId>
-            <artifactId>pax-cdi-sample2-service</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -330,13 +366,6 @@
         <dependency>
             <groupId>org.ops4j.pax.jpa</groupId>
             <artifactId>pax-jpa</artifactId>
-            <version>${pax.jpa.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.jpa.samples</groupId>
-            <artifactId>pax-jpa-sample1</artifactId>
             <version>${pax.jpa.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -355,60 +384,63 @@
             <scope>provided</scope>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.apache.deltaspike.modules</groupId>
-            <artifactId>deltaspike-jpa-module-api</artifactId>
-            <version>${deltaspike.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.deltaspike.modules</groupId>
-            <artifactId>deltaspike-jpa-module-impl</artifactId>
-            <version>${deltaspike.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.deltaspike.modules</groupId>
-            <artifactId>deltaspike-data-module-api</artifactId>
-            <version>${deltaspike.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.deltaspike.modules</groupId>
-            <artifactId>deltaspike-data-module-impl</artifactId>
-            <version>${deltaspike.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.deltaspike.modules</groupId>
-            <artifactId>deltaspike-partial-bean-module-api</artifactId>
-            <version>${deltaspike.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.deltaspike.modules</groupId>
-            <artifactId>deltaspike-partial-bean-module-impl</artifactId>
-            <version>${deltaspike.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.enterprise</artifactId>
-            <version>4.2.0</version>
-            <scope>provided</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
         <plugins>
+
+            <!-- Core plugins -->
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <ProjectVersion>${project.version}</ProjectVersion>
+
+                        <org.osgi.service.http.port>${org.osgi.service.http.port}</org.osgi.service.http.port>
+                        <pax.cdi.provider>${pax.cdi.provider}</pax.cdi.provider>
+                        <!-- to configure pax-exam with pax.exam.system=default which gives us more control over installed bundles -->
+                        <pax.exam.configuration>file:src/test/resources/controlled-exam.properties</pax.exam.configuration>
+                    </systemPropertyVariables>
+                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                </configuration>
+            </plugin>
+
+            <!-- Tools -->
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <mkdir dir="target/logs" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- ServiceMix plugins -->
+
             <plugin>
                 <groupId>org.apache.servicemix.tooling</groupId>
                 <artifactId>depends-maven-plugin</artifactId>
@@ -422,24 +454,9 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.googlecode.maven-download-plugin</groupId>
-                <artifactId>download-maven-plugin</artifactId>
-                <version>1.2.0</version>
-                <executions>
-                    <execution>
-                        <id>download-equinox-console</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>http://archive.eclipse.org/equinox/drops/R-Luna-201406061215/org.eclipse.equinox.console_1.1.0.v20140131-1639.jar</url>
-                            <outputFileName>org.eclipse.equinox.console.jar</outputFileName>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+
+            <!-- MojoHaus plugins -->
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -458,19 +475,23 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Other plugins -->
+
             <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <forkCount>1</forkCount>
-                    <reuseFork>false</reuseFork>
-                    <runOrder>alphabetical</runOrder>
-                    <systemPropertyVariables>
-                        <java.util.logging.config.file>src/test/resources/logging.properties</java.util.logging.config.file>
-                        <org.osgi.service.http.port>${org.osgi.service.http.port}</org.osgi.service.http.port>
-                        <pax.cdi.provider>${pax.cdi.provider}</pax.cdi.provider>
-                    </systemPropertyVariables>
-                </configuration>
+                <groupId>org.ops4j.pax.exam</groupId>
+                <artifactId>exam-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>dependencies</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>generate-link-files</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
+
         </plugins>
     </build>
 
@@ -478,7 +499,7 @@
         <profile>
             <id>equinox</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <dependencies>
                 <dependency>
@@ -497,7 +518,6 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.framework</artifactId>
-                    <version>${felix.version}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -511,38 +531,12 @@
                 <pax.cdi.provider>owb1</pax.cdi.provider>
             </properties>
             <dependencies>
-
-                <dependency>
-                    <groupId>org.apache.openwebbeans</groupId>
-                    <artifactId>openwebbeans-web</artifactId>
-                    <version>${openwebbeans1.version}</version>
-                </dependency>
-                
-                <dependency>
-                    <groupId>org.apache.openwebbeans</groupId>
-                    <artifactId>openwebbeans-impl</artifactId>
-                    <version>${openwebbeans1.version}</version>
-                </dependency>
-                
-                <dependency>
-                    <groupId>org.apache.openwebbeans</groupId>
-                    <artifactId>openwebbeans-spi</artifactId>
-                    <version>${openwebbeans1.version}</version>
-                </dependency>
-                
                 <dependency>
                     <groupId>org.ops4j.pax.cdi</groupId>
                     <artifactId>pax-cdi-jetty-openwebbeans</artifactId>
                     <version>${project.version}</version>
                     <scope>provided</scope>
                 </dependency>
-
-                <dependency>
-                    <groupId>org.apache.xbean</groupId>
-                    <artifactId>xbean-asm5-shaded</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-
             </dependencies>
         </profile>
         <profile>
@@ -554,26 +548,22 @@
                 <pax.cdi.provider>weld2</pax.cdi.provider>
             </properties>
             <dependencies>
-
                 <dependency>
                     <groupId>org.ops4j.pax.cdi</groupId>
                     <artifactId>pax-cdi-jetty-weld</artifactId>
                     <version>${project.version}</version>
                     <scope>provided</scope>
                 </dependency>
-
                 <dependency>
                     <groupId>org.apache.servicemix.bundles</groupId>
                     <artifactId>org.apache.servicemix.bundles.asm</artifactId>
                     <scope>provided</scope>
                 </dependency>
-
                 <dependency>
                     <groupId>org.jboss.weld</groupId>
                     <artifactId>weld-osgi-bundle</artifactId>
                     <scope>provided</scope>
                 </dependency>
-
             </dependencies>
         </profile>
     </profiles>

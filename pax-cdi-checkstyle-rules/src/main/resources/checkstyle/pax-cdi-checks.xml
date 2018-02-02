@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE module PUBLIC
-    "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
-    "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+        "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+        "http://checkstyle.sourceforge.net/dtds/configuration_1_3.dtd">
 
 <!-- 
   Checkstyle configuration that checks the Pax CDI coding conventions.
@@ -13,6 +13,8 @@
 <module name="Checker">
   <!-- We want yellow markers in Eclipse by default, not red ones. -->
   <property name="severity" value="warning" />
+
+  <property name="fileExtensions" value="java, properties, xml" />
 
   <!-- Checks whether files end with a new line. -->
   <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
@@ -31,18 +33,7 @@
       <property name="fileExtensions" value="java" />
   </module>
 
-  <!-- allow usage of CHECKSTYLE:OFF and CHECKSTYLE:ON -->
-  <module name="SuppressionCommentFilter" />
-
-  <module name="SuppressWithNearbyCommentFilter">
-    <property name="commentFormat" value="CHECKSTYLE:SKIP"/>
-    <property name="checkFormat" value=".*"/>
-    <property name="influenceFormat" value="1"/>
-  </module>
-
   <module name="TreeWalker">
-
-    <module name="FileContentsHolder" />
 
     <property name="cacheFile" value="${checkstyle.cache.file}" />
 
@@ -188,7 +179,15 @@
     <module name="SuperClone" />
     <module name="SuperFinalize" />
 
+    <!-- allow usage of CHECKSTYLE:OFF and CHECKSTYLE:ON -->
+    <module name="SuppressionCommentFilter" />
+
+    <module name="SuppressWithNearbyCommentFilter">
+      <property name="commentFormat" value="CHECKSTYLE:SKIP"/>
+      <property name="checkFormat" value=".*"/>
+      <property name="influenceFormat" value="1"/>
+    </module>
+
   </module>
 
 </module>
-

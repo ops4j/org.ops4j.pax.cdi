@@ -1,9 +1,33 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.ops4j.pax</groupId>
         <artifactId>cdi</artifactId>
         <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>org.ops4j.pax.cdi</groupId>
@@ -13,26 +37,51 @@
     <name>OPS4J Pax CDI Parent POM</name>
 
     <properties>
-        <deltaspike.version>1.4.2</deltaspike.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- versions of Maven plugins -->
+
+        <version.plugin.maven-checkstyle-plugin>3.0.0</version.plugin.maven-checkstyle-plugin>
+        <version.com.puppycrawl.tools.checkstyle>8.7</version.com.puppycrawl.tools.checkstyle>
+        <version.plugin.maven-antrun-plugin>1.8</version.plugin.maven-antrun-plugin>
+        <version.plugin.maven-compiler-plugin>3.7.0</version.plugin.maven-compiler-plugin>
+        <version.plugin.maven-surefire-plugin>2.19.1</version.plugin.maven-surefire-plugin>
+        <version.plugin.felix.maven-bundle-plugin>3.3.0</version.plugin.felix.maven-bundle-plugin>
+        <version.plugin.mojo.build-helper-maven-plugin>3.0.0</version.plugin.mojo.build-helper-maven-plugin>
+        <version.plugin.mycila.license-maven-plugin>3.0</version.plugin.mycila.license-maven-plugin>
+        <version.plugin.servicemix.depends-maven-plugin>1.4.0</version.plugin.servicemix.depends-maven-plugin>
+
+        <!-- versions of Maven dependencies -->
+
+        <!-- Keep those two aligned -->
+        <felix.version>5.6.10</felix.version>
+        <felix.configadmin.version>1.8.16</felix.configadmin.version>
+        <felix.scr.version>2.0.12</felix.scr.version>
+        <karaf.version>4.1.4</karaf.version>
+
+        <deltaspike.version>1.8.1</deltaspike.version>
         <jersey.version>1.13</jersey.version>
-        <jetty.version>9.3.11.v20160721</jetty.version>
+        <jetty.version>9.3.22.v20171030</jetty.version>
         <logback.version>1.0.0</logback.version>
+        <log4j2.version>2.10.0</log4j2.version>
         <openwebbeans1.version>1.6.3</openwebbeans1.version>
-        <openjpa.version>2.2.0</openjpa.version>
+        <openjpa.version>2.4.2</openjpa.version>
         <ops4j.base.version>1.5.0</ops4j.base.version>
-        <pax.exam.version>4.9.0</pax.exam.version>
+        <pax.exam.version>4.11.0</pax.exam.version>
         <pax.jdbc.version>0.5.0</pax.jdbc.version>
         <pax.jpa.version>0.3.0</pax.jpa.version>
+        <pax.logging.version>1.10.1</pax.logging.version>
         <pax.swissbox.version>1.8.2</pax.swissbox.version>
         <pax.url.version>2.4.2</pax.url.version>
-
-        <pax.web.version>4.4.0</pax.web.version>
+        <pax.web.version>6.1.2-SNAPSHOT</pax.web.version>
 
         <slf4j.version>1.6.4</slf4j.version>
-        <weld2.version>2.3.5.Final</weld2.version>
-        <xbean.version>4.4</xbean.version>
+        <weld2.version>2.4.5.Final</weld2.version>
+        <xbean.version>4.6</xbean.version>
+        <xbean44.version>4.4</xbean44.version>
 
-        <pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
+        <pax.cdi.wiki.url>https://ops4j1.jira.com/wiki/spaces/PAXCDI/overview</pax.cdi.wiki.url>
     </properties>
 
     <dependencyManagement>
@@ -55,13 +104,22 @@
                 <artifactId>pax-swissbox-tracker</artifactId>
                 <version>${pax.swissbox.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.swissbox</groupId>
+                <artifactId>pax-swissbox-bnd</artifactId>
+                <version>${pax.swissbox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.swissbox</groupId>
+                <artifactId>pax-swissbox-property</artifactId>
+                <version>${pax.swissbox.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.core</artifactId>
                 <version>6.0.0</version>
             </dependency>
-
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.compendium</artifactId>
@@ -72,6 +130,8 @@
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>org.eclipse.osgi</artifactId>
                 <version>3.11.2.v20161107-1947</version>
+                <!-- 3.13.0.v20171204-1916 exports org.osgi.framework package with version 1.9 -->
+                <!--<version>3.13.0.v20171204-1916</version>-->
             </dependency>
 
             <dependency>
@@ -79,19 +139,31 @@
                 <artifactId>pax-exam-junit4</artifactId>
                 <version>${pax.exam.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.ops4j.pax.exam</groupId>
+                <artifactId>pax-exam-invoker-junit</artifactId>
+                <version>${pax.exam.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.ops4j.pax.exam</groupId>
                 <artifactId>pax-exam</artifactId>
                 <version>${pax.exam.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.ops4j.pax.exam</groupId>
                 <artifactId>pax-exam-container-native</artifactId>
                 <version>${pax.exam.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.ops4j.pax.exam</groupId>
+                <artifactId>pax-exam-inject</artifactId>
+                <version>${pax.exam.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.exam</groupId>
+                <artifactId>pax-exam-extender-service</artifactId>
+                <version>${pax.exam.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.ops4j.pax.exam</groupId>
                 <artifactId>pax-exam-link-mvn</artifactId>
@@ -103,10 +175,19 @@
                 <artifactId>pax-url-aether</artifactId>
                 <version>${pax.url.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.ops4j.pax.url</groupId>
+                <artifactId>pax-url-commons</artifactId>
+                <version>${pax.url.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.ops4j.pax.url</groupId>
                 <artifactId>pax-url-wrap</artifactId>
+                <version>${pax.url.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.url</groupId>
+                <artifactId>pax-url-link</artifactId>
                 <version>${pax.url.version}</version>
             </dependency>
 
@@ -131,6 +212,11 @@
             <dependency>
                 <groupId>javax.annotation</groupId>
                 <artifactId>javax.annotation-api</artifactId>
+                <version>1.2</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.interceptor</groupId>
+                <artifactId>javax.interceptor-api</artifactId>
                 <version>1.2</version>
             </dependency>
 
@@ -165,12 +251,6 @@
             </dependency>
 
             <dependency>
-                <groupId>javax.interceptor</groupId>
-                <artifactId>javax.interceptor-api</artifactId>
-                <version>1.2</version>
-            </dependency>
-
-            <dependency>
                 <groupId>javax.el</groupId>
                 <artifactId>javax.el-api</artifactId>
                 <version>3.0.0</version>
@@ -181,7 +261,11 @@
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jul-to-slf4j</artifactId>
@@ -193,41 +277,46 @@
                 <artifactId>logback-core</artifactId>
                 <version>${logback.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
 
+            <dependency>
+                <groupId>org.apache.xbean</groupId>
+                <artifactId>xbean-asm6-shaded</artifactId>
+                <version>${xbean.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-bundleutils</artifactId>
                 <version>${xbean.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-finder-shaded</artifactId>
                 <version>${xbean.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-reflect</artifactId>
                 <version>${xbean.version}</version>
             </dependency>
-
-            <dependency>
-                <groupId>org.ow2.asm</groupId>
-                <artifactId>asm-all</artifactId>
-                <version>${asm.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>org.apache.xbean</groupId>
                 <artifactId>xbean-asm5-shaded</artifactId>
-                <version>${xbean.version}</version>
+                <version>${xbean44.version}</version>
             </dependency>
 
             <dependency>
@@ -240,6 +329,12 @@
                 <groupId>org.apache.openwebbeans</groupId>
                 <artifactId>openwebbeans-impl</artifactId>
                 <version>${openwebbeans1.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.xbean</groupId>
+                        <artifactId>xbean-asm5-shaded</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -312,7 +407,7 @@
             <dependency>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>org.apache.felix.framework</artifactId>
-                <version>5.4.0</version>
+                <version>${felix.version}</version>
             </dependency>
 
             <dependency>
@@ -339,65 +434,115 @@
     <build>
         <pluginManagement>
             <plugins>
+
+                <!-- Core plugins -->
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
-                    </configuration>
+                    <version>${version.plugin.maven-compiler-plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${version.plugin.maven-surefire-plugin}</version>
                 </plugin>
 
-                <plugin>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>maven-bundle-plugin</artifactId>
-                    <version>3.2.0</version>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <unpackBundle>true</unpackBundle>                
-                        <instructions>
-                            <Bundle-DocURL>${pax.cdi.wiki.url}</Bundle-DocURL>
-                        </instructions>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.servicemix.tooling</groupId>
-                    <artifactId>depends-maven-plugin</artifactId>
-                    <version>1.2</version>
-                </plugin>
+                <!-- Reporting plugins -->
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>2.16</version>
-                    <executions>
-                        <execution>
-                            <id>verify-style</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <configLocation>checkstyle/pax-cdi-checks.xml</configLocation>
-                        <includes>org/ops4j/pax/cdi/**/*.java</includes>
-                    </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.ops4j.pax.cdi</groupId>
-                            <artifactId>pax-cdi-checkstyle-rules</artifactId>
-                            <version>${project.version}</version>
-                        </dependency>
-                    </dependencies>
+                    <version>${version.plugin.maven-checkstyle-plugin}</version>
                 </plugin>
+
+                <!-- Tools -->
+
                 <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.19.1</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${version.plugin.maven-antrun-plugin}</version>
                 </plugin>
+
+                <!-- Felix plugins -->
+
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>${version.plugin.felix.maven-bundle-plugin}</version>
+                    <extensions>true</extensions>
+                </plugin>
+
+                <!-- ServiceMix plugins -->
+
+                <plugin>
+                    <groupId>org.apache.servicemix.tooling</groupId>
+                    <artifactId>depends-maven-plugin</artifactId>
+                    <version>${version.plugin.servicemix.depends-maven-plugin}</version>
+                </plugin>
+
+                <!-- MojoHaus plugins -->
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${version.plugin.mojo.build-helper-maven-plugin}</version>
+                </plugin>
+
+                <!-- Other plugins -->
+
+                <plugin>
+                    <groupId>com.mycila</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>${version.plugin.mycila.license-maven-plugin}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.ops4j.pax.exam</groupId>
+                    <artifactId>exam-maven-plugin</artifactId>
+                    <version>${pax.exam.version}</version>
+                </plugin>
+
             </plugins>
         </pluginManagement>
+        <plugins>
+
+            <!-- Core plugins -->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <runOrder>alphabetical</runOrder>
+                </configuration>
+            </plugin>
+
+            <!-- Felix plugins -->
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <unpackBundle>true</unpackBundle>
+                    <instructions>
+                        <Bundle-DocURL>${pax.cdi.wiki.url}</Bundle-DocURL>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+        </plugins>
     </build>
 
     <licenses>
@@ -426,7 +571,7 @@
 
     <issueManagement>
         <system>jira</system>
-        <url>http://issues.ops4j.org/jira/browse/PAXCDI</url>
+        <url>https://ops4j1.jira.com/projects/PAXCDI/summary/statistics</url>
     </issueManagement>
 
     <developers>
@@ -509,6 +654,97 @@
             </build>
         </profile>
 
+        <!-- Checkstyle: `mvn -Pcs validate` -->
+        <profile>
+            <id>cs</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>verify-style</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <configuration>
+                                    <configLocation>checkstyle/pax-cdi-checks.xml</configLocation>
+                                    <suppressionsLocation>checkstyle/pax-cdi-checks-suppressions.xml</suppressionsLocation>
+                                    <includes>org/ops4j/pax/cdi/**/*.java</includes>
+                                    <encoding>UTF-8</encoding>
+                                    <consoleOutput>true</consoleOutput>
+                                    <failsOnError>true</failsOnError>
+                                    <logViolationsToConsole>true</logViolationsToConsole>
+                                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.puppycrawl.tools</groupId>
+                                <artifactId>checkstyle</artifactId>
+                                <version>${version.com.puppycrawl.tools.checkstyle}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.ops4j.pax.cdi</groupId>
+                                <artifactId>pax-cdi-checkstyle-rules</artifactId>
+                                <version>${project.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- License generation: `mvn -Plicense process-sources` -->
+        <profile>
+            <id>license</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.mycila</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                            <useDefaultExcludes>true</useDefaultExcludes>
+                            <header>license-header.txt</header>
+                            <includes>
+                                <!--<include>src/main/java/**/*.java</include>-->
+                                <!--<include>src/test/java/**/*.java</include>-->
+                                <!--<include>**/README</include>-->
+                                <include>pom.xml</include>
+                                <include>**/*.xml</include>
+                                <!--<include>**/*.cfg</include>-->
+                                <include>**/*.properties</include>
+                            </includes>
+                            <excludes />
+                            <mapping>
+                                <!--<README>SCRIPT_STYLE</README>-->
+                            </mapping>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>license-format</id>
+                                <phase>process-sources</phase>
+                                <goals>
+                                    <goal>format</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>license-check</id>
+                                <!-- This is the phase this plugin runs by default. Just an explicit information -->
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
 </project>

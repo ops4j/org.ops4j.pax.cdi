@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <!--
 
     Licensed to the Apache Software Foundation (ASF) under one
@@ -19,13 +19,15 @@
     under the License.
 
 -->
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-    id="pax-web-manual" version="2.5">
-    <display-name>Pax Warp Manual</display-name>
-    <!-- Default page to server -->
-    <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
-    </welcome-file-list>
-</web-app>
+<!DOCTYPE suppressions PUBLIC
+        "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+        "http://checkstyle.sourceforge.net/dtds/suppressions_1_1.dtd">
+<suppressions>
+
+    <suppress checks=".*" files=".+[\\\/]generated[\\\/].+\.java" />
+    <suppress checks=".*" files=".+[\\\/]build[\\\/]src[\\\/].+\.java" />
+    <suppress checks=".*" files=".+[\\\/]target[\\\/].+\.java" />
+    <suppress checks=".*" files=".+[\\\/]target[\\\/].+\.properties" />
+    <suppress checks=".*" files=".+[\\\/]contrib[\\\/].+\.java" />
+
+</suppressions>

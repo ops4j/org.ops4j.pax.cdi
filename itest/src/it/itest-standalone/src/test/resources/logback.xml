@@ -15,35 +15,34 @@
   limitations under the License.
  -->
 <configuration debug="false">
-  <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
-    <resetJUL>false</resetJUL>
-  </contextListener>
+
+  <!-- Logback configuration for pax-exam itself - not for OSGi runtime started by pax-exam-container-native -->
 
   <!--  log to System.out on console  -->
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level (%F:%L\) %logger{36} - %msg%n</pattern>
     </encoder>
   </appender>
-  
+
   <!--  log to file test.log  -->
   <appender name="TEST_LOG" class="ch.qos.logback.core.FileAppender">
-    <file>test.log</file>
+    <file>target/logs/pax-exam-test.log</file>
     <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level (%F:%L\) %logger{36} - %msg%n</pattern>
     </encoder>
   </appender>
-  
+
   <root level="WARN">
-    <appender-ref ref="STDOUT"/>
-    <appender-ref ref="TEST_LOG"/>
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="TEST_LOG" />
   </root>
-  <logger name="org.ops4j.pax.exam" level="WARN"/> 
-  <logger name="org.ops4j.pax.cdi" level="DEBUG"/>
-  <logger name="org.apache.felix.scr" level="DEBUG"/>
-  <logger name="org.apache.webbeans" level="WARN"/>
-  <logger name="org.jboss.weld" level="WARN"/>
-  <logger name="org.eclipse.jetty" level="WARN"/>
-  <logger name="httpclient" level="WARN"/>
-  
+  <logger name="org.ops4j.pax.cdi" level="WARN" />
+  <logger name="org.ops4j.pax.exam" level="DEBUG" />
+  <logger name="org.apache.felix.scr" level="DEBUG" />
+  <logger name="org.apache.webbeans" level="WARN" />
+  <logger name="org.jboss.weld" level="WARN" />
+  <logger name="org.eclipse.jetty" level="WARN" />
+  <logger name="httpclient" level="WARN" />
+
 </configuration>
