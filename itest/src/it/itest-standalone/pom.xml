@@ -35,8 +35,6 @@
 
     <name>OPS4J Pax CDI Standalone Integration Tests</name>
 
-    <description>These tests use a stand-alone OSGi 5.x framework (as opposed to Karaf).</description>
-
     <dependencies>
 
         <dependency>
@@ -415,7 +413,7 @@
                         <!-- to configure pax-exam with pax.exam.system=default which gives us more control over installed bundles -->
                         <pax.exam.configuration>file:src/test/resources/controlled-exam.properties</pax.exam.configuration>
                     </systemPropertyVariables>
-                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
                 </configuration>
             </plugin>
 

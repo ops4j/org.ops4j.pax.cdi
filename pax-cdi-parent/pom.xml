@@ -54,7 +54,7 @@
 
         <!-- versions of Maven dependencies -->
 
-        <!-- Keep those two aligned -->
+        <!-- Keep those aligned -->
         <felix.version>5.6.10</felix.version>
         <felix.configadmin.version>1.8.16</felix.configadmin.version>
         <felix.scr.version>2.0.12</felix.scr.version>
@@ -152,6 +152,11 @@
             <dependency>
                 <groupId>org.ops4j.pax.exam</groupId>
                 <artifactId>pax-exam-container-native</artifactId>
+                <version>${pax.exam.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.exam</groupId>
+                <artifactId>pax-exam-container-karaf</artifactId>
                 <version>${pax.exam.version}</version>
             </dependency>
             <dependency>
