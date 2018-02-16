@@ -19,7 +19,7 @@
     under the License.
 
 -->
-<features name="org.ops4j.pax.cdi-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.5.0">
+<features name="org.ops4j.pax.cdi-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
 
     <feature name="pax-cdi" description="Provide CDI support" version="${project.version}">
         <feature version="${project.version}" dependency="true">pax-cdi-weld</feature>
