@@ -24,6 +24,7 @@ import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
 
 import java.io.File;
+import java.net.MalformedURLException;
 
 import org.ops4j.pax.cdi.test.support.Info;
 import org.ops4j.pax.exam.ConfigurationManager;
@@ -52,6 +53,12 @@ public class RegressionConfiguration {
     }
 
     public static Option regressionDefaults(String unpackDir) {
+        String localRepository = System.getProperty("localRepository");
+        try {
+            localRepository = new File(localRepository).toURI().toURL().toString();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
         return composite(
 
             karafDistributionConfiguration().frameworkUrl(mvnKarafDist()).karafVersion(karafVersion())
@@ -65,6 +72,8 @@ public class RegressionConfiguration {
             when(isDebug()).useOptions(
               KarafDistributionOption.debugConfiguration("5005", true)
             ),
+
+            editConfigurationFileExtend("etc/org.ops4j.pax.url.mvn.cfg", "org.ops4j.pax.url.mvn.defaultRepositories", localRepository),
 
             when(isEquinox()).useOptions(
                 editConfigurationFilePut(CustomProperties.KARAF_FRAMEWORK, "equinox"),

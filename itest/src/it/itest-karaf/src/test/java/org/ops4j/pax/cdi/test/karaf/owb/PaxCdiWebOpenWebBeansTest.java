@@ -48,6 +48,7 @@ public class PaxCdiWebOpenWebBeansTest {
         return options(
             regressionDefaults(),
             features(PAX_WEB_FEATURES, "pax-http"),
+            features(PAX_WEB_FEATURES, "pax-http-whiteboard"),
             features(PAX_CDI_FEATURES, "pax-cdi-web-openwebbeans"),
             SAMPLE1,
             SAMPLE1_WEB);

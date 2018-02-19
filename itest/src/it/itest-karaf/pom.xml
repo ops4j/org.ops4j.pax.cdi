@@ -33,7 +33,7 @@
     <groupId>org.ops4j.pax.cdi.itest</groupId>
     <artifactId>itest-karaf</artifactId>
 
-    <name>OPS4J Pax CDI 1.2 Integration Tests on Karaf</name>
+    <name>OPS4J Pax CDI Karaf Integration Tests</name>
 
     <dependencies>
 
@@ -272,7 +272,9 @@
 
                         <pax.cdi.provider>${pax.cdi.provider}</pax.cdi.provider>
                         <pax.exam.karaf.version>${karaf.version}</pax.exam.karaf.version>
+                        <localRepository>${settings.localRepository}</localRepository>
                     </systemPropertyVariables>
+                    <forkedProcessExitTimeoutInSeconds>3</forkedProcessExitTimeoutInSeconds>
                     <includes>
                         <include>**/${pax.cdi.provider.name}/**</include>
                     </includes>

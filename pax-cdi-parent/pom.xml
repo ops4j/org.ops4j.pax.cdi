@@ -46,7 +46,7 @@
         <version.com.puppycrawl.tools.checkstyle>8.7</version.com.puppycrawl.tools.checkstyle>
         <version.plugin.maven-antrun-plugin>1.8</version.plugin.maven-antrun-plugin>
         <version.plugin.maven-compiler-plugin>3.7.0</version.plugin.maven-compiler-plugin>
-        <version.plugin.maven-surefire-plugin>2.19.1</version.plugin.maven-surefire-plugin>
+        <version.plugin.maven-surefire-plugin>2.20.1</version.plugin.maven-surefire-plugin>
         <version.plugin.felix.maven-bundle-plugin>3.3.0</version.plugin.felix.maven-bundle-plugin>
         <version.plugin.mojo.build-helper-maven-plugin>3.0.0</version.plugin.mojo.build-helper-maven-plugin>
         <version.plugin.mycila.license-maven-plugin>3.0</version.plugin.mycila.license-maven-plugin>
