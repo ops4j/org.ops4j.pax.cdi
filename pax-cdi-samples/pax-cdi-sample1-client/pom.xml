@@ -23,7 +23,7 @@
     <parent>
         <artifactId>pax-cdi-samples</artifactId>
         <groupId>org.ops4j.pax.cdi</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
         <relativePath>..</relativePath>
     </parent>
     
