@@ -87,7 +87,7 @@
                         <Web-ContextPath>/sample4</Web-ContextPath>
                         <Import-Package>
                             javax.annotation,
-                            javax.servlet;version="[3.0,4.0)", 
+                            javax.servlet;version="[3.0,5.0)",
                             *
                         </Import-Package>
                         <Require-TldBundle>org.primefaces, org.ops4j.pax.cdi.jetty</Require-TldBundle>

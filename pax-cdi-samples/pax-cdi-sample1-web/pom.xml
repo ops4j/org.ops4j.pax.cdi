@@ -88,7 +88,7 @@
                         <Pax-ManagedBeans>WEB-INF/beans.xml</Pax-ManagedBeans>
                         <!-- javax.servlet.jsp package will wire our WAR to pax-web-jsp with correct EL Factory -->
                         <Import-Package>
-                            javax.servlet*;version="[2.6,4)",
+                            javax.servlet*;version="[2.6,5)",
                             javax.servlet.jsp,
                             *
                         </Import-Package>
