@@ -47,7 +47,7 @@
         <bundle dependency="true">mvn:org.apache.xbean/xbean-asm7-shaded/${xbean.version}</bundle>
         <bundle dependency="true">mvn:org.apache.xbean/xbean-finder-shaded/${xbean.version}</bundle>
         <bundle dependency="true">mvn:org.jboss.weld/weld-osgi-bundle/${weld2.version}</bundle>
-        <bundle dependency="true">mvn:org.jboss.logging/jboss-logging/3.3.0.Final</bundle>
+        <bundle dependency="true">mvn:org.jboss.logging/jboss-logging/${jboss.logging.version}</bundle>
         <!--<bundle dependency="true">mvn:com.google.guava/guava/18.0</bundle>-->
         <bundle dependency="true">mvn:org.jboss.classfilewriter/jboss-classfilewriter/1.1.2.Final</bundle>
         <bundle>mvn:org.ops4j.pax.cdi/pax-cdi-weld/${project.version}</bundle>

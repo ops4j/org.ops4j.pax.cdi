@@ -77,6 +77,7 @@
         <pax.web.version>7.2.5</pax.web.version>
 
         <slf4j.version>1.6.4</slf4j.version>
+        <jboss.logging.version>3.3.2.Final</jboss.logging.version>
         <weld2.version>2.4.8.Final</weld2.version>
         <xbean.version>4.12</xbean.version>
 
@@ -499,7 +500,7 @@
             <dependency>
                 <groupId>org.jboss.logging</groupId>
                 <artifactId>jboss-logging</artifactId>
-                <version>3.3.1.Final</version>
+                <version>${jboss.logging.version}</version>
             </dependency>
 
         </dependencies>
