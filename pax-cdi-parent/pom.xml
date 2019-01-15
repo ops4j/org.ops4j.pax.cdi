@@ -62,7 +62,7 @@
 
         <deltaspike.version>1.8.1</deltaspike.version>
         <jersey.version>1.13</jersey.version>
-        <jetty.version>9.3.22.v20171030</jetty.version>
+        <jetty.version>9.4.12.v20180830</jetty.version>
         <logback.version>1.0.0</logback.version>
         <log4j2.version>2.10.0</log4j2.version>
         <openjpa.version>2.4.2</openjpa.version>
@@ -74,7 +74,7 @@
         <pax.logging.version>1.10.1</pax.logging.version>
         <pax.swissbox.version>1.8.2</pax.swissbox.version>
         <pax.url.version>2.4.2</pax.url.version>
-        <pax.web.version>6.0.10</pax.web.version>
+        <pax.web.version>7.2.5</pax.web.version>
 
         <slf4j.version>1.6.4</slf4j.version>
         <weld2.version>2.4.5.Final</weld2.version>
