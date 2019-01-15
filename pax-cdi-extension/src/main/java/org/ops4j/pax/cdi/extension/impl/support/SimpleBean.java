@@ -18,11 +18,14 @@
 package org.ops4j.pax.cdi.extension.impl.support;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -41,7 +44,22 @@ public class SimpleBean<T> implements Bean<T> {
     public SimpleBean(Class clazz, Class<? extends Annotation> scope, Set<Type> types, Set<Annotation> qualifiers, Supplier<T> supplier) {
         this.clazz = clazz;
         this.scope = scope;
-        this.types = Collections.unmodifiableSet(types);
+
+        Set<Type> rawTypes = new HashSet<>();
+        for (Type t : types) {
+            if (t instanceof ParameterizedType) {
+                Type raw = ((ParameterizedType)t).getRawType();
+                if (raw == Instance.class) {
+                    rawTypes.add(((ParameterizedType) t).getActualTypeArguments()[0]);
+                } else {
+                    rawTypes.add(raw);
+                }
+            } else {
+                rawTypes.add(t);
+            }
+        }
+
+        this.types = Collections.unmodifiableSet(rawTypes);
         this.qualifiers = Collections.unmodifiableSet(qualifiers);
         this.supplier = supplier;
     }
