@@ -66,7 +66,6 @@ public class WebBeanBundleLifecycleTest extends AbstractControlledTestBase {
                 workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
                 mavenBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-web", Info.getPaxCdiVersion()),
 
-                cdiProviderBundles(),
                 paxCdiProviderAdapter(),
                 paxCdiProviderJettyAdapter(),
 

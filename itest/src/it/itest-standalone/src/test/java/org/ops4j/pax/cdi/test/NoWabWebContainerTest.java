@@ -67,7 +67,6 @@ public class NoWabWebContainerTest extends AbstractControlledTestBase {
 
                 paxCdiProviderAdapter(),
                 paxCdiProviderJettyAdapter(),
-                cdiProviderBundles(),
 
                 propagateSystemProperty("org.osgi.service.http.port"),
                 paxWebBundles(),

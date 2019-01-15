@@ -78,8 +78,7 @@
 
         <slf4j.version>1.6.4</slf4j.version>
         <weld2.version>2.4.5.Final</weld2.version>
-        <xbean.version>4.6</xbean.version>
-        <xbean44.version>4.4</xbean44.version>
+        <xbean.version>4.12</xbean.version>
 
         <pax.cdi.wiki.url>https://ops4j1.jira.com/wiki/spaces/PAXCDI/overview</pax.cdi.wiki.url>
     </properties>
@@ -300,7 +299,7 @@
 
             <dependency>
                 <groupId>org.apache.xbean</groupId>
-                <artifactId>xbean-asm6-shaded</artifactId>
+                <artifactId>xbean-asm7-shaded</artifactId>
                 <version>${xbean.version}</version>
             </dependency>
             <dependency>
@@ -318,11 +317,6 @@
                 <artifactId>xbean-reflect</artifactId>
                 <version>${xbean.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.apache.xbean</groupId>
-                <artifactId>xbean-asm5-shaded</artifactId>
-                <version>${xbean44.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.apache.openwebbeans</groupId>
@@ -334,12 +328,6 @@
                 <groupId>org.apache.openwebbeans</groupId>
                 <artifactId>openwebbeans-impl</artifactId>
                 <version>${openwebbeans1.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.xbean</groupId>
-                        <artifactId>xbean-asm5-shaded</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>

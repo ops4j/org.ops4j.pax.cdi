@@ -62,8 +62,7 @@ public class ComponentLifecycleTest extends AbstractControlledTestBase {
                 workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1"),
                 workspaceBundle("org.ops4j.pax.cdi.samples", "pax-cdi-sample1-client"),
 
-                paxCdiProviderAdapter(),
-                cdiProviderBundles()
+                paxCdiProviderAdapter()
         );
     }
 

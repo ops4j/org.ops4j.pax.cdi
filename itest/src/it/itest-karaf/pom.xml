@@ -234,8 +234,6 @@
             <scope>provided</scope>
         </dependency>
 
-
-
         <dependency>
             <groupId>org.apache.karaf.features</groupId>
             <artifactId>standard</artifactId>
@@ -269,7 +267,6 @@
                 <configuration>
                     <systemPropertyVariables>
                         <ProjectVersion>${project.version}</ProjectVersion>
-
                         <pax.cdi.provider>${pax.cdi.provider}</pax.cdi.provider>
                         <pax.exam.karaf.version>${karaf.version}</pax.exam.karaf.version>
                         <localRepository>${settings.localRepository}</localRepository>
@@ -364,7 +361,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.apache.xbean</groupId>
-                    <artifactId>xbean-asm5-shaded</artifactId>
+                    <artifactId>xbean-asm7-shaded</artifactId>
                     <scope>provided</scope>
                 </dependency>
             </dependencies>

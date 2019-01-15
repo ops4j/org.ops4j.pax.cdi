@@ -98,8 +98,8 @@ public class TestConfiguration {
 
             mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.6.0"),
             mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
-            mavenBundle("org.apache.xbean", "xbean-asm5-shaded", "4.4"), //
-            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.4"), //
+            mavenBundle("org.apache.xbean", "xbean-asm7-shaded", "4.12"), //
+            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.12"), //
 
             // Set logback configuration via system property.
             // This way, both the driver and the container use the same configuration
@@ -260,9 +260,9 @@ public class TestConfiguration {
                 mavenBundle("org.apache.openwebbeans", "openwebbeans-spi").version(OWB1_VERSION),
                 mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").version(OWB1_VERSION),
                 mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),
-                mavenBundle("org.apache.xbean", "xbean-bundleutils").version("4.4"),
-                mavenBundle("org.apache.xbean", "xbean-finder-shaded").version("4.4"),
-                mavenBundle("org.apache.xbean", "xbean-asm5-shaded").version("4.4")
+                mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
+                mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(),
+                mavenBundle("org.apache.xbean", "xbean-asm7-shaded").versionAsInProject()
         );
     }
 
@@ -275,7 +275,7 @@ public class TestConfiguration {
                 mavenBundle("org.jboss.weld", "weld-osgi-bundle").versionAsInProject(),
                 mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
                 mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(),
-                mavenBundle("org.apache.xbean", "xbean-asm6-shaded").versionAsInProject()
+                mavenBundle("org.apache.xbean", "xbean-asm7-shaded").versionAsInProject()
         );
     }
 
@@ -310,8 +310,8 @@ public class TestConfiguration {
             mavenBundle("org.jboss.logging", "jboss-logging", "3.3.0.Final"),
             mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
             mavenBundle("javax.servlet", "javax.servlet-api", "3.1.0"),
-            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.4"),
-            mavenBundle("org.apache.xbean", "xbean-finder", "4.4"),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.12"),
+            mavenBundle("org.apache.xbean", "xbean-finder", "4.12"),
             mavenBundle("org.ow2.asm", "asm-all", "5.0.2"),
             mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.8.0"),
             mavenBundle("org.apache.felix", "org.apache.felix.eventadmin", "1.3.2"),
