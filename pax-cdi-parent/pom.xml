@@ -58,7 +58,7 @@
         <felix.version>5.6.10</felix.version>
         <felix.configadmin.version>1.8.16</felix.configadmin.version>
         <felix.scr.version>2.0.12</felix.scr.version>
-        <karaf.version>4.1.4</karaf.version>
+        <karaf.version>4.2.2</karaf.version>
 
         <deltaspike.version>1.8.1</deltaspike.version>
         <jersey.version>1.13</jersey.version>
@@ -529,6 +529,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <unpackBundle>true</unpackBundle>
+                    <obrRepository>NONE</obrRepository>
                     <instructions>
                         <Bundle-DocURL>${pax.cdi.wiki.url}</Bundle-DocURL>
                     </instructions>

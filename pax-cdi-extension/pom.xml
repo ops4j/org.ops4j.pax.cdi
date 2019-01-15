@@ -161,7 +161,7 @@
         <dependency>
             <groupId>org.apache.karaf.bundle</groupId>
             <artifactId>org.apache.karaf.bundle.core</artifactId>
-            <version>4.0.4</version>
+            <version>${karaf.version}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>
