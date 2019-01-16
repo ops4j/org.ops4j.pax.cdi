@@ -46,6 +46,7 @@
         <version.com.puppycrawl.tools.checkstyle>8.7</version.com.puppycrawl.tools.checkstyle>
         <version.plugin.maven-antrun-plugin>1.8</version.plugin.maven-antrun-plugin>
         <version.plugin.maven-compiler-plugin>3.7.0</version.plugin.maven-compiler-plugin>
+        <version.plugin.maven-javadoc-plugin>3.0.1</version.plugin.maven-javadoc-plugin>
         <version.plugin.maven-surefire-plugin>2.20.1</version.plugin.maven-surefire-plugin>
         <version.plugin.felix.maven-bundle-plugin>3.3.0</version.plugin.felix.maven-bundle-plugin>
         <version.plugin.mojo.build-helper-maven-plugin>3.0.0</version.plugin.mojo.build-helper-maven-plugin>
@@ -530,6 +531,11 @@
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>${version.plugin.maven-checkstyle-plugin}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${version.plugin.maven-javadoc-plugin}</version>
+                </plugin>
 
                 <!-- Tools -->
 
@@ -600,6 +606,16 @@
                     <reuseForks>false</reuseForks>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <runOrder>alphabetical</runOrder>
+                </configuration>
+            </plugin>
+
+            <!-- Reporting plugins -->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <doclint>none</doclint>
                 </configuration>
             </plugin>
 
