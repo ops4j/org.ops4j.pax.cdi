@@ -308,7 +308,7 @@ public class TestConfiguration {
             mavenBundle("org.ops4j.pax.tipi", "org.ops4j.pax.tipi.xnio.api", "3.2.2.2"),
             mavenBundle("org.ops4j.pax.tipi", "org.ops4j.pax.tipi.xnio.nio", "3.2.2.2"),
             mavenBundle("org.jboss.logging", "jboss-logging", "3.3.0.Final"),
-            mavenBundle("javax.annotation", "javax.annotation-api", "1.2"),
+            mavenBundle("javax.annotation", "javax.annotation-api", "1.3"),
             mavenBundle("javax.servlet", "javax.servlet-api", "3.1.0"),
             mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.12"),
             mavenBundle("org.apache.xbean", "xbean-finder", "4.12"),
