@@ -39,9 +39,9 @@
     <description>Contexts and Dependency Injection for OSGi Applications</description>
 
     <scm>
-        <connection>scm:git:git@github.com:ops4j/org.ops4j.pax.cdi.git</connection>
-        <developerConnection>scm:git:git@github.com:ops4j/org.ops4j.pax.cdi.git</developerConnection>
-        <url>git@github.com:ops4j/org.ops4j.pax.cdi.git</url>
+        <connection>scm:git:https://github.com/ops4j/org.ops4j.pax.cdi.git</connection>
+        <developerConnection>scm:git:https://github.com/ops4j/org.ops4j.pax.cdi.git</developerConnection>
+        <url>https://github.com/ops4j/org.ops4j.pax.cdi.git</url>
         <tag>HEAD</tag>
     </scm>
 
