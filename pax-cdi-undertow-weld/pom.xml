@@ -114,6 +114,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Import-Package>
+                            io.undertow.servlet.api;version="[1.4,3)",
                             org.jboss.weld.*; version="[1,3)",
                             javax.servlet.*;version="[2,5)",
                             javax.el.*;version="[2,4)",
