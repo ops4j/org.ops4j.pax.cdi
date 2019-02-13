@@ -75,7 +75,7 @@
         <pax.logging.version>1.10.1</pax.logging.version>
         <pax.swissbox.version>1.8.2</pax.swissbox.version>
         <pax.url.version>2.6.1</pax.url.version>
-        <pax.web.version>7.2.5</pax.web.version>
+        <pax.web.version>7.2.8</pax.web.version>
 
         <slf4j.version>1.6.4</slf4j.version>
         <jboss.logging.version>3.3.2.Final</jboss.logging.version>
