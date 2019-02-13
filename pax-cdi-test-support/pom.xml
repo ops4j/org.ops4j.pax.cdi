@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.ops4j.pax.cdi</groupId>
         <artifactId>pax-cdi-parent</artifactId>
-        <version>1.1.2-SNAPSHOT</version>
+        <version>1.1.2</version>
         <relativePath>../pax-cdi-parent</relativePath>
     </parent>
 
