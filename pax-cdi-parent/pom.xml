@@ -43,7 +43,7 @@
         <!-- versions of Maven plugins -->
 
         <version.plugin.maven-checkstyle-plugin>3.0.0</version.plugin.maven-checkstyle-plugin>
-        <version.com.puppycrawl.tools.checkstyle>8.7</version.com.puppycrawl.tools.checkstyle>
+        <version.com.puppycrawl.tools.checkstyle>8.18</version.com.puppycrawl.tools.checkstyle>
         <version.plugin.maven-antrun-plugin>1.8</version.plugin.maven-antrun-plugin>
         <version.plugin.maven-compiler-plugin>3.7.0</version.plugin.maven-compiler-plugin>
         <version.plugin.maven-javadoc-plugin>3.0.1</version.plugin.maven-javadoc-plugin>
