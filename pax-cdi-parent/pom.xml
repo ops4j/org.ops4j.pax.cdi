@@ -63,7 +63,7 @@
 
         <deltaspike.version>1.8.1</deltaspike.version>
         <jersey.version>1.13</jersey.version>
-        <jetty.version>9.4.12.v20180830</jetty.version>
+        <jetty.version>9.4.24.v20191120</jetty.version>
         <logback.version>1.0.0</logback.version>
         <log4j2.version>2.10.0</log4j2.version>
         <openwebbeans1.version>1.7.6</openwebbeans1.version>
@@ -74,7 +74,7 @@
         <pax.jpa.version>0.3.0</pax.jpa.version>
         <pax.logging.version>1.10.1</pax.logging.version>
         <pax.swissbox.version>1.8.2</pax.swissbox.version>
-        <pax.url.version>2.6.1</pax.url.version>
+        <pax.url.version>2.6.2</pax.url.version>
         <pax.web.version>7.2.8</pax.web.version>
 
         <slf4j.version>1.6.4</slf4j.version>
