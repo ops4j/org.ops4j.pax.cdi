@@ -84,9 +84,14 @@ public class BeanBundleFilter implements BundleFilter {
     }
 
     private boolean isWebBundle(Bundle bundle) {
-        Dictionary<String, String> headers = bundle.getHeaders();
-        String contextPath = headers.get("Web-ContextPath");
-        return (contextPath != null);
+        if (bundle != null) {
+            if (bundle.getHeaders() != null) {
+                Dictionary<String, String> headers = bundle.getHeaders();
+                String contextPath = headers.get("Web-ContextPath");
+                return (contextPath != null);
+            }
+        }
+        return false;
     }
 
     public List<URL> getBeanDescriptors() {
