@@ -65,7 +65,7 @@
         <jersey.version>1.13</jersey.version>
         <jetty.version>9.4.24.v20191120</jetty.version>
         <logback.version>1.0.0</logback.version>
-        <log4j2.version>2.10.0</log4j2.version>
+        <log4j2.version>2.13.2</log4j2.version>
         <openwebbeans1.version>1.7.6</openwebbeans1.version>
         <openjpa.version>2.4.3</openjpa.version>
         <ops4j.base.version>1.5.1</ops4j.base.version>
