@@ -98,8 +98,8 @@ public class TestConfiguration {
 
             mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.6.0"),
             mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
-            mavenBundle("org.apache.xbean", "xbean-asm7-shaded", "4.12"), //
-            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.12"), //
+            mavenBundle("org.apache.xbean", "xbean-asm9-shaded", "4.18"), //
+            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.18"), //
 
             // Set logback configuration via system property.
             // This way, both the driver and the container use the same configuration
@@ -262,7 +262,7 @@ public class TestConfiguration {
                 mavenBundle("org.slf4j", "jul-to-slf4j").versionAsInProject(),
                 mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
                 mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(),
-                mavenBundle("org.apache.xbean", "xbean-asm7-shaded").versionAsInProject()
+                mavenBundle("org.apache.xbean", "xbean-asm9-shaded").versionAsInProject()
         );
     }
 
@@ -275,7 +275,7 @@ public class TestConfiguration {
                 mavenBundle("org.jboss.weld", "weld-osgi-bundle").versionAsInProject(),
                 mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
                 mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(),
-                mavenBundle("org.apache.xbean", "xbean-asm7-shaded").versionAsInProject()
+                mavenBundle("org.apache.xbean", "xbean-asm9-shaded").versionAsInProject()
         );
     }
 

@@ -74,7 +74,7 @@ public class TransactionalTest extends AbstractControlledTestBase {
                 mavenBundle("org.apache.openjpa", "openjpa").versionAsInProject(),
                 mavenBundle("org.apache.xbean", "xbean-bundleutils").versionAsInProject(),
                 mavenBundle("org.apache.xbean", "xbean-finder-shaded").versionAsInProject(),
-                mavenBundle("org.apache.xbean", "xbean-asm7-shaded").versionAsInProject(),
+                mavenBundle("org.apache.xbean", "xbean-asm9-shaded").versionAsInProject(),
 
                 // Pax JPA, Pax JDBC and Derby driver
                 mavenBundle("org.ops4j.pax.jpa", "pax-jpa").versionAsInProject().startLevel(2),

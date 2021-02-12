@@ -194,9 +194,9 @@ public class PaxCdiArquillianContainer implements DeployableContainer<PaxCdiConf
             mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.8.2"),
             mavenBundle("org.apache.felix", "org.apache.felix.jaas", "0.0.2"),
             mavenBundle("org.osgi", "org.osgi.compendium", "4.3.1"),
-            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.12"),
-            mavenBundle("org.apache.xbean", "xbean-asm7-shaded", "4.12"), //
-            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.12"), //
+            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.18"),
+            mavenBundle("org.apache.xbean", "xbean-asm9-shaded", "4.18"), //
+            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.18"), //
             mavenBundle("org.apache.geronimo.specs", "geronimo-atinject_1.0_spec").versionAsInProject(),
 
             cdiProviderBundles(),
