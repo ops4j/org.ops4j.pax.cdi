@@ -74,7 +74,7 @@
         <pax.jpa.version>0.3.0</pax.jpa.version>
         <pax.logging.version>1.10.1</pax.logging.version>
         <pax.swissbox.version>1.8.4</pax.swissbox.version>
-        <pax.url.version>2.6.2</pax.url.version>
+        <pax.url.version>2.6.5</pax.url.version>
         <pax.web.version>7.2.8</pax.web.version>
 
         <slf4j.version>1.6.4</slf4j.version>
