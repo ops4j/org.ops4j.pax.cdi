@@ -80,7 +80,7 @@
         <slf4j.version>1.6.4</slf4j.version>
         <jboss.logging.version>3.3.2.Final</jboss.logging.version>
         <weld2.version>2.4.8.Final</weld2.version>
-        <xbean.version>4.18</xbean.version>
+        <xbean.version>4.12</xbean.version>
 
         <pax.cdi.wiki.url>https://ops4j1.jira.com/wiki/spaces/PAXCDI/overview</pax.cdi.wiki.url>
     </properties>
@@ -301,7 +301,7 @@
 
             <dependency>
                 <groupId>org.apache.xbean</groupId>
-                <artifactId>xbean-asm9-shaded</artifactId>
+                <artifactId>xbean-asm7-shaded</artifactId>
                 <version>${xbean.version}</version>
             </dependency>
             <dependency>
