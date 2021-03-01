@@ -18,7 +18,6 @@ package org.ops4j.pax.cdi.extension;
 
 import javax.inject.Inject;
 
-import org.easymock.EasyMock;
 import org.junit.Test;
 import org.ops4j.pax.cdi.api.Global;
 import org.ops4j.pax.cdi.api.Immediate;
@@ -26,31 +25,29 @@ import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 public class GlobalReferenceTest extends AbstractTest {
 
     @Test
     public void test() throws Exception {
-        CdiContainer container = EasyMock.createMock(CdiContainer.class);
-        CdiContainerFactory factory = EasyMock.createMock(CdiContainerFactory.class);
-        EasyMock.expect(factory.getContainer(framework)).andReturn(container).anyTimes();
-        container.pause();
-        EasyMock.expectLastCall();
-        EasyMock.replay(container, factory);
+        CdiContainer container = mock(CdiContainer.class);
+        CdiContainerFactory factory = mock(CdiContainerFactory.class);
+        when(factory.getContainer(framework)).thenReturn(container);
 
         register(CdiContainerFactory.class, factory);
-
         createCdi(Hello.class);
 
-        EasyMock.verify(container, factory);
+        verify(container).pause();
 
-        EasyMock.reset(container, factory);
-        container.resume();
-        EasyMock.expectLastCall();
-        EasyMock.replay(container, factory);
+        reset(container, factory);
 
         register(MyService.class, new MyService() { });
 
-        EasyMock.verify(container, factory);
+        verify(container).resume();
     }
 
     public interface MyService {

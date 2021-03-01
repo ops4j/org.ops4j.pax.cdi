@@ -292,6 +292,7 @@ public class TestConfiguration {
             mavenBundle("org.ops4j.pax.web", "pax-web-runtime").version(Info.getPaxWebVersion()),
             mavenBundle("org.eclipse.jdt.core.compiler", "ecj").version("3.5.1"),
             mavenBundle("org.eclipse.jetty", "jetty-util").version(JETTY_VERSION),
+            mavenBundle("org.eclipse.jetty", "jetty-util-ajax").version(JETTY_VERSION),
             mavenBundle("org.eclipse.jetty", "jetty-io").version(JETTY_VERSION),
             mavenBundle("org.eclipse.jetty", "jetty-http").version(JETTY_VERSION),
             mavenBundle("org.eclipse.jetty", "jetty-continuation").version(JETTY_VERSION),
@@ -324,17 +325,17 @@ public class TestConfiguration {
     }
 
     public static ProvisionOption<?> workspaceBundle(String groupId, String artifactId) {
-        String samples = groupId.endsWith(".samples") ? "pax-cdi-samples/" : "";
-        String fileName = String.format("%s/../../../../%s%s/target/classes",
-            PathUtils.getBaseDir(), samples, artifactId);
-
-        if (new File(fileName).exists()) {
-            String url = "reference:file:" + fileName;
-            return bundle(url);
-        }
-        else {
+//        String samples = groupId.endsWith(".samples") ? "pax-cdi-samples/" : "";
+//        String fileName = String.format("%s/../../../../%s%s/target/classes",
+//            PathUtils.getBaseDir(), samples, artifactId);
+//
+//        if (new File(fileName).exists()) {
+//            String url = "reference:file:" + fileName;
+//            return bundle(url);
+//        }
+//        else {
             return mavenBundle(groupId, artifactId, Info.getPaxCdiVersion());
-        }
+//        }
     }
 
     public static Option workspaceFragment(String groupId, String artifactId) {

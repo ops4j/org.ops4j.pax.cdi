@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Licensed to the Apache Software Foundation (ASF) under one
@@ -18,13 +19,17 @@
     under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.ops4j.pax.cdi</groupId>
         <artifactId>pax-cdi-samples</artifactId>
         <version>1.1.4-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
+
     <groupId>org.ops4j.pax.cdi.samples</groupId>
     <artifactId>pax-cdi-sample5-client1</artifactId>
     <packaging>bundle</packaging>
@@ -33,11 +38,14 @@
 
     <dependencies>
 
+        <!-- pax-cdi own artifacts -->
+
         <dependency>
             <groupId>org.ops4j.pax.cdi.samples</groupId>
             <artifactId>pax-cdi-sample5</artifactId>
-            <version>${project.version}</version>
         </dependency>
+
+        <!-- APIs -->
 
         <dependency>
             <groupId>javax.enterprise</groupId>
@@ -52,6 +60,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>org.ops4j.pax.cdi.sample5.client1</Bundle-SymbolicName>
@@ -79,4 +88,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

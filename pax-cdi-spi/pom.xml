@@ -25,8 +25,8 @@
 
     <parent>
         <groupId>org.ops4j.pax.cdi</groupId>
-        <version>1.1.4-SNAPSHOT</version>
         <artifactId>pax-cdi-parent</artifactId>
+        <version>1.1.4-SNAPSHOT</version>
         <relativePath>../pax-cdi-parent</relativePath>
     </parent>
 
@@ -42,42 +42,50 @@
 
     <dependencies>
 
+        <!-- pax-cdi own artifacts -->
+
         <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
             <artifactId>pax-cdi-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
+
+        <!-- OPS4J dependencies -->
 
         <dependency>
             <groupId>org.ops4j.pax.swissbox</groupId>
             <artifactId>pax-swissbox-core</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.xbean</groupId>
-            <artifactId>xbean-bundleutils</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.xbean</groupId>
-            <artifactId>xbean-finder-shaded</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
+        <!-- OSGi -->
 
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
+            <artifactId>osgi.core</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.xbean</groupId>-->
+        <!--            <artifactId>xbean-bundleutils</artifactId>-->
+        <!--        </dependency>-->
+        <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-finder</artifactId>
+        </dependency>
+
+        <!-- APIs -->
 
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Logging dependencies -->
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -88,6 +96,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>

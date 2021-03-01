@@ -32,7 +32,7 @@ import org.junit.Test;
 
 public class OptionalGreedyConfigTest extends AbstractTest {
 
-    @Test(timeout = 1000)
+    @Test(timeout = 10000)
     public void test() throws Exception {
         startConfigAdmin();
         createCdi(Hello.class);

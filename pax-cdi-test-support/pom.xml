@@ -31,25 +31,33 @@
     </parent>
 
     <artifactId>pax-cdi-test-support</artifactId>
-    
+
     <name>OPS4J Pax CDI Test Support</name>
 
     <dependencies>
+
+        <!-- pax-cdi own artifacts -->
+
         <dependency>
             <groupId>org.ops4j.pax.cdi</groupId>
             <artifactId>pax-cdi-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
+
+        <!-- OPS4J dependencies -->
+
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam</artifactId>
         </dependency>
-        
+
+        <!-- OSGi -->
+
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
+            <artifactId>osgi.core</artifactId>
             <scope>provided</scope>
         </dependency>
+
     </dependencies>
 
     <build>

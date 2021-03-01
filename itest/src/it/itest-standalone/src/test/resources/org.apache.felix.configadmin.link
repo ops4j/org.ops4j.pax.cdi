@@ -17,4 +17,4 @@
 # under the License.
 #
 
-mvn:org.apache.felix/org.apache.felix.configadmin/${felix.configadmin.version}
+mvn:org.apache.felix/org.apache.felix.configadmin/${version.org.apache.felix.configadmin}

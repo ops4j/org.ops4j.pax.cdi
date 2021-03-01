@@ -25,8 +25,8 @@
 
     <parent>
         <groupId>org.ops4j.pax.cdi</groupId>
-        <version>1.1.4-SNAPSHOT</version>
         <artifactId>pax-cdi-parent</artifactId>
+        <version>1.1.4-SNAPSHOT</version>
         <relativePath>../pax-cdi-parent</relativePath>
     </parent>
 
@@ -42,10 +42,12 @@
     </description>
 
     <dependencies>
+
+        <!-- OSGi -->
+
         <dependency>
             <groupId>org.apache.karaf.features</groupId>
             <artifactId>framework</artifactId>
-            <version>${karaf.version}</version>
             <type>kar</type>
             <scope>provided</scope>
             <exclusions>
@@ -59,6 +61,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -98,7 +101,6 @@
             <plugin>
                 <groupId>org.apache.karaf.tooling</groupId>
                 <artifactId>karaf-maven-plugin</artifactId>
-                <version>${karaf.version}</version>
                 <executions>
                     <execution>
                         <id>verify</id>
@@ -108,9 +110,9 @@
                         </goals>
                         <configuration>
                             <descriptors>
-                                <descriptor>mvn:org.apache.karaf.features/framework/${karaf.version}/xml/features</descriptor>
-                                <descriptor>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</descriptor>
-                                <descriptor>mvn:org.ops4j.pax.web/pax-web-features/${pax.web.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.apache.karaf.features/framework/${version.org.apache.karaf}/xml/features</descriptor>
+                                <descriptor>mvn:org.apache.karaf.features/standard/${version.org.apache.karaf}/xml/features</descriptor>
+                                <descriptor>mvn:org.ops4j.pax.web/pax-web-features/${version.org.ops4j.pax.web}/xml/features</descriptor>
                                 <descriptor>file:${project.build.directory}/classes/features.xml</descriptor>
                             </descriptors>
                             <blacklistedDescriptors>

@@ -30,17 +30,27 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.UUID;
 
-import org.junit.rules.TestName;
-import org.ops4j.pax.cdi.extension.impl.OsgiExtension2;
-import org.ops4j.pax.cdi.extension.impl.component2.BundleContextHolder;
+import org.apache.felix.cm.PersistenceManager;
+import org.apache.felix.cm.impl.persistence.CachingPersistenceManagerProxy;
+import org.apache.felix.cm.impl.persistence.ExtPersistenceManager;
+import org.apache.felix.cm.impl.persistence.MemoryPersistenceManager;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
+import org.junit.rules.TestName;
+import org.ops4j.pax.cdi.extension.impl.OsgiExtension2;
+import org.ops4j.pax.cdi.extension.impl.component2.BundleContextHolder;
 import org.ops4j.pax.cdi.spi.ContainerInitialized;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceObjects;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
 import org.osgi.service.cm.Configuration;
@@ -100,9 +110,11 @@ public abstract class AbstractTest {
         return framework.getBundleContext();
     }
 
-    protected void startConfigAdmin() {
+    protected void startConfigAdmin() throws IOException {
         BundleContextHolder.setBundleContext(getBundleContext());
-        new org.apache.felix.cm.impl.ConfigurationManager().start(getBundleContext());
+        PersistenceManager pm = new MemoryPersistenceManager();
+        ExtPersistenceManager manager = new CachingPersistenceManagerProxy(pm);
+        new org.apache.felix.cm.impl.ConfigurationManager(manager, getBundleContext()).start();
     }
 
     protected <T> T getService(Class<T> clazz) {

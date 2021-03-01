@@ -17,4 +17,4 @@
 # under the License.
 #
 
-mvn:org.ops4j.pax.logging/pax-logging-log4j2/${pax.logging.version}
+mvn:org.ops4j.pax.logging/pax-logging-log4j2/${version.org.ops4j.pax.logging}

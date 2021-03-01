@@ -17,4 +17,4 @@
 # under the License.
 #
 
-mvn:org.apache.felix/org.apache.felix.scr/${felix.scr.version}
+mvn:org.apache.felix/org.apache.felix.scr/${version.org.apache.felix.scr}

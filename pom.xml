@@ -19,7 +19,7 @@
     under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -31,83 +31,14 @@
 
     <groupId>org.ops4j.pax</groupId>
     <artifactId>cdi</artifactId>
-    <packaging>pom</packaging>
     <version>1.1.4-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
     <name>OPS4J Pax CDI Reactor</name>
 
     <description>Contexts and Dependency Injection for OSGi Applications</description>
 
-    <scm>
-        <connection>scm:git:https://github.com/ops4j/org.ops4j.pax.cdi.git</connection>
-        <developerConnection>scm:git:https://github.com/ops4j/org.ops4j.pax.cdi.git</developerConnection>
-        <url>https://github.com/ops4j/org.ops4j.pax.cdi.git</url>
-        <tag>HEAD</tag>
-    </scm>
-
-    <modules>
-        <!--
-            Build order is calculated from dependencies.
-            This list reflects it (kind of), not determines it.
-        -->
-
-        <module>pax-cdi-checkstyle-rules</module>
-
-        <module>pax-cdi-parent</module>
-
-        <module>pax-cdi-api</module>
-        <module>pax-cdi-spi</module>
-        <module>pax-cdi-extender</module>
-        <module>pax-cdi-extension</module>
-
-        <module>pax-cdi-samples</module>
-
-        <module>pax-cdi-weld</module>
-        <module>pax-cdi-openwebbeans</module>
-
-        <module>pax-cdi-web</module>
-        <module>pax-cdi-jetty-weld</module>
-        <module>pax-cdi-undertow-weld</module>
-        <module>pax-cdi-jetty-openwebbeans</module>
-        <module>pax-cdi-undertow-openwebbeans</module>
-
-        <module>pax-cdi-features</module>
-
-        <module>pax-cdi-test-support</module>
-
-        <module>pax-cdi-manual</module>
-    </modules>
-
-    <profiles>
-        <profile>
-            <id>itest</id>
-            <modules>
-                <module>itest</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>tck</id>
-            <modules>
-                <module>tck</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>ops4j-snapshots</id>
-            <repositories>
-                <repository>
-                    <id>sonatype-nexus-snapshots</id>
-                    <name>Sonatype Nexus Snapshots</name>
-                    <url>https://oss.sonatype.org/content/repositories/ops4j-snapshots</url>
-                    <releases>
-                        <enabled>false</enabled>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                </repository>
-            </repositories>
-        </profile>
-    </profiles>
+    <url>https://ops4j1.jira.com/wiki/spaces/PAXCDI/overview</url>
 
     <licenses>
         <license>
@@ -133,12 +64,17 @@
         </license>
     </licenses>
 
-    <url>https://ops4j1.jira.com/wiki/spaces/PAXCDI/overview</url>
-
     <issueManagement>
-        <system>jira</system>
-        <url>https://ops4j1.jira.com/projects/PAXCDI/summary/statistics</url>
+        <system>GitHub</system>
+        <url>https://github.com/ops4j/org.ops4j.pax.cdi/issues</url>
     </issueManagement>
+
+    <scm>
+        <connection>scm:git:git@github.com:ops4j/org.ops4j.pax.cdi.git</connection>
+        <developerConnection>scm:git:git@github.com:ops4j/org.ops4j.pax.cdi.git</developerConnection>
+        <url>https://github.com/ops4j/org.ops4j.pax.cdi/tree/master</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <developers>
         <developer>
@@ -170,5 +106,175 @@
             <timezone>UTC+1</timezone>
         </developer>
     </developers>
+
+    <properties>
+        <plugin.maven-checkstyle-plugin>3.1.2</plugin.maven-checkstyle-plugin>
+        <plugin.dependency.com.puppycrawl.tools.checkstyle>8.40</plugin.dependency.com.puppycrawl.tools.checkstyle>
+        <plugin.mycila.license-maven-plugin>3.0</plugin.mycila.license-maven-plugin>
+    </properties>
+
+    <modules>
+        <module>pax-cdi-parent</module>
+
+        <module>pax-cdi-api</module>
+        <module>pax-cdi-spi</module>
+        <module>pax-cdi-extender</module>
+        <module>pax-cdi-extension</module>
+
+        <module>pax-cdi-weld</module>
+        <module>pax-cdi-openwebbeans</module>
+
+        <module>pax-cdi-web</module>
+        <module>pax-cdi-jetty-weld</module>
+        <module>pax-cdi-undertow-weld</module>
+        <module>pax-cdi-jetty-openwebbeans</module>
+        <module>pax-cdi-undertow-openwebbeans</module>
+
+        <module>pax-cdi-samples</module>
+
+        <module>pax-cdi-features</module>
+
+        <module>pax-cdi-test-support</module>
+
+        <module>pax-cdi-manual</module>
+    </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+
+                <!-- Reporting plugins -->
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${plugin.maven-checkstyle-plugin}</version>
+                </plugin>
+
+                <!-- Other plugins -->
+
+                <plugin>
+                    <groupId>com.mycila</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>${plugin.mycila.license-maven-plugin}</version>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>itest</id>
+            <modules>
+                <module>itest</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>tck</id>
+            <modules>
+                <module>tck</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>report</id>
+            <modules>
+                <module>pax-cdi-report</module>
+            </modules>
+        </profile>
+
+        <!-- Checkstyle: `mvn -Pcs validate` -->
+        <profile>
+            <id>cs</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>verify-style</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <configuration>
+                                    <configLocation>pax-cdi-checks.xml</configLocation>
+                                    <suppressionsLocation>pax-cdi-checks-suppressions.xml</suppressionsLocation>
+                                    <includes>**/*.java</includes>
+                                    <encoding>UTF-8</encoding>
+                                    <consoleOutput>true</consoleOutput>
+                                    <failsOnError>true</failsOnError>
+                                    <failOnViolation>true</failOnViolation>
+                                    <logViolationsToConsole>true</logViolationsToConsole>
+                                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+<!--                                    <violationSeverity>warning</violationSeverity>-->
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.puppycrawl.tools</groupId>
+                                <artifactId>checkstyle</artifactId>
+                                <version>${plugin.dependency.com.puppycrawl.tools.checkstyle}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- License generation: `mvn -Plicense process-sources` -->
+        <profile>
+            <id>license</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.mycila</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                            <useDefaultExcludes>true</useDefaultExcludes>
+                            <header>license-header.txt</header>
+                            <includes>
+                                <include>src/main/java/**/*.java</include>
+                                <include>src/test/java/**/*.java</include>
+                                <!--<include>**/README</include>-->
+                                <include>pom.xml</include>
+                                <include>**/*.xml</include>
+                                <include>**/*.cfg</include>
+                                <include>**/*.properties</include>
+                            </includes>
+                            <excludes />
+                            <mapping>
+                                <!--<README>SCRIPT_STYLE</README>-->
+                                <cfg>SCRIPT_STYLE</cfg>
+                            </mapping>
+                            <headerDefinitions>
+                                <headerDefinition>license-headers.xml</headerDefinition>
+                            </headerDefinitions>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>license-format</id>
+                                <phase>process-sources</phase>
+                                <goals>
+                                    <goal>format</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>license-check</id>
+                                <!-- This is the phase this plugin runs by default. Just an explicit information -->
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
