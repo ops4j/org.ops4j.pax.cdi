@@ -17,12 +17,6 @@
  */
 package org.ops4j.pax.cdi.test.karaf;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.exam.CoreOptions.*;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
-
 import java.io.File;
 import java.net.MalformedURLException;
 
@@ -35,7 +29,22 @@ import org.ops4j.pax.exam.karaf.options.configs.CustomProperties;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.options.MavenUrlReference;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.exam.CoreOptions.composite;
+import static org.ops4j.pax.exam.CoreOptions.maven;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.propagateSystemProperty;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import static org.ops4j.pax.exam.CoreOptions.when;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.configureConsole;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFileExtend;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
+
 public class RegressionConfiguration {
+
     public static final MavenUrlReference PAX_CDI_FEATURES = maven().groupId("org.ops4j.pax.cdi")
         .artifactId("pax-cdi-features").type("xml").classifier("features").version(Info.getPaxCdiVersion());
 
@@ -47,6 +56,9 @@ public class RegressionConfiguration {
 
     public static final Option SAMPLE1_WEB = mavenBundle().groupId("org.ops4j.pax.cdi.samples")
         .artifactId("pax-cdi-sample1-web").versionAsInProject();
+
+    private RegressionConfiguration() {
+    }
 
     public static Option regressionDefaults() {
         return regressionDefaults("target/exam");

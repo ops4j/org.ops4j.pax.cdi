@@ -18,7 +18,6 @@
 package org.ops4j.pax.cdi.undertow.openwebbeans.impl;
 
 import java.util.Map;
-
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.context.spi.Context;

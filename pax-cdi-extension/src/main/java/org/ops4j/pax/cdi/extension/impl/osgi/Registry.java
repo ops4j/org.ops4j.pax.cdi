@@ -51,13 +51,13 @@ public class Registry implements CdiOsgiRuntime {
     private static final String[] EMPTY = {};
     private static final Registry INSTANCE = new Registry();
 
-    public static Registry getInstance() {
-        return INSTANCE;
-    }
-
     private final List<ComponentRegistry> registries = new CopyOnWriteArrayList<>();
 
     private Registry() {
+    }
+
+    public static Registry getInstance() {
+        return INSTANCE;
     }
 
     public void register(ComponentRegistry componentRegistry) {
@@ -178,14 +178,14 @@ public class Registry implements CdiOsgiRuntime {
             }
             return String.valueOf(source);
             /* array copy code in case it turns out to be needed
-	        int length = Array.getLength(source);
+            int length = Array.getLength(source);
             Object copy = Array.newInstance(type, length);
-	        for (int i = 0; i<length; i++)
-	        {
-	            Array.set(copy, i, Array.get(source, i));
-	        }
-	        return copy;
-	        */
+            for (int i = 0; i<length; i++)
+            {
+                Array.set(copy, i, Array.get(source, i));
+            }
+            return copy;
+            */
         }
         if (checkType(source.getClass())) {
             return source;
@@ -194,9 +194,15 @@ public class Registry implements CdiOsgiRuntime {
     }
 
     boolean checkType(Class<?> type) {
-        if (type == String.class) return true;
-        if (type == Boolean.class) return true;
-        if (Number.class.isAssignableFrom(type)) return true;
+        if (type == String.class) {
+            return true;
+        }
+        if (type == Boolean.class) {
+            return true;
+        }
+        if (Number.class.isAssignableFrom(type)) {
+            return true;
+        }
         return DTO.class.isAssignableFrom(type);
     }
 
@@ -262,8 +268,9 @@ public class Registry implements CdiOsgiRuntime {
                 int j = 0;
                 for (ServiceReference<?> serviceRef : serviceRefs) {
                     ServiceReferenceDTO srefDTO = serviceReferenceToDTO(serviceRef);
-                    if (srefDTO != null)
+                    if (srefDTO != null) {
                         srDTOs[j++] = srefDTO;
+                    }
                 }
                 dto.boundServices = srDTOs;
                 dtos.add(dto);
@@ -284,8 +291,9 @@ public class Registry implements CdiOsgiRuntime {
                 int j = 0;
                 for (ServiceReference<?> serviceRef : serviceRefs) {
                     ServiceReferenceDTO srefDTO = serviceReferenceToDTO(serviceRef);
-                    if (srefDTO != null)
+                    if (srefDTO != null) {
                         srDTOs[j++] = srefDTO;
+                    }
                 }
                 dto.targetServices = srDTOs;
                 dtos.add(dto);
@@ -295,8 +303,9 @@ public class Registry implements CdiOsgiRuntime {
     }
 
     private ServiceReferenceDTO serviceReferenceToDTO(ServiceReference<?> serviceRef) {
-        if (serviceRef == null)
+        if (serviceRef == null) {
             return null;
+        }
 
         ServiceReferenceDTO dto = new ServiceReferenceDTO();
         Bundle bundle = serviceRef.getBundle();
@@ -314,6 +323,5 @@ public class Registry implements CdiOsgiRuntime {
         }
         return dto;
     }
-
 
 }

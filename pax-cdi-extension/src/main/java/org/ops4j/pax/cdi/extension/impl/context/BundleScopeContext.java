@@ -21,7 +21,6 @@ package org.ops4j.pax.cdi.extension.impl.context;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.AlterableContext;
 import javax.enterprise.context.spi.Contextual;

@@ -18,7 +18,6 @@
 package org.ops4j.pax.cdi.sample2.service.impl;
 
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;

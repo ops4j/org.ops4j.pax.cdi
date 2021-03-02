@@ -17,14 +17,6 @@
  */
 package org.ops4j.pax.cdi.extension.impl.component2;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.AlterableContext;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -40,6 +32,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.AlterableContext;
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.apache.felix.scr.impl.metadata.ComponentMetadata;
 import org.apache.felix.scr.impl.metadata.PropertyMetadata;

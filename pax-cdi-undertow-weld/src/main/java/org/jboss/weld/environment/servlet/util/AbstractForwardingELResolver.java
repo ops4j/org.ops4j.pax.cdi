@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.environment.servlet.util;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
+import javax.el.ELContext;
+import javax.el.ELResolver;
 
 /**
  * Copied from Weld core. Consider putting this class in the SPI?

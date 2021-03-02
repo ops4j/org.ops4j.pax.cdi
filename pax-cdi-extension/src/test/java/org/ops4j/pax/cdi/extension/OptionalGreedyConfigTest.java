@@ -16,19 +16,19 @@
  */
 package org.ops4j.pax.cdi.extension;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.ops4j.pax.cdi.api.Component;
 import org.ops4j.pax.cdi.api.Config;
 import org.ops4j.pax.cdi.api.Greedy;
 import org.ops4j.pax.cdi.api.Immediate;
 import org.ops4j.pax.cdi.api.Optional;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class OptionalGreedyConfigTest extends AbstractTest {
 
@@ -37,29 +37,29 @@ public class OptionalGreedyConfigTest extends AbstractTest {
         startConfigAdmin();
         createCdi(Hello.class);
 
-        Assert.assertEquals(1, Hello.created.get());
-        Assert.assertEquals(0, Hello.destroyed.get());
-        Assert.assertNotNull(Hello.instance.get());
-        Assert.assertEquals("Hello world at 0.0.0.0:8234", Hello.instance.get().sayHelloWorld());
+        Assert.assertEquals(1, Hello.CREATED.get());
+        Assert.assertEquals(0, Hello.DESTROYED.get());
+        Assert.assertNotNull(Hello.INSTANCE.get());
+        Assert.assertEquals("Hello world at 0.0.0.0:8234", Hello.INSTANCE.get().sayHelloWorld());
 
-        synchronized (Hello.instance) {
+        synchronized (Hello.INSTANCE) {
 
             // create configuration
             getConfiguration(MyConfig.class).update(dictionary("host", "localhost"));
 
-            Hello.instance.wait();
-            Assert.assertEquals(1, Hello.destroyed.get());
-            Hello.instance.wait();
-            Assert.assertEquals(2, Hello.created.get());
-            Assert.assertEquals("Hello world at localhost:8234", Hello.instance.get().sayHelloWorld());
+            Hello.INSTANCE.wait();
+            Assert.assertEquals(1, Hello.DESTROYED.get());
+            Hello.INSTANCE.wait();
+            Assert.assertEquals(2, Hello.CREATED.get());
+            Assert.assertEquals("Hello world at localhost:8234", Hello.INSTANCE.get().sayHelloWorld());
 
             // delete configuration
             getConfiguration(MyConfig.class).delete();
 
-            Hello.instance.wait();
-            Assert.assertEquals(2, Hello.destroyed.get());
-            Hello.instance.wait();
-            Assert.assertEquals(3, Hello.created.get());
+            Hello.INSTANCE.wait();
+            Assert.assertEquals(2, Hello.DESTROYED.get());
+            Hello.INSTANCE.wait();
+            Assert.assertEquals(3, Hello.CREATED.get());
         }
     }
 
@@ -73,30 +73,30 @@ public class OptionalGreedyConfigTest extends AbstractTest {
     @Immediate @Component
     public static class Hello {
 
-        static final AtomicInteger created = new AtomicInteger();
-        static final AtomicInteger destroyed = new AtomicInteger();
-        static final AtomicReference<Hello> instance = new AtomicReference<>();
+        static final AtomicInteger CREATED = new AtomicInteger();
+        static final AtomicInteger DESTROYED = new AtomicInteger();
+        static final AtomicReference<Hello> INSTANCE = new AtomicReference<>();
 
         @Inject @Optional @Config @Greedy
         MyConfig config;
 
         @PostConstruct
         public void init() {
-            created.incrementAndGet();
-            instance.set(this);
+            CREATED.incrementAndGet();
+            INSTANCE.set(this);
             System.err.println("Creating Hello instance");
-            synchronized (instance) {
-                instance.notifyAll();
+            synchronized (INSTANCE) {
+                INSTANCE.notifyAll();
             }
         }
 
         @PreDestroy
         public void destroy() {
-            destroyed.incrementAndGet();
-            instance.set(null);
+            DESTROYED.incrementAndGet();
+            INSTANCE.set(null);
             System.err.println("Destroying Hello instance");
-            synchronized (instance) {
-                instance.notifyAll();
+            synchronized (INSTANCE) {
+                INSTANCE.notifyAll();
             }
         }
 

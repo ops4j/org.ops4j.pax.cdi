@@ -23,7 +23,6 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.Callable;
-
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.apache.xbean.osgi.bundle.util.BundleClassLoader;

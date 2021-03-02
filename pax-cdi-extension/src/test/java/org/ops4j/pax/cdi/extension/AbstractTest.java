@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractTest {
 
-    public static Logger LOG = LoggerFactory.getLogger(AbstractTest.class);
+    public static final Logger LOG = LoggerFactory.getLogger(AbstractTest.class);
 
     @Rule
     public TemporaryFolder cache;

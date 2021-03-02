@@ -19,7 +19,6 @@ package org.ops4j.pax.cdi.weld.impl.bda;
 
 import java.util.Collections;
 import java.util.List;
-
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;

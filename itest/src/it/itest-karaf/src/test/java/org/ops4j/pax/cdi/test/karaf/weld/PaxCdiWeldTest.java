@@ -17,6 +17,8 @@
  */
 package org.ops4j.pax.cdi.test.karaf.weld;
 
+import javax.inject.Inject;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
@@ -26,12 +28,12 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.util.Filter;
 
-import javax.inject.Inject;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.*;
+import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.PAX_CDI_FEATURES;
+import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.SAMPLE1;
+import static org.ops4j.pax.cdi.test.karaf.RegressionConfiguration.regressionDefaults;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
 

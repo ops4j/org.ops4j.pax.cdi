@@ -18,7 +18,6 @@
 package org.ops4j.pax.cdi.sample1.web.session;
 
 import java.io.Serializable;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;

@@ -17,6 +17,7 @@
 package org.ops4j.pax.cdi.extension.api.runtime.dto;
 
 import java.util.Map;
+
 import org.osgi.dto.DTO;
 import org.osgi.framework.dto.BundleDTO;
 
@@ -28,6 +29,7 @@ import org.osgi.framework.dto.BundleDTO;
  * @author $Id: 9f098a6edef3359b4dbd21e1e58bbad01b89b995 $
  */
 public class ComponentDescriptionDTO extends DTO {
+
     /**
      * The name of the component.
      *
@@ -36,12 +38,12 @@ public class ComponentDescriptionDTO extends DTO {
      * element. This must be the default name if the component description does
      * not declare a name.
      */
-    public String				name;
+    public String name;
 
     /**
      * The bundle declaring the component description.
      */
-    public BundleDTO			bundle;
+    public BundleDTO bundle;
 
     /**
      * The component factory name.
@@ -51,7 +53,7 @@ public class ComponentDescriptionDTO extends DTO {
      * {@code component} element. This must be {@code null} if the component
      * description is not declared as a component factory.
      */
-    public String				factory;
+    public String factory;
 
     /**
      * The service scope.
@@ -61,7 +63,7 @@ public class ComponentDescriptionDTO extends DTO {
      * element. This must be {@code null} if the component description does not
      * declare any service interfaces.
      */
-    public String				scope;
+    public String scope;
 
     /**
      * The fully qualified name of the implementation class.
@@ -70,7 +72,7 @@ public class ComponentDescriptionDTO extends DTO {
      * This is declared in the {@code class} attribute of the
      * {@code implementation} element.
      */
-    public String				implementationClass;
+    public String implementationClass;
 
     /**
      * The initial enabled state.
@@ -79,7 +81,7 @@ public class ComponentDescriptionDTO extends DTO {
      * This is declared in the {@code enabled} attribute of the
      * {@code component} element.
      */
-    public boolean				defaultEnabled;
+    public boolean defaultEnabled;
 
     /**
      * The immediate state.
@@ -88,7 +90,7 @@ public class ComponentDescriptionDTO extends DTO {
      * This is declared in the {@code immediate} attribute of the
      * {@code component} element.
      */
-    public boolean				immediate;
+    public boolean immediate;
 
     /**
      * The fully qualified names of the service interfaces.
@@ -98,7 +100,7 @@ public class ComponentDescriptionDTO extends DTO {
      * {@code provide} elements. The array must be empty if the component
      * description does not declare any service interfaces.
      */
-    public String[]				serviceInterfaces;
+    public String[] serviceInterfaces;
 
     /**
      * The declared component properties.
@@ -107,7 +109,7 @@ public class ComponentDescriptionDTO extends DTO {
      * These are declared in the {@code property} and {@code properties}
      * elements.
      */
-    public Map<String, Object>	properties;
+    public Map<String, Object> properties;
 
     /**
      * The referenced services.
@@ -117,7 +119,7 @@ public class ComponentDescriptionDTO extends DTO {
      * empty if the component description does not declare references to any
      * services.
      */
-    public ReferenceDTO[]			references;
+    public ReferenceDTO[] references;
 
     /**
      * The name of the activate method.
@@ -127,7 +129,7 @@ public class ComponentDescriptionDTO extends DTO {
      * {@code component} element. This must be {@code null} if the component
      * description does not declare an activate method name.
      */
-    public String				activate;
+    public String activate;
 
     /**
      * The name of the deactivate method.
@@ -137,7 +139,7 @@ public class ComponentDescriptionDTO extends DTO {
      * {@code component} element. This must be {@code null} if the component
      * description does not declare a deactivate method name.
      */
-    public String				deactivate;
+    public String deactivate;
 
     /**
      * The name of the modified method.
@@ -147,7 +149,7 @@ public class ComponentDescriptionDTO extends DTO {
      * {@code component} element. This must be {@code null} if the component
      * description does not declare a modified method name.
      */
-    public String				modified;
+    public String modified;
 
     /**
      * The configuration policy.
@@ -157,7 +159,7 @@ public class ComponentDescriptionDTO extends DTO {
      * {@code component} element. This must be the default configuration policy
      * if the component description does not declare a configuration policy.
      */
-    public String				configurationPolicy;
+    public String configurationPolicy;
 
     /**
      * The configuration pids.
@@ -167,5 +169,5 @@ public class ComponentDescriptionDTO extends DTO {
      * {@code component} element. This must contain the default configuration
      * pid if the component description does not declare a configuration pid.
      */
-    public String[]				configurationPid;
+    public String[] configurationPid;
 }

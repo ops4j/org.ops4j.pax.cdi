@@ -18,7 +18,6 @@
 package org.ops4j.pax.cdi.samples.jetty;
 
 import java.io.IOException;
-
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

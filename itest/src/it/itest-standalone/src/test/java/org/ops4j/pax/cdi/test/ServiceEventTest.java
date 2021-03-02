@@ -29,7 +29,6 @@ import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.exam.util.Filter;
-import org.osgi.framework.BundleContext;
 
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;

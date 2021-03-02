@@ -19,7 +19,6 @@ package org.ops4j.pax.cdi.spi;
 
 import java.util.Map;
 import java.util.WeakHashMap;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;

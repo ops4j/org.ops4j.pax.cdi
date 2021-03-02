@@ -32,7 +32,6 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 import static org.junit.Assert.assertNotNull;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 

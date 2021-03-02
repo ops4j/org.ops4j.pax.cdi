@@ -32,14 +32,12 @@ import org.slf4j.LoggerFactory;
 
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.PAX_CDI_VERSION;
 import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
-import static org.ops4j.pax.exam.Constants.START_LEVEL_TEST_BUNDLE;
 import static org.ops4j.pax.exam.CoreOptions.bootDelegationPackage;
 import static org.ops4j.pax.exam.CoreOptions.cleanCaches;
 import static org.ops4j.pax.exam.CoreOptions.frameworkProperty;
 import static org.ops4j.pax.exam.CoreOptions.frameworkStartLevel;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.linkBundle;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
@@ -59,6 +57,9 @@ public class AbstractControlledTestBase {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Inject
+    protected BundleContext bc;
+
     @Before
     public void beforeEach() {
         LOG.info("========== Running {}.{}() ==========", getClass().getName(), testName.getMethodName());
@@ -68,9 +69,6 @@ public class AbstractControlledTestBase {
     public void afterEach() {
         LOG.info("========== Finished {}.{}() ==========", getClass().getName(), testName.getMethodName());
     }
-
-    @Inject
-    protected BundleContext bc;
 
     protected static Option[] baseConfigure() {
         return options(

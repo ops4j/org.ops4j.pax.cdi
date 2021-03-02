@@ -45,7 +45,7 @@ public class MandatoryConfigDependentTest extends AbstractTest {
     public void test() throws Exception {
         startConfigAdmin();
 
-        synchronized (Hello.instance) {
+        synchronized (Hello.INSTANCE) {
             CdiContainer container = mock(CdiContainer.class);
             CdiContainerFactory factory = mock(CdiContainerFactory.class);
             when(factory.getContainer(framework)).thenReturn(container);
@@ -131,30 +131,30 @@ public class MandatoryConfigDependentTest extends AbstractTest {
 
     public static class Hello {
 
-        static final AtomicInteger created = new AtomicInteger();
-        static final AtomicInteger destroyed = new AtomicInteger();
-        static final AtomicReference<Hello> instance = new AtomicReference<>();
+        static final AtomicInteger CREATED = new AtomicInteger();
+        static final AtomicInteger DESTROYED = new AtomicInteger();
+        static final AtomicReference<Hello> INSTANCE = new AtomicReference<>();
 
         @Inject @Any
         ProcessorImpl processor;
 
         @PostConstruct
         public void init() {
-            created.incrementAndGet();
-            instance.set(this);
+            CREATED.incrementAndGet();
+            INSTANCE.set(this);
             System.err.println("Creating Hello instance");
-            synchronized (instance) {
-                instance.notifyAll();
+            synchronized (INSTANCE) {
+                INSTANCE.notifyAll();
             }
         }
 
         @PreDestroy
         public void destroy() {
-            destroyed.incrementAndGet();
-            instance.set(null);
+            DESTROYED.incrementAndGet();
+            INSTANCE.set(null);
             System.err.println("Destroying Hello instance");
-            synchronized (instance) {
-                instance.notifyAll();
+            synchronized (INSTANCE) {
+                INSTANCE.notifyAll();
             }
         }
 

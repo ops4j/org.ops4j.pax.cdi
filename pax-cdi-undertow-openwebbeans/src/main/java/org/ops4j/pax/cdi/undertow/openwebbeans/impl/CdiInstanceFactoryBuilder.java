@@ -17,10 +17,10 @@
  */
 package org.ops4j.pax.cdi.undertow.openwebbeans.impl;
 
+import javax.enterprise.inject.spi.BeanManager;
+
 import io.undertow.servlet.api.ClassIntrospecter;
 import io.undertow.servlet.api.InstanceFactory;
-
-import javax.enterprise.inject.spi.BeanManager;
 
 /**
  * Builds an instance factory for a given injectable class.

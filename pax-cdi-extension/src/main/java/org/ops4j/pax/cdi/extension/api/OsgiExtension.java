@@ -17,13 +17,13 @@
  */
 package org.ops4j.pax.cdi.extension.api;
 
+import java.lang.annotation.Annotation;
+import java.util.Set;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
-import java.lang.annotation.Annotation;
-import java.util.Set;
 
 import org.ops4j.pax.cdi.extension.impl.OsgiExtension2;
 

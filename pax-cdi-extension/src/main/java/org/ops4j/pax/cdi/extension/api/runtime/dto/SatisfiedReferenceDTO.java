@@ -27,6 +27,7 @@ import org.osgi.framework.dto.ServiceReferenceDTO;
  * @author $Id: 20de229ef78ffbfd603b62d4534721e2f2b17922 $
  */
 public class SatisfiedReferenceDTO extends DTO {
+
     /**
      * The name of the declared reference.
      *
@@ -36,7 +37,7 @@ public class SatisfiedReferenceDTO extends DTO {
      *
      * @see ReferenceDTO#name
      */
-    public String					name;
+    public String name;
 
     /**
      * The target property of the satisfied reference.
@@ -48,7 +49,7 @@ public class SatisfiedReferenceDTO extends DTO {
      * &quot;.target&quot;. This must be {@code null} if no target property is
      * set for the reference.
      */
-    public String					target;
+    public String target;
 
     /**
      * The bound services.
@@ -58,5 +59,5 @@ public class SatisfiedReferenceDTO extends DTO {
      * to the satisfied reference. The array must be empty if there are no bound
      * services.
      */
-    public ServiceReferenceDTO[]	boundServices;
+    public ServiceReferenceDTO[] boundServices;
 }

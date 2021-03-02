@@ -19,7 +19,6 @@
 package org.ops4j.pax.cdi.sample1;
 
 import java.util.List;
-
 import javax.inject.Inject;
 
 import org.ops4j.pax.cdi.api.Global;

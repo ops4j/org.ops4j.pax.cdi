@@ -17,10 +17,10 @@
  */
 package org.ops4j.pax.cdi.extension.impl.support;
 
+import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
-import java.util.Set;
 
 public class DelegatingInjectionTarget<T> implements InjectionTarget<T> {
 

@@ -17,13 +17,10 @@
  */
 package org.ops4j.pax.cdi.extender.impl;
 
-import static org.ops4j.pax.cdi.spi.BeanBundles.findExtensions;
-
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
-
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
@@ -35,6 +32,8 @@ import org.ops4j.pax.cdi.spi.CdiContainerFactory;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.ops4j.pax.cdi.spi.BeanBundles.findExtensions;
 
 /**
  * Delegates to a real CDI container which gets recreated whenever {@code start()} is called. This

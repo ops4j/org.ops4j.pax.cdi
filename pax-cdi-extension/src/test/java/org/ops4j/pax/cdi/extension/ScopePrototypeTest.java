@@ -16,16 +16,16 @@
  */
 package org.ops4j.pax.cdi.extension;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.ops4j.pax.cdi.api.Component;
 import org.ops4j.pax.cdi.api.PrototypeScoped;
 import org.ops4j.pax.cdi.api.Service;
-import org.junit.Assert;
-import org.junit.Test;
 import org.ops4j.pax.tinybundles.core.TinyBundles;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceObjects;
@@ -37,8 +37,8 @@ public class ScopePrototypeTest extends AbstractTest {
     public void test() throws Exception {
         createCdi(Hello.class);
 
-        Assert.assertEquals(0, Hello.created.get());
-        Assert.assertEquals(0, Hello.destroyed.get());
+        Assert.assertEquals(0, Hello.CREATED.get());
+        Assert.assertEquals(0, Hello.DESTROYED.get());
 
         org.osgi.framework.Bundle bundle1 = getBundleContext().installBundle("bundle1",
                 TinyBundles.bundle().set( Constants.BUNDLE_SYMBOLICNAME, "bundle1" ).build());
@@ -56,8 +56,8 @@ public class ScopePrototypeTest extends AbstractTest {
 
         Assert.assertNotNull(hello1);
         Assert.assertNotNull(hello2);
-        Assert.assertEquals(2, Hello.created.get());
-        Assert.assertEquals(0, Hello.destroyed.get());
+        Assert.assertEquals(2, Hello.CREATED.get());
+        Assert.assertEquals(0, Hello.DESTROYED.get());
         Assert.assertNotSame(hello1, hello2);
 
         Assert.assertNotSame(hello1, so1.getService());
@@ -66,8 +66,8 @@ public class ScopePrototypeTest extends AbstractTest {
         so1.ungetService(hello1);
         so2.ungetService(hello2);
 
-        Assert.assertEquals(4, Hello.created.get());
-        Assert.assertEquals(2, Hello.destroyed.get());
+        Assert.assertEquals(4, Hello.CREATED.get());
+        Assert.assertEquals(2, Hello.DESTROYED.get());
     }
 
     public interface MyService {
@@ -77,27 +77,27 @@ public class ScopePrototypeTest extends AbstractTest {
     @Service @Component @PrototypeScoped
     public static class Hello implements MyService {
 
-        static final AtomicInteger created = new AtomicInteger();
-        static final AtomicInteger destroyed = new AtomicInteger();
-        static final AtomicReference<Hello> instance = new AtomicReference<>();
+        static final AtomicInteger CREATED = new AtomicInteger();
+        static final AtomicInteger DESTROYED = new AtomicInteger();
+        static final AtomicReference<Hello> INSTANCE = new AtomicReference<>();
 
         @PostConstruct
         public void init() {
-            created.incrementAndGet();
-            instance.set(this);
+            CREATED.incrementAndGet();
+            INSTANCE.set(this);
             System.err.println("Creating Hello instance");
-            synchronized (instance) {
-                instance.notifyAll();
+            synchronized (INSTANCE) {
+                INSTANCE.notifyAll();
             }
         }
 
         @PreDestroy
         public void destroy() {
-            destroyed.incrementAndGet();
-            instance.set(null);
+            DESTROYED.incrementAndGet();
+            INSTANCE.set(null);
             System.err.println("Destroying Hello instance");
-            synchronized (instance) {
-                instance.notifyAll();
+            synchronized (INSTANCE) {
+                INSTANCE.notifyAll();
             }
         }
 

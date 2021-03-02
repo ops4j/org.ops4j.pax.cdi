@@ -16,19 +16,19 @@
  */
 package org.ops4j.pax.cdi.extension;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.inject.Any;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
-import org.ops4j.pax.cdi.api.Component;
-import org.ops4j.pax.cdi.api.Service;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.ops4j.pax.cdi.api.Component;
+import org.ops4j.pax.cdi.api.Service;
 import org.osgi.framework.ServiceRegistration;
 
 public class MandatoryLazyReferenceTest extends AbstractTest {
@@ -38,32 +38,32 @@ public class MandatoryLazyReferenceTest extends AbstractTest {
     public void test() throws Exception {
         createCdi(Hello.class);
 
-        Assert.assertEquals(0, Hello.created.get());
-        Assert.assertEquals(0, Hello.destroyed.get());
+        Assert.assertEquals(0, Hello.CREATED.get());
+        Assert.assertEquals(0, Hello.DESTROYED.get());
 
         ServiceRegistration<MyService> registration = register(MyService.class, () -> "Hello world !!");
 
-        Assert.assertEquals(0, Hello.created.get());
-        Assert.assertEquals(0, Hello.destroyed.get());
-        Assert.assertNull(Hello.instance.get());
+        Assert.assertEquals(0, Hello.CREATED.get());
+        Assert.assertEquals(0, Hello.DESTROYED.get());
+        Assert.assertNull(Hello.INSTANCE.get());
 
         // TODO: how to get the bean correctly ?
         Hello hello = welds.iterator().next().select(Hello.class, AnyLiteral.INSTANCE).get();
 
-        Assert.assertEquals(1, Hello.created.get());
-        Assert.assertEquals(0, Hello.destroyed.get());
-        Assert.assertNotNull(Hello.instance.get());
+        Assert.assertEquals(1, Hello.CREATED.get());
+        Assert.assertEquals(0, Hello.DESTROYED.get());
+        Assert.assertNotNull(Hello.INSTANCE.get());
 
         registration.unregister();
 
-        Assert.assertEquals(1, Hello.created.get());
-        Assert.assertEquals(1, Hello.destroyed.get());
-        Assert.assertNull(Hello.instance.get());
+        Assert.assertEquals(1, Hello.CREATED.get());
+        Assert.assertEquals(1, Hello.DESTROYED.get());
+        Assert.assertNull(Hello.INSTANCE.get());
     }
 
     static class AnyLiteral extends AnnotationLiteral<Any> implements Any {
 
-        public static AnyLiteral INSTANCE = new AnyLiteral();
+        public static final AnyLiteral INSTANCE = new AnyLiteral();
 
     }
 
@@ -76,23 +76,23 @@ public class MandatoryLazyReferenceTest extends AbstractTest {
     @Component
     public static class Hello {
 
-        static final AtomicInteger created = new AtomicInteger();
-        static final AtomicInteger destroyed = new AtomicInteger();
-        static final AtomicReference<Hello> instance = new AtomicReference<>();
+        static final AtomicInteger CREATED = new AtomicInteger();
+        static final AtomicInteger DESTROYED = new AtomicInteger();
+        static final AtomicReference<Hello> INSTANCE = new AtomicReference<>();
 
         @Inject @Service MyService service;
 
         @PostConstruct
         public void init() {
-            created.incrementAndGet();
-            instance.compareAndSet(null, this);
+            CREATED.incrementAndGet();
+            INSTANCE.compareAndSet(null, this);
             System.err.println("Creating Hello instance");
         }
 
         @PreDestroy
         public void destroy() {
-            destroyed.incrementAndGet();
-            instance.compareAndSet(this, null);
+            DESTROYED.incrementAndGet();
+            INSTANCE.compareAndSet(this, null);
             System.err.println("Destroying Hello instance");
         }
 

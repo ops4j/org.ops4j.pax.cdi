@@ -27,17 +27,14 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.AbstractControlledTestBase.baseConfigure;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 

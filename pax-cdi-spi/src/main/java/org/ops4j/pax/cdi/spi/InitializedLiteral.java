@@ -17,9 +17,7 @@
  */
 package org.ops4j.pax.cdi.spi;
 
-
 import java.lang.annotation.Annotation;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.Initialized;

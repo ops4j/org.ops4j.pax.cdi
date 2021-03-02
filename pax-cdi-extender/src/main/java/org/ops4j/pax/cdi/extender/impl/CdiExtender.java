@@ -17,16 +17,12 @@
  */
 package org.ops4j.pax.cdi.extender.impl;
 
-import static org.ops4j.pax.cdi.spi.Constants.EXTENDER_CAPABILITY;
-import static org.ops4j.pax.cdi.spi.BeanBundles.findExtensions;
-
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.CDIProvider;
 
@@ -45,6 +41,9 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.ops4j.pax.cdi.spi.BeanBundles.findExtensions;
+import static org.ops4j.pax.cdi.spi.Constants.EXTENDER_CAPABILITY;
 
 /**
  * Implements the PAX CDI extender capability. This extender depends on a {@link CDIProvider}, a

@@ -16,20 +16,20 @@
  */
 package org.ops4j.pax.cdi.extension;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.ops4j.pax.cdi.api.Component;
 import org.ops4j.pax.cdi.api.Immediate;
 import org.ops4j.pax.cdi.api.Service;
-import org.junit.Assert;
-import org.junit.Test;
 import org.osgi.framework.ServiceRegistration;
 
 public class InstanceStaticReluctantReferenceTest extends AbstractTest {
@@ -38,30 +38,30 @@ public class InstanceStaticReluctantReferenceTest extends AbstractTest {
     public void test() throws Exception {
         createCdi(Hello.class);
 
-        Assert.assertEquals(0, Hello.created.get());
-        Assert.assertEquals(0, Hello.destroyed.get());
+        Assert.assertEquals(0, Hello.CREATED.get());
+        Assert.assertEquals(0, Hello.DESTROYED.get());
 
         ServiceRegistration<MyService> registration1 = register(MyService.class, () -> "Hello 1 !!");
 
 
-        Assert.assertEquals(1, Hello.created.get());
-        Assert.assertEquals(0, Hello.destroyed.get());
-        Assert.assertEquals("Hello 1 !!", Hello.instance.get().sayHelloWorld());
+        Assert.assertEquals(1, Hello.CREATED.get());
+        Assert.assertEquals(0, Hello.DESTROYED.get());
+        Assert.assertEquals("Hello 1 !!", Hello.INSTANCE.get().sayHelloWorld());
 
         ServiceRegistration<MyService> registration2 = register(MyService.class, () -> "Hello 2 !!");
 
-        Assert.assertEquals(1, Hello.created.get());
-        Assert.assertEquals(0, Hello.destroyed.get());
+        Assert.assertEquals(1, Hello.CREATED.get());
+        Assert.assertEquals(0, Hello.DESTROYED.get());
 
         registration1.unregister();
 
-        Assert.assertEquals(2, Hello.created.get());
-        Assert.assertEquals(1, Hello.destroyed.get());
+        Assert.assertEquals(2, Hello.CREATED.get());
+        Assert.assertEquals(1, Hello.DESTROYED.get());
 
         registration2.unregister();
 
-        Assert.assertEquals(2, Hello.created.get());
-        Assert.assertEquals(2, Hello.destroyed.get());
+        Assert.assertEquals(2, Hello.CREATED.get());
+        Assert.assertEquals(2, Hello.DESTROYED.get());
     }
 
     public interface MyService {
@@ -73,25 +73,25 @@ public class InstanceStaticReluctantReferenceTest extends AbstractTest {
     @Immediate @Component
     public static class Hello {
 
-        static final AtomicInteger created = new AtomicInteger();
-        static final AtomicInteger destroyed = new AtomicInteger();
-        static final AtomicReference<Hello> instance = new AtomicReference<>();
+        static final AtomicInteger CREATED = new AtomicInteger();
+        static final AtomicInteger DESTROYED = new AtomicInteger();
+        static final AtomicReference<Hello> INSTANCE = new AtomicReference<>();
 
         @Inject @Service
         Instance<MyService> service;
 
         @PostConstruct
         public void init() {
-            created.incrementAndGet();
-            instance.set(this);
+            CREATED.incrementAndGet();
+            INSTANCE.set(this);
             System.err.println("Creating Hello instance");
         }
 
         @PreDestroy
         public void destroy() {
             System.err.println("Destroying Hello instance");
-            destroyed.incrementAndGet();
-            instance.set(null);
+            DESTROYED.incrementAndGet();
+            INSTANCE.set(null);
         }
 
         public String sayHelloWorld() {

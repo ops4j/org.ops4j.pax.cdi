@@ -19,7 +19,6 @@ package org.ops4j.pax.cdi.extender.impl;
 
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
-
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;

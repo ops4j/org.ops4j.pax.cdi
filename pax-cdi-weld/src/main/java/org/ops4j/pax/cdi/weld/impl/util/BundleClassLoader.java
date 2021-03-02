@@ -33,21 +33,18 @@ import org.osgi.framework.BundleReference;
  * @author Alin Dreghiciu
  * @since 0.1.0, December 29, 2007
  */
-public class BundleClassLoader extends ClassLoader implements BundleReference
-{
+public class BundleClassLoader extends ClassLoader implements BundleReference {
 
     private static final EmptyEnumeration<URL> EMPTY_URL_ENUMERATION = new EmptyEnumeration<URL>();
 
     private static final class EmptyEnumeration<T>
-            implements Enumeration<T>
-    {
-        public boolean hasMoreElements()
-        {
+            implements Enumeration<T> {
+
+        public boolean hasMoreElements() {
             return false;
         }
 
-        public T nextElement()
-        {
+        public T nextElement() {
             throw new NoSuchElementException();
         }
     }
@@ -58,48 +55,12 @@ public class BundleClassLoader extends ClassLoader implements BundleReference
     private final Bundle m_bundle;
 
     /**
-     * Privileged factory method.
-     *
-     * @param bundle bundle to be used for class loading. Cannot be null.
-     *
-     * @return created bundle class loader
-     *
-     * @see BundleClassLoader#BundleClassLoader(Bundle)
-     */
-    public static BundleClassLoader newPriviledged( final Bundle bundle )
-    {
-        return newPriviledged( bundle, null );
-    }
-
-    /**
-     * Privileged factory method.
-     *
-     * @param bundle bundle to be used for class loading. Cannot be null.
-     * @param parent parent class loader
-     *
-     * @return created bundle class loader
-     *
-     * @see BundleClassLoader#BundleClassLoader(Bundle,ClassLoader)
-     */
-    public static BundleClassLoader newPriviledged( final Bundle bundle, final ClassLoader parent )
-    {
-        return AccessController.doPrivileged( new PrivilegedAction<BundleClassLoader>()
-        {
-            public BundleClassLoader run()
-            {
-                return new BundleClassLoader( bundle, parent );
-            }
-        } );
-    }
-
-    /**
      * Creates a bundle class loader with no parent.
      *
      * @param bundle bundle to be used for class loading. Cannot be null.
      */
-    public BundleClassLoader( final Bundle bundle )
-    {
-        this( bundle, null );
+    public BundleClassLoader(final Bundle bundle) {
+        this(bundle, null);
     }
 
     /**
@@ -108,9 +69,8 @@ public class BundleClassLoader extends ClassLoader implements BundleReference
      * @param bundle bundle to be used for class loading. Cannot be null.
      * @param parent parent class loader
      */
-    public BundleClassLoader( final Bundle bundle, final ClassLoader parent )
-    {
-        super( parent );
+    public BundleClassLoader(final Bundle bundle, final ClassLoader parent) {
+        super(parent);
         if (bundle == null) {
             throw new IllegalArgumentException("Bundle is null.");
         }
@@ -118,12 +78,42 @@ public class BundleClassLoader extends ClassLoader implements BundleReference
     }
 
     /**
+     * Privileged factory method.
+     *
+     * @param bundle bundle to be used for class loading. Cannot be null.
+     *
+     * @return created bundle class loader
+     *
+     * @see BundleClassLoader#BundleClassLoader(Bundle)
+     */
+    public static BundleClassLoader newPriviledged(final Bundle bundle) {
+        return newPriviledged(bundle, null);
+    }
+
+    /**
+     * Privileged factory method.
+     *
+     * @param bundle bundle to be used for class loading. Cannot be null.
+     * @param parent parent class loader
+     *
+     * @return created bundle class loader
+     *
+     * @see BundleClassLoader#BundleClassLoader(Bundle, ClassLoader)
+     */
+    public static BundleClassLoader newPriviledged(final Bundle bundle, final ClassLoader parent) {
+        return AccessController.doPrivileged(new PrivilegedAction<BundleClassLoader>() {
+            public BundleClassLoader run() {
+                return new BundleClassLoader(bundle, parent);
+            }
+        });
+    }
+
+    /**
      * Getter.
      *
      * @return the bundle the class loader loads from
      */
-    public Bundle getBundle()
-    {
+    public Bundle getBundle() {
         return m_bundle;
     }
 
@@ -135,13 +125,11 @@ public class BundleClassLoader extends ClassLoader implements BundleReference
      * @see ClassLoader#getResource(String)
      */
     @Override
-    public URL getResource( final String name )
-    {
-        if( getParent() != null )
-        {
-            return super.getResource( name );
+    public URL getResource(final String name) {
+        if (getParent() != null) {
+            return super.getResource(name);
         }
-        return findResource( name );
+        return findResource(name);
     }
 
     /**
@@ -152,16 +140,12 @@ public class BundleClassLoader extends ClassLoader implements BundleReference
      * @see ClassLoader#getResources(String)
      */
     @Override
-    public Enumeration<URL> getResources( final String name )
-            throws IOException
-    {
-        if( getParent() != null )
-        {
-            return super.getResources( name );
-        }
-        else
-        {
-            return findResources( name );
+    public Enumeration<URL> getResources(final String name)
+            throws IOException {
+        if (getParent() != null) {
+            return super.getResources(name);
+        } else {
+            return findResources(name);
         }
     }
 
@@ -171,10 +155,9 @@ public class BundleClassLoader extends ClassLoader implements BundleReference
      * @see ClassLoader#findClass(String)
      */
     @Override
-    protected Class<?> findClass( final String name )
-            throws ClassNotFoundException
-    {
-        return m_bundle.loadClass( name );
+    protected Class<?> findClass(final String name)
+            throws ClassNotFoundException {
+        return m_bundle.loadClass(name);
     }
 
     /**
@@ -185,17 +168,14 @@ public class BundleClassLoader extends ClassLoader implements BundleReference
      * @see ClassLoader#getResource(String)
      */
     @Override
-    protected Class<?> loadClass( final String name, final boolean resolve )
-            throws ClassNotFoundException
-    {
-        if( getParent() != null )
-        {
-            return super.loadClass( name, resolve );
+    protected Class<?> loadClass(final String name, final boolean resolve)
+            throws ClassNotFoundException {
+        if (getParent() != null) {
+            return super.loadClass(name, resolve);
         }
-        final Class<?> classToLoad = findClass( name );
-        if( resolve )
-        {
-            resolveClass( classToLoad );
+        final Class<?> classToLoad = findClass(name);
+        if (resolve) {
+            resolveClass(classToLoad);
         }
         return classToLoad;
     }
@@ -206,9 +186,8 @@ public class BundleClassLoader extends ClassLoader implements BundleReference
      * @see ClassLoader#findResource(String)
      */
     @Override
-    protected URL findResource( final String name )
-    {
-        return m_bundle.getResource( name );
+    protected URL findResource(final String name) {
+        return m_bundle.getResource(name);
     }
 
     /**
@@ -218,49 +197,39 @@ public class BundleClassLoader extends ClassLoader implements BundleReference
      */
     @Override
     @SuppressWarnings("unchecked")
-    protected Enumeration<URL> findResources( final String name )
-            throws IOException
-    {
-        Enumeration<URL> resources = m_bundle.getResources( name );
+    protected Enumeration<URL> findResources(final String name)
+            throws IOException {
+        Enumeration<URL> resources = m_bundle.getResources(name);
         // Bundle.getResources may return null, in such case return empty enumeration
-        if( resources == null )
-        {
+        if (resources == null) {
             return EMPTY_URL_ENUMERATION;
-        }
-        else
-        {
+        } else {
             return resources;
         }
     }
 
     @Override
-    public String toString()
-    {
-        return new StringBuffer().append( this.getClass().getSimpleName() ).append( "{" ).append( "bundle=" ).append(
-                m_bundle ).append( ",parent=" ).append( getParent() ).append( "}" ).toString();
+    public String toString() {
+        return new StringBuffer().append(this.getClass().getSimpleName()).append("{").append("bundle=").append(
+                m_bundle).append(",parent=").append(getParent()).append("}").toString();
     }
 
     @Override
-    public boolean equals( Object o )
-    {
-        if( this == o )
-        {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if( o == null || getClass() != o.getClass() )
-        {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         BundleClassLoader that = (BundleClassLoader) o;
 
-        if( m_bundle != null ? !m_bundle.equals( that.m_bundle ) : that.m_bundle != null )
-        {
+        if (m_bundle != null ? !m_bundle.equals(that.m_bundle) : that.m_bundle != null) {
             return false;
         }
 
-        if( getParent() != null ? !getParent().equals( that.getParent() ) : that.getParent() != null )
-        {
+        if (getParent() != null ? !getParent().equals(that.getParent()) : that.getParent() != null) {
             return false;
         }
 
@@ -268,8 +237,7 @@ public class BundleClassLoader extends ClassLoader implements BundleReference
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return (m_bundle != null ? m_bundle.hashCode() : 0) * 37 + (getParent() != null ? getParent().hashCode() : 0);
     }
 }

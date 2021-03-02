@@ -19,7 +19,10 @@ package org.ops4j.pax.cdi.sample1.client;
 
 import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.api.*;
+import org.ops4j.pax.cdi.api.Component;
+import org.ops4j.pax.cdi.api.Dynamic;
+import org.ops4j.pax.cdi.api.Filter;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
 
 @Service @Component

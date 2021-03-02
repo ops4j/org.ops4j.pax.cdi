@@ -19,15 +19,14 @@ package org.ops4j.pax.cdi.web.impl;
 
 import java.util.Collection;
 import java.util.Set;
-
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 
+import org.ops4j.pax.cdi.spi.CdiClassLoaderBuilder;
 import org.ops4j.pax.cdi.spi.CdiClassLoaderBuilderCustomizer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
-import org.ops4j.pax.cdi.spi.CdiClassLoaderBuilder;
 import org.ops4j.pax.cdi.web.ServletContextListenerFactory;
 import org.ops4j.pax.web.service.spi.util.ResourceDelegatingBundleClassLoader;
 import org.osgi.framework.Bundle;

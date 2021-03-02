@@ -46,7 +46,7 @@ public class BundleArchive implements Archive {
         private URL path;
         private String name;
 
-        public BundleArchiveEntry(Bundle provider, URL path, String name) {
+        BundleArchiveEntry(Bundle provider, URL path, String name) {
             this.provider = provider;
             this.path = path;
             this.name = name;
@@ -113,8 +113,7 @@ public class BundleArchive implements Archive {
         entries = new HashMap<>();
         for (String name : bundle.adapt(BundleWiring.class).listResources(
                 "/", "*.class",
-                BundleWiring.LISTRESOURCES_LOCAL | BundleWiring.LISTRESOURCES_RECURSE))
-        {
+                BundleWiring.LISTRESOURCES_LOCAL | BundleWiring.LISTRESOURCES_RECURSE)) {
             String klass = toClassName("", name);
             if (filter.accept(bundle, klass)) {
                 URL url = bundle.getResource(name);

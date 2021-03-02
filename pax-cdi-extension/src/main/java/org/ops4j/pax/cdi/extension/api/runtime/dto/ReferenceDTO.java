@@ -35,7 +35,7 @@ public class ReferenceDTO extends DTO {
      * element. This must be the default name if the component description does
      * not declare a name for the reference.
      */
-    public String	name;
+    public String name;
 
     /**
      * The service interface of the reference.
@@ -44,7 +44,7 @@ public class ReferenceDTO extends DTO {
      * This is declared in the {@code interface} attribute of the
      * {@code reference} element.
      */
-    public String	interfaceName;
+    public String interfaceName;
 
     /**
      * The cardinality of the reference.
@@ -54,7 +54,7 @@ public class ReferenceDTO extends DTO {
      * {@code reference} element. This must be the default cardinality if the
      * component description does not declare a cardinality for the reference.
      */
-    public String	cardinality;
+    public String cardinality;
 
     /**
      * The policy of the reference.
@@ -64,7 +64,7 @@ public class ReferenceDTO extends DTO {
      * element. This must be the default policy if the component description
      * does not declare a policy for the reference.
      */
-    public String	policy;
+    public String policy;
 
     /**
      * The policy option of the reference.
@@ -74,7 +74,7 @@ public class ReferenceDTO extends DTO {
      * {@code reference} element. This must be the default policy option if the
      * component description does not declare a policy option for the reference.
      */
-    public String	policyOption;
+    public String policyOption;
 
     /**
      * The target of the reference.
@@ -84,7 +84,7 @@ public class ReferenceDTO extends DTO {
      * element. This must be {@code null} if the component description does not
      * declare a target for the reference.
      */
-    public String	target;
+    public String target;
 
     /**
      * The name of the bind method of the reference.
@@ -94,7 +94,7 @@ public class ReferenceDTO extends DTO {
      * element. This must be {@code null} if the component description does not
      * declare a bind method for the reference.
      */
-    public String	bind;
+    public String bind;
 
     /**
      * The name of the unbind method of the reference.
@@ -104,7 +104,7 @@ public class ReferenceDTO extends DTO {
      * element. This must be {@code null} if the component description does not
      * declare an unbind method for the reference.
      */
-    public String	unbind;
+    public String unbind;
 
     /**
      * The name of the updated method of the reference.
@@ -114,7 +114,7 @@ public class ReferenceDTO extends DTO {
      * {@code reference} element. This must be {@code null} if the component
      * description does not declare an updated method for the reference.
      */
-    public String	updated;
+    public String updated;
 
     /**
      * The name of the field of the reference.
@@ -124,7 +124,7 @@ public class ReferenceDTO extends DTO {
      * element. This must be {@code null} if the component description does not
      * declare a field for the reference.
      */
-    public String	field;
+    public String field;
 
     /**
      * The field option of the reference.
@@ -134,7 +134,7 @@ public class ReferenceDTO extends DTO {
      * {@code reference} element. This must be {@code null} if the component
      * description does not declare a field for the reference.
      */
-    public String	fieldOption;
+    public String fieldOption;
 
     /**
      * The scope of the reference.
@@ -144,5 +144,5 @@ public class ReferenceDTO extends DTO {
      * element. This must be the default scope if the component description does
      * not declare a scope for the reference.
      */
-    public String	scope;
+    public String scope;
 }

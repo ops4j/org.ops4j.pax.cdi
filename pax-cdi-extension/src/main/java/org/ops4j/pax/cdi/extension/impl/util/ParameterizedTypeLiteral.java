@@ -19,7 +19,6 @@ package org.ops4j.pax.cdi.extension.impl.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-
 import javax.enterprise.util.TypeLiteral;
 
 import org.ops4j.pax.cdi.spi.util.Exceptions;

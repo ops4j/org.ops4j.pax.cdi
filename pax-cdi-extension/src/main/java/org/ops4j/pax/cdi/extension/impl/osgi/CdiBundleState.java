@@ -28,14 +28,14 @@ import org.osgi.framework.ServiceRegistration;
 
 public class CdiBundleState implements BundleStateService {
 
-    public static ServiceRegistration<?> register(BundleContext context) {
-        return context.registerService(BundleStateService.class, new CdiBundleState(Registry.getInstance()), null);
-    }
-
     private final Registry registry;
 
     public CdiBundleState(Registry registry) {
         this.registry = registry;
+    }
+
+    public static ServiceRegistration<?> register(BundleContext context) {
+        return context.registerService(BundleStateService.class, new CdiBundleState(Registry.getInstance()), null);
     }
 
     @Override

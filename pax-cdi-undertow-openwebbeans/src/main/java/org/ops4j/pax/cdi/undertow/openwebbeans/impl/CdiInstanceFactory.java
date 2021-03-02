@@ -17,12 +17,12 @@
  */
 package org.ops4j.pax.cdi.undertow.openwebbeans.impl;
 
-import io.undertow.servlet.api.InstanceFactory;
-import io.undertow.servlet.api.InstanceHandle;
-
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Unmanaged;
 import javax.enterprise.inject.spi.Unmanaged.UnmanagedInstance;
+
+import io.undertow.servlet.api.InstanceFactory;
+import io.undertow.servlet.api.InstanceHandle;
 
 /**
  * Undertow instance factory for injectable classes. This factory produces instances

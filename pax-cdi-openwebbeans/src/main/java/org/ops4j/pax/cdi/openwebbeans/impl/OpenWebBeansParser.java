@@ -38,7 +38,7 @@ public class OpenWebBeansParser implements BeanDescriptorParser {
 
         private URL url;
 
-        public BeanDescriptorImpl(URL url) {
+        BeanDescriptorImpl(URL url) {
             this.url = url;
         }
 

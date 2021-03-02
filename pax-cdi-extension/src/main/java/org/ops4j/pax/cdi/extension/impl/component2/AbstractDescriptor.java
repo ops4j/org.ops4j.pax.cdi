@@ -17,8 +17,8 @@
  */
 package org.ops4j.pax.cdi.extension.impl.component2;
 
-import javax.enterprise.inject.spi.Bean;
 import java.util.List;
+import javax.enterprise.inject.spi.Bean;
 
 import org.apache.felix.scr.impl.metadata.ComponentMetadata;
 import org.apache.felix.scr.impl.metadata.DSVersion;
@@ -26,8 +26,8 @@ import org.osgi.service.component.ComponentContext;
 
 public abstract class AbstractDescriptor extends ComponentMetadata {
 
-    private final ThreadLocal<ComponentContext> context = new ThreadLocal<>();
     protected final ComponentRegistry registry;
+    private final ThreadLocal<ComponentContext> context = new ThreadLocal<>();
     private boolean m_immediate;
 
     public AbstractDescriptor(ComponentRegistry registry) {

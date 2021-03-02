@@ -17,9 +17,6 @@
  */
 package org.ops4j.pax.cdi.extension.impl.component2;
 
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +32,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 
 import org.apache.felix.scr.impl.helper.ComponentMethod;
 import org.apache.felix.scr.impl.helper.ComponentMethods;
@@ -80,7 +80,11 @@ import org.slf4j.LoggerFactory;
 
 public class ComponentRegistry implements ComponentActivator, SimpleLogger {
 
-    private static final Logger log = LoggerFactory.getLogger(ComponentRegistry.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ComponentRegistry.class);
+
+    ConfigAdminTracker configAdminTracker;
+
+    private final ThreadLocal<List<ServiceReference<?>>> circularInfos = new ThreadLocal<> ();
 
     private final BeanManager beanManager;
     private final BundleContext bundleContext;
@@ -89,7 +93,6 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
     private final List<ComponentHolder<?>> holders = new ArrayList<>();
     private final Map<String, ComponentHolder<?>> holdersByName = new HashMap<>();
     private final Map<String, Set<ComponentHolder<?>>> holdersByPid = new HashMap<>();
-    ConfigAdminTracker configAdminTracker;
 
     private final ScrConfiguration m_configuration = new ScrConfigurationImpl();
     private final Map<String, ListenerInfo> listenerMap = new HashMap<>();
@@ -125,13 +128,11 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
         }
     }
 
-    private final ThreadLocal<List<ServiceReference<?>>> circularInfos = new ThreadLocal<> ();
-
-
     public <T> boolean enterCreate(final ServiceReference<T> serviceReference) {
         List<ServiceReference<?>> info = circularInfos.get();
         if (info == null) {
-            circularInfos.set(info = new ArrayList<>());
+            info = new ArrayList<>();
+            circularInfos.set(info);
         }
         if (info.contains(serviceReference)) {
             log(LogService.LOG_ERROR,
@@ -439,13 +440,13 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
     @Override
     public boolean isLogEnabled(int level) {
         if (level >= LogService.LOG_DEBUG) {
-            return log.isDebugEnabled();
+            return LOG.isDebugEnabled();
         } else if (level >= LogService.LOG_INFO) {
-            return log.isInfoEnabled();
+            return LOG.isInfoEnabled();
         } else if (level >= LogService.LOG_WARNING) {
-            return log.isWarnEnabled();
+            return LOG.isWarnEnabled();
         } else {
-            return log.isErrorEnabled();
+            return LOG.isErrorEnabled();
         }
     }
 
@@ -468,13 +469,13 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
                 }
             }
             if (level >= LogService.LOG_DEBUG) {
-                log.debug(message, ex);
+                LOG.debug(message, ex);
             } else if (level >= LogService.LOG_INFO) {
-                log.info(message, ex);
+                LOG.info(message, ex);
             } else if (level >= LogService.LOG_WARNING) {
-                log.warn(message, ex);
+                LOG.warn(message, ex);
             } else {
-                log.error(message, ex);
+                LOG.error(message, ex);
             }
         }
     }
@@ -576,7 +577,7 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
 
     private static class CdiComponentHolder<S> extends ConfigurableComponentHolder<S> {
 
-        public CdiComponentHolder(ComponentActivator activator, ComponentMetadata metadata) {
+        CdiComponentHolder(ComponentActivator activator, ComponentMetadata metadata) {
             super(activator, metadata);
         }
 
@@ -664,7 +665,7 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
     }
 
     private static class CdiPrototypeComponentManager<S> extends PrototypeServiceFactoryComponentManager<S> {
-        public CdiPrototypeComponentManager(ComponentContainer<S> container, ComponentMethods componentMethods) {
+        CdiPrototypeComponentManager(ComponentContainer<S> container, ComponentMethods componentMethods) {
             super(container, componentMethods);
         }
         protected S createImplementationObject(Bundle usingBundle, final SetImplementationObject<S> setter, ComponentContextImpl<S> componentContext) {
@@ -676,7 +677,7 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
     }
 
     private static class CdiBundleComponentManager<S> extends ServiceFactoryComponentManager<S> {
-        public CdiBundleComponentManager(ComponentContainer<S> container, ComponentMethods componentMethods) {
+        CdiBundleComponentManager(ComponentContainer<S> container, ComponentMethods componentMethods) {
             super(container, componentMethods);
         }
         protected S createImplementationObject(Bundle usingBundle, final SetImplementationObject<S> setter, ComponentContextImpl<S> componentContext) {
@@ -689,7 +690,7 @@ public class ComponentRegistry implements ComponentActivator, SimpleLogger {
     }
 
     private static class CdiSingletonComponentManager<S> extends SingleComponentManager<S> {
-        public CdiSingletonComponentManager(ComponentContainer<S> container, ComponentMethods componentMethods) {
+        CdiSingletonComponentManager(ComponentContainer<S> container, ComponentMethods componentMethods) {
             super(container, componentMethods);
         }
         protected S createImplementationObject(Bundle usingBundle, final SetImplementationObject<S> setter, ComponentContextImpl<S> componentContext) {

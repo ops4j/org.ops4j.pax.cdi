@@ -18,7 +18,6 @@
 package org.ops4j.pax.cdi.undertow.weld.impl;
 
 import java.util.Map;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.jsp.JspApplicationContext;

@@ -18,7 +18,6 @@
 package org.ops4j.pax.cdi.test;
 
 import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,7 +34,6 @@ import org.ops4j.pax.swissbox.core.BundleUtils;
 import org.ops4j.pax.swissbox.tracker.ServiceLookup;
 import org.ops4j.pax.swissbox.tracker.ServiceLookupException;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
 

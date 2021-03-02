@@ -20,7 +20,6 @@ package org.ops4j.pax.cdi.test;
 import java.util.List;
 import javax.inject.Inject;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.cdi.api.event.BundleCdiEvent;
@@ -39,7 +38,6 @@ import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.cdi.test.AbstractControlledTestBase.baseConfigure;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.regressionDefaults;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.workspaceBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 

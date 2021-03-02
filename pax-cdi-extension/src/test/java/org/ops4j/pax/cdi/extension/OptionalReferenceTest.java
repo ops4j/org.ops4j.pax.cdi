@@ -16,18 +16,18 @@
  */
 package org.ops4j.pax.cdi.extension;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.ops4j.pax.cdi.api.Component;
 import org.ops4j.pax.cdi.api.Immediate;
 import org.ops4j.pax.cdi.api.Optional;
 import org.ops4j.pax.cdi.api.Service;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class OptionalReferenceTest extends AbstractTest {
 
@@ -35,10 +35,10 @@ public class OptionalReferenceTest extends AbstractTest {
     public void test() throws Exception {
         createCdi(Hello.class);
 
-        Assert.assertEquals(1, Hello.created.get());
-        Assert.assertEquals(0, Hello.destroyed.get());
-        Assert.assertNotNull(Hello.instance.get());
-        Assert.assertNull(Hello.instance.get().service);
+        Assert.assertEquals(1, Hello.CREATED.get());
+        Assert.assertEquals(0, Hello.DESTROYED.get());
+        Assert.assertNotNull(Hello.INSTANCE.get());
+        Assert.assertNull(Hello.INSTANCE.get().service);
     }
 
     public interface MyService {
@@ -50,24 +50,24 @@ public class OptionalReferenceTest extends AbstractTest {
     @Immediate @Component
     public static class Hello {
 
-        static final AtomicInteger created = new AtomicInteger();
-        static final AtomicInteger destroyed = new AtomicInteger();
-        static final AtomicReference<Hello> instance = new AtomicReference<>();
+        static final AtomicInteger CREATED = new AtomicInteger();
+        static final AtomicInteger DESTROYED = new AtomicInteger();
+        static final AtomicReference<Hello> INSTANCE = new AtomicReference<>();
 
         @Inject @Optional @Service
         MyService service;
 
         @PostConstruct
         public void init() {
-            created.incrementAndGet();
-            instance.set(this);
+            CREATED.incrementAndGet();
+            INSTANCE.set(this);
             System.err.println("Creating Hello instance");
         }
 
         @PreDestroy
         public void destroy() {
-            destroyed.incrementAndGet();
-            instance.set(null);
+            DESTROYED.incrementAndGet();
+            INSTANCE.set(null);
             System.err.println("Destroying Hello instance");
         }
 

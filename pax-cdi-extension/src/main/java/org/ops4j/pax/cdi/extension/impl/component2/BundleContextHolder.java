@@ -25,6 +25,9 @@ public class BundleContextHolder {
 
     private static final ThreadLocal<BundleContext> STORAGE = new ThreadLocal<>();
 
+    private BundleContextHolder() {
+    }
+
     public static BundleContext getBundleContext() {
         BundleContext bundleContext =  STORAGE.get();
         if (bundleContext == null) {

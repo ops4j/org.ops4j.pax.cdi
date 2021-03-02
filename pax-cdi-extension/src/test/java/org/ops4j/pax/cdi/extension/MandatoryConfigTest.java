@@ -16,17 +16,17 @@
  */
 package org.ops4j.pax.cdi.extension;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.ops4j.pax.cdi.api.Component;
 import org.ops4j.pax.cdi.api.Config;
 import org.ops4j.pax.cdi.api.Immediate;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class MandatoryConfigTest extends AbstractTest {
 
@@ -34,29 +34,29 @@ public class MandatoryConfigTest extends AbstractTest {
     public void test() throws Exception {
         startConfigAdmin();
 
-        synchronized (Hello.instance) {
+        synchronized (Hello.INSTANCE) {
             createCdi(Hello.class);
 
-            Assert.assertEquals(0, Hello.created.get());
-            Assert.assertEquals(0, Hello.destroyed.get());
+            Assert.assertEquals(0, Hello.CREATED.get());
+            Assert.assertEquals(0, Hello.DESTROYED.get());
 
             // create configuration
             getConfiguration(MyConfig.class).update(dictionary("host", "localhost"));
 
-            Hello.instance.wait();
+            Hello.INSTANCE.wait();
 
-            Assert.assertEquals("Hello world at localhost:8234", Hello.instance.get().sayHelloWorld());
+            Assert.assertEquals("Hello world at localhost:8234", Hello.INSTANCE.get().sayHelloWorld());
 
-            Assert.assertEquals(1, Hello.created.get());
-            Assert.assertEquals(0, Hello.destroyed.get());
+            Assert.assertEquals(1, Hello.CREATED.get());
+            Assert.assertEquals(0, Hello.DESTROYED.get());
 
             // delete configuration
             getConfiguration(MyConfig.class).delete();
 
-            Hello.instance.wait();
+            Hello.INSTANCE.wait();
 
-            Assert.assertEquals(1, Hello.created.get());
-            Assert.assertEquals(1, Hello.destroyed.get());
+            Assert.assertEquals(1, Hello.CREATED.get());
+            Assert.assertEquals(1, Hello.DESTROYED.get());
         }
     }
 
@@ -70,30 +70,30 @@ public class MandatoryConfigTest extends AbstractTest {
     @Immediate @Component
     public static class Hello {
 
-        static final AtomicInteger created = new AtomicInteger();
-        static final AtomicInteger destroyed = new AtomicInteger();
-        static final AtomicReference<Hello> instance = new AtomicReference<>();
+        static final AtomicInteger CREATED = new AtomicInteger();
+        static final AtomicInteger DESTROYED = new AtomicInteger();
+        static final AtomicReference<Hello> INSTANCE = new AtomicReference<>();
 
         @Inject @Config
         MyConfig config;
 
         @PostConstruct
         public void init() {
-            created.incrementAndGet();
-            instance.set(this);
+            CREATED.incrementAndGet();
+            INSTANCE.set(this);
             System.err.println("Creating Hello instance");
-            synchronized (instance) {
-                instance.notifyAll();
+            synchronized (INSTANCE) {
+                INSTANCE.notifyAll();
             }
         }
 
         @PreDestroy
         public void destroy() {
-            destroyed.incrementAndGet();
-            instance.set(null);
+            DESTROYED.incrementAndGet();
+            INSTANCE.set(null);
             System.err.println("Destroying Hello instance");
-            synchronized (instance) {
-                instance.notifyAll();
+            synchronized (INSTANCE) {
+                INSTANCE.notifyAll();
             }
         }
 

@@ -17,12 +17,17 @@
  */
 package org.ops4j.pax.cdi.sample1.impl;
 
-import org.ops4j.pax.cdi.api.*;
+import org.ops4j.pax.cdi.api.Component;
+import org.ops4j.pax.cdi.api.Immediate;
+import org.ops4j.pax.cdi.api.Properties;
+import org.ops4j.pax.cdi.api.Property;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample1.Chocolate;
 import org.ops4j.pax.cdi.sample1.IceCreamService;
 
 @Chocolate
-@Service @Component
+@Service
+@Component
 @Properties(@Property(name = "flavour", value = "chocolate"))
 @Immediate
 public class ChocolateService implements IceCreamService {

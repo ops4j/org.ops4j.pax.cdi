@@ -43,7 +43,7 @@ public class WeldApplication extends AbstractForwardingApplication {
 
         private ELResolver delegateResolver;
 
-        public LazyBeanManagerIntegrationELResolver() {
+        LazyBeanManagerIntegrationELResolver() {
             delegateResolver = new TransparentELResolver();
         }
 

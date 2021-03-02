@@ -17,6 +17,7 @@
 package org.ops4j.pax.cdi.extension.api.runtime.dto;
 
 import java.util.Map;
+
 import org.osgi.dto.DTO;
 import org.osgi.service.component.ComponentContext;
 
@@ -29,17 +30,18 @@ import org.osgi.service.component.ComponentContext;
  * @author $Id: a3e98bbac97a1d79805f9be0ed7f2ae811f112d0 $
  */
 public class ComponentConfigurationDTO extends DTO {
+
     /**
      * The component configuration is unsatisfied due to a missing required
      * configuration.
      */
-    public static final int			UNSATISFIED_CONFIGURATION	= 1;
+    public static final int UNSATISFIED_CONFIGURATION = 1;
 
     /**
      * The component configuration is unsatisfied due to an unsatisfied
      * reference.
      */
-    public static final int			UNSATISFIED_REFERENCE		= 2;
+    public static final int UNSATISFIED_REFERENCE = 2;
 
     /**
      * The component configuration is satisfied.
@@ -48,7 +50,7 @@ public class ComponentConfigurationDTO extends DTO {
      * Any {@link ComponentDescriptionDTO#serviceInterfaces services} declared
      * by the component description are registered.
      */
-    public static final int			SATISFIED					= 4;
+    public static final int SATISFIED = 4;
 
     /**
      * The component configuration is active.
@@ -56,13 +58,13 @@ public class ComponentConfigurationDTO extends DTO {
      * <p>
      * This is the normal operational state of a component configuration.
      */
-    public static final int			ACTIVE						= 8;
+    public static final int ACTIVE = 8;
 
     /**
      * The representation of the component configuration's component
      * description.
      */
-    public ComponentDescriptionDTO	description;
+    public ComponentDescriptionDTO description;
 
     /**
      * The current state of the component configuration.
@@ -71,7 +73,7 @@ public class ComponentConfigurationDTO extends DTO {
      * This is one of {@link #UNSATISFIED_CONFIGURATION},
      * {@link #UNSATISFIED_REFERENCE}, {@link #SATISFIED} or {@link #ACTIVE}.
      */
-    public int							state;
+    public int state;
 
     /**
      * The id of the component configuration.
@@ -82,14 +84,14 @@ public class ComponentConfigurationDTO extends DTO {
      * of this field is unspecified if the state of this component configuration
      * is unsatisfied.
      */
-    public long							id;
+    public long id;
 
     /**
      * The component properties for the component configuration.
      *
      * @see ComponentContext#getProperties()
      */
-    public Map<String, Object>	properties;
+    public Map<String, Object> properties;
 
     /**
      * The satisfied references.
@@ -99,7 +101,7 @@ public class ComponentConfigurationDTO extends DTO {
      * reference of the component configuration. The array must be empty if the
      * component configuration has no satisfied references.
      */
-    public SatisfiedReferenceDTO[]		satisfiedReferences;
+    public SatisfiedReferenceDTO[] satisfiedReferences;
 
     /**
      * The unsatisfied references.
@@ -109,5 +111,5 @@ public class ComponentConfigurationDTO extends DTO {
      * unsatisfied reference of the component configuration. The array must be
      * empty if the component configuration has no unsatisfied references.
      */
-    public UnsatisfiedReferenceDTO[]	unsatisfiedReferences;
+    public UnsatisfiedReferenceDTO[] unsatisfiedReferences;
 }

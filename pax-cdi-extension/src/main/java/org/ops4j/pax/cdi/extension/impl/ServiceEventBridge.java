@@ -19,7 +19,9 @@
 package org.ops4j.pax.cdi.extension.impl;
 
 import java.lang.annotation.Annotation;
-
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -28,16 +30,19 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.util.TypeLiteral;
 import javax.inject.Inject;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.ops4j.pax.cdi.api.event.ServiceCdiEvent;
 import org.ops4j.pax.cdi.extension.impl.support.Filters;
 import org.ops4j.pax.cdi.extension.impl.util.ParameterizedTypeLiteral;
 import org.ops4j.pax.cdi.extension.impl.util.ServiceAddedLiteral;
 import org.ops4j.pax.cdi.extension.impl.util.ServiceRemovedLiteral;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Filter;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceObjects;
+import org.osgi.framework.ServiceReference;
 
 /**
  * Maps OSGi service events to CDI events. Fires events qualified with {@code ServiceAdded} or

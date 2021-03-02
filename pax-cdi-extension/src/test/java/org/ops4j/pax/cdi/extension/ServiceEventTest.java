@@ -16,13 +16,13 @@
  */
 package org.ops4j.pax.cdi.extension;
 
-import javax.enterprise.event.Observes;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.enterprise.event.Observes;
 
-import org.ops4j.pax.cdi.api.event.ServiceAdded;
-import org.ops4j.pax.cdi.api.event.ServiceRemoved;
 import org.junit.Assert;
 import org.junit.Test;
+import org.ops4j.pax.cdi.api.event.ServiceAdded;
+import org.ops4j.pax.cdi.api.event.ServiceRemoved;
 import org.osgi.framework.ServiceRegistration;
 
 

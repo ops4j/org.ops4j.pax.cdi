@@ -16,17 +16,17 @@
  */
 package org.ops4j.pax.cdi.extension;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.ops4j.pax.cdi.api.Component;
 import org.ops4j.pax.cdi.api.PrototypeScoped;
 import org.ops4j.pax.cdi.api.Service;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class InnerScopeTest extends AbstractTest {
 
@@ -34,8 +34,8 @@ public class InnerScopeTest extends AbstractTest {
     public void test() throws Exception {
         createCdi(Hello.class, Component1.class, Component2.class);
 
-        Assert.assertEquals(0, Hello.created.get());
-        Assert.assertEquals(0, Hello.destroyed.get());
+        Assert.assertEquals(0, Hello.CREATED.get());
+        Assert.assertEquals(0, Hello.DESTROYED.get());
 
         Component1 component1 = getService(Component1.class);
         Component2 component2 = getService(Component2.class);
@@ -70,27 +70,27 @@ public class InnerScopeTest extends AbstractTest {
     @Component @PrototypeScoped
     public static class Hello implements MyService {
 
-        static final AtomicInteger created = new AtomicInteger();
-        static final AtomicInteger destroyed = new AtomicInteger();
-        static final AtomicReference<Hello> instance = new AtomicReference<>();
+        static final AtomicInteger CREATED = new AtomicInteger();
+        static final AtomicInteger DESTROYED = new AtomicInteger();
+        static final AtomicReference<Hello> INSTANCE = new AtomicReference<>();
 
         @PostConstruct
         public void init() {
-            created.incrementAndGet();
-            instance.set(this);
+            CREATED.incrementAndGet();
+            INSTANCE.set(this);
             System.err.println("Creating Hello instance");
-            synchronized (instance) {
-                instance.notifyAll();
+            synchronized (INSTANCE) {
+                INSTANCE.notifyAll();
             }
         }
 
         @PreDestroy
         public void destroy() {
-            destroyed.incrementAndGet();
-            instance.set(null);
+            DESTROYED.incrementAndGet();
+            INSTANCE.set(null);
             System.err.println("Destroying Hello instance");
-            synchronized (instance) {
-                instance.notifyAll();
+            synchronized (INSTANCE) {
+                INSTANCE.notifyAll();
             }
         }
 

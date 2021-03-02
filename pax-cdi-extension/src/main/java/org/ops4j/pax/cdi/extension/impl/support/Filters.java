@@ -29,6 +29,9 @@ import org.ops4j.pax.cdi.api.Filter;
 
 public class Filters {
 
+    private Filters() {
+    }
+
     public static String getFilter(Collection<Annotation> annotations) {
         return and(getSubFilters(annotations));
     }

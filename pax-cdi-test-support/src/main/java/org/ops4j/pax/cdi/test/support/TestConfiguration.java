@@ -17,6 +17,17 @@
  */
 package org.ops4j.pax.cdi.test.support;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
+import java.util.ServiceLoader;
+
+import org.ops4j.lang.Ops4jException;
+import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.options.ProvisionOption;
+import org.ops4j.pax.exam.util.PathUtils;
+import org.osgi.framework.launch.FrameworkFactory;
+
 import static org.ops4j.pax.exam.Constants.START_LEVEL_SYSTEM_BUNDLES;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.cleanCaches;
@@ -29,17 +40,6 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
 import static org.ops4j.pax.exam.CoreOptions.when;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Properties;
-import java.util.ServiceLoader;
-
-import org.ops4j.lang.Ops4jException;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.options.ProvisionOption;
-import org.ops4j.pax.exam.util.PathUtils;
-import org.osgi.framework.launch.FrameworkFactory;
 
 /**
  * Reusable composite options for Pax CDI integration tests with Pax Exam.

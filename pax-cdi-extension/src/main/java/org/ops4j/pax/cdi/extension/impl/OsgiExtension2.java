@@ -17,6 +17,15 @@
  */
 package org.ops4j.pax.cdi.extension.impl;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.Destroyed;
@@ -39,15 +48,6 @@ import javax.enterprise.inject.spi.ProcessObserverMethod;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Qualifier;
 import javax.inject.Singleton;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 import org.ops4j.pax.cdi.api.BundleScoped;
 import org.ops4j.pax.cdi.api.Component;
@@ -57,10 +57,10 @@ import org.ops4j.pax.cdi.api.PrototypeScoped;
 import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.api.SingletonScoped;
 import org.ops4j.pax.cdi.api.event.ServiceCdiEvent;
+import org.ops4j.pax.cdi.extension.impl.component2.BundleContextHolder;
 import org.ops4j.pax.cdi.extension.impl.component2.ComponentDescriptor;
 import org.ops4j.pax.cdi.extension.impl.component2.ComponentRegistry;
 import org.ops4j.pax.cdi.extension.impl.component2.GlobalDescriptor;
-import org.ops4j.pax.cdi.extension.impl.component2.BundleContextHolder;
 import org.ops4j.pax.cdi.extension.impl.context.BundleScopeContext;
 import org.ops4j.pax.cdi.extension.impl.context.PrototypeScopeContext;
 import org.ops4j.pax.cdi.extension.impl.context.SingletonScopeContext;
@@ -85,6 +85,9 @@ public class OsgiExtension2 implements Extension {
 
     private ComponentRegistry componentRegistry;
     private GlobalDescriptor global;
+
+    private final Set<String> observedFilters = new HashSet<>();
+    private final Set<Annotation> observedQualifiers = new HashSet<>();
 
     public OsgiExtension2() {
     }
@@ -258,7 +261,7 @@ public class OsgiExtension2 implements Extension {
 
     static class UniqueIdentifierLitteral extends AnnotationLiteral<UniqueIdentifier> implements UniqueIdentifier {
         private final String id;
-        public UniqueIdentifierLitteral(String id) {
+        UniqueIdentifierLitteral(String id) {
             this.id = id;
         }
         @Override
@@ -266,9 +269,6 @@ public class OsgiExtension2 implements Extension {
             return id;
         }
     }
-
-    private final Set<String> observedFilters = new HashSet<>();
-    private final Set<Annotation> observedQualifiers = new HashSet<>();
 
     public Set<String> getObservedFilters() {
         return observedFilters;

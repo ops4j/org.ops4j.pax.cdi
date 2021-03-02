@@ -36,7 +36,6 @@ import org.ops4j.pax.exam.util.Filter;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.cdi.test.support.TestConfiguration.cdiProviderBundles;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderAdapter;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxCdiProviderJettyAdapter;
 import static org.ops4j.pax.cdi.test.support.TestConfiguration.paxWebBundles;

@@ -27,6 +27,7 @@ import org.osgi.framework.dto.ServiceReferenceDTO;
  * @author $Id: 20ce77a3dbc307be592c86bf7b5eddacfe77e21b $
  */
 public class UnsatisfiedReferenceDTO extends DTO {
+
     /**
      * The name of the declared reference.
      *
@@ -36,7 +37,7 @@ public class UnsatisfiedReferenceDTO extends DTO {
      *
      * @see ReferenceDTO#name
      */
-    public String					name;
+    public String name;
 
     /**
      * The target property of the unsatisfied reference.
@@ -48,7 +49,7 @@ public class UnsatisfiedReferenceDTO extends DTO {
      * &quot;.target&quot;. This must be {@code null} if no target property is
      * set for the reference.
      */
-    public String					target;
+    public String target;
 
     /**
      * The target services.
@@ -60,5 +61,5 @@ public class UnsatisfiedReferenceDTO extends DTO {
      * is the upper bound on the {@link ReferenceDTO#cardinality cardinality} of
      * the reference.
      */
-    public ServiceReferenceDTO[]	targetServices;
+    public ServiceReferenceDTO[] targetServices;
 }

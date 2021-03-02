@@ -32,15 +32,14 @@ import java.util.List;
  *
  * @author Harald Wellmann
  */
-public class SafeServiceLoader
-{
+public class SafeServiceLoader {
+
     private ClassLoader classLoader;
 
     /**
      * Constructs a service loader using the given class loader.
      */
-    public SafeServiceLoader( ClassLoader classLoader )
-    {
+    public SafeServiceLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
@@ -55,31 +54,24 @@ public class SafeServiceLoader
      * @param serviceType fully qualified service class name
      * @return list of services matching the given service type
      */
-    public <T> List<T> load( String serviceType )
-    {
+    public <T> List<T> load(String serviceType) {
         List<T> services = new ArrayList<T>();
         String resourceName = "/META-INF/services/" + serviceType;
-        try
-        {
-            Enumeration<URL> resources = classLoader.getResources( resourceName );
-            while( resources.hasMoreElements() )
-            {
+        try {
+            Enumeration<URL> resources = classLoader.getResources(resourceName);
+            while (resources.hasMoreElements()) {
                 URL url = resources.nextElement();
-                List<String> classNames = parse( url );
-                for( String className : classNames )
-                {
-                    Class<T> klass = loadClassIfVisible( className, classLoader );
-                    if( klass != null )
-                    {
+                List<String> classNames = parse(url);
+                for (String className : classNames) {
+                    Class<T> klass = loadClassIfVisible(className, classLoader);
+                    if (klass != null) {
                         T service = klass.newInstance();
-                        services.add( service );
+                        services.add(service);
                     }
                 }
             }
-        }
-        catch ( Exception exc )
-        {
-            throw new IllegalStateException( exc );
+        } catch (Exception exc) {
+            throw new IllegalStateException(exc);
         }
         return services;
     }
@@ -91,15 +83,11 @@ public class SafeServiceLoader
      * @param classLoader class loader
      * @return class with given name, or null
      */
-    @SuppressWarnings( "unchecked" )
-    private <T> Class<T> loadClassIfVisible( String className, ClassLoader classLoader )
-    {
-        try
-        {
-            return (Class<T>) classLoader.loadClass( className );
-        }
-        catch ( ClassNotFoundException e )
-        {
+    @SuppressWarnings("unchecked")
+    private <T> Class<T> loadClassIfVisible(String className, ClassLoader classLoader) {
+        try {
+            return (Class<T>) classLoader.loadClass(className);
+        } catch (ClassNotFoundException e) {
             return null;
         }
     }
@@ -111,24 +99,19 @@ public class SafeServiceLoader
      * @param url a URL of a META-INF/services resource
      * @return list of service class names (not null, but possibly empty)
      */
-    private List<String> parse( URL url ) throws IOException
-    {
+    private List<String> parse(URL url) throws IOException {
         InputStream is;
         BufferedReader reader = null;
         List<String> names = new ArrayList<String>();
-        try
-        {
+        try {
             is = url.openStream();
-            reader = new BufferedReader( new InputStreamReader( is, "UTF-8" ) );
+            reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
             String line;
-            while( ( line = reader.readLine() ) != null )
-            {
-                parseLine( names, line );
+            while ((line = reader.readLine()) != null) {
+                parseLine(names, line);
             }
-        }
-        finally
-        {
-            closeSilently( reader );
+        } finally {
+            closeSilently(reader);
         }
         return names;
     }
@@ -136,17 +119,12 @@ public class SafeServiceLoader
     /**
      * Closes the given reader, silently ignoring any exception.
      */
-    private void closeSilently( BufferedReader reader )
-    {
-        try
-        {
-            if( reader != null )
-            {
+    private void closeSilently(BufferedReader reader) {
+        try {
+            if (reader != null) {
                 reader.close();
             }
-        }
-        catch ( IOException exc )
-        {
+        } catch (IOException exc) {
             // ignore
         }
     }
@@ -158,17 +136,14 @@ public class SafeServiceLoader
      * @param names list of class names
      * @param line line to be parsed
      */
-    private void parseLine( List<String> names, String line )
-    {
-        int commentPos = line.indexOf( '#' );
-        if( commentPos >= 0 )
-        {
-            line = line.substring( 0, commentPos );
+    private void parseLine(List<String> names, String line) {
+        int commentPos = line.indexOf('#');
+        if (commentPos >= 0) {
+            line = line.substring(0, commentPos);
         }
         line = line.trim();
-        if( !line.isEmpty() && !names.contains( line ) )
-        {
-            names.add( line );
+        if (!line.isEmpty() && !names.contains(line)) {
+            names.add(line);
         }
     }
 }

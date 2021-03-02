@@ -16,20 +16,20 @@
  */
 package org.ops4j.pax.cdi.extension;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Qualifier;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Qualifier;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.ops4j.pax.cdi.api.Attribute;
 import org.ops4j.pax.cdi.api.Filter;
 import org.ops4j.pax.cdi.api.event.ServiceAdded;
 import org.ops4j.pax.cdi.api.event.ServiceCdiEvent;
 import org.ops4j.pax.cdi.api.event.ServiceRemoved;
-import org.junit.Assert;
-import org.junit.Test;
 import org.osgi.framework.ServiceRegistration;
 
 

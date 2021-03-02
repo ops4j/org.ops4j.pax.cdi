@@ -17,10 +17,10 @@
  */
 package org.ops4j.pax.cdi.extension.impl.support;
 
-import javax.enterprise.inject.spi.BeanAttributes;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
+import javax.enterprise.inject.spi.BeanAttributes;
 
 public class DelegatingBeanAttributes<T> implements BeanAttributes<T> {
 

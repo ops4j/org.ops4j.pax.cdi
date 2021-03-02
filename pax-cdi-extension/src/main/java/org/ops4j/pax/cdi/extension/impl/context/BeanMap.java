@@ -19,7 +19,6 @@
 package org.ops4j.pax.cdi.extension.impl.context;
 
 import java.util.HashMap;
-
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 

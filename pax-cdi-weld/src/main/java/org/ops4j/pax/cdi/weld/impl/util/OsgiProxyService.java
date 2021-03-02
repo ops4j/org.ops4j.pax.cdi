@@ -21,6 +21,7 @@ import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.serialization.spi.ProxyServices;
@@ -28,9 +29,6 @@ import org.jboss.weld.util.Types;
 import org.ops4j.pax.cdi.spi.util.Exceptions;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
-
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
 
 /**
  * Implements {@link ProxyServices} for Weld in OSGi runtime.
@@ -60,7 +58,7 @@ public class OsgiProxyService implements ProxyServices {
     @Override
     public ClassLoader getClassLoader(Class<?> proxiedBeanType) {
         if (!Modifier.isPublic(proxiedBeanType.getModifiers()) &&
-            !Modifier.isProtected(proxiedBeanType.getModifiers())) {
+                !Modifier.isProtected(proxiedBeanType.getModifiers())) {
             // For package-private bean type, we must used the same defining classloader
             // as that of the bean type otherwise IllegalAccessError is thrown and there
             // seems to be no obvious way to do proper adaptation of the classloader
@@ -97,8 +95,7 @@ public class OsgiProxyService implements ProxyServices {
     public Class<?> loadBeanClass(final String className) {
         try {
             return AccessController.doPrivileged(new LoadClass(className));
-        }
-        catch (PrivilegedActionException pae) {
+        } catch (PrivilegedActionException pae) {
             throw Exceptions.unchecked(pae);
         }
     }

@@ -17,9 +17,9 @@
  */
 package org.ops4j.pax.cdi.api;
 
+import java.lang.annotation.Retention;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
-import java.lang.annotation.Retention;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 

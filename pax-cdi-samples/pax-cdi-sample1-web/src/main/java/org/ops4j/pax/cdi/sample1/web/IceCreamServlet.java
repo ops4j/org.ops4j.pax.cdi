@@ -18,7 +18,6 @@
 package org.ops4j.pax.cdi.sample1.web;
 
 import java.io.IOException;
-
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.servlet.ServletConfig;

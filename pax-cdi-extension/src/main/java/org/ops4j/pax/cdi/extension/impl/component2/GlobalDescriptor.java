@@ -17,11 +17,6 @@
  */
 package org.ops4j.pax.cdi.extension.impl.component2;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.ParameterizedType;
@@ -37,10 +32,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.apache.felix.scr.impl.metadata.ReferenceMetadata;
 import org.apache.felix.scr.impl.metadata.ServiceMetadata;
-import org.ops4j.pax.cdi.api.*;
+import org.ops4j.pax.cdi.api.Component;
+import org.ops4j.pax.cdi.api.Config;
+import org.ops4j.pax.cdi.api.Dynamic;
+import org.ops4j.pax.cdi.api.Greedy;
+import org.ops4j.pax.cdi.api.Optional;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.extension.impl.support.Filters;
 import org.ops4j.pax.cdi.extension.impl.support.IterableInstance;
 import org.ops4j.pax.cdi.extension.impl.support.PrivateRegistryWrapper;
@@ -94,7 +99,7 @@ public class GlobalDescriptor extends AbstractDescriptor {
         private final Class<?> type;
         private final Map<Class<? extends Annotation>, Annotation> annotations;
 
-        public DummyInjectionPoint(Class<?> type, Set<Annotation> annotations) {
+        DummyInjectionPoint(Class<?> type, Set<Annotation> annotations) {
             this.type = type;
             this.annotations = new HashMap<>();
             for (Annotation annotation : annotations) {

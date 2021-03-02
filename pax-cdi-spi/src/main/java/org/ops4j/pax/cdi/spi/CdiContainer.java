@@ -19,7 +19,6 @@ package org.ops4j.pax.cdi.spi;
 
 import java.lang.annotation.Annotation;
 import java.util.concurrent.Callable;
-
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;

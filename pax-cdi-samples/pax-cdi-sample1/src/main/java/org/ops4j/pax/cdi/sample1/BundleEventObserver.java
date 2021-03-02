@@ -20,7 +20,6 @@ package org.ops4j.pax.cdi.sample1;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 

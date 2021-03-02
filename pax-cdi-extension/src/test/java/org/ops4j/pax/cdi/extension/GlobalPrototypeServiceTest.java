@@ -16,15 +16,15 @@
  */
 package org.ops4j.pax.cdi.extension;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.ops4j.pax.cdi.api.Global;
 import org.ops4j.pax.cdi.api.Service;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class GlobalPrototypeServiceTest extends AbstractTest {
 
@@ -32,14 +32,14 @@ public class GlobalPrototypeServiceTest extends AbstractTest {
     public void test() throws Exception {
         createCdi(Hello.class);
 
-        Assert.assertEquals(0, Hello.created.get());
-        Assert.assertEquals(0, Hello.destroyed.get());
+        Assert.assertEquals(0, Hello.CREATED.get());
+        Assert.assertEquals(0, Hello.DESTROYED.get());
 
         Hello hello = getPrototype(Hello.class);
 
         Assert.assertNotNull(hello);
-        Assert.assertEquals(1, Hello.created.get());
-        Assert.assertSame(hello, Hello.instance.get());
+        Assert.assertEquals(1, Hello.CREATED.get());
+        Assert.assertSame(hello, Hello.INSTANCE.get());
         Assert.assertEquals("Hello world !!", hello.sayHelloWorld());
 
         Hello hello2 = getPrototype(Hello.class);
@@ -49,27 +49,27 @@ public class GlobalPrototypeServiceTest extends AbstractTest {
     @Global @Service
     public static class Hello {
 
-        static final AtomicInteger created = new AtomicInteger();
-        static final AtomicInteger destroyed = new AtomicInteger();
-        static final AtomicReference<Hello> instance = new AtomicReference<>();
+        static final AtomicInteger CREATED = new AtomicInteger();
+        static final AtomicInteger DESTROYED = new AtomicInteger();
+        static final AtomicReference<Hello> INSTANCE = new AtomicReference<>();
 
         @PostConstruct
         public void init() {
-            created.incrementAndGet();
-            instance.set(this);
+            CREATED.incrementAndGet();
+            INSTANCE.set(this);
             System.err.println("Creating Hello instance");
-            synchronized (instance) {
-                instance.notifyAll();
+            synchronized (INSTANCE) {
+                INSTANCE.notifyAll();
             }
         }
 
         @PreDestroy
         public void destroy() {
-            destroyed.incrementAndGet();
-            instance.set(null);
+            DESTROYED.incrementAndGet();
+            INSTANCE.set(null);
             System.err.println("Destroying Hello instance");
-            synchronized (instance) {
-                instance.notifyAll();
+            synchronized (INSTANCE) {
+                INSTANCE.notifyAll();
             }
         }
 

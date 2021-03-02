@@ -19,16 +19,17 @@ package org.ops4j.pax.cdi.sample1.client;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.api.*;
+import org.ops4j.pax.cdi.api.Component;
+import org.ops4j.pax.cdi.api.Dynamic;
+import org.ops4j.pax.cdi.api.Filter;
+import org.ops4j.pax.cdi.api.Immediate;
+import org.ops4j.pax.cdi.api.Service;
+import org.ops4j.pax.cdi.api.SingletonScoped;
 import org.ops4j.pax.cdi.api.event.ServiceAdded;
 import org.ops4j.pax.cdi.api.event.ServiceCdiEvent;
 import org.ops4j.pax.cdi.api.event.ServiceRemoved;

@@ -26,6 +26,9 @@ import java.lang.reflect.WildcardType;
 
 public class Types {
 
+    private Types() {
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> Class<T> getRawType(Type type) {
         if (type instanceof Class<?>) {

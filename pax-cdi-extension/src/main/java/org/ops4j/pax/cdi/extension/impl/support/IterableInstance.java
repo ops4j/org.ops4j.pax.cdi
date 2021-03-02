@@ -17,12 +17,12 @@
  */
 package org.ops4j.pax.cdi.extension.impl.support;
 
+import java.lang.annotation.Annotation;
+import java.util.Iterator;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.util.TypeLiteral;
-import java.lang.annotation.Annotation;
-import java.util.Iterator;
 
 public class IterableInstance<T> implements Instance<T> {
 

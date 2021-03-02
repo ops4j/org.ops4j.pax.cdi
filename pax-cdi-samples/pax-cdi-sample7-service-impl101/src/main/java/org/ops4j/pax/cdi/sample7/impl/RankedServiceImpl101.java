@@ -15,7 +15,10 @@
  */
 package org.ops4j.pax.cdi.sample7.impl;
 
-import org.ops4j.pax.cdi.api.*;
+import org.ops4j.pax.cdi.api.Component;
+import org.ops4j.pax.cdi.api.Properties;
+import org.ops4j.pax.cdi.api.Property;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample7.api.RankedService;
 
 /**

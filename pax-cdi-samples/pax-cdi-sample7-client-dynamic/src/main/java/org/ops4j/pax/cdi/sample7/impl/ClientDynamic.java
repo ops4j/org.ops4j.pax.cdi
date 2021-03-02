@@ -17,7 +17,11 @@ package org.ops4j.pax.cdi.sample7.impl;
 
 import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.api.*;
+import org.ops4j.pax.cdi.api.Dynamic;
+import org.ops4j.pax.cdi.api.Global;
+import org.ops4j.pax.cdi.api.Greedy;
+import org.ops4j.pax.cdi.api.Optional;
+import org.ops4j.pax.cdi.api.Service;
 import org.ops4j.pax.cdi.sample7.api.RankedService;
 import org.ops4j.pax.cdi.sample7.api.RankedServiceClient;
 

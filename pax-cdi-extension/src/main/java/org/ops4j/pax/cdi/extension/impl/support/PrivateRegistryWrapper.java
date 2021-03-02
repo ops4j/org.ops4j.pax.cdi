@@ -52,6 +52,8 @@ public class PrivateRegistryWrapper implements BundleContext {
     private final List<PrivateServiceRegistration<?>> registrations = new CopyOnWriteArrayList<>();
     private final List<ListenerInfo> listeners = new CopyOnWriteArrayList<>();
 
+    private final AtomicLong privateServiceId = new AtomicLong(0);
+
     public PrivateRegistryWrapper(BundleContext bundleContext) {
         this.delegate = bundleContext;
     }
@@ -108,10 +110,11 @@ public class PrivateRegistryWrapper implements BundleContext {
     }
 
     static class ListenerInfo {
+
         final ServiceListener listener;
         final Filter filter;
 
-        public ListenerInfo(ServiceListener listener, Filter filter) {
+        ListenerInfo(ServiceListener listener, Filter filter) {
             this.listener = listener;
             this.filter = filter;
         }
@@ -281,16 +284,14 @@ public class PrivateRegistryWrapper implements BundleContext {
         return delegate.getBundle(location);
     }
 
-    private final AtomicLong privateServiceId = new AtomicLong(0);
-
     class PrivateServiceRegistration<S> implements ServiceRegistration<S>, ServiceReference<S> {
 
         private final Hashtable<String, ?> properties;
         private final Object service;
 
-        public PrivateServiceRegistration(String[] clazzes, Object svc, Dictionary<String, ?> properties) {
+        PrivateServiceRegistration(String[] clazzes, Object svc, Dictionary<String, ?> properties) {
             Hashtable<String, Object> props = new Hashtable<>();
-            for (Enumeration<String> elem = properties.keys(); elem.hasMoreElements();) {
+            for (Enumeration<String> elem = properties.keys(); elem.hasMoreElements(); ) {
                 String key = elem.nextElement();
                 props.put(key, properties.get(key));
             }
@@ -342,15 +343,13 @@ public class PrivateRegistryWrapper implements BundleContext {
         }
 
         @Override
-        public int compareTo(Object reference)
-        {
+        public int compareTo(Object reference) {
             ServiceReference other = (ServiceReference) reference;
 
             Long id = (Long) getProperty(Constants.SERVICE_ID);
             Long otherId = (Long) other.getProperty(Constants.SERVICE_ID);
 
-            if (id.equals(otherId))
-            {
+            if (id.equals(otherId)) {
                 return 0; // same service
             }
 
@@ -368,12 +367,9 @@ public class PrivateRegistryWrapper implements BundleContext {
                     ? (Integer) otherRankObj : new Integer(0);
 
             // Sort by rank in ascending order.
-            if (rank.compareTo(otherRank) < 0)
-            {
+            if (rank.compareTo(otherRank) < 0) {
                 return -1; // lower rank
-            }
-            else if (rank.compareTo(otherRank) > 0)
-            {
+            } else if (rank.compareTo(otherRank) > 0) {
                 return 1; // higher rank
             }
 
@@ -382,6 +378,5 @@ public class PrivateRegistryWrapper implements BundleContext {
         }
 
     }
-
 
 }

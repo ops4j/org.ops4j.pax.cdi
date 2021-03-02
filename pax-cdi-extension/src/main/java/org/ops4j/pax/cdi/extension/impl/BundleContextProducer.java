@@ -22,8 +22,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import org.ops4j.pax.cdi.extension.impl.component2.ComponentRegistry;
 import org.ops4j.pax.cdi.extension.impl.component2.BundleContextHolder;
+import org.ops4j.pax.cdi.extension.impl.component2.ComponentRegistry;
 import org.osgi.framework.BundleContext;
 
 /**

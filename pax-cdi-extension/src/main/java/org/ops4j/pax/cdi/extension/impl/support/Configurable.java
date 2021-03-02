@@ -89,11 +89,22 @@ import java.util.TreeSet;
  */
 public final class Configurable {
 
+    private static final Boolean DEFAULT_BOOLEAN = false;
+    private static final Byte DEFAULT_BYTE = (byte) 0;
+    private static final Short DEFAULT_SHORT = (short) 0;
+    private static final Integer DEFAULT_INT = 0;
+    private static final Long DEFAULT_LONG = 0L;
+    private static final Float DEFAULT_FLOAT = 0.0f;
+    private static final Double DEFAULT_DOUBLE = 0.0;
+
+    private Configurable() {
+    }
+
     static class ConfigHandler implements InvocationHandler {
         private final ClassLoader m_cl;
         private final Map<?, ?> m_config;
 
-        public ConfigHandler(ClassLoader cl, Map<?, ?> config) {
+        ConfigHandler(ClassLoader cl, Map<?, ?> config) {
             m_cl = cl;
             m_config = config;
         }
@@ -413,14 +424,6 @@ public final class Configurable {
             return sb.toString();
         }
     }
-
-    private static final Boolean DEFAULT_BOOLEAN = false;
-    private static final Byte DEFAULT_BYTE = (byte) 0;
-    private static final Short DEFAULT_SHORT = (short) 0;
-    private static final Integer DEFAULT_INT = 0;
-    private static final Long DEFAULT_LONG = 0L;
-    private static final Float DEFAULT_FLOAT = 0.0f;
-    private static final Double DEFAULT_DOUBLE = 0.0;
 
     /**
      * Creates a configuration for a given type backed by a given dictionary.

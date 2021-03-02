@@ -17,12 +17,6 @@
  */
 package org.ops4j.pax.cdi.test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.OptionUtils.combine;
-
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +34,12 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.ops4j.pax.swissbox.core.BundleUtils;
 import org.osgi.framework.Bundle;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.OptionUtils.combine;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
