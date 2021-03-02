@@ -76,6 +76,7 @@
             <artifactId>xbean-bundleutils</artifactId>
         </dependency>
         <dependency>
+            <!-- This dependency will be repackaged to satisfy openwebbeans-impl bundle -->
             <groupId>org.apache.xbean</groupId>
             <artifactId>xbean-asm7-shaded</artifactId>
         </dependency>
@@ -118,12 +119,19 @@
                         <Bundle-Activator>${bundle.namespace}.impl.Activator</Bundle-Activator>
                         <Import-Package>
                             org.apache.webbeans*;version="[1.5,2)",
+<!--                            org.apache.xbean.asm7*;version="7.3.1",-->
                             org.apache.xbean*;version="[3.18,5)",
                             org.slf4j;version="[1.6,2)";resolution:=optional,
                             *
                         </Import-Package>
                         <Export-Package>
                             org.ops4j.pax.cdi.openwebbeans
+                            <!-- re-export packages from xbean-asm7-shaded to satisfy openwebbeans-impl -->
+<!--                            org.apache.xbean.asm7.shade.commons;version=7.3.1,-->
+<!--                            org.apache.xbean.asm7;version=7.3.1,-->
+<!--                            org.apache.xbean.asm7.signature;version=7.3.1,-->
+<!--                            org.apache.xbean.asm7.commons;version=7.3.1,-->
+<!--                            org.apache.xbean.asm7.tree;version=7.3.1-->
                         </Export-Package>
                         <_dsannotations>*</_dsannotations>
                     </instructions>

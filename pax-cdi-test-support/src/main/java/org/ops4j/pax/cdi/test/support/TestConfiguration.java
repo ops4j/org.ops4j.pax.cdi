@@ -94,10 +94,10 @@ public class TestConfiguration {
             mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject().startLevel(
                 START_LEVEL_SYSTEM_BUNDLES),
 
-            mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.6.0"),
-            mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
-            mavenBundle("org.apache.xbean", "xbean-asm7-shaded", "4.12"), //
-            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.12"), //
+            mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.9.20"),
+            mavenBundle("org.apache.felix", "org.apache.felix.scr", "2.0.12"),
+            mavenBundle("org.apache.xbean", "xbean-asm7-shaded", "4.16"), //
+            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.16"), //
 
             // Set logback configuration via system property.
             // This way, both the driver and the container use the same configuration
@@ -173,16 +173,16 @@ public class TestConfiguration {
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-web").version(OWB1_VERSION),
                     mavenBundle("org.apache.openwebbeans", "openwebbeans-el22").version(OWB1_VERSION),
                     // needed by pax-cdi-web-openwebbeans
-                    mavenBundle("org.apache.geronimo.specs", "geronimo-jsp_2.2_spec", "1.2")
+                    mavenBundle("javax.servlet.jsp", "javax.servlet.jsp-api", "2.3.3")
                     );
 
             case WELD2:
                 return composite(
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-servlet"),
                     workspaceBundle("org.ops4j.pax.cdi", "pax-cdi-undertow-weld"),
-                    mavenBundle("org.apache.geronimo.specs", "geronimo-servlet_3.0_spec", "1.0"),
+                    mavenBundle("javax.servlet", "javax.servlet-api", "3.1.0"),
                     // needed by pax-cdi-web-weld
-                    mavenBundle("org.apache.geronimo.specs", "geronimo-jsp_2.2_spec", "1.2")
+                    mavenBundle("javax.servlet.jsp", "javax.servlet.jsp-api", "2.3.3")
                     );
 
             default:
@@ -302,18 +302,18 @@ public class TestConfiguration {
 
     public static Option paxWebUndertowBundles() {
         return composite(
-            mavenBundle("org.ops4j.pax.tipi", "org.ops4j.pax.tipi.undertow.servlet", "1.0.15.1"),
-            mavenBundle("org.ops4j.pax.tipi", "org.ops4j.pax.tipi.undertow.core", "1.0.15.1"),
-            mavenBundle("org.ops4j.pax.tipi", "org.ops4j.pax.tipi.xnio.api", "3.2.2.2"),
-            mavenBundle("org.ops4j.pax.tipi", "org.ops4j.pax.tipi.xnio.nio", "3.2.2.2"),
-            mavenBundle("org.jboss.logging", "jboss-logging", "3.3.0.Final"),
+            mavenBundle("io.undertow", "undertow-servlet", "2.0.34.Final"),
+            mavenBundle("io.undertow", "undertow-core", "2.0.34.Final"),
+            mavenBundle("org.jboss.xnio", "xnio-api", "3.3.8.Final"),
+            mavenBundle("org.jboss.xnio", "xnio-nio", "3.3.8.Final"),
+            mavenBundle("org.jboss.logging", "jboss-logging", "3.4.1.Final"),
             mavenBundle("javax.annotation", "javax.annotation-api", "1.3"),
             mavenBundle("javax.servlet", "javax.servlet-api", "3.1.0"),
-            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.12"),
-            mavenBundle("org.apache.xbean", "xbean-finder", "4.12"),
-            mavenBundle("org.ow2.asm", "asm-all", "5.0.2"),
-            mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.8.0"),
-            mavenBundle("org.apache.felix", "org.apache.felix.eventadmin", "1.3.2"),
+            mavenBundle("org.apache.xbean", "xbean-bundleutils", "4.18"),
+            mavenBundle("org.apache.xbean", "xbean-finder-shaded", "4.16"),
+            mavenBundle("org.apache.xbean", "xbean-asm7-shaded", "4.16"),
+            mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.9.20"),
+            mavenBundle("org.apache.felix", "org.apache.felix.eventadmin", "1.6.2"),
 
             mavenBundle("org.ops4j.pax.web", "pax-web-extender").version(Info.getPaxWebVersion()),
             mavenBundle("org.ops4j.pax.web", "pax-web-spi").version(Info.getPaxWebVersion()),
