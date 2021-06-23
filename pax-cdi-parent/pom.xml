@@ -116,7 +116,7 @@
 
         <!-- 3.13.0.v20171204-1916 exports org.osgi.framework package with version 1.9 -->
         <version.org.eclipse.tycho>3.11.2.v20161107-1947</version.org.eclipse.tycho>
-        <version.org.eclipse.jetty>9.4.36.v20210114</version.org.eclipse.jetty>
+        <version.org.eclipse.jetty>9.4.41.v20210516</version.org.eclipse.jetty>
         <version.org.jboss.classfilewriter>1.2.1.Final</version.org.jboss.classfilewriter>
         <version.org.jboss.logging>3.4.1.Final</version.org.jboss.logging>
         <!-- Latest available 2.x version (CDI spec 1.2, JavaEE 7) -->
