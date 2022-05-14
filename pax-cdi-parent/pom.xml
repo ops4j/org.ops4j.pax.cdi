@@ -73,7 +73,7 @@
 
         <!-- versions of Maven dependencies (sorted and groupped) -->
         <version.biz.aQute.bnd>5.2.0</version.biz.aQute.bnd>
-        <version.ch.qos.logback>1.2.3</version.ch.qos.logback>
+        <version.ch.qos.logback>1.2.9</version.ch.qos.logback>
         <version.commons-collections>3.2.2</version.commons-collections>
         <version.commons-dbcp>1.4</version.commons-dbcp>
         <version.commons-lang>2.6</version.commons-lang>
